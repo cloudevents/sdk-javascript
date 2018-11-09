@@ -1,6 +1,8 @@
 # sdk-javascript
 Javascript SDK for CloudEvents
 
+> This is a WPI
+
 # Repository Structure
 
 ```text
@@ -39,6 +41,16 @@ Javascript SDK for CloudEvents
 * `test/cloudevent_spec_0_1.js`: unit testing for spec 0.1
 
 * `test/cloudevent_spec_0_2.js`: unit testing for spec 0.2
+
+# Unit Testing
+
+The unit test checks the result of formatted payload and the constraints.
+
+```bash
+
+npm test
+
+```
 
 # The API
 

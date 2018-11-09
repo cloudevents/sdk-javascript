@@ -137,8 +137,6 @@ cloudevent02
   .type("com.github.pull.create")
   .source("urn:event:from:myapi/resourse/123");
 
-var cloudevent = new Cloudevent
-
 ```
 
 ## How to get the formatted payload?

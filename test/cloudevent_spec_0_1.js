@@ -1,8 +1,10 @@
 var expect       = require("chai").expect;
 var Cloudevent   = require("../index.js");
 
+const type = "com.github.pull.create";
+
 var cloudevent = new Cloudevent()
-                       .type("com.github.pull.create")
+                       .type(type)
                        .source("urn:event:from:myapi/resourse/123");
 
 describe("CloudEvents Spec 0.1 - JavaScript SDK", () => {
@@ -31,6 +33,20 @@ describe("CloudEvents Spec 0.1 - JavaScript SDK", () => {
       it("should have 'eventTypeVersion'", () => {
         cloudevent.eventTypeVersion("1.0");
         expect(cloudevent.format()).to.have.property('eventTypeVersion');
+      });
+    });
+
+    describe("The Constraint check", () => {
+      describe("'eventType'", () => {
+        it("should throw an error when is an empty string", () => {
+          cloudevent.type("");
+          expect(cloudevent.format.bind(cloudevent)).to.throw("'eventType' is invalid");
+        });
+
+        it("should be a non-empty string", () => {
+          cloudevent.type(type);
+          cloudevent.format();
+        });
       });
     });
 

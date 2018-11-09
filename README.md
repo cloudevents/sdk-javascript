@@ -23,7 +23,7 @@ Javascript SDK for CloudEvents
 
 * `lib/cloudevent.js`: implementation of Cloudevent class
 
-* `lib/jsonformatter.js`: implementation for JSON Format
+* `lib/jsonformatter.js`: implementation for JSON formatting [json-format](https://github.com/cloudevents/spec/blob/v0.1/json-format.md)
 
 * `lib/spec_0_1.js`: implementation for spec version 0.1
 

@@ -1,7 +1,7 @@
 # sdk-javascript
 Javascript SDK for CloudEvents
 
-> This is a WPI
+> This is a WIP
 
 # Repository Structure
 

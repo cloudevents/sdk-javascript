@@ -47,14 +47,14 @@ Javascript SDK for CloudEvents
 ```js
 
 /*
- * Format the payload and return it.
+ * Format the payload and return an Object.
  */
-Cloudevent.format()
+Object Cloudevent.format()
 
 /*
  * Format the payload as String.
  */
-Cloudevent.toString()
+String Cloudevent.toString()
 
 ```
 

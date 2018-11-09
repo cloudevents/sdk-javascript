@@ -27,6 +27,13 @@ describe("CloudEvents Spec 0.1 - JavaScript SDK", () => {
       });
     });
 
+    describe("Backward compatibility", () => {
+      it("should have 'eventTypeVersion'", () => {
+        cloudevent.eventTypeVersion("1.0");
+        expect(cloudevent.format()).to.have.property('eventTypeVersion');
+      });
+    });
+
   });
 
 });

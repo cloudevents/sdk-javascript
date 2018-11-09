@@ -40,10 +40,57 @@ Javascript SDK for CloudEvents
 
 * `test/cloudevent_spec_0_2.js`: unit testing for spec 0.2
 
-# How to use
+# The API
+
+## `Cloudevent` class
 
 ```js
 
+/*
+ * Format the payload and return it.
+ */
+Cloudevent.format()
+
+/*
+ * Format the payload as String.
+ */
+Cloudevent.toString()
+
+```
+
+## `Formatter` class
+
+```js
+
+/*
+ * Format the Cloudevent payload argument and return an Object.
+ */
+Object Formatter.format(payload)
+
+/*
+ * Format the Cloudevent payload as String.
+ */
+String Formatter.toString(payload)
+
+```
+
+# How to use
+
+The `Cloudevent` constructor arguments.
+
+```js
+
+/*
+ * spec  : if is null, set the spec 0.1 impl
+ * format: if is null, set the JSON Format 0.1 impl
+ */
+Cloudevent(spec, format);
+
+```
+
+## How to construct instances?
+
+```js
 /* 
  * Constructs a default instance with:
  *   - Spec 0.1
@@ -78,6 +125,22 @@ cloudevent02
   .type("com.github.pull.create")
   .source("urn:event:from:myapi/resourse/123");
 
+var cloudevent = new Cloudevent
+
+```
+
+## How to get the formatted payload?
+
+```js
+var cloudevent = new Cloudevent()
+                       .type("com.github.pull.create")
+                       .source("urn:event:from:myapi/resourse/123");
+
+/*
+ * Format the payload and return it.
+ */
+var formatted = cloudevent.format();
+ 
 ```
 
 > See how to implement the method injection [here](lib/specs/spec_0_1.js#L17)

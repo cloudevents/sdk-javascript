@@ -70,7 +70,9 @@ String Cloudevent.toString()
 
 ```
 
-## `Formatter` class
+## `Formatter` classes
+
+Every formatter class must implement these methods to work properly.
 
 ```js
 
@@ -83,6 +85,19 @@ Object Formatter.format(payload)
  * Format the Cloudevent payload as String.
  */
 String Formatter.toString(payload)
+
+```
+
+## `Spec` classes
+
+Every Spec class must implement these methods to work properly.
+
+```js
+
+/*
+ * Check the spec constraints, throwing an error if do not pass.
+ */
+Spec.check()
 
 ```
 

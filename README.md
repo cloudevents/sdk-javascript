@@ -52,7 +52,7 @@ Javascript SDK for CloudEvents
 var cloudevent01 = new Cloudevent();
 
 /*
- * Implemented using [Builder Design Pattern](https://en.wikipedia.org/wiki/Builder_pattern)
+ * Implemented using Builder Design Pattern
  */
 cloudevent01
   .type("com.github.pull.create")
@@ -60,7 +60,6 @@ cloudevent01
 
 /*
  * Backward compatibility by injecting methods from spec implementation to `Cloudevent`
- *   See how [here](lib/specs/spec_0_1.js#L17)
  */
 cloudevent01
  .eventTypeVersion("1.0");
@@ -81,3 +80,7 @@ cloudevent02
 
 
 ```
+> See how to implement the method injection [here](lib/specs/spec_0_1.js#L17)
+>
+> [Builder Design Pattern](https://en.wikipedia.org/wiki/Builder_pattern)
+>

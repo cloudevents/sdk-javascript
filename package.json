@@ -4,7 +4,7 @@
   "description": "CloudEvents SDK for JavaScript",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/test.js"
+    "test": "./node_modules/.bin/mocha -C test/*.js"
   },
   "repository": {
     "type": "git",
@@ -17,13 +17,20 @@
   ],
   "author": "cloudevents.io",
   "contributors": {
-    "name"  : "Fábio José de Moraes",
-    "email" : "fabiojose@gmail.com",
-    "url"   : "https://github.com/fabiojose"
+    "name": "Fábio José de Moraes",
+    "email": "fabiojose@gmail.com",
+    "url": "https://github.com/fabiojose"
   },
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/cloudevents/sdk-javascript/issues"
   },
-  "homepage": "https://github.com/cloudevents/sdk-javascript#readme"
+  "homepage": "https://github.com/cloudevents/sdk-javascript#readme",
+  "dependencies": {
+    "uuid": "3.3.2"
+  },
+  "devDependencies": {
+    "chai": "4.2.0",
+    "mocha": "5.2.0"
+  }
 }

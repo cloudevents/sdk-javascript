@@ -59,7 +59,7 @@ cloudevent01
   .source("urn:event:from:myapi/resourse/123");
 
 /*
- * Backward compatibility by injecting methods from spec implementation to `Cloudevent`
+ * Backward compatibility by injecting methods from spec implementation to Cloudevent
  */
 cloudevent01
  .eventTypeVersion("1.0");
@@ -78,9 +78,8 @@ cloudevent02
   .type("com.github.pull.create")
   .source("urn:event:from:myapi/resourse/123");
 
-
 ```
+
 > See how to implement the method injection [here](lib/specs/spec_0_1.js#L17)
 >
-> [Builder Design Pattern](https://en.wikipedia.org/wiki/Builder_pattern)
->
+> Learn about [Builder Design Pattern](https://en.wikipedia.org/wiki/Builder_pattern)

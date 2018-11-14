@@ -32,7 +32,6 @@ describe("HTTP Transport Binding - Version 0.1", () => {
       it("requires '" + contentType + "' Content-Type in header", () => {
         return httpstructured_0_1.emit(cloudevent)
           .then(response => {
-            //console.log(response.config);
             expect(response.config.headers['Content-Type'])
               .to.equal(contentType);
           });

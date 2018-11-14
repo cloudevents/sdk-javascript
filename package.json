@@ -27,10 +27,13 @@
   },
   "homepage": "https://github.com/cloudevents/sdk-javascript#readme",
   "dependencies": {
+    "axios": "0.18.0",
     "uuid": "3.3.2"
   },
   "devDependencies": {
     "chai": "4.2.0",
-    "mocha": "5.2.0"
+    "mocha": "5.2.0",
+    "chai-http": "4.2.0",
+    "nock": "10.0.2"
   }
 }

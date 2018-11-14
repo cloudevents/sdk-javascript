@@ -19,7 +19,7 @@ var httpcfg = {
 var httpstructured_0_1 = 
   new Cloudevent.bindings['http-structured0.1'](httpcfg);
 
-describe("HTTP Transport Binding", () => {
+describe("HTTP Transport Binding - Version 0.1", () => {
   beforeEach(() => {
     // Mocking the webhook
     nock(webhook)

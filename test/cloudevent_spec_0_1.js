@@ -40,7 +40,9 @@ describe("CloudEvents Spec 0.1 - JavaScript SDK", () => {
       describe("'eventType'", () => {
         it("should throw an error when is an empty string", () => {
           cloudevent.type("");
-          expect(cloudevent.format.bind(cloudevent)).to.throw("'eventType' is invalid");
+          expect(cloudevent.format.bind(cloudevent))
+            .to
+            .throw("'eventType' is invalid");
         });
 
         it("should be a non-empty string", () => {

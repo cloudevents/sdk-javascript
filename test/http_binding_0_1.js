@@ -36,6 +36,14 @@ describe("HTTP Transport Binding - Version 0.1", () => {
               .to.equal(contentType);
           });
       });
+
+      it("the request should be correct", () => {
+        return httpstructured_0_1.emit(cloudevent)
+          .then(response => {
+            expect(JSON.parse(response.config.data))
+              .to.deep.equal(cloudevent.format());
+          });
+      });
     });
   });
 });

@@ -95,6 +95,11 @@ Every Spec class must implement these methods to work properly.
 ```js
 
 /*
+ * The constructor must receives the Cloudevent type.
+ */
+Spec(Cloudevent)
+
+/*
  * Check the spec constraints, throwing an error if do not pass.
  */
 Spec.check()
@@ -166,6 +171,35 @@ var cloudevent = new Cloudevent()
  */
 var formatted = cloudevent.format();
  
+```
+
+## Hot to emit the event?
+
+```js
+// The event
+var cloudevent = new Cloudevent()
+                       .type("com.github.pull.create")
+                       .source("urn:event:from:myapi/resourse/123");
+
+// The binding configuration using POST
+var config = {
+  method: 'POST',
+  url   : 'https://mywebhook.com'
+};
+
+// The binding instance
+var binding = Cloudevent.bindings['http-structured0.1'](config);
+
+// Emit the event using Promise
+binding.emit(cloudevent)
+  .then(response => {
+    // Treat the response
+    console.log(response.data);
+
+  }).catch(err => {
+    // Treat the error
+    console.error(err);
+  });
 ```
 
 > See how to implement the method injection [here](lib/specs/spec_0_1.js#L17)

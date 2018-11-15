@@ -173,7 +173,7 @@ var formatted = cloudevent.format();
  
 ```
 
-## Hot to emit the event?
+## How to emit an event?
 
 ```js
 // The event
@@ -205,3 +205,5 @@ binding.emit(cloudevent)
 > See how to implement the method injection [here](lib/specs/spec_0_1.js#L17)
 >
 > Learn about [Builder Design Pattern](https://en.wikipedia.org/wiki/Builder_pattern)
+> 
+> Check out the produced event payload using this [tool](https://webhook.site)

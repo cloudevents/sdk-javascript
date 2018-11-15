@@ -8,8 +8,10 @@ Javascript SDK for CloudEvents
 ```text
 ├── index.js
 ├── lib
+│   ├── bindings
+│   │   └── http
+│   │       └── structured_0_1.js
 │   ├── cloudevent.js
-│   ├── jsonformatter.js
 │   ├── format
 │   │   └── json_0_1.js
 │   └── specs
@@ -20,11 +22,17 @@ Javascript SDK for CloudEvents
 ├── README.md
 └── test
     ├── cloudevent_spec_0_1.js
-    └── cloudevent_spec_0_2.js
-
+    ├── cloudevent_spec_0_2.js
+    └── http_binding_0_1.js
 ```
 
 * `index.js`: library exports
+
+* `lib/bindings`: every binding implementation goes here
+
+* `lib/bindings/http`: every http binding implementation goes here
+
+* `lib/bindings/http/structured_0_1.js`: implementation of structured HTTP Binding  
 
 * `lib/cloudevent.js`: implementation of Cloudevent, an interface
 
@@ -100,9 +108,26 @@ Every Spec class must implement these methods to work properly.
 Spec(Cloudevent)
 
 /*
- * Check the spec constraints, throwing an error if do not pass.
+ * Checks the spec constraints, throwing an error if do not pass.
  */
 Spec.check()
+
+```
+## `Binding` classes
+
+Every Binding class must implement these methods to work properly.
+
+```js
+
+/* 
+ * The constructor must receives the map of configurations.
+ */
+Binding(config)
+
+/* 
+ * Emits the event using an instance of Cloudevent.
+ */
+Binding.emit(cloudevent)
 
 ```
 

@@ -1,11 +1,13 @@
 var expect       = require("chai").expect;
 var Cloudevent   = require("../index.js");
 
-const type = "com.github.pull.create";
+const type   = "com.github.pull.create";
+const source = "urn:event:from:myapi/resourse/123";
+const time   = new Date();
 
 var cloudevent = new Cloudevent()
                        .type(type)
-                       .source("urn:event:from:myapi/resourse/123");
+                       .source(source);
 
 describe("CloudEvents Spec 0.1 - JavaScript SDK", () => {
 
@@ -45,9 +47,22 @@ describe("CloudEvents Spec 0.1 - JavaScript SDK", () => {
             .throw("'eventType' is invalid");
         });
 
-        it("should be a non-empty string", () => {
+        it("must be a non-empty string", () => {
           cloudevent.type(type);
           cloudevent.format();
+        });
+
+        it("should be prefixed with a reverse-DNS name", () => {
+          //TODO how to assert it?
+        });
+      });
+
+      //TODO another attributes . . .
+
+      describe("'eventTime'", () => {
+        it("must adhere to the format specified in RFC 3339", () => {
+          cloudevent.time(time);
+          expect(cloudevent.format()['eventTime']).to.equal(time.toISOString());
         });
       });
     });

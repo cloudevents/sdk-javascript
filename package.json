@@ -28,6 +28,8 @@
   "homepage": "https://github.com/cloudevents/sdk-javascript#readme",
   "dependencies": {
     "axios": "0.18.0",
+    "is-empty": "^1.2.0",
+    "uri-js": "4.2.2",
     "uuid": "3.3.2"
   },
   "devDependencies": {

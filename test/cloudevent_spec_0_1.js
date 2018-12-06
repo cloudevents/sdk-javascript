@@ -74,7 +74,7 @@ describe("CloudEvents Spec 0.1 - JavaScript SDK", () => {
     
     });
 
-    describe("The Constraint check", () => {
+    describe("The Constraints check", () => {
       describe("'eventType'", () => {
         it("should throw an error when is an empty string", () => {
           cloudevent.type("");

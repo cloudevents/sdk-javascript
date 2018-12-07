@@ -5,7 +5,7 @@ Javascript SDK for CloudEvents
 
 > This is a WIP
 
-# Repository Structure
+## Repository Structure
 
 ```text
 ├── index.js
@@ -52,7 +52,7 @@ Javascript SDK for CloudEvents
 
 * `test/cloudevent_spec_0_2.js`: unit testing for spec 0.2
 
-# Unit Testing
+## Unit Testing
 
 The unit test checks the result of formatted payload and the constraints.
 
@@ -62,9 +62,9 @@ npm test
 
 ```
 
-# The API
+## The API
 
-## `Cloudevent` class
+### `Cloudevent` class
 
 ```js
 
@@ -80,7 +80,7 @@ String Cloudevent.toString()
 
 ```
 
-## `Formatter` classes
+### `Formatter` classes
 
 Every formatter class must implement these methods to work properly.
 
@@ -115,7 +115,7 @@ Spec(Cloudevent)
 Spec.check()
 
 ```
-## `Binding` classes
+### `Binding` classes
 
 Every Binding class must implement these methods to work properly.
 
@@ -133,7 +133,7 @@ Binding.emit(cloudevent)
 
 ```
 
-# How to use
+## How to use
 
 The `Cloudevent` constructor arguments.
 
@@ -147,7 +147,7 @@ Cloudevent(spec, format);
 
 ```
 
-## How to construct instances?
+### How to construct instances?
 
 ```js
 /* 
@@ -186,7 +186,7 @@ cloudevent02
 
 ```
 
-## How to get the formatted payload?
+### How to get the formatted payload?
 
 ```js
 var cloudevent = new Cloudevent()
@@ -200,7 +200,7 @@ var formatted = cloudevent.format();
  
 ```
 
-## How to emit an event?
+### How to emit an event?
 
 ```js
 // The event

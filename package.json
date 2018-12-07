@@ -1,6 +1,6 @@
 {
   "name": "cloudevents",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "CloudEvents SDK for JavaScript",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,9 @@
   "keywords": [
     "events",
     "cloudevents",
-    "sdk"
+    "sdk",
+    "javascript",
+    "cncf"
   ],
   "author": "cloudevents.io",
   "contributors": {
@@ -28,7 +30,7 @@
   "homepage": "https://github.com/cloudevents/sdk-javascript#readme",
   "dependencies": {
     "axios": "0.18.0",
-    "is-empty": "^1.2.0",
+    "is-empty": "1.2.0",
     "uri-js": "4.2.2",
     "uuid": "3.3.2"
   },

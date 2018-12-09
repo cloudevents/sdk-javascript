@@ -17,7 +17,7 @@ npm install cloudevents-sdk
 ```
 ## Specification Support
 
-These are the supported specifications for this version.
+These are the supported specifications by this version.
 
 | **Specifications**         | **v0.1** | **v0.2** |
 |----------------------------|----------|----------|

@@ -4,6 +4,10 @@ var Cloudevent   = require("../index.js");
 const type   = "com.github.pull.create";
 const source = "urn:event:from:myapi/resourse/123";
 const time   = new Date();
+const schemaurl = "http://example.com/registry/myschema.json";
+const contenttype = "application/json";
+const data = {};
+const extensions = {};
 
 var cloudevent = new Cloudevent()
                        .type(type)
@@ -16,6 +20,11 @@ describe("CloudEvents Spec 0.1 - JavaScript SDK", () => {
     describe("Required context attributes", () => {
       it("requires 'eventType'", () => {
         expect(cloudevent.format()).to.have.property('eventType');
+      });
+
+      it("requires 'eventTypeVersion'", () => {
+        cloudevent.eventTypeVersion("1.0");
+        expect(cloudevent.format()).to.have.property('eventTypeVersion');
       });
 
       it("requires 'cloudEventsVersion'", () => {
@@ -31,14 +40,41 @@ describe("CloudEvents Spec 0.1 - JavaScript SDK", () => {
       });
     });
 
-    describe("Backward compatibility", () => {
-      it("should have 'eventTypeVersion'", () => {
-        cloudevent.eventTypeVersion("1.0");
-        expect(cloudevent.format()).to.have.property('eventTypeVersion');
+    describe("Optional context attributes", () => {
+      it("contains 'eventTime'", () => {
+        cloudevent.time(time);
+        expect(cloudevent.format()).to.have.property('eventTime');
       });
+
+      it("contains 'schemaURL'", () => {
+        cloudevent.schemaurl(schemaurl);
+        expect(cloudevent.format()).to.have.property('schemaURL');
+      });
+
+      it("contains 'contentType'", () => {
+        cloudevent.contenttype(contenttype);
+        expect(cloudevent.format()).to.have.property('contentType');
+      });
+
+      it("contains 'data'", () => {
+        cloudevent.data(data);
+        expect(cloudevent.format()).to.have.property('data');
+      });
+      
+      it("contains 'extensions'", () => {
+        cloudevent.addExtension('foo', 'value');
+        expect(cloudevent.format()).to.have.property('extensions');
+      });
+
+      it("'extensions' should have 'bar' extension", () => {
+        cloudevent.addExtension('bar', 'value');
+        expect(cloudevent.format().extensions)
+          .to.have.property('foo');
+      });
+    
     });
 
-    describe("The Constraint check", () => {
+    describe("The Constraints check", () => {
       describe("'eventType'", () => {
         it("should throw an error when is an empty string", () => {
           cloudevent.type("");

@@ -15,6 +15,14 @@ This CloudEvents SDK requires nodejs 6.11+
 ```
 npm install cloudevents-sdk
 ```
+## Speccification Support
+
+| **Specifications**         | **v0.1** | **v0.2** |
+|----------------------------|----------|----------|
+| CloudEvents                | yes      | yes      |
+| HTTP Transport Binding     | yes      | _WIP_    |
+| JSON Event Format          | yes      | _WIP_    |
+|                            |          |          |
 
 ## Repository Structure
 

@@ -6,6 +6,16 @@ Javascript SDK for CloudEvents
 
 > This is a WIP
 
+## Installation
+
+This CloudEvents SDK requires nodejs 6.11+
+
+### Nodejs
+
+```
+npm install cloudevents-sdk
+```
+
 ## Repository Structure
 
 ```text

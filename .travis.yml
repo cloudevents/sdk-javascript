@@ -6,3 +6,14 @@ node_js:
 
 cache: npm
 
+jobs:
+  include:
+    - stage: npm release
+      node_js: "6"
+      deploy:
+        provider: npm
+        email: fabiojose@gmail.com
+        api_key: "o5aF53FTPUSiJBbCZ/anBWQCgEJCctpxuTgGJbO1NpiheOM/xENiSmv+n2a5sGrhhqT0h7k15mE/ZgtL8TnM+45AHOg3EGez5JoR1XMIXnSeCno1GFK4waHDcEn3eLW9P35r1S5/RMTqbEUvqpyK/fzVZ4ecyh9t7dVvJV8MyQGo+r+oO3SLYEIt7YC6vZRh+dV3cK8jr7MHkHmQfZ6tZrALMKsj6QNTUtmk+IU52WHi4oe1iPuypS5dlaVdmanX7ZRtC7gR0Dko2/wja+DPOAKgG/S0aS794cxal7P5k/K34mvqT8iaCl4vN5uIcRsipgsprIahk2G2NgnIVCetBda9LhpMNUdn3j+v4T0lx3jiqP1eq01nk8YFpTV4Xz9VlYHK/E6NYQhUmd7N6WO9vXmOEDGBvWrDfQ1QMx+/TM9r3vzK9ps3sjkDFaAtJ2ZQ0pvFMEQTaLKak24ntWltSWZKvxdjYnS+bcfyIQQGagvqgZsnkKzeudO9N9Atp4OGcst9CAvvykDsfmLlARAiyvpuDVyUivuaOlCB9J7VBt1sbBfsiHpnJcSsMVz1OMRX5EGewbla530guoePhjTUDVit3NyUMz3ZQQTN9VSK3tA+NLyR0Ex8Oel+byHJDYyf+36GCDvoXagaPUVk5M5BINiCw2IWhxDgRGrcEp9JIUI="
+        skip_cleanup: true
+        on:
+          tags: true

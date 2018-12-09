@@ -57,7 +57,7 @@ npm install cloudevents-sdk
 
 * `lib/specs/spec_0_1.js`: implementation for spec [version 0.1](https://github.com/cloudevents/spec/blob/v0.1/spec.md)
 
-* `lib/specs/spec_0_2.js`: implementation for spec [version 0.2](https://github.com/cloudevents/spec/blob/master/spec.md)
+* `lib/specs/spec_0_2.js`: implementation for spec [version 0.2](https://github.com/cloudevents/spec/blob/v0.2/spec.md)
 
 * `test/cloudevent_spec_0_1.js`: unit testing for spec 0.1
 

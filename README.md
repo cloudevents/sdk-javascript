@@ -25,6 +25,108 @@ These are the supported specifications by this version.
 | HTTP Transport Binding     | yes      | yes      |
 | JSON Event Format          | yes      | yes      |
 
+## How to use
+
+The `Cloudevent` constructor arguments.
+
+```js
+
+/*
+ * spec  : if is null, set the spec 0.1 impl
+ * format: if is null, set the JSON Format 0.1 impl
+ */
+Cloudevent(spec, format);
+
+```
+
+### How to construct instances?
+
+```js
+var Cloudevent = require("cloudevents-sdk");
+
+/*
+ * Constructs a default instance with:
+ *   - Spec 0.1
+ *   - JSON Format 0.1
+ */
+var cloudevent01 = new Cloudevent();
+
+/*
+ * Implemented using Builder Design Pattern
+ */
+cloudevent01
+  .type("com.github.pull.create")
+  .source("urn:event:from:myapi/resourse/123");
+
+/*
+ * Backward compatibility by injecting methods from spec implementation to Cloudevent
+ */
+cloudevent01
+ .eventTypeVersion("1.0");
+
+/*
+ * Constructs an instance with:
+ *   - Spec 0.2
+ *   - JSON Format 0.1
+ */
+var cloudevent02 = new Cloudevent(Cloudevent.specs['0.2']);
+
+/*
+ * Different specs, but the same API.
+ */
+cloudevent02
+  .type("com.github.pull.create")
+  .source("urn:event:from:myapi/resourse/123");
+
+```
+
+### How to get the formatted payload?
+
+```js
+var Cloudevent = require("cloudevents-sdk");
+
+var cloudevent = new Cloudevent()
+                       .type("com.github.pull.create")
+                       .source("urn:event:from:myapi/resourse/123");
+
+/*
+ * Format the payload and return it.
+ */
+var formatted = cloudevent.format();
+
+```
+
+### How to emit an event?
+
+```js
+var Cloudevent = require("cloudevents-sdk");
+
+// The event
+var cloudevent = new Cloudevent()
+                       .type("com.github.pull.create")
+                       .source("urn:event:from:myapi/resourse/123");
+
+// The binding configuration using POST
+var config = {
+  method: 'POST',
+  url   : 'https://mywebhook.com'
+};
+
+// The binding instance
+var binding = Cloudevent.bindings['http-structured0.1'](config);
+
+// Emit the event using Promise
+binding.emit(cloudevent)
+  .then(response => {
+    // Treat the response
+    console.log(response.data);
+
+  }).catch(err => {
+    // Treat the error
+    console.error(err);
+  });
+```
+
 ## Repository Structure
 
 ```text
@@ -141,116 +243,20 @@ Every Binding class must implement these methods to work properly.
 
 ```js
 
-/* 
+/*
  * The constructor must receives the map of configurations.
  */
 Binding(config)
 
-/* 
+/*
  * Emits the event using an instance of Cloudevent.
  */
 Binding.emit(cloudevent)
 
 ```
 
-## How to use
-
-The `Cloudevent` constructor arguments.
-
-```js
-
-/*
- * spec  : if is null, set the spec 0.1 impl
- * format: if is null, set the JSON Format 0.1 impl
- */
-Cloudevent(spec, format);
-
-```
-
-### How to construct instances?
-
-```js
-/* 
- * Constructs a default instance with:
- *   - Spec 0.1
- *   - JSON Format 0.1
- */
-var cloudevent01 = new Cloudevent();
-
-/*
- * Implemented using Builder Design Pattern
- */
-cloudevent01
-  .type("com.github.pull.create")
-  .source("urn:event:from:myapi/resourse/123");
-
-/*
- * Backward compatibility by injecting methods from spec implementation to Cloudevent
- */
-cloudevent01
- .eventTypeVersion("1.0");
-
-/*
- * Constructs an instance with:
- *   - Spec 0.2
- *   - JSON Format 0.1 
- */
-var cloudevent02 = new Cloudevent(Cloudevent.specs['0.2']);
-
-/*
- * Different specs, but the same API.
- */
-cloudevent02
-  .type("com.github.pull.create")
-  .source("urn:event:from:myapi/resourse/123");
-
-```
-
-### How to get the formatted payload?
-
-```js
-var cloudevent = new Cloudevent()
-                       .type("com.github.pull.create")
-                       .source("urn:event:from:myapi/resourse/123");
-
-/*
- * Format the payload and return it.
- */
-var formatted = cloudevent.format();
- 
-```
-
-### How to emit an event?
-
-```js
-// The event
-var cloudevent = new Cloudevent()
-                       .type("com.github.pull.create")
-                       .source("urn:event:from:myapi/resourse/123");
-
-// The binding configuration using POST
-var config = {
-  method: 'POST',
-  url   : 'https://mywebhook.com'
-};
-
-// The binding instance
-var binding = Cloudevent.bindings['http-structured0.1'](config);
-
-// Emit the event using Promise
-binding.emit(cloudevent)
-  .then(response => {
-    // Treat the response
-    console.log(response.data);
-
-  }).catch(err => {
-    // Treat the error
-    console.error(err);
-  });
-```
-
 > See how to implement the method injection [here](lib/specs/spec_0_1.js#L17)
 >
 > Learn about [Builder Design Pattern](https://en.wikipedia.org/wiki/Builder_pattern)
-> 
+>
 > Check out the produced event payload using this [tool](https://webhook.site)

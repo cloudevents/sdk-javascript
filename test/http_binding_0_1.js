@@ -7,6 +7,8 @@ const source      = "urn:event:from:myapi/resourse/123";
 const webhook     = "https://cloudevents.io/webhook";
 const contentType = "application/cloudevents+json; charset=utf-8";
 
+const HTTPBinding = Cloudevent.bindings["http-structured0.1"];
+
 var cloudevent = new Cloudevent()
                        .type(type)
                        .source(source);
@@ -16,8 +18,7 @@ var httpcfg = {
   url    : webhook + "/json"
 };
 
-var httpstructured01 =
-  new Cloudevent.bindings["http-structured0.1"](httpcfg);
+var httpstructured01 = new HTTPBinding(httpcfg);
 
 describe("HTTP Transport Binding - Version 0.1", () => {
   beforeEach(() => {

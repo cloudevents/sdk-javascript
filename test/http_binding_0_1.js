@@ -12,19 +12,19 @@ var cloudevent = new Cloudevent()
                        .source(source);
 
 var httpcfg = {
-  method : 'POST',
-  url    : webhook + '/json'
+  method : "POST",
+  url    : webhook + "/json"
 };
 
-var httpstructured_0_1 = 
-  new Cloudevent.bindings['http-structured0.1'](httpcfg);
+var httpstructured_0_1 =
+  new Cloudevent.bindings["http-structured0.1"](httpcfg);
 
 describe("HTTP Transport Binding - Version 0.1", () => {
   beforeEach(() => {
     // Mocking the webhook
     nock(webhook)
       .post("/json")
-      .reply(201, {status: 'accepted'});
+      .reply(201, {status: "accepted"});
   });
 
   describe("Structured", () => {
@@ -32,7 +32,7 @@ describe("HTTP Transport Binding - Version 0.1", () => {
       it("requires '" + contentType + "' Content-Type in header", () => {
         return httpstructured_0_1.emit(cloudevent)
           .then(response => {
-            expect(response.config.headers['Content-Type'])
+            expect(response.config.headers["Content-Type"])
               .to.equal(contentType);
           });
       });
@@ -47,4 +47,3 @@ describe("HTTP Transport Binding - Version 0.1", () => {
     });
   });
 });
-

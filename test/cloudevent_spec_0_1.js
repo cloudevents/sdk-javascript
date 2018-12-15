@@ -19,59 +19,59 @@ describe("CloudEvents Spec 0.1 - JavaScript SDK", () => {
 
     describe("Required context attributes", () => {
       it("requires 'eventType'", () => {
-        expect(cloudevent.format()).to.have.property('eventType');
+        expect(cloudevent.format()).to.have.property("eventType");
       });
 
       it("requires 'eventTypeVersion'", () => {
         cloudevent.eventTypeVersion("1.0");
-        expect(cloudevent.format()).to.have.property('eventTypeVersion');
+        expect(cloudevent.format()).to.have.property("eventTypeVersion");
       });
 
       it("requires 'cloudEventsVersion'", () => {
-        expect(cloudevent.format()).to.have.property('cloudEventsVersion');
+        expect(cloudevent.format()).to.have.property("cloudEventsVersion");
       });
 
       it("requires 'source'", () => {
-        expect(cloudevent.format()).to.have.property('source');
+        expect(cloudevent.format()).to.have.property("source");
       });
 
       it("requires 'eventID'", () => {
-        expect(cloudevent.format()).to.have.property('eventID');
+        expect(cloudevent.format()).to.have.property("eventID");
       });
     });
 
     describe("Optional context attributes", () => {
       it("contains 'eventTime'", () => {
         cloudevent.time(time);
-        expect(cloudevent.format()).to.have.property('eventTime');
+        expect(cloudevent.format()).to.have.property("eventTime");
       });
 
       it("contains 'schemaURL'", () => {
         cloudevent.schemaurl(schemaurl);
-        expect(cloudevent.format()).to.have.property('schemaURL');
+        expect(cloudevent.format()).to.have.property("schemaURL");
       });
 
       it("contains 'contentType'", () => {
         cloudevent.contenttype(contenttype);
-        expect(cloudevent.format()).to.have.property('contentType');
+        expect(cloudevent.format()).to.have.property("contentType");
       });
 
       it("contains 'data'", () => {
         cloudevent.data(data);
-        expect(cloudevent.format()).to.have.property('data');
+        expect(cloudevent.format()).to.have.property("data");
       });
-      
+
       it("contains 'extensions'", () => {
-        cloudevent.addExtension('foo', 'value');
-        expect(cloudevent.format()).to.have.property('extensions');
+        cloudevent.addExtension("foo", "value");
+        expect(cloudevent.format()).to.have.property("extensions");
       });
 
       it("'extensions' should have 'bar' extension", () => {
-        cloudevent.addExtension('bar', 'value');
+        cloudevent.addExtension("bar", "value");
         expect(cloudevent.format().extensions)
-          .to.have.property('foo');
+          .to.have.property("foo");
       });
-    
+
     });
 
     describe("The Constraints check", () => {
@@ -98,7 +98,7 @@ describe("CloudEvents Spec 0.1 - JavaScript SDK", () => {
       describe("'eventTime'", () => {
         it("must adhere to the format specified in RFC 3339", () => {
           cloudevent.time(time);
-          expect(cloudevent.format()['eventTime']).to.equal(time.toISOString());
+          expect(cloudevent.format()["eventTime"]).to.equal(time.toISOString());
         });
       });
     });

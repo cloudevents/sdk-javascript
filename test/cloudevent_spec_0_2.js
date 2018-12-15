@@ -19,51 +19,51 @@ describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
 
     describe("Required context attributes", () => {
       it("requires 'type'", () => {
-        expect(cloudevent.format()).to.have.property('type');
+        expect(cloudevent.format()).to.have.property("type");
       });
 
       it("requires 'specversion'", () => {
-        expect(cloudevent.format()).to.have.property('specversion');
+        expect(cloudevent.format()).to.have.property("specversion");
       });
 
       it("requires 'source'", () => {
-        expect(cloudevent.format()).to.have.property('source');
+        expect(cloudevent.format()).to.have.property("source");
       });
 
       it("requires 'id'", () => {
-        expect(cloudevent.format()).to.have.property('id');
+        expect(cloudevent.format()).to.have.property("id");
       });
     });
 
     describe("Optional context attributes", () => {
       it("contains 'time'", () => {
         cloudevent.time(time);
-        expect(cloudevent.format()).to.have.property('time');
+        expect(cloudevent.format()).to.have.property("time");
       });
 
       it("contains 'schemaurl'", () => {
         cloudevent.schemaurl(schemaurl);
-        expect(cloudevent.format()).to.have.property('schemaurl');
+        expect(cloudevent.format()).to.have.property("schemaurl");
       });
 
       it("contains 'contenttype'", () => {
         cloudevent.contenttype(contenttype);
-        expect(cloudevent.format()).to.have.property('contenttype');
+        expect(cloudevent.format()).to.have.property("contenttype");
       });
 
       it("contains 'data'", () => {
         cloudevent.data(data);
-        expect(cloudevent.format()).to.have.property('data');
+        expect(cloudevent.format()).to.have.property("data");
       });
 
       it("contains 'extension1'", () => {
         cloudevent.addExtension("extension1", "value1");
-        expect(cloudevent.format()).to.have.property('extension1');
+        expect(cloudevent.format()).to.have.property("extension1");
       });
 
       it("'extension2' should have value equals to 'value1'", () => {
         cloudevent.addExtension("extension2", "value2");
-        expect(cloudevent.format()['extension2']).to.equal('value2');
+        expect(cloudevent.format()["extension2"]).to.equal("value2");
       });
     });
 
@@ -88,7 +88,7 @@ describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
 
       describe("'specversion'", () => {
         it("compliant event producers must use a value of '0.2'", () => {
-          expect(cloudevent.format()['specversion']).to.equal("0.2");
+          expect(cloudevent.format()["specversion"]).to.equal("0.2");
         });
 
         it("should throw an error when is an empty string", () => {
@@ -116,7 +116,7 @@ describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
       describe("'time'", () => {
         it("must adhere to the format specified in RFC 3339", () => {
           cloudevent.time(time);
-          expect(cloudevent.format()['time']).to.equal(time.toISOString());
+          expect(cloudevent.format()["time"]).to.equal(time.toISOString());
         });
       });
     });

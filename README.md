@@ -69,7 +69,7 @@ cloudevent01
  *   - Spec 0.2
  *   - JSON Format 0.1
  */
-var cloudevent02 = new Cloudevent(Cloudevent.specs['0.2']);
+var cloudevent02 = new Cloudevent(Cloudevent.specs["0.2"]);
 
 /*
  * Different specs, but the same API.
@@ -151,27 +151,16 @@ binding.emit(cloudevent)
 ```
 
 * `index.js`: library exports
-
 * `lib/bindings`: every binding implementation goes here
-
 * `lib/bindings/http`: every http binding implementation goes here
-
 * `lib/bindings/http/structured_0_1.js`: implementation of structured HTTP Binding  
-
 * `lib/cloudevent.js`: implementation of Cloudevent, an interface
-
 * `lib/format/`: every format implementation goes here
-
 * `lib/format/json_0_1.js`: implementation for JSON formatting [version 0.1](https://github.com/cloudevents/spec/blob/v0.1/json-format.md)
-
 * `lib/specs/`: every spec implementation goes here
-
 * `lib/specs/spec_0_1.js`: implementation for spec [version 0.1](https://github.com/cloudevents/spec/blob/v0.1/spec.md)
-
 * `lib/specs/spec_0_2.js`: implementation for spec [version 0.2](https://github.com/cloudevents/spec/blob/v0.2/spec.md)
-
 * `test/cloudevent_spec_0_1.js`: unit testing for spec 0.1
-
 * `test/cloudevent_spec_0_2.js`: unit testing for spec 0.2
 
 ## Unit Testing

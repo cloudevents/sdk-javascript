@@ -9,7 +9,7 @@ const contenttype = "application/json";
 const data = {};
 const extensions = {};
 
-var cloudevent = new Cloudevent(Cloudevent.specs['0.2'])
+var cloudevent = new Cloudevent(Cloudevent.specs["0.2"])
                        .type(type)
                        .source(source);
 

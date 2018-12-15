@@ -16,7 +16,7 @@ var httpcfg = {
   url    : webhook + "/json"
 };
 
-var httpstructured_0_1 =
+var httpstructured01 =
   new Cloudevent.bindings["http-structured0.1"](httpcfg);
 
 describe("HTTP Transport Binding - Version 0.1", () => {
@@ -30,7 +30,7 @@ describe("HTTP Transport Binding - Version 0.1", () => {
   describe("Structured", () => {
     describe("JSON Format", () => {
       it("requires '" + contentType + "' Content-Type in header", () => {
-        return httpstructured_0_1.emit(cloudevent)
+        return httpstructured01.emit(cloudevent)
           .then(response => {
             expect(response.config.headers["Content-Type"])
               .to.equal(contentType);
@@ -38,7 +38,7 @@ describe("HTTP Transport Binding - Version 0.1", () => {
       });
 
       it("the request should be correct", () => {
-        return httpstructured_0_1.emit(cloudevent)
+        return httpstructured01.emit(cloudevent)
           .then(response => {
             expect(JSON.parse(response.config.data))
               .to.deep.equal(cloudevent.format());

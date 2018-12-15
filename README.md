@@ -108,12 +108,12 @@ var cloudevent = new Cloudevent()
 
 // The binding configuration using POST
 var config = {
-  method: 'POST',
-  url   : 'https://mywebhook.com'
+  method: "POST",
+  url   : "https://myserver.com"
 };
 
 // The binding instance
-var binding = Cloudevent.bindings['http-structured0.1'](config);
+var binding = Cloudevent.bindings["http-structured0.1"](config);
 
 // Emit the event using Promise
 binding.emit(cloudevent)

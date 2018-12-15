@@ -31,7 +31,7 @@ describe("HTTP Transport Binding - Version 0.1", () => {
     describe("JSON Format", () => {
       it("requires '" + contentType + "' Content-Type in header", () => {
         return httpstructured01.emit(cloudevent)
-          .then(response => {
+          .then((response) => {
             expect(response.config.headers["Content-Type"])
               .to.equal(contentType);
           });
@@ -39,7 +39,7 @@ describe("HTTP Transport Binding - Version 0.1", () => {
 
       it("the request should be correct", () => {
         return httpstructured01.emit(cloudevent)
-          .then(response => {
+          .then((response) => {
             expect(JSON.parse(response.config.data))
               .to.deep.equal(cloudevent.format());
           });

@@ -12,7 +12,7 @@ This CloudEvents SDK requires nodejs 6.11+
 
 ### Nodejs
 
-```
+```sh
 npm install cloudevents-sdk
 ```
 ## Specification Support
@@ -39,7 +39,7 @@ Cloudevent(spec, format);
 
 ```
 
-### How to construct instances?
+### Usage
 
 ```js
 var Cloudevent = require("cloudevents-sdk");
@@ -80,7 +80,7 @@ cloudevent02
 
 ```
 
-### How to get the formatted payload?
+#### Formatting
 
 ```js
 var Cloudevent = require("cloudevents-sdk");
@@ -96,7 +96,7 @@ var formatted = cloudevent.format();
 
 ```
 
-### How to emit an event?
+#### Emitting
 
 ```js
 var Cloudevent = require("cloudevents-sdk");
@@ -150,29 +150,29 @@ binding.emit(cloudevent)
     └── http_binding_0_1.js
 ```
 
-* `index.js`: library exports
+*  `index.js`: library exports
 
-* `lib/bindings`: every binding implementation goes here
+*  `lib/bindings`: every binding implementation goes here
 
-* `lib/bindings/http`: every http binding implementation goes here
+*  `lib/bindings/http`: every http binding implementation goes here
 
-* `lib/bindings/http/structured_0_1.js`: implementation of structured HTTP Binding  
+*  `lib/bindings/http/structured_0_1.js`: implementation of structured HTTP Binding  
 
-* `lib/cloudevent.js`: implementation of Cloudevent, an interface
+*  `lib/cloudevent.js`: implementation of Cloudevent, an interface
 
-* `lib/format/`: every format implementation goes here
+*  `lib/format/`: every format implementation goes here
 
-* `lib/format/json_0_1.js`: implementation for JSON formatting [version 0.1](https://github.com/cloudevents/spec/blob/v0.1/json-format.md)
+*  `lib/format/json_0_1.js`: implementation for JSON formatting [version 0.1](https://github.com/cloudevents/spec/blob/v0.1/json-format.md)
 
-* `lib/specs/`: every spec implementation goes here
+*  `lib/specs/`: every spec implementation goes here
 
-* `lib/specs/spec_0_1.js`: implementation for spec [version 0.1](https://github.com/cloudevents/spec/blob/v0.1/spec.md)
+*  `lib/specs/spec_0_1.js`: implementation for spec [version 0.1](https://github.com/cloudevents/spec/blob/v0.1/spec.md)
 
-* `lib/specs/spec_0_2.js`: implementation for spec [version 0.2](https://github.com/cloudevents/spec/blob/v0.2/spec.md)
+*  `lib/specs/spec_0_2.js`: implementation for spec [version 0.2](https://github.com/cloudevents/spec/blob/v0.2/spec.md)
 
-* `test/cloudevent_spec_0_1.js`: unit testing for spec 0.1
+*  `test/cloudevent_spec_0_1.js`: unit testing for spec 0.1
 
-* `test/cloudevent_spec_0_2.js`: unit testing for spec 0.2
+*  `test/cloudevent_spec_0_2.js`: unit testing for spec 0.2
 
 ## Unit Testing
 

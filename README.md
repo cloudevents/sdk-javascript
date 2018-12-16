@@ -6,7 +6,7 @@
 
 Official Javascript SDK for CloudEvents.
 
-<img src="https://raw.githubusercontent.com/cncf/artwork/master/cloudevents/horizontal/color/cloudevents-horizontal-color.png" width="200" height="39" alt="CloudEvents logo">
+<img src="https://raw.githubusercontent.com/cncf/artwork/master/cloudevents/horizontal/color/cloudevents-horizontal-color.png" width="300" height="58" alt="CloudEvents logo">
 
 > This is a WIP
 

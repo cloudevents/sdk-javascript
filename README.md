@@ -8,8 +8,6 @@ Official Javascript SDK for CloudEvents.
 
 <img src="https://raw.githubusercontent.com/cncf/artwork/master/cloudevents/horizontal/color/cloudevents-horizontal-color.png" width="300" height="58" alt="CloudEvents logo">
 
-> This is a WIP
-
 ## Installation
 
 This CloudEvents SDK requires nodejs 6.11+

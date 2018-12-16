@@ -4,7 +4,7 @@
 
 # sdk-javascript
 
-Official Javascript SDK for CloudEvents.
+Official CloudEvents' SDK for JavaScript.
 
 <img src="https://raw.githubusercontent.com/cncf/artwork/master/cloudevents/horizontal/color/cloudevents-horizontal-color.png" width="300" height="58" alt="CloudEvents logo">
 

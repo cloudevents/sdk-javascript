@@ -21,11 +21,12 @@ npm install cloudevents-sdk
 
 These are the supported specifications by this version.
 
-| **Specifications**         | **v0.1** | **v0.2** |
-|----------------------------|----------|----------|
-| CloudEvents                | yes      | yes      |
-| HTTP Transport Binding     | yes      | yes      |
-| JSON Event Format          | yes      | yes      |
+| **Specifications**                    | **v0.1** | **v0.2** |
+|---------------------------------------|----------|----------|
+| CloudEvents                           | yes      | yes      |
+| HTTP Transport Binding  - Structured  | yes      | yes      |
+| HTTP Transport Binding  - Binary      | yes      | yes      |
+| JSON Event Format                     | yes      | yes      |
 
 ## How to use
 

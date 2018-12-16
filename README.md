@@ -3,7 +3,10 @@
 [![Build Status](https://travis-ci.org/cloudevents/sdk-javascript.svg?branch=master)](https://travis-ci.org/cloudevents/sdk-javascript)
 
 # sdk-javascript
-Javascript SDK for CloudEvents
+
+Official Javascript SDK for CloudEvents.
+
+![CloudEvents logo](https://github.com/cncf/artwork/blob/master/cloudevents/horizontal/color/cloudevents-horizontal-color.png =200x39)
 
 > This is a WIP
 

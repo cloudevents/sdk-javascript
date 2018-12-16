@@ -7,18 +7,29 @@ const source      = "urn:event:from:myapi/resourse/123";
 const webhook     = "https://cloudevents.io/webhook";
 const contentType = "application/cloudevents+json; charset=utf-8";
 
-const HTTPBinding = Cloudevent.bindings["http-structured0.1"];
+const ceContentType = "application/json";
 
-var cloudevent = new Cloudevent()
-                       .type(type)
-                       .source(source);
+const data = {
+  foo: "bar"
+};
+
+const Structured01 = Cloudevent.bindings["http-structured0.1"];
+const Binary01     = Cloudevent.bindings["http-binary0.1"];
+
+var cloudevent = 
+  new Cloudevent()
+    .type(type)
+    .source(source)
+    .contenttype(ceContentType)
+    .data(data);
 
 var httpcfg = {
   method : "POST",
   url    : webhook + "/json"
 };
 
-var httpstructured01 = new HTTPBinding(httpcfg);
+var httpstructured01 = new Structured01(httpcfg);
+var httpbinary01     = new Binary01(httpcfg);
 
 describe("HTTP Transport Binding - Version 0.1", () => {
   beforeEach(() => {
@@ -30,7 +41,7 @@ describe("HTTP Transport Binding - Version 0.1", () => {
 
   describe("Structured", () => {
     describe("JSON Format", () => {
-      it("requires '" + contentType + "' Content-Type in header", () => {
+      it("requires '" + contentType + "' Content-Type in the header", () => {
         return httpstructured01.emit(cloudevent)
           .then((response) => {
             expect(response.config.headers["Content-Type"])
@@ -38,11 +49,81 @@ describe("HTTP Transport Binding - Version 0.1", () => {
           });
       });
 
-      it("the request should be correct", () => {
+      it("the request payload should be correct", () => {
         return httpstructured01.emit(cloudevent)
           .then((response) => {
             expect(JSON.parse(response.config.data))
               .to.deep.equal(cloudevent.format());
+          });
+      });
+    });
+  });
+
+  describe("Binary", () => {
+    describe("JSON Format", () => {
+      it("requires '" + cloudevent.getContenttype() + "' Content-Type in the header", () => {
+        return httpbinary01.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers["Content-Type"])
+              .to.equal(cloudevent.getContenttype());
+          });
+      });
+
+      it("the request payload should be correct", () => {
+        return httpbinary01.emit(cloudevent)
+          .then((response) => {
+            expect(JSON.parse(response.config.data))
+              .to.deep.equal(cloudevent.getData());
+          });
+      });
+
+      it("HTTP Header contains 'CE-EventType'", () => {
+        return httpbinary01.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers)
+              .to.have.property("CE-EventType");
+          });
+      });
+      it("HTTP Header contains 'CE-EventTypeVersion'", () => {
+        return httpbinary01.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers)
+              .to.have.property("CE-EventTypeVersion");
+          });
+      });
+      it("HTTP Header contains 'CE-CloudEventsVersion'", () => {
+        return httpbinary01.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers)
+              .to.have.property("CE-CloudEventsVersion");
+          });
+      });
+      it("HTTP Header contains 'CE-Source'", () => {
+        return httpbinary01.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers)
+              .to.have.property("CE-Source");
+          });
+      });
+      it("HTTP Header contains 'CE-EventID'", () => {
+        return httpbinary01.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers)
+              .to.have.property("CE-EventID");
+          });
+      });
+      it("HTTP Header contains 'CE-EventTime'", () => {
+        return httpbinary01.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers)
+              .to.have.property("CE-EventTime");
+          });
+      });
+      it("HTTP Header contains 'CE-SchemaURL'", () => {
+        return httpbinary01.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers)
+              .to.have.property("CE-SchemaURL");
           });
       });
     });

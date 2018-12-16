@@ -25,7 +25,7 @@ These are the supported specifications by this version.
 |---------------------------------------|----------|----------|
 | CloudEvents                           | yes      | yes      |
 | HTTP Transport Binding  - Structured  | yes      | yes      |
-| HTTP Transport Binding  - Binary      | yes      | yes      |
+| HTTP Transport Binding  - Binary      | no       | no       |
 | JSON Event Format                     | yes      | yes      |
 
 ## How to use

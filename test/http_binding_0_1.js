@@ -27,6 +27,8 @@ var cloudevent =
     .schemaurl(schemaurl)
     .data(data);
 
+cloudevent.eventTypeVersion("1.0.0");
+
 var httpcfg = {
   method : "POST",
   url    : webhook + "/json"

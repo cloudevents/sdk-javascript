@@ -7,7 +7,7 @@ const source      = "urn:event:from:myapi/resourse/123";
 const webhook     = "https://cloudevents.io/webhook";
 const contentType = "application/cloudevents+json; charset=utf-8";
 const now         = new Date();
-const schemaurl   = "http://cloudevents.io/schema.json"
+const schemaurl   = "http://cloudevents.io/schema.json";
 
 const ceContentType = "application/json";
 

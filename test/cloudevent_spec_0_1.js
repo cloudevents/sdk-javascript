@@ -1,10 +1,10 @@
 var expect       = require("chai").expect;
 var Cloudevent   = require("../index.js");
 
-const type   = "com.github.pull.create";
-const source = "urn:event:from:myapi/resourse/123";
+const type   = "com.github.pull.create01";
+const source = "urn:event:from:myapi/resourse/01";
 const time   = new Date();
-const schemaurl = "http://example.com/registry/myschema.json";
+const schemaurl = "http://example.com/registry/v01/myschema.json";
 const contenttype = "application/json";
 const data = {};
 const extensions = {};

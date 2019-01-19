@@ -62,7 +62,8 @@ cloudevent01
   .source("urn:event:from:myapi/resourse/123");
 
 /*
- * Backward compatibility by injecting methods from spec implementation to Cloudevent
+ * Backward compatibility to spec 0.1 by injecting methods from spec implementation 
+ * to Cloudevent
  */
 cloudevent01
  .eventTypeVersion("1.0");
@@ -88,12 +89,16 @@ cloudevent02
 ```js
 var Cloudevent = require("cloudevents-sdk");
 
-var cloudevent = new Cloudevent()
-                       .type("com.github.pull.create")
-                       .source("urn:event:from:myapi/resourse/123");
+/*
+ * Creates an instance with default spec and format
+ */
+var cloudevent = 
+  new Cloudevent()
+        .type("com.github.pull.create")
+        .source("urn:event:from:myapi/resourse/123");
 
 /*
- * Format the payload and return it.
+ * Format the payload and return it
  */
 var formatted = cloudevent.format();
 

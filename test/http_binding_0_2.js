@@ -15,6 +15,11 @@ const data = {
   foo: "bar"
 };
 
+const ext1Name  = "extension1";
+const ext1Value = "foobar";
+const ext2Name  = "extension2";
+const ext2Value = "acme";
+
 const Structured02 = Cloudevent.bindings["http-structured0.2"];
 const Binary02     = Cloudevent.bindings["http-binary0.2"];
 
@@ -25,7 +30,9 @@ var cloudevent =
     .contenttype(ceContentType)
     .time(now)
     .schemaurl(schemaurl)
-    .data(data);
+    .data(data)
+    .addExtension(ext1Name, ext1Value)
+    .addExtension(ext2Name, ext2Value);
 
 var httpcfg = {
   method : "POST",
@@ -121,6 +128,20 @@ describe("HTTP Transport Binding - Version 0.2", () => {
           .then((response) => {
             expect(response.config.headers)
               .to.have.property("ce-schemaurl");
+          });
+      });
+      it("HTTP Header contains 'ce-" + ext1Name + "'", () => {
+        return httpbinary02.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers)
+              .to.have.property("ce-" + ext1Name);
+          });
+      });
+      it("HTTP Header contains 'ce-" + ext2Name + "'", () => {
+        return httpbinary02.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers)
+              .to.have.property("ce-" + ext2Name);
           });
       });
     });

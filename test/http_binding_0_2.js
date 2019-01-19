@@ -15,8 +15,13 @@ const data = {
   foo: "bar"
 };
 
-const Structured01 = Cloudevent.bindings["http-structured0.1"];
-const Binary01     = Cloudevent.bindings["http-binary0.1"];
+const ext1Name  = "extension1";
+const ext1Value = "foobar";
+const ext2Name  = "extension2";
+const ext2Value = "acme";
+
+const Structured02 = Cloudevent.bindings["http-structured0.2"];
+const Binary02     = Cloudevent.bindings["http-binary0.2"];
 
 var cloudevent = 
   new Cloudevent()
@@ -25,19 +30,19 @@ var cloudevent =
     .contenttype(ceContentType)
     .time(now)
     .schemaurl(schemaurl)
-    .data(data);
-
-cloudevent.eventTypeVersion("1.0.0");
+    .data(data)
+    .addExtension(ext1Name, ext1Value)
+    .addExtension(ext2Name, ext2Value);
 
 var httpcfg = {
   method : "POST",
   url    : webhook + "/json"
 };
 
-var httpstructured01 = new Structured01(httpcfg);
-var httpbinary01     = new Binary01(httpcfg);
+var httpstructured02 = new Structured02(httpcfg);
+var httpbinary02     = new Binary02(httpcfg);
 
-describe("HTTP Transport Binding - Version 0.1", () => {
+describe("HTTP Transport Binding - Version 0.2", () => {
   beforeEach(() => {
     // Mocking the webhook
     nock(webhook)
@@ -48,7 +53,7 @@ describe("HTTP Transport Binding - Version 0.1", () => {
   describe("Structured", () => {
     describe("JSON Format", () => {
       it("requires '" + contentType + "' Content-Type in the header", () => {
-        return httpstructured01.emit(cloudevent)
+        return httpstructured02.emit(cloudevent)
           .then((response) => {
             expect(response.config.headers["Content-Type"])
               .to.equal(contentType);
@@ -56,7 +61,7 @@ describe("HTTP Transport Binding - Version 0.1", () => {
       });
 
       it("the request payload should be correct", () => {
-        return httpstructured01.emit(cloudevent)
+        return httpstructured02.emit(cloudevent)
           .then((response) => {
             expect(JSON.parse(response.config.data))
               .to.deep.equal(cloudevent.format());
@@ -68,7 +73,7 @@ describe("HTTP Transport Binding - Version 0.1", () => {
   describe("Binary", () => {
     describe("JSON Format", () => {
       it("requires '" + cloudevent.getContenttype() + "' Content-Type in the header", () => {
-        return httpbinary01.emit(cloudevent)
+        return httpbinary02.emit(cloudevent)
           .then((response) => {
             expect(response.config.headers["Content-Type"])
               .to.equal(cloudevent.getContenttype());
@@ -76,60 +81,67 @@ describe("HTTP Transport Binding - Version 0.1", () => {
       });
 
       it("the request payload should be correct", () => {
-        return httpbinary01.emit(cloudevent)
+        return httpbinary02.emit(cloudevent)
           .then((response) => {
             expect(JSON.parse(response.config.data))
               .to.deep.equal(cloudevent.getData());
           });
       });
 
-      it("HTTP Header contains 'CE-EventType'", () => {
-        return httpbinary01.emit(cloudevent)
+      it("HTTP Header contains 'ce-type'", () => {
+        return httpbinary02.emit(cloudevent)
           .then((response) => {
             expect(response.config.headers)
-              .to.have.property("CE-EventType");
+              .to.have.property("ce-type");
           });
       });
-      it("HTTP Header contains 'CE-EventTypeVersion'", () => {
-        return httpbinary01.emit(cloudevent)
+      it("HTTP Header contains 'ce-specversion'", () => {
+        return httpbinary02.emit(cloudevent)
           .then((response) => {
             expect(response.config.headers)
-              .to.have.property("CE-EventTypeVersion");
+              .to.have.property("ce-specversion");
           });
       });
-      it("HTTP Header contains 'CE-CloudEventsVersion'", () => {
-        return httpbinary01.emit(cloudevent)
+      it("HTTP Header contains 'ce-source'", () => {
+        return httpbinary02.emit(cloudevent)
           .then((response) => {
             expect(response.config.headers)
-              .to.have.property("CE-CloudEventsVersion");
+              .to.have.property("ce-source");
           });
       });
-      it("HTTP Header contains 'CE-Source'", () => {
-        return httpbinary01.emit(cloudevent)
+      it("HTTP Header contains 'ce-id'", () => {
+        return httpbinary02.emit(cloudevent)
           .then((response) => {
             expect(response.config.headers)
-              .to.have.property("CE-Source");
+              .to.have.property("ce-id");
           });
       });
-      it("HTTP Header contains 'CE-EventID'", () => {
-        return httpbinary01.emit(cloudevent)
+      it("HTTP Header contains 'ce-time'", () => {
+        return httpbinary02.emit(cloudevent)
           .then((response) => {
             expect(response.config.headers)
-              .to.have.property("CE-EventID");
+              .to.have.property("ce-time");
           });
       });
-      it("HTTP Header contains 'CE-EventTime'", () => {
-        return httpbinary01.emit(cloudevent)
+      it("HTTP Header contains 'ce-schemaurl'", () => {
+        return httpbinary02.emit(cloudevent)
           .then((response) => {
             expect(response.config.headers)
-              .to.have.property("CE-EventTime");
+              .to.have.property("ce-schemaurl");
           });
       });
-      it("HTTP Header contains 'CE-SchemaURL'", () => {
-        return httpbinary01.emit(cloudevent)
+      it("HTTP Header contains 'ce-" + ext1Name + "'", () => {
+        return httpbinary02.emit(cloudevent)
           .then((response) => {
             expect(response.config.headers)
-              .to.have.property("CE-SchemaURL");
+              .to.have.property("ce-" + ext1Name);
+          });
+      });
+      it("HTTP Header contains 'ce-" + ext2Name + "'", () => {
+        return httpbinary02.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers)
+              .to.have.property("ce-" + ext2Name);
           });
       });
     });

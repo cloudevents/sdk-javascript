@@ -1,10 +1,12 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bd66e7c52002481993cd6d610534b0f7)](https://www.codacy.com/app/fabiojose/sdk-javascript?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cloudevents/sdk-javascript&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/bd66e7c52002481993cd6d610534b0f7)](https://www.codacy.com/app/fabiojose/sdk-javascript?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cloudevents/sdk-javascript&amp;utm_campaign=Badge_Coverage)
 [![Build Status](https://travis-ci.org/cloudevents/sdk-javascript.svg?branch=master)](https://travis-ci.org/cloudevents/sdk-javascript)
 
 # sdk-javascript
-Javascript SDK for CloudEvents
 
-> This is a WIP
+Official CloudEvents' SDK for JavaScript.
+
+<img src="https://raw.githubusercontent.com/cncf/artwork/master/cloudevents/horizontal/color/cloudevents-horizontal-color.png" width="300" height="58" alt="CloudEvents logo">
 
 ## Installation
 
@@ -12,18 +14,19 @@ This CloudEvents SDK requires nodejs 6.11+
 
 ### Nodejs
 
-```
+```sh
 npm install cloudevents-sdk
 ```
 ## Specification Support
 
 These are the supported specifications by this version.
 
-| **Specifications**         | **v0.1** | **v0.2** |
-|----------------------------|----------|----------|
-| CloudEvents                | yes      | yes      |
-| HTTP Transport Binding     | yes      | yes      |
-| JSON Event Format          | yes      | yes      |
+| **Specifications**                    | **v0.1** | **v0.2** |
+|---------------------------------------|----------|----------|
+| CloudEvents                           | yes      | yes      |
+| HTTP Transport Binding  - Structured  | yes      | yes      |
+| HTTP Transport Binding  - Binary      | yes      | yes      |
+| JSON Event Format                     | yes      | yes      |
 
 ## How to use
 
@@ -39,7 +42,7 @@ Cloudevent(spec, format);
 
 ```
 
-### How to construct instances?
+### Usage
 
 ```js
 var Cloudevent = require("cloudevents-sdk");
@@ -59,7 +62,8 @@ cloudevent01
   .source("urn:event:from:myapi/resourse/123");
 
 /*
- * Backward compatibility by injecting methods from spec implementation to Cloudevent
+ * Backward compatibility to spec 0.1 by injecting methods from spec implementation 
+ * to Cloudevent
  */
 cloudevent01
  .eventTypeVersion("1.0");
@@ -69,7 +73,7 @@ cloudevent01
  *   - Spec 0.2
  *   - JSON Format 0.1
  */
-var cloudevent02 = new Cloudevent(Cloudevent.specs['0.2']);
+var cloudevent02 = new Cloudevent(Cloudevent.specs["0.2"]);
 
 /*
  * Different specs, but the same API.
@@ -80,23 +84,27 @@ cloudevent02
 
 ```
 
-### How to get the formatted payload?
+#### Formatting
 
 ```js
 var Cloudevent = require("cloudevents-sdk");
 
-var cloudevent = new Cloudevent()
-                       .type("com.github.pull.create")
-                       .source("urn:event:from:myapi/resourse/123");
+/*
+ * Creates an instance with default spec and format
+ */
+var cloudevent = 
+  new Cloudevent()
+        .type("com.github.pull.create")
+        .source("urn:event:from:myapi/resourse/123");
 
 /*
- * Format the payload and return it.
+ * Format the payload and return it
  */
 var formatted = cloudevent.format();
 
 ```
 
-### How to emit an event?
+#### Emitting
 
 ```js
 var Cloudevent = require("cloudevents-sdk");
@@ -108,12 +116,12 @@ var cloudevent = new Cloudevent()
 
 // The binding configuration using POST
 var config = {
-  method: 'POST',
-  url   : 'https://mywebhook.com'
+  method: "POST",
+  url   : "https://myserver.com"
 };
 
 // The binding instance
-var binding = Cloudevent.bindings['http-structured0.1'](config);
+var binding = Cloudevent.bindings["http-structured0.1"](config);
 
 // Emit the event using Promise
 binding.emit(cloudevent)
@@ -134,45 +142,20 @@ binding.emit(cloudevent)
 ├── lib
 │   ├── bindings
 │   │   └── http
-│   │       └── structured_0_1.js
 │   ├── cloudevent.js
 │   ├── format
-│   │   └── json_0_1.js
 │   └── specs
-│       ├── spec_0_1.js
-│       └── spec_0_2.js
 ├── LICENSE
 ├── package.json
 ├── README.md
-└── test
-    ├── cloudevent_spec_0_1.js
-    ├── cloudevent_spec_0_2.js
-    └── http_binding_0_1.js
 ```
 
-* `index.js`: library exports
-
-* `lib/bindings`: every binding implementation goes here
-
-* `lib/bindings/http`: every http binding implementation goes here
-
-* `lib/bindings/http/structured_0_1.js`: implementation of structured HTTP Binding  
-
-* `lib/cloudevent.js`: implementation of Cloudevent, an interface
-
-* `lib/format/`: every format implementation goes here
-
-* `lib/format/json_0_1.js`: implementation for JSON formatting [version 0.1](https://github.com/cloudevents/spec/blob/v0.1/json-format.md)
-
-* `lib/specs/`: every spec implementation goes here
-
-* `lib/specs/spec_0_1.js`: implementation for spec [version 0.1](https://github.com/cloudevents/spec/blob/v0.1/spec.md)
-
-* `lib/specs/spec_0_2.js`: implementation for spec [version 0.2](https://github.com/cloudevents/spec/blob/v0.2/spec.md)
-
-* `test/cloudevent_spec_0_1.js`: unit testing for spec 0.1
-
-* `test/cloudevent_spec_0_2.js`: unit testing for spec 0.2
+- `index.js`: library exports
+- `lib/bindings`: every binding implementation goes here
+- `lib/bindings/http`: every http binding implementation goes here
+- `lib/cloudevent.js`: implementation of Cloudevent, an interface
+- `lib/format/`: every format implementation goes here
+- `lib/specs/`: every spec implementation goes here
 
 ## Unit Testing
 

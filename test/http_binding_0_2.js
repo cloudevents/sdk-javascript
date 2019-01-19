@@ -15,7 +15,7 @@ const data = {
   foo: "bar"
 };
 
-const Structured01 = Cloudevent.bindings["http-structured0.1"];
+const Structured02 = Cloudevent.bindings["http-structured0.2"];
 const Binary02     = Cloudevent.bindings["http-binary0.2"];
 
 var cloudevent = 
@@ -27,14 +27,12 @@ var cloudevent =
     .schemaurl(schemaurl)
     .data(data);
 
-cloudevent.eventTypeVersion("1.0.0");
-
 var httpcfg = {
   method : "POST",
   url    : webhook + "/json"
 };
 
-var httpstructured01 = new Structured01(httpcfg);
+var httpstructured02 = new Structured02(httpcfg);
 var httpbinary02     = new Binary02(httpcfg);
 
 describe("HTTP Transport Binding - Version 0.2", () => {
@@ -48,7 +46,7 @@ describe("HTTP Transport Binding - Version 0.2", () => {
   describe("Structured", () => {
     describe("JSON Format", () => {
       it("requires '" + contentType + "' Content-Type in the header", () => {
-        return httpstructured01.emit(cloudevent)
+        return httpstructured02.emit(cloudevent)
           .then((response) => {
             expect(response.config.headers["Content-Type"])
               .to.equal(contentType);
@@ -56,7 +54,7 @@ describe("HTTP Transport Binding - Version 0.2", () => {
       });
 
       it("the request payload should be correct", () => {
-        return httpstructured01.emit(cloudevent)
+        return httpstructured02.emit(cloudevent)
           .then((response) => {
             expect(JSON.parse(response.config.data))
               .to.deep.equal(cloudevent.format());

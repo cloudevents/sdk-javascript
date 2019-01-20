@@ -9,9 +9,10 @@ const contenttype = "application/json";
 const data = {};
 const extensions = {};
 
-var cloudevent = new Cloudevent(Cloudevent.specs["0.2"])
-                       .type(type)
-                       .source(source);
+var cloudevent = 
+  new Cloudevent(Cloudevent.specs["0.2"])
+        .type(type)
+        .source(source);
 
 describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
 
@@ -64,6 +65,17 @@ describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
       it("'extension2' should have value equals to 'value1'", () => {
         cloudevent.addExtension("extension2", "value2");
         expect(cloudevent.format()["extension2"]).to.equal("value2");
+      });
+
+      it("should throw an error when employ reserved name as extension", () => {
+        
+        var cevt = 
+          new Cloudevent(Cloudevent.specs["0.2"])
+                .type(type)
+                .source(source);
+        expect(cevt.addExtension.bind(cevt, "id"))
+          .to
+          .throw("Reserved attribute name: 'id'");
       });
     });
 

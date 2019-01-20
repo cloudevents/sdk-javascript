@@ -73,7 +73,7 @@ describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
           cloudevent.type("");
           expect(cloudevent.format.bind(cloudevent))
             .to
-            .throw("'type' is invalid");
+            .throw("invalid payload");
         });
 
         it("must be a non-empty string", () => {
@@ -95,7 +95,15 @@ describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
           cloudevent.spec.payload.specversion = "";
           expect(cloudevent.format.bind(cloudevent))
             .to
-            .throw("'specversion' is invalid");
+            .throw("invalid payload");
+          cloudevent.spec.payload.specversion = "0.2";
+        });
+
+        it("should throw an error when the value is not '0.2'", () => {
+          cloudevent.spec.payload.specversion = "0.4";
+          expect(cloudevent.format.bind(cloudevent))
+            .to
+            .throw("invalid payload");
           cloudevent.spec.payload.specversion = "0.2";
         });
       });
@@ -105,7 +113,7 @@ describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
           cloudevent.id("");
           expect(cloudevent.format.bind(cloudevent))
             .to
-            .throw("'id' is invalid");
+            .throw("invalid payload");
         });
         it("must be a non-empty string", () => {
           cloudevent.id("my.id-0x0090");

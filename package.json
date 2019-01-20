@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/cloudevents/sdk-javascript#readme",
   "dependencies": {
+    "ajv": "^6.7.0",
     "axios": "0.18.0",
     "is-empty": "1.2.0",
     "uri-js": "4.2.2",

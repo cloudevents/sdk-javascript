@@ -75,3 +75,6 @@ typings/
 # FuseBox cache
 .fusebox/
 
+# Vim
+*.swp
+

@@ -9,9 +9,10 @@ const contenttype = "application/json";
 const data = {};
 const extensions = {};
 
-var cloudevent = new Cloudevent(Cloudevent.specs["0.2"])
-                       .type(type)
-                       .source(source);
+var cloudevent = 
+  new Cloudevent(Cloudevent.specs["0.2"])
+        .type(type)
+        .source(source);
 
 describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
 
@@ -65,6 +66,17 @@ describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
         cloudevent.addExtension("extension2", "value2");
         expect(cloudevent.format()["extension2"]).to.equal("value2");
       });
+
+      it("should throw an error when employ reserved name as extension", () => {
+        
+        var cevt = 
+          new Cloudevent(Cloudevent.specs["0.2"])
+                .type(type)
+                .source(source);
+        expect(cevt.addExtension.bind(cevt, "id"))
+          .to
+          .throw("Reserved attribute name: 'id'");
+      });
     });
 
     describe("The Constraints check", () => {
@@ -73,7 +85,7 @@ describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
           cloudevent.type("");
           expect(cloudevent.format.bind(cloudevent))
             .to
-            .throw("'type' is invalid");
+            .throw("invalid payload");
         });
 
         it("must be a non-empty string", () => {
@@ -95,7 +107,15 @@ describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
           cloudevent.spec.payload.specversion = "";
           expect(cloudevent.format.bind(cloudevent))
             .to
-            .throw("'specversion' is invalid");
+            .throw("invalid payload");
+          cloudevent.spec.payload.specversion = "0.2";
+        });
+
+        it("should throw an error when the value is not '0.2'", () => {
+          cloudevent.spec.payload.specversion = "0.4";
+          expect(cloudevent.format.bind(cloudevent))
+            .to
+            .throw("invalid payload");
           cloudevent.spec.payload.specversion = "0.2";
         });
       });
@@ -105,7 +125,7 @@ describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
           cloudevent.id("");
           expect(cloudevent.format.bind(cloudevent))
             .to
-            .throw("'id' is invalid");
+            .throw("invalid payload");
         });
         it("must be a non-empty string", () => {
           cloudevent.id("my.id-0x0090");

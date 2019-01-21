@@ -32,6 +32,9 @@
         "time": {
           "$ref": "#/definitions/time"
         },
+        "schemaurl": {
+          "$ref": "#/definitions/schemaurl"
+        },
         "type": {
           "$ref": "#/definitions/type"
         },
@@ -57,6 +60,10 @@
     "time": {
       "format": "date-time",
       "type": "string"
+    },
+    "schemaurl": {
+      "type": "string",
+      "format": "uri"
     },
     "type": {
       "type": "string",

@@ -120,6 +120,11 @@ var config = {
   url   : "https://myserver.com"
 };
 
+/*
+ * To use HTTP Binary:
+ *   Cloudevent.bindings["http-binary0.2"](config);
+ */
+
 // The binding instance
 var binding = Cloudevent.bindings["http-structured0.1"](config);
 

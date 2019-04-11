@@ -25,7 +25,3 @@ jobs:
       skip_cleanup: true
       on:
         tags: true
-env:
-  global:
-    secure: GgLsminwitZCtFwRkijoF03uz0+jA+jayrWyvkFfipND8S7KkmcY6iqBjBkA/ZNkvh2jgwD3fG7Jp6f795Oyb6oq8u/xF7h446YcG4FPye1v6abWhKLaOQrcTca++xl6Ph6sHRRwaV2dw/UIRRHikJWZEIKS2jgAkQ1dW7srMJhIWTIegDYYpj3c1Ri2wL5S9799zyO/c12JLpawxQvzhEG2YyYkdEI0H/9HsUezoBrCZdxjVb/LAa0nUTmQiAfX4CYRHidU4QCbznQhHWFdGr/9wKvy1dyCxAWLosWSy+mIq3teeCJ80c/Yi+yEv96tg5wL75shfYzx4JMSL6YIyfF6OrbAM0jYGIMJdf/UEG1TKNpRnIqugnCJbdjZpn6mavrayjnaq9KSc7wgXBXox5jucfWLDfV2LZ18qfqHIeubIT7X69k8P5M4z4MU3YR3mqiZtEy6CPi+h0ReMLheFKemAmHWSL4zV1YfBRFVyFP0LM4Qsi4UVtCJQUHwvjNcO2ZUXLe6OzqXN987JKwTOyecmn9s/24UDofBxuMqTWYTssKPI0bHpOiWCqd5ml9Uz1/5o6bjGhvbJjv1K/0xWS2PoWim/RSnNTNi+en+GgEKuaDZkCktHVOKg7xkpsW0DvtcpwVQRdyXUN1s2h+EHgSBuoeAo4fhbXRUVsu5zuY=
-script: npm run coverage

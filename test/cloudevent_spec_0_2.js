@@ -9,12 +9,25 @@ const contenttype = "application/json";
 const data = {};
 const extensions = {};
 
-var cloudevent = 
+var cloudevent =
   new Cloudevent(Cloudevent.specs["0.2"])
         .type(type)
         .source(source);
 
 describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
+
+  describe("Object properties", () => {
+
+    describe("Attribute getters", () => {
+      it("returns 'type'", () => {
+        expect(cloudevent.getType()).to.equal(type);
+      });
+
+      it("returns 'source'", () => {
+        expect(cloudevent.getSource()).to.equal(source);
+      });
+    });
+  });
 
   describe("JSON Format", () => {
 
@@ -68,8 +81,8 @@ describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
       });
 
       it("should throw an error when employ reserved name as extension", () => {
-        
-        var cevt = 
+
+        var cevt =
           new Cloudevent(Cloudevent.specs["0.2"])
                 .type(type)
                 .source(source);

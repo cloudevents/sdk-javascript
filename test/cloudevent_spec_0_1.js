@@ -15,6 +15,19 @@ var cloudevent = new Cloudevent()
 
 describe("CloudEvents Spec 0.1 - JavaScript SDK", () => {
 
+  describe("Object properties", () => {
+
+    describe("Attribute getters", () => {
+      it("returns 'type'", () => {
+        expect(cloudevent.getType()).to.equal(type);
+      });
+
+      it("returns 'source'", () => {
+        expect(cloudevent.getSource()).to.equal(source);
+      });
+    });
+  });
+
   describe("JSON Format", () => {
 
     describe("Required context attributes", () => {

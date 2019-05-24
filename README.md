@@ -6,7 +6,19 @@
 
 Official CloudEvents' SDK for JavaScript.
 
-<img src="https://raw.githubusercontent.com/cncf/artwork/master/cloudevents/horizontal/color/cloudevents-horizontal-color.png" width="300" height="58" alt="CloudEvents logo">
+<img src="https://github.com/cncf/artwork/blob/master/projects/cloudevents/horizontal/color/cloudevents-horizontal-color.png" width="300" height="58" alt="CloudEvents logo">
+
+## Versioning
+
+### Before Spec reaches 1.0
+
+- `0.x.p`: where `x` relates to spec version and `p` relates to fixes, see
+[semver](https://semver.org/).
+
+### After Spec reaches 1.0__
+
+- `x.M.p`: where `x` relates to spec version, `M` relates to minor and `p` relates
+to fixes. See [semver](https://semver.org/)
 
 ## Installation
 

@@ -9,7 +9,7 @@ const contenttype = "application/json";
 const data = {};
 const extensions = {};
 
-var cloudevent = 
+var cloudevent =
   new Cloudevent(Cloudevent.specs["0.2"])
         .type(type)
         .source(source);
@@ -25,6 +25,14 @@ describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
 
       it("requires 'specversion'", () => {
         expect(cloudevent.format()).to.have.property("specversion");
+      });
+
+      it("should throw an error when mandatory attribute is absent", () => {
+        delete cloudevent.spec.payload.source;
+        expect(cloudevent.format.bind(cloudevent))
+          .to
+          .throw("invalid payload");
+        cloudevent.spec.payload.source = source;
       });
 
       it("requires 'source'", () => {
@@ -45,6 +53,14 @@ describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
       it("contains 'schemaurl'", () => {
         cloudevent.schemaurl(schemaurl);
         expect(cloudevent.format()).to.have.property("schemaurl");
+      });
+
+      it("should throw an error when 'schemaurl' is not an URI", () => {
+        cloudevent.spec.payload.schemaurl = "KKKKKK";
+        expect(cloudevent.format.bind(cloudevent))
+          .to
+          .throw("invalid payload");
+        cloudevent.spec.payload.schemaurl = schemaurl;
       });
 
       it("contains 'contenttype'", () => {
@@ -68,8 +84,8 @@ describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
       });
 
       it("should throw an error when employ reserved name as extension", () => {
-        
-        var cevt = 
+
+        var cevt =
           new Cloudevent(Cloudevent.specs["0.2"])
                 .type(type)
                 .source(source);

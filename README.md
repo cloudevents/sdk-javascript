@@ -12,13 +12,13 @@ Official CloudEvents' SDK for JavaScript.
 
 ### Before Spec reaches 1.0
 
-- `0.x.p`: where `x` relates to spec version and `p` relates to fixes or patches, see
+- `0.x.p`: where `x` relates to spec version and `p` relates to fixes, see
 [semver](https://semver.org/).
 
 ### After Spec reaches 1.0__
 
 - `x.M.p`: where `x` relates to spec version, `M` relates to minor and `p` relates
-to fixes or patches. See [semver](https://semver.org/)
+to fixes. See [semver](https://semver.org/)
 
 ## Installation
 

@@ -1,6 +1,10 @@
-var expect       = require("chai").expect;
-var Cloudevent   = require("../index.js");
-var nock         = require("nock");
+var expect = require("chai").expect;
+var Cloudevent = require("../index.js");
+var nock = require("nock");
+var ReceiverBinary01 = require("../lib/bindings/http/receiver_binary_0_2.js");
+var http = require("http");
+var request = require("request");
+var Spec02 = require("../lib/specs/spec_0_2.js");
 
 const type        = "com.github.pull.create";
 const source      = "urn:event:from:myapi/resourse/123";
@@ -20,10 +24,16 @@ const ext1Value = "foobar";
 const ext2Name  = "extension2";
 const ext2Value = "acme";
 
+const receiverConfig = {
+  path   : "/events",
+  port   : 10300,
+  method : "POST"
+};
+
 const Structured02 = Cloudevent.bindings["http-structured0.2"];
 const Binary02     = Cloudevent.bindings["http-binary0.2"];
 
-var cloudevent = 
+var cloudevent =
   new Cloudevent()
     .type(type)
     .source(source)
@@ -143,6 +153,99 @@ describe("HTTP Transport Binding - Version 0.2", () => {
             expect(response.config.headers)
               .to.have.property("ce-" + ext2Name);
           });
+      });
+    });
+
+    describe("Receiver", () => {
+      var receiver;
+      before(() => {
+        // setup
+        receiver = new ReceiverBinary01(receiverConfig);
+        receiver.receive()
+          .then(response => {
+            console.log(response);
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      });
+
+      after(() => {
+        receiver.stop();
+      });
+
+      it("Should return 404 when path is wrong", () => {
+        // act
+        request.post("http://localhost:" + receiverConfig.port + "/foobar",
+          (err, res, body) => {
+            // assert
+            expect(res.statusCode).to.equal(404);
+        });
+      });
+
+      it("Should return 405 when method is wrong", () => {
+        // act
+        request.get("http://localhost:" + receiverConfig.port
+            + receiverConfig.path,
+          (err, res, body) => {
+            // assert
+            expect(res.statusCode).to.equal(405);
+        });
+      });
+
+      it("Should return 400 when Content-Type is wrong", () => {
+        // act
+        request.post("http://localhost:" + receiverConfig.port
+            + receiverConfig.path,
+          (err, res, body) => {
+            // assert
+            expect(res.statusCode).to.equal(400);
+        });
+      });
+
+      it("Should return 400 when is not a cloudevent", () => {
+        // setup
+        var requestOptions = {
+          url     : "http://localhost:" + receiverConfig.port
+                      + receiverConfig.path,
+          method  : "POST",
+          headers : {
+            "Content-Type":"application/cloudevents+json; charset=utf-8"
+          },
+          body : JSON.stringify({"foo": "bar"})
+        };
+
+        // act
+        request(requestOptions,
+          (err, res, body) => {
+            // assert
+            expect(res.statusCode).to.equal(400);
+        });
+      });
+
+      it("Should return 201 when accepts the event", () => {
+        // setup
+        var ce_spec02 = new Spec02();
+        ce_spec02
+          .type(type)
+          .source(source);
+
+        var requestOptions = {
+          url     : "http://localhost:" + receiverConfig.port
+                      + receiverConfig.path,
+          method  : "POST",
+          headers : {
+            "Content-Type":"application/cloudevents+json; charset=utf-8"
+          },
+          body : JSON.stringify(ce_spec02.payload)
+        };
+
+        // act
+        request(requestOptions,
+          (err, res, body) => {
+            // assert
+            expect(res.statusCode).to.equal(201);
+        });
       });
     });
   });

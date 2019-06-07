@@ -12,10 +12,9 @@ Official CloudEvents' SDK for JavaScript.
 
 ### Before Spec reaches 1.0
 
-- `0.x.p`: where `x` relates to spec version and `p` relates to fixes, see
-[semver](https://semver.org/).
+- `0.x.p`: where `x` relates to spec version and `p` relates to fixes.
 
-### After Spec reaches 1.0__
+### After Spec reaches 1.0
 
 - `x.M.p`: where `x` relates to spec version, `M` relates to minor and `p` relates
 to fixes. See [semver](https://semver.org/)
@@ -40,12 +39,15 @@ These are the supported specifications by this version.
 | HTTP Transport Binding  - Binary      | yes      | yes      |
 | JSON Event Format                     | yes      | yes      |
 
+### What we can do?
+
+
+
 ## How to use
 
 The `Cloudevent` constructor arguments.
 
 ```js
-
 /*
  * spec  : if is null, set the spec 0.1 impl
  * format: if is null, set the JSON Format 0.1 impl
@@ -74,7 +76,7 @@ cloudevent01
   .source("urn:event:from:myapi/resourse/123");
 
 /*
- * Backward compatibility to spec 0.1 by injecting methods from spec implementation 
+ * Backward compatibility to spec 0.1 by injecting methods from spec implementation
  * to Cloudevent
  */
 cloudevent01
@@ -104,7 +106,7 @@ var Cloudevent = require("cloudevents-sdk");
 /*
  * Creates an instance with default spec and format
  */
-var cloudevent = 
+var cloudevent =
   new Cloudevent()
         .type("com.github.pull.create")
         .source("urn:event:from:myapi/resourse/123");
@@ -114,6 +116,7 @@ var cloudevent =
  */
 var formatted = cloudevent.format();
 
+var ce =
 ```
 
 #### Emitting
@@ -147,7 +150,33 @@ binding.emit(cloudevent)
     console.log(response.data);
 
   }).catch(err => {
-    // Treat the error
+    // Deal with errors
+    console.error(err);
+  });
+```
+
+#### Receiving
+
+```js
+var Cloudevent = require("cloudevents-sdk");
+
+// The binding configuration
+var config = {
+  path   : "/events",
+  port   : 10300,
+  method : "POST"
+};
+
+// The binding instance
+var binding = Cloudevent
+				.bindings["http-structured0.2"](config);
+
+binding.receive()
+  .then(cloudevent => {
+    // do something with event
+  })
+  .catch(err => {
+    // deal with errors
     console.error(err);
   });
 ```
@@ -179,7 +208,6 @@ binding.emit(cloudevent)
 The unit test checks the result of formatted payload and the constraints.
 
 ```bash
-
 npm test
 
 ```
@@ -189,7 +217,6 @@ npm test
 ### `Cloudevent` class
 
 ```js
-
 /*
  * Format the payload and return an Object.
  */
@@ -200,6 +227,11 @@ Object Cloudevent.format()
  */
 String Cloudevent.toString()
 
+/*
+ * Create a Cloudevent instance from String.
+ */
+Cloudevent Cloudevent.fromString(String)
+
 ```
 
 ### `Formatter` classes
@@ -207,7 +239,6 @@ String Cloudevent.toString()
 Every formatter class must implement these methods to work properly.
 
 ```js
-
 /*
  * Format the Cloudevent payload argument and return an Object.
  */
@@ -225,7 +256,6 @@ String Formatter.toString(payload)
 Every Spec class must implement these methods to work properly.
 
 ```js
-
 /*
  * The constructor must receives the Cloudevent type.
  */
@@ -236,13 +266,21 @@ Spec(Cloudevent)
  */
 Spec.check()
 
+/*
+ * Checks if the argument pass through the spec constraints
+ */
+Spec.check(Object)
+
 ```
 ### `Binding` classes
 
 Every Binding class must implement these methods to work properly.
 
-```js
+#### Emitter Binding
 
+Following we have the signature for the binding to emit Cloudevents.
+
+```js
 /*
  * The constructor must receives the map of configurations.
  */
@@ -253,6 +291,22 @@ Binding(config)
  */
 Binding.emit(cloudevent)
 
+```
+
+#### Receiver Binding
+
+Following we have the signature for the binding to receive Cloudevents.
+
+```js
+/*
+ * The constructor must receives the map of configurations.
+ */
+ReceiverBinding(config)
+
+/*
+ * Receives the events and returns a Promise.
+ */
+ReceiverBinding.receive()
 ```
 
 > See how to implement the method injection [here](lib/specs/spec_0_1.js#L17)

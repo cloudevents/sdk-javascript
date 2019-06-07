@@ -43,7 +43,8 @@
     "nock": "10.0.2",
     "codacy-coverage": "3.3.0",
     "mocha-lcov-reporter": "1.3.0",
-    "istanbul": "0.4.5"
+    "istanbul": "0.4.5",
+    "request": "^2.88.0"
   },
   "publishConfig": {
     "access": "public"

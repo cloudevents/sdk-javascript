@@ -169,7 +169,7 @@ var config = {
 
 // The binding instance
 var binding = Cloudevent
-				.bindings["http-structured0.2"](config);
+                .bindings["http-structured0.2"](config);
 
 binding.receive()
   .then(cloudevent => {

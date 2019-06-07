@@ -1,7 +1,8 @@
 var expect = require("chai").expect;
 var Cloudevent = require("../index.js");
 var nock = require("nock");
-var ReceiverBinary01 = require("../lib/bindings/http/receiver_binary_0_2.js");
+var ReceiverStructured01 =
+      require("../lib/bindings/http/receiver_structured_0_2.js");
 var http = require("http");
 var request = require("request");
 var Spec02 = require("../lib/specs/spec_0_2.js");
@@ -78,89 +79,12 @@ describe("HTTP Transport Binding - Version 0.2", () => {
           });
       });
     });
-  });
-
-  describe("Binary", () => {
-    describe("JSON Format", () => {
-      it("requires '" + cloudevent.getContenttype() + "' Content-Type in the header", () => {
-        return httpbinary02.emit(cloudevent)
-          .then((response) => {
-            expect(response.config.headers["Content-Type"])
-              .to.equal(cloudevent.getContenttype());
-          });
-      });
-
-      it("the request payload should be correct", () => {
-        return httpbinary02.emit(cloudevent)
-          .then((response) => {
-            expect(JSON.parse(response.config.data))
-              .to.deep.equal(cloudevent.getData());
-          });
-      });
-
-      it("HTTP Header contains 'ce-type'", () => {
-        return httpbinary02.emit(cloudevent)
-          .then((response) => {
-            expect(response.config.headers)
-              .to.have.property("ce-type");
-          });
-      });
-      it("HTTP Header contains 'ce-specversion'", () => {
-        return httpbinary02.emit(cloudevent)
-          .then((response) => {
-            expect(response.config.headers)
-              .to.have.property("ce-specversion");
-          });
-      });
-      it("HTTP Header contains 'ce-source'", () => {
-        return httpbinary02.emit(cloudevent)
-          .then((response) => {
-            expect(response.config.headers)
-              .to.have.property("ce-source");
-          });
-      });
-      it("HTTP Header contains 'ce-id'", () => {
-        return httpbinary02.emit(cloudevent)
-          .then((response) => {
-            expect(response.config.headers)
-              .to.have.property("ce-id");
-          });
-      });
-      it("HTTP Header contains 'ce-time'", () => {
-        return httpbinary02.emit(cloudevent)
-          .then((response) => {
-            expect(response.config.headers)
-              .to.have.property("ce-time");
-          });
-      });
-      it("HTTP Header contains 'ce-schemaurl'", () => {
-        return httpbinary02.emit(cloudevent)
-          .then((response) => {
-            expect(response.config.headers)
-              .to.have.property("ce-schemaurl");
-          });
-      });
-      it("HTTP Header contains 'ce-" + ext1Name + "'", () => {
-        return httpbinary02.emit(cloudevent)
-          .then((response) => {
-            expect(response.config.headers)
-              .to.have.property("ce-" + ext1Name);
-          });
-      });
-      it("HTTP Header contains 'ce-" + ext2Name + "'", () => {
-        return httpbinary02.emit(cloudevent)
-          .then((response) => {
-            expect(response.config.headers)
-              .to.have.property("ce-" + ext2Name);
-          });
-      });
-    });
 
     describe("Receiver", () => {
       var receiver;
       before(() => {
         // setup
-        receiver = new ReceiverBinary01(receiverConfig);
+        receiver = new ReceiverStructured01(receiverConfig);
         receiver.receive()
           .then(response => {
             console.log(response);
@@ -246,6 +170,83 @@ describe("HTTP Transport Binding - Version 0.2", () => {
             // assert
             expect(res.statusCode).to.equal(201);
         });
+      });
+    });
+  });
+
+  describe("Binary", () => {
+    describe("JSON Format", () => {
+      it("requires '" + cloudevent.getContenttype() + "' Content-Type in the header", () => {
+        return httpbinary02.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers["Content-Type"])
+              .to.equal(cloudevent.getContenttype());
+          });
+      });
+
+      it("the request payload should be correct", () => {
+        return httpbinary02.emit(cloudevent)
+          .then((response) => {
+            expect(JSON.parse(response.config.data))
+              .to.deep.equal(cloudevent.getData());
+          });
+      });
+
+      it("HTTP Header contains 'ce-type'", () => {
+        return httpbinary02.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers)
+              .to.have.property("ce-type");
+          });
+      });
+      it("HTTP Header contains 'ce-specversion'", () => {
+        return httpbinary02.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers)
+              .to.have.property("ce-specversion");
+          });
+      });
+      it("HTTP Header contains 'ce-source'", () => {
+        return httpbinary02.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers)
+              .to.have.property("ce-source");
+          });
+      });
+      it("HTTP Header contains 'ce-id'", () => {
+        return httpbinary02.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers)
+              .to.have.property("ce-id");
+          });
+      });
+      it("HTTP Header contains 'ce-time'", () => {
+        return httpbinary02.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers)
+              .to.have.property("ce-time");
+          });
+      });
+      it("HTTP Header contains 'ce-schemaurl'", () => {
+        return httpbinary02.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers)
+              .to.have.property("ce-schemaurl");
+          });
+      });
+      it("HTTP Header contains 'ce-" + ext1Name + "'", () => {
+        return httpbinary02.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers)
+              .to.have.property("ce-" + ext1Name);
+          });
+      });
+      it("HTTP Header contains 'ce-" + ext2Name + "'", () => {
+        return httpbinary02.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers)
+              .to.have.property("ce-" + ext2Name);
+          });
       });
     });
   });

@@ -263,11 +263,13 @@ Spec(Cloudevent)
 
 /*
  * Checks the spec constraints, throwing an error if do not pass.
+ * @throws Error when it is an invalid event
  */
 Spec.check()
 
 /*
  * Checks if the argument pass through the spec constraints
+ * @throws Error when it is an invalid event
  */
 Spec.check(Object)
 

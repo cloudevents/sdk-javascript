@@ -4,7 +4,7 @@
   "description": "CloudEvents SDK for JavaScript",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha -C test/*.js",
+    "test": "./node_modules/.bin/mocha -C test/**/*.js",
     "coverage": "./node_modules/.bin/istanbul cover -x '**/test/**' _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage && rm -rf ./coverage"
   },
   "repository": {

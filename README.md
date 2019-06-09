@@ -185,11 +185,13 @@ binding.receive()
 
 ```text
 ├── index.js
+├── ext
 ├── lib
 │   ├── bindings
 │   │   └── http
 │   ├── cloudevent.js
-│   ├── format
+│   ├── formats
+│   │   └── json
 │   └── specs
 ├── LICENSE
 ├── package.json
@@ -197,10 +199,11 @@ binding.receive()
 ```
 
 - `index.js`: library exports
+- `ext`: external stuff, e.g, Cloud Events JSONSchema
 - `lib/bindings`: every binding implementation goes here
 - `lib/bindings/http`: every http binding implementation goes here
 - `lib/cloudevent.js`: implementation of Cloudevent, an interface
-- `lib/format/`: every format implementation goes here
+- `lib/formats/`: every format implementation goes here
 - `lib/specs/`: every spec implementation goes here
 
 ## Unit Testing
@@ -209,7 +212,6 @@ The unit test checks the result of formatted payload and the constraints.
 
 ```bash
 npm test
-
 ```
 
 ## The API
@@ -242,13 +244,23 @@ Every formatter class must implement these methods to work properly.
 /*
  * Format the Cloudevent payload argument and return an Object.
  */
-Object Formatter.format(payload)
+Object Formatter.format(Object)
 
 /*
  * Format the Cloudevent payload as String.
  */
-String Formatter.toString(payload)
+String Formatter.toString(Object)
+```
 
+### `Parser` classes
+
+Every formatter class must implement these methods to work properly.
+
+```js
+/*
+ * Try to parse the payload to some event format
+ */
+Object Parser.parse(payload)
 ```
 
 ## `Spec` classes
@@ -272,8 +284,8 @@ Spec.check()
  * @throws Error when it is an invalid event
  */
 Spec.check(Object)
-
 ```
+
 ### `Binding` classes
 
 Every Binding class must implement these methods to work properly.

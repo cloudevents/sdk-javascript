@@ -98,5 +98,31 @@ describe("HTTP Transport Binding Unmarshaller", () => {
       expect(un.unmarshall.bind(un, payload, headers))
         .to.throw("invalid payload");
     });
+
+    it("Should accept event that follow the spec 0.2", () => {
+      // setup
+      var payload =
+        new Cloudevent(Cloudevent.specs["0.2"])
+          .type(type)
+          .source(source)
+          .contenttype(ceContentType)
+          .time(now)
+          .schemaurl(schemaurl)
+          .data(data)
+          .toString();
+
+      var headers = {
+        "content-type":"application/cloudevents+json"
+      };
+
+      var un = new Unmarshaller();
+
+      // act
+      var actual = un.unmarshall(payload, headers);
+
+      // assert
+      expect(actual)
+          .to.be.an("object");
+    });
   });
 });

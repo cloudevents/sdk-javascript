@@ -175,8 +175,7 @@ var config = {
 };
 
 // The binding instance
-var binding = Cloudevent
-                .bindings["http-structured0.2"](config);
+var binding = new Cloudevent.bindings["http-structured0.2"](config);
 
 binding.receive()
   .then(cloudevent => {
@@ -318,10 +317,15 @@ Binding(config)
 Binding.emit(cloudevent)
 
 /*
- * Checks if some Object and a Map of attributes
+ * Checks if some Object and a Map of headers
  * follows the binding definition. Throw an error if did not follow
  */
 Binding.check(Object, Map)
+
+/*
+ * Checks and parse the Binary as Cloudevent
+ */
+Cloudevent Binding.parse(Object, Map)
 ```
 
 #### Receiver Binding

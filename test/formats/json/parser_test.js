@@ -97,7 +97,7 @@ describe("JSON Event Format Parser", () => {
         .data(data)
         .toString();
 
-    var parser = new Parser();
+    var parser = new Parser(new Cloudevent.specs["0.2"]());
 
     // act
     var actual = parser.parse(payload);

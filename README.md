@@ -138,7 +138,7 @@ var config = {
  */
 
 // The binding instance
-var binding = Cloudevent.bindings["http-structured0.1"](config);
+var binding = new Cloudevent.bindings["http-structured0.1"](config);
 
 // Emit the event using Promise
 binding.emit(cloudevent)

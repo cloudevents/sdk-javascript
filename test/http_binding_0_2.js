@@ -212,7 +212,6 @@ describe("HTTP Transport Binding - Version 0.2", () => {
         // setup
         var payload = {};
         var attributes = {
-          //"ce-type"        : "type",
           "ce-specversion" : "specversion",
           "ce-source"      : "source",
           "ce-id"          : "id"
@@ -264,6 +263,25 @@ describe("HTTP Transport Binding - Version 0.2", () => {
         expect(httpbinary02.check.bind(httpbinary02, payload, attributes))
           .to.throw("header 'ce-id' not found");
       });
+
+      it("No error when all required headers are in place", () => {
+        // setup
+        var payload = {};
+        var attributes = {
+          "ce-type"        : "type",
+          "ce-specversion" : "specversion",
+          "ce-source"      : "source",
+          "ce-id"          : "id"
+        };
+
+        // act and assert
+        expect(httpbinary02.check.bind(httpbinary02, payload, attributes))
+          .to.not.throw();
+      });
+    });
+
+    describe("Parse", () => {
+
     });
 
     describe("JSON Format", () => {

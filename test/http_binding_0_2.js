@@ -7,6 +7,8 @@ var http = require("http");
 var request = require("request");
 var Spec02 = require("../lib/specs/spec_0_2.js");
 
+var {HTTPBinary02} = require("../lib/bindings/http/emitter_binary_0_2.js");
+
 const type        = "com.github.pull.create";
 const source      = "urn:event:from:myapi/resourse/123";
 const webhook     = "https://cloudevents.io/webhook";
@@ -175,6 +177,95 @@ describe("HTTP Transport Binding - Version 0.2", () => {
   });
 
   describe("Binary", () => {
+    describe("Check", () => {
+      it("Throw error when payload arg is null or undefined", () => {
+        // setup
+        var payload = null;
+        var attributes = {};
+
+        // act and assert
+        expect(httpbinary02.check.bind(httpbinary02, payload, attributes))
+          .to.throw("payload is null or undefined");
+      });
+
+      it("Throw error when attributes arg is null or undefined", () => {
+        // setup
+        var payload = {};
+        var attributes = null;
+
+        // act and assert
+        expect(httpbinary02.check.bind(httpbinary02, payload, attributes))
+          .to.throw("attributes is null or undefined");
+      });
+
+      it("Throw error when payload is not an object", () => {
+        // setup
+        var payload = "wow";
+        var attributes = {};
+
+        // act and assert
+        expect(httpbinary02.check.bind(httpbinary02, payload, attributes))
+          .to.throw("payload must be an object");
+      });
+
+      it("Throw error when headers has no 'ce-type'", () => {
+        // setup
+        var payload = {};
+        var attributes = {
+          //"ce-type"        : "type",
+          "ce-specversion" : "specversion",
+          "ce-source"      : "source",
+          "ce-id"          : "id"
+        };
+
+        // act and assert
+        expect(httpbinary02.check.bind(httpbinary02, payload, attributes))
+          .to.throw("header 'ce-type' not found");
+      });
+
+      it("Throw error when headers has no 'ce-specversion'", () => {
+        // setup
+        var payload = {};
+        var attributes = {
+          "ce-type"        : "type",
+          "ce-source"      : "source",
+          "ce-id"          : "id"
+        };
+
+        // act and assert
+        expect(httpbinary02.check.bind(httpbinary02, payload, attributes))
+          .to.throw("header 'ce-specversion' not found");
+      });
+
+      it("Throw error when headers has no 'ce-source'", () => {
+        // setup
+        var payload = {};
+        var attributes = {
+          "ce-type"        : "type",
+          "ce-specversion" : "specversion",
+          "ce-id"          : "id"
+        };
+
+        // act and assert
+        expect(httpbinary02.check.bind(httpbinary02, payload, attributes))
+          .to.throw("header 'ce-source' not found");
+      });
+
+      it("Throw error when headers has no 'ce-id'", () => {
+        // setup
+        var payload = {};
+        var attributes = {
+          "ce-type"        : "type",
+          "ce-specversion" : "specversion",
+          "ce-source"      : "source"
+        };
+
+        // act and assert
+        expect(httpbinary02.check.bind(httpbinary02, payload, attributes))
+          .to.throw("header 'ce-id' not found");
+      });
+    });
+
     describe("JSON Format", () => {
       it("requires '" + cloudevent.getContenttype() + "' Content-Type in the header", () => {
         return httpbinary02.emit(cloudevent)

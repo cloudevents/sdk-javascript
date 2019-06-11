@@ -317,6 +317,11 @@ Binding(config)
  */
 Binding.emit(cloudevent)
 
+/*
+ * Checks if some Object and a Map of attributes
+ * follows the binding definition. Throw an error if did not follow
+ */
+Binding.check(Object, Map)
 ```
 
 #### Receiver Binding

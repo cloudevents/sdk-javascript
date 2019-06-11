@@ -41,12 +41,14 @@ These are the supported specifications by this version.
 
 ### What we can do?
 
-| **What**                    | **v0.1** | **v0.2** |
-|---------------------------------------|----------|----------|
-| Create events                           | yes      | yes      |
-| Emit Structured events   over HTTP   | yes      | yes      |
-| Emit Binary events over HTTP  -       | yes      | yes      |
-| JSON Event Format                     | yes      | yes      |
+| __What__                           | __v0.1__ | __v0.2__ |
+|------------------------------------|----------|----------|
+| Create events                      | yes      | yes      |
+| Emit Structured events over HTTP   | yes      | yes      |
+| Emit Binary events over HTTP       | yes      | yes      |
+| JSON Event Format                  | yes      | yes      |
+| Receice Structure events over HTTP | yes      | yes      |
+| Receice Binary events over HTTP    | yes      | yes      |
 
 ## How to use
 
@@ -263,12 +265,17 @@ Every formatter class must implement these methods to work properly.
 
 ```js
 /*
+ * The default constructor with Spec as parameter
+ */
+Parser(Spec)
+
+/*
  * Try to parse the payload to some event format
  */
 Object Parser.parse(payload)
 ```
 
-## `Spec` classes
+### `Spec` classes
 
 Every Spec class must implement these methods to work properly.
 

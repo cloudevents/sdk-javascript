@@ -315,17 +315,6 @@ Binding(config)
  * Emits the event using an instance of Cloudevent.
  */
 Binding.emit(cloudevent)
-
-/*
- * Checks if some Object and a Map of headers
- * follows the binding definition. Throw an error if did not follow
- */
-Binding.check(Object, Map)
-
-/*
- * Checks and parse the Binary as Cloudevent
- */
-Cloudevent Binding.parse(Object, Map)
 ```
 
 #### Receiver Binding
@@ -336,12 +325,32 @@ Following we have the signature for the binding to receive Cloudevents.
 /*
  * The constructor must receives the map of configurations.
  */
-ReceiverBinding(config)
+Receiver(config)
+
+/*
+ * Checks if some Object and a Map of headers
+ * follows the binding definition, throwing an error if did not follow
+ */
+Receiver.check(Object, Map)
+
+/*
+ * Checks and parse as Cloudevent
+ */
+Cloudevent Receiver.parse(Object, Map)
+```
+
+##### Receiver Binding Server
+
+```js
+/*
+ * The constructor must receives the map of configurations.
+ */
+Receiver(config)
 
 /*
  * Receives the events and returns a Promise.
  */
-ReceiverBinding.receive()
+Receiver.receive()
 ```
 
 > See how to implement the method injection [here](lib/specs/spec_0_1.js#L17)

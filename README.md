@@ -260,7 +260,7 @@ String Formatter.toString(Object)
 
 ### `Parser` classes
 
-Every formatter class must implement these methods to work properly.
+Every Parser class must implement these methods to work properly.
 
 ```js
 /*
@@ -341,6 +341,8 @@ Cloudevent Receiver.parse(Object, Map)
 
 ##### Receiver Binding Server
 
+Use this API to start a HTTP server and listen to events.
+
 ```js
 /*
  * The constructor must receives the map of configurations.
@@ -348,9 +350,14 @@ Cloudevent Receiver.parse(Object, Map)
 Receiver(config)
 
 /*
- * Receives the events and returns a Promise.
+ * Listen to events and returns a Promise.
  */
-Receiver.receive()
+Promise Receiver.listen()
+
+/*
+ * Stops the listen to events
+ */
+Receiver.stop()
 ```
 
 > See how to implement the method injection [here](lib/specs/spec_0_1.js#L17)

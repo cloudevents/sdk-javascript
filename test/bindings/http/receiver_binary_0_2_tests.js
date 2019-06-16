@@ -43,7 +43,8 @@ describe("HTTP Transport Binding Binary Receiver 0.2", () => {
       var attributes = {
         "ce-specversion" : "specversion",
         "ce-source"      : "source",
-        "ce-id"          : "id"
+        "ce-id"          : "id",
+        "Content-Type"   : "application/json"
       };
 
       // act and assert
@@ -57,7 +58,8 @@ describe("HTTP Transport Binding Binary Receiver 0.2", () => {
       var attributes = {
         "ce-type"        : "type",
         "ce-source"      : "source",
-        "ce-id"          : "id"
+        "ce-id"          : "id",
+        "Content-Type"   : "application/json"
       };
 
       // act and assert
@@ -71,7 +73,8 @@ describe("HTTP Transport Binding Binary Receiver 0.2", () => {
       var attributes = {
         "ce-type"        : "type",
         "ce-specversion" : "specversion",
-        "ce-id"          : "id"
+        "ce-id"          : "id",
+        "Content-Type"   : "application/json"
       };
 
       // act and assert
@@ -85,7 +88,8 @@ describe("HTTP Transport Binding Binary Receiver 0.2", () => {
       var attributes = {
         "ce-type"        : "type",
         "ce-specversion" : "specversion",
-        "ce-source"      : "source"
+        "ce-source"      : "source",
+        "Content-Type"   : "application/json"
       };
 
       // act and assert
@@ -100,12 +104,29 @@ describe("HTTP Transport Binding Binary Receiver 0.2", () => {
         "ce-type"        : "type",
         "ce-specversion" : "specversion",
         "ce-source"      : "source",
-        "ce-id"          : "id"
+        "ce-id"          : "id",
+        "Content-Type"   : "application/json"
       };
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
         .to.throw("invalid spec version");
+    });
+
+    it("Throw error when the content-type is invalid", () => {
+      // setup
+      var payload = {};
+      var attributes = {
+        "ce-type"        : "type",
+        "ce-specversion" : "specversion",
+        "ce-source"      : "source",
+        "ce-id"          : "id",
+        "Content-Type"   : "text/html"
+      };
+
+      // act and assert
+      expect(receiver.check.bind(receiver, payload, attributes))
+        .to.throw("invalid content type");
     });
 
     it("No error when all required headers are in place", () => {
@@ -115,7 +136,8 @@ describe("HTTP Transport Binding Binary Receiver 0.2", () => {
         "ce-type"        : "type",
         "ce-specversion" : "0.2",
         "ce-source"      : "source",
-        "ce-id"          : "id"
+        "ce-id"          : "id",
+        "Content-Type"   : "application/json"
       };
 
       // act and assert
@@ -136,7 +158,8 @@ describe("HTTP Transport Binding Binary Receiver 0.2", () => {
         "ce-source"      : "source",
         "ce-id"          : "id",
         "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-schemaurl"   : "http://schema.registry/v1"
+        "ce-schemaurl"   : "http://schema.registry/v1",
+        "Content-Type"   : "application/json"
       };
 
       // act
@@ -158,7 +181,8 @@ describe("HTTP Transport Binding Binary Receiver 0.2", () => {
         "ce-source"      : "source",
         "ce-id"          : "id",
         "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-schemaurl"   : "http://schema.registry/v1"
+        "ce-schemaurl"   : "http://schema.registry/v1",
+        "Content-Type"   : "application/json"
       };
 
       // act
@@ -180,7 +204,8 @@ describe("HTTP Transport Binding Binary Receiver 0.2", () => {
         "ce-source"      : "/source",
         "ce-id"          : "id",
         "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-schemaurl"   : "http://schema.registry/v1"
+        "ce-schemaurl"   : "http://schema.registry/v1",
+        "Content-Type"   : "application/json"
       };
 
       // act
@@ -202,7 +227,8 @@ describe("HTTP Transport Binding Binary Receiver 0.2", () => {
         "ce-source"      : "/source",
         "ce-id"          : "id",
         "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-schemaurl"   : "http://schema.registry/v1"
+        "ce-schemaurl"   : "http://schema.registry/v1",
+        "Content-Type"   : "application/json"
       };
 
       // act
@@ -224,7 +250,8 @@ describe("HTTP Transport Binding Binary Receiver 0.2", () => {
         "ce-source"      : "/source",
         "ce-id"          : "id",
         "ce-time"        : "2019-06-16T11:42:00.000Z",
-        "ce-schemaurl"   : "http://schema.registry/v1"
+        "ce-schemaurl"   : "http://schema.registry/v1",
+        "Content-Type"   : "application/json"
       };
 
       // act
@@ -246,7 +273,8 @@ describe("HTTP Transport Binding Binary Receiver 0.2", () => {
         "ce-source"      : "/source",
         "ce-id"          : "id",
         "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-schemaurl"   : "http://schema.registry/v1"
+        "ce-schemaurl"   : "http://schema.registry/v1",
+        "Content-Type"   : "application/json"
       };
 
       // act
@@ -268,7 +296,8 @@ describe("HTTP Transport Binding Binary Receiver 0.2", () => {
         "ce-source"      : "/source",
         "ce-id"          : "id",
         "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-schemaurl"   : "http://schema.registry/v1"
+        "ce-schemaurl"   : "http://schema.registry/v1",
+        "Content-Type"   : "application/json"
       };
 
       // act
@@ -290,7 +319,8 @@ describe("HTTP Transport Binding Binary Receiver 0.2", () => {
         "ce-source"      : "source",
         "ce-id"          : "id",
         "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-schemaurl"   : "http://schema.registry/v1"
+        "ce-schemaurl"   : "http://schema.registry/v1",
+        "Content-Type"   : "application/json"
       };
 
       // act

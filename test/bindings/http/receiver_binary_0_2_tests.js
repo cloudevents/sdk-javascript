@@ -143,6 +143,140 @@ describe("HTTP Transport Binding Binary Receiver 0.2", () => {
       var actual = receiver.parse(payload, attributes);
 
       // assert
+      expect(actual.getType())
+        .to.equal("type");
+    });
+
+    it("Cloudevent contains 'specversion'", () => {
+      // setup
+      var payload = {
+        "data" : "dataString"
+      };
+      var attributes = {
+        "ce-type"        : "type",
+        "ce-specversion" : "0.2",
+        "ce-source"      : "source",
+        "ce-id"          : "id",
+        "ce-time"        : "2019-06-16T11:42:00Z",
+        "ce-schemaurl"   : "http://schema.registry/v1"
+      };
+
+      // act
+      var actual = receiver.parse(payload, attributes);
+
+      // assert
+      expect(actual.getSpecversion())
+        .to.equal("0.2");
+    });
+
+    it("Cloudevent contains 'source'", () => {
+      // setup
+      var payload = {
+        "data" : "dataString"
+      };
+      var attributes = {
+        "ce-type"        : "type",
+        "ce-specversion" : "0.2",
+        "ce-source"      : "/source",
+        "ce-id"          : "id",
+        "ce-time"        : "2019-06-16T11:42:00Z",
+        "ce-schemaurl"   : "http://schema.registry/v1"
+      };
+
+      // act
+      var actual = receiver.parse(payload, attributes);
+
+      // assert
+      expect(actual.getSource())
+        .to.equal("/source");
+    });
+
+    it("Cloudevent contains 'id'", () => {
+      // setup
+      var payload = {
+        "data" : "dataString"
+      };
+      var attributes = {
+        "ce-type"        : "type",
+        "ce-specversion" : "0.2",
+        "ce-source"      : "/source",
+        "ce-id"          : "id",
+        "ce-time"        : "2019-06-16T11:42:00Z",
+        "ce-schemaurl"   : "http://schema.registry/v1"
+      };
+
+      // act
+      var actual = receiver.parse(payload, attributes);
+
+      // assert
+      expect(actual.getId())
+        .to.equal("id");
+    });
+
+    it("Cloudevent contains 'time'", () => {
+      // setup
+      var payload = {
+        "data" : "dataString"
+      };
+      var attributes = {
+        "ce-type"        : "type",
+        "ce-specversion" : "0.2",
+        "ce-source"      : "/source",
+        "ce-id"          : "id",
+        "ce-time"        : "2019-06-16T11:42:00.000Z",
+        "ce-schemaurl"   : "http://schema.registry/v1"
+      };
+
+      // act
+      var actual = receiver.parse(payload, attributes);
+
+      // assert
+      expect(actual.getTime())
+        .to.equal("2019-06-16T11:42:00.000Z");
+    });
+
+    it("Cloudevent contains 'schemaurl'", () => {
+      // setup
+      var payload = {
+        "data" : "dataString"
+      };
+      var attributes = {
+        "ce-type"        : "type",
+        "ce-specversion" : "0.2",
+        "ce-source"      : "/source",
+        "ce-id"          : "id",
+        "ce-time"        : "2019-06-16T11:42:00Z",
+        "ce-schemaurl"   : "http://schema.registry/v1"
+      };
+
+      // act
+      var actual = receiver.parse(payload, attributes);
+
+      // assert
+      expect(actual.getSchemaurl())
+        .to.equal("http://schema.registry/v1");
+    });
+
+    it("Cloudevent contains 'data'", () => {
+      // setup
+      var payload = {
+        "data" : "dataString"
+      };
+      var attributes = {
+        "ce-type"        : "type",
+        "ce-specversion" : "0.2",
+        "ce-source"      : "/source",
+        "ce-id"          : "id",
+        "ce-time"        : "2019-06-16T11:42:00Z",
+        "ce-schemaurl"   : "http://schema.registry/v1"
+      };
+
+      // act
+      var actual = receiver.parse(payload, attributes);
+
+      // assert
+      expect(actual.getData())
+        .to.deep.equal(payload);
     });
 
     it("No error when all attributes are in place", () => {
@@ -154,7 +288,9 @@ describe("HTTP Transport Binding Binary Receiver 0.2", () => {
         "ce-type"        : "type",
         "ce-specversion" : "0.2",
         "ce-source"      : "source",
-        "ce-id"          : "id"
+        "ce-id"          : "id",
+        "ce-time"        : "2019-06-16T11:42:00Z",
+        "ce-schemaurl"   : "http://schema.registry/v1"
       };
 
       // act

@@ -2,7 +2,7 @@ var expect = require("chai").expect;
 var Cloudevent = require("../index.js");
 var nock = require("nock");
 var ReceiverStructured01 =
-      require("../lib/bindings/http/receiver_structured_0_2.js");
+      require("../lib/bindings/http/server/structured_0_2.js");
 var http = require("http");
 var request = require("request");
 var Spec02 = require("../lib/specs/spec_0_2.js");
@@ -201,6 +201,7 @@ describe("HTTP Transport Binding - Version 0.2", () => {
               .to.have.property("ce-type");
           });
       });
+
       it("HTTP Header contains 'ce-specversion'", () => {
         return httpbinary02.emit(cloudevent)
           .then((response) => {
@@ -208,6 +209,7 @@ describe("HTTP Transport Binding - Version 0.2", () => {
               .to.have.property("ce-specversion");
           });
       });
+
       it("HTTP Header contains 'ce-source'", () => {
         return httpbinary02.emit(cloudevent)
           .then((response) => {
@@ -215,6 +217,7 @@ describe("HTTP Transport Binding - Version 0.2", () => {
               .to.have.property("ce-source");
           });
       });
+
       it("HTTP Header contains 'ce-id'", () => {
         return httpbinary02.emit(cloudevent)
           .then((response) => {
@@ -222,6 +225,7 @@ describe("HTTP Transport Binding - Version 0.2", () => {
               .to.have.property("ce-id");
           });
       });
+
       it("HTTP Header contains 'ce-time'", () => {
         return httpbinary02.emit(cloudevent)
           .then((response) => {
@@ -229,6 +233,7 @@ describe("HTTP Transport Binding - Version 0.2", () => {
               .to.have.property("ce-time");
           });
       });
+
       it("HTTP Header contains 'ce-schemaurl'", () => {
         return httpbinary02.emit(cloudevent)
           .then((response) => {
@@ -236,6 +241,7 @@ describe("HTTP Transport Binding - Version 0.2", () => {
               .to.have.property("ce-schemaurl");
           });
       });
+
       it("HTTP Header contains 'ce-" + ext1Name + "'", () => {
         return httpbinary02.emit(cloudevent)
           .then((response) => {
@@ -243,6 +249,7 @@ describe("HTTP Transport Binding - Version 0.2", () => {
               .to.have.property("ce-" + ext1Name);
           });
       });
+      
       it("HTTP Header contains 'ce-" + ext2Name + "'", () => {
         return httpbinary02.emit(cloudevent)
           .then((response) => {

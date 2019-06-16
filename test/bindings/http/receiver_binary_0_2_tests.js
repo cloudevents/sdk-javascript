@@ -1,7 +1,7 @@
 var expect = require("chai").expect;
 
 var HTTPBinaryReceiver02 =
-  require("../../../lib/bindings/http/binary_receiver_0_2.js");
+  require("../../../lib/bindings/http/receiver_binary_0_2.js");
 
 var receiver = new HTTPBinaryReceiver02();
 

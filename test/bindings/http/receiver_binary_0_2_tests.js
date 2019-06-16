@@ -93,7 +93,7 @@ describe("HTTP Transport Binding Binary Receiver 0.2", () => {
         .to.throw("header 'ce-id' not found");
     });
 
-    it("No error when all required headers are in place", () => {
+    it("Throw error when spec is not 0.2", () => {
       // setup
       var payload = {};
       var attributes = {
@@ -105,11 +105,65 @@ describe("HTTP Transport Binding Binary Receiver 0.2", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
+        .to.throw("invalid spec version");
+    });
+
+    it("No error when all required headers are in place", () => {
+      // setup
+      var payload = {};
+      var attributes = {
+        "ce-type"        : "type",
+        "ce-specversion" : "0.2",
+        "ce-source"      : "source",
+        "ce-id"          : "id"
+      };
+
+      // act and assert
+      expect(receiver.check.bind(receiver, payload, attributes))
         .to.not.throw();
     });
   });
 
   describe("Parse", () => {
+    it("Cloudevent contains 'type'", () => {
+      // setup
+      var payload = {
+        "data" : "dataString"
+      };
+      var attributes = {
+        "ce-type"        : "type",
+        "ce-specversion" : "0.2",
+        "ce-source"      : "source",
+        "ce-id"          : "id",
+        "ce-time"        : "2019-06-16T11:42:00Z",
+        "ce-schemaurl"   : "http://schema.registry/v1"
+      };
 
+      // act
+      var actual = receiver.parse(payload, attributes);
+
+      // assert
+    });
+
+    it("No error when all attributes are in place", () => {
+      // setup
+      var payload = {
+        "data" : "dataString"
+      };
+      var attributes = {
+        "ce-type"        : "type",
+        "ce-specversion" : "0.2",
+        "ce-source"      : "source",
+        "ce-id"          : "id"
+      };
+
+      // act
+      var actual = receiver.parse(payload, attributes);
+
+      // assert
+      expect(actual)
+          .to.be.an("object");
+
+    });
   });
 });

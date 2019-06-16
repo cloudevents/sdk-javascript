@@ -114,5 +114,29 @@ describe("HTTP Transport Binding Structured Receiver 0.2", () => {
       expect(receiver.parse.bind(receiver, payload, headers))
         .to.throw("invalid payload");
     });
+
+    it("Should accept event that follow the spec 0.2", () => {
+      // setup
+      var payload =
+        new Cloudevent(Cloudevent.specs["0.2"])
+          .type(type)
+          .source(source)
+          .contenttype(ceContentType)
+          .time(now)
+          .schemaurl(schemaurl)
+          .data(data)
+          .toString();
+
+      var headers = {
+        "content-type":"application/cloudevents+json"
+      };
+
+      // act
+      var actual = receiver.parse(payload, headers);
+
+      // assert
+      expect(actual)
+          .to.be.an("object");
+    });
   });
 });

@@ -8,6 +8,10 @@ Official CloudEvents' SDK for JavaScript.
 
 <img src="https://github.com/cncf/artwork/blob/master/projects/cloudevents/horizontal/color/cloudevents-horizontal-color.png" width="300" height="58" alt="CloudEvents logo">
 
+## Contributing
+
+Before create an awesome PR, please read our [guidelines](./CONTRIBUTING.md).
+
 ## Versioning
 
 ### Before Spec reaches 1.0

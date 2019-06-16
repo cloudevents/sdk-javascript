@@ -9,10 +9,12 @@ JavaScript SDK.
 
 Guidelines about how to perform pull requests.
 
+- before submit the PR, open an issue and link them
+
 ### PR to `develop`
 
 - fixes in the documentation (readme, contributors)
-- propose new files for documentation
+- propose new files for the documentation
 - implementation of new features
 
 ### PR to `master`

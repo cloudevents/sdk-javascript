@@ -87,7 +87,7 @@ describe("HTTP Transport Binding - Version 0.2", () => {
       before(() => {
         // setup
         receiver = new ReceiverStructured01(receiverConfig);
-        receiver.receive()
+        receiver.listen()
           .then(response => {
             console.log(response);
           })
@@ -249,7 +249,7 @@ describe("HTTP Transport Binding - Version 0.2", () => {
               .to.have.property("ce-" + ext1Name);
           });
       });
-      
+
       it("HTTP Header contains 'ce-" + ext2Name + "'", () => {
         return httpbinary02.emit(cloudevent)
           .then((response) => {

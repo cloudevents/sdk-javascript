@@ -285,6 +285,29 @@ describe("HTTP Transport Binding Binary Receiver 0.2", () => {
         .to.equal("http://schema.registry/v1");
     });
 
+    it("Cloudevent contains 'contenttype'", () => {
+      // setup
+      var payload = {
+        "data" : "dataString"
+      };
+      var attributes = {
+        "ce-type"        : "type",
+        "ce-specversion" : "0.2",
+        "ce-source"      : "/source",
+        "ce-id"          : "id",
+        "ce-time"        : "2019-06-16T11:42:00Z",
+        "ce-schemaurl"   : "http://schema.registry/v1",
+        "Content-Type"   : "application/json"
+      };
+
+      // act
+      var actual = receiver.parse(payload, attributes);
+
+      // assert
+      expect(actual.getContenttype())
+        .to.equal("application/json");
+    });
+
     it("Cloudevent contains 'data'", () => {
       // setup
       var payload = {

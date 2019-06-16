@@ -125,4 +125,76 @@ describe("HTTP Transport Binding Unmarshaller", () => {
           .to.be.an("object");
     });
   });
+
+  describe("Binary", () => {
+    it("Throw error when has not allowed mime", () => {
+      // setup
+      var payload = {
+        "data" : "dataString"
+      };
+      var attributes = {
+        "ce-type"        : "type",
+        "ce-specversion" : "0.2",
+        "ce-source"      : "source",
+        "ce-id"          : "id",
+        "ce-time"        : "2019-06-16T11:42:00Z",
+        "ce-schemaurl"   : "http://schema.registry/v1",
+        "Content-Type"   : "text/html"
+      };
+
+      var un = new Unmarshaller();
+
+      // act and assert
+      expect(un.unmarshall.bind(un, payload, attributes))
+          .to.throw("content type not allowed");
+    });
+
+    it("Throw error when the event does not follow the spec 0.2", () => {
+      // setup
+      var payload = {
+        "data" : "dataString"
+      };
+      var attributes = {
+        "ce-type"               : "type",
+        "CE-CloudEventsVersion" : "0.1",
+        "ce-source"             : "source",
+        "ce-id"                 : "id",
+        "ce-time"               : "2019-06-16T11:42:00Z",
+        "ce-schemaurl"          : "http://schema.registry/v1",
+        "Content-Type"          : "application/json"
+      };
+
+      var un = new Unmarshaller();
+
+      // act and assert
+      expect(un.unmarshall.bind(un, payload, attributes))
+        .to.throw();
+    });
+
+    it("No error when all attributes are in place", () => {
+      // setup
+      var payload = {
+        "data" : "dataString"
+      };
+      var attributes = {
+        "ce-type"        : "type",
+        "ce-specversion" : "0.2",
+        "ce-source"      : "source",
+        "ce-id"          : "id",
+        "ce-time"        : "2019-06-16T11:42:00Z",
+        "ce-schemaurl"   : "http://schema.registry/v1",
+        "Content-Type"   : "application/json"
+      };
+
+      var un = new Unmarshaller();
+
+      // act
+      var actual = un.unmarshall(payload, attributes);
+
+      // assert
+      expect(actual)
+          .to.be.an("object");
+
+    });
+  });
 });

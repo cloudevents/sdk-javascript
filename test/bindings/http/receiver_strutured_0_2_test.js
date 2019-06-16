@@ -1,9 +1,40 @@
-var expect = require("chai").expect;
+var expect     = require("chai").expect;
+var Cloudevent = require("../../../index.js");
+var Spec02     = require("../../../lib/specs/spec_0_2.js");
 
 var HTTPStructuredReceiver02 =
   require("../../../lib/bindings/http/receiver_structured_0_2.js");
 
 var receiver = new HTTPStructuredReceiver02();
+
+const type        = "com.github.pull.create";
+const source      = "urn:event:from:myapi/resourse/123";
+const webhook     = "https://cloudevents.io/webhook";
+const contentType = "application/cloudevents+json; charset=utf-8";
+const now         = new Date();
+const schemaurl   = "http://cloudevents.io/schema.json";
+
+const ceContentType = "application/json";
+
+const data = {
+  foo: "bar"
+};
+
+const ext1Name  = "extension1";
+const ext1Value = "foobar";
+const ext2Name  = "extension2";
+const ext2Value = "acme";
+
+var cloudevent =
+  new Cloudevent(Spec02)
+    .type(type)
+    .source(source)
+    .contenttype(ceContentType)
+    .time(now)
+    .schemaurl(schemaurl)
+    .data(data)
+    .addExtension(ext1Name, ext1Value)
+    .addExtension(ext2Name, ext2Value);
 
 describe("HTTP Transport Binding Structured Receiver 0.2", () => {
   describe("Check", () => {
@@ -27,21 +58,21 @@ describe("HTTP Transport Binding Structured Receiver 0.2", () => {
         .to.throw("attributes is null or undefined");
     });
 
-    it("Throw error when payload is not an object", () => {
+    it("Throw error when payload is not an object or string", () => {
       // setup
-      var payload = "wow";
+      var payload = 1.0;
       var attributes = {};
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("payload must be an object");
+        .to.throw("payload must be an object or string");
     });
 
     it("Throw error when the content-type is invalid", () => {
       // setup
       var payload = {};
       var attributes = {
-        "Content-Type"   : "text/html"
+        "Content-Type" : "text/html"
       };
 
       // act and assert
@@ -53,12 +84,35 @@ describe("HTTP Transport Binding Structured Receiver 0.2", () => {
       // setup
       var payload = {};
       var attributes = {
-        "Content-Type"   : "application/cloudevents+json"
+        "Content-Type" : "application/cloudevents+json"
       };
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
         .to.not.throw();
+    });
+  });
+
+  describe("Parse", () => {
+    it("Throw error when the event does not follow the spec 0.2", () => {
+      // setup
+      var payload =
+        new Cloudevent()
+          .type(type)
+          .source(source)
+          .contenttype(ceContentType)
+          .time(now)
+          .schemaurl(schemaurl)
+          .data(data)
+          .toString();
+
+      var headers = {
+        "Content-Type":"application/cloudevents+json"
+      };
+
+      // act and assert
+      expect(receiver.parse.bind(receiver, payload, headers))
+        .to.throw("invalid payload");
     });
   });
 });

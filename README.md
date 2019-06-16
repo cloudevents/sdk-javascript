@@ -47,8 +47,8 @@ These are the supported specifications by this version.
 | Emit Structured events over HTTP   | yes      | yes      |
 | Emit Binary events over HTTP       | yes      | yes      |
 | JSON Event Format                  | yes      | yes      |
-| Receice Structure events over HTTP | yes      | yes      |
-| Receice Binary events over HTTP    | yes      | yes      |
+| Receice Structure events over HTTP | no       | yes      |
+| Receice Binary events over HTTP    | no       | yes      |
 
 ## How to use
 

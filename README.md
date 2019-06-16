@@ -12,7 +12,7 @@ Official CloudEvents' SDK for JavaScript.
 
 ### Before Spec reaches 1.0
 
-- `0.x.p`: where `x` relates to spec version and `p` relates to fixes.
+- `0.x.p`: where `x` relates to spec version and `p` relates to fixes and releases.
 
 ### After Spec reaches 1.0
 

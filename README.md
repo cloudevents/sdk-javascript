@@ -12,6 +12,10 @@ Official CloudEvents' SDK for JavaScript.
 
 Before create an awesome PR, please read our [guidelines](./CONTRIBUTING.md).
 
+## Examples
+
+To see working examples, point to [examples](./examplpes).
+
 ## Versioning
 
 ### Before Spec reaches 1.0
@@ -165,8 +169,19 @@ binding.emit(cloudevent)
     console.error(err);
   });
 ```
+#### Receiving Events Using Express
 
-#### Receiving
+See how to listen to events using
+[express](https://github.com/expressjs/express).
+
+```js
+
+
+```
+
+#### Receiving Using our Simple HTTP Server
+
+See how to listen to events using out simple http server.
 
 ```js
 var Cloudevent = require("cloudevents-sdk");
@@ -181,7 +196,7 @@ var config = {
 // The binding instance
 var binding = new Cloudevent.bindings["http-structured0.2"](config);
 
-binding.receive()
+binding.listen()
   .then(cloudevent => {
     // do something with event
   })

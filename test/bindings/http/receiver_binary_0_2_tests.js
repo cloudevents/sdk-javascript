@@ -27,14 +27,14 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.2", () => {
         .to.throw("attributes is null or undefined");
     });
 
-    it("Throw error when payload is not an object", () => {
+    it("Throw error when payload is not an object or string", () => {
       // setup
-      var payload = "wow";
+      var payload = 1.2;
       var attributes = {};
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("payload must be an object");
+        .to.throw("payload must be an object or a string");
     });
 
     it("Throw error when headers has no 'ce-type'", () => {

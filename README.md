@@ -174,35 +174,8 @@ See how to listen to events using
 [express](https://github.com/expressjs/express).
 
 ```js
+var Unmarshaller02 = require("cloudevents-sdk/http/unmarshaller/v02");
 
-
-```
-
-#### Receiving Using our Simple HTTP Server
-
-See how to listen to events using out simple http server.
-
-```js
-var Cloudevent = require("cloudevents-sdk");
-
-// The binding configuration
-var config = {
-  path   : "/events",
-  port   : 10300,
-  method : "POST"
-};
-
-// The binding instance
-var binding = new Cloudevent.bindings["http-structured0.2"](config);
-
-binding.listen()
-  .then(cloudevent => {
-    // do something with event
-  })
-  .catch(err => {
-    // deal with errors
-    console.error(err);
-  });
 ```
 
 ## Repository Structure
@@ -355,27 +328,6 @@ Receiver.check(Object, Map)
  * Checks and parse as Cloudevent
  */
 Cloudevent Receiver.parse(Object, Map)
-```
-
-##### Receiver Binding Server
-
-Use this API to start a HTTP server and listen to events.
-
-```js
-/*
- * The constructor must receives the map of configurations.
- */
-Receiver(config)
-
-/*
- * Listen to events and returns a Promise.
- */
-Promise Receiver.listen()
-
-/*
- * Stops the listen to events
- */
-Receiver.stop()
 ```
 
 ### `Unmarshaller` classes

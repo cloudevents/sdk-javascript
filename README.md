@@ -378,6 +378,29 @@ Promise Receiver.listen()
 Receiver.stop()
 ```
 
+### `Unmarshaller` classes
+
+The Unmarshaller classes uses the receiver API, abstracting the formats:
+
+ - structured
+ - binary
+
+Choosing the right implementation based on the `headers` map.
+
+```js
+/*
+ * Constructor without arguments
+ */
+Unmarshaller()
+
+/*
+ * The method to unmarshall the payload.
+ * @arg payload could be a string or a object
+ * @arg headers a map of headers
+ */
+Promise Unmarshaller.unmarshall(payload, headers)
+```
+
 > See how to implement the method injection [here](lib/specs/spec_0_1.js#L17)
 >
 > Learn about [Builder Design Pattern](https://en.wikipedia.org/wiki/Builder_pattern)

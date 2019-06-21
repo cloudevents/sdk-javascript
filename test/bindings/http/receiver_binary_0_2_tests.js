@@ -5,7 +5,7 @@ var HTTPBinaryReceiver02 =
 
 var receiver = new HTTPBinaryReceiver02();
 
-describe("HTTP Transport Binding Binary Receiver 0.2", () => {
+describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.2", () => {
   describe("Check", () => {
     it("Throw error when payload arg is null or undefined", () => {
       // setup

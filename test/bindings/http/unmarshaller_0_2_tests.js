@@ -15,7 +15,7 @@ const data = {
   foo: "bar"
 };
 
-describe("HTTP Transport Binding Unmarshaller", () => {
+describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.2", () => {
 
   it("Throw error when payload is null", () => {
     // setup

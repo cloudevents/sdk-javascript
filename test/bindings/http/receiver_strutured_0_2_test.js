@@ -36,7 +36,7 @@ var cloudevent =
     .addExtension(ext1Name, ext1Value)
     .addExtension(ext2Name, ext2Value);
 
-describe("HTTP Transport Binding Structured Receiver 0.2", () => {
+describe("HTTP Transport Binding Structured Receiver for CloudEvents v0.2", () => {
   describe("Check", () => {
     it("Throw error when payload arg is null or undefined", () => {
       // setup

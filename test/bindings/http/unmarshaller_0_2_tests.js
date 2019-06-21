@@ -1,6 +1,6 @@
 var expect = require("chai").expect;
-var Unmarshaller = require("../../../lib/bindings/http/unmarshaller_0_2.js");
-var Cloudevent = require("../../../index.js");
+var Unmarshaller = require("../../../http/unmarshaller/v02.js");
+var Cloudevent   = require("../../../index.js");
 
 const type        = "com.github.pull.create";
 const source      = "urn:event:from:myapi/resourse/123";

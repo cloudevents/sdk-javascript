@@ -55,7 +55,7 @@ These are the supported specifications by this version.
 | Emit Structured events over HTTP   | yes      | yes      |
 | Emit Binary events over HTTP       | yes      | yes      |
 | JSON Event Format                  | yes      | yes      |
-| Receice Structure events over HTTP | no       | yes      |
+| Receice Structured events over HTTP| no       | yes      |
 | Receice Binary events over HTTP    | no       | yes      |
 
 ## How to use
@@ -95,7 +95,7 @@ cloudevent01
  * to Cloudevent
  */
 cloudevent01
- .eventTypeVersion("1.0");
+  .eventTypeVersion("1.0");
 
 /*
  * Constructs an instance with:
@@ -130,8 +130,6 @@ var cloudevent =
  * Format the payload and return it
  */
 var formatted = cloudevent.format();
-
-var ce =
 ```
 
 #### Emitting
@@ -140,9 +138,10 @@ var ce =
 var Cloudevent = require("cloudevents-sdk");
 
 // The event
-var cloudevent = new Cloudevent()
-                       .type("com.github.pull.create")
-                       .source("urn:event:from:myapi/resourse/123");
+var cloudevent =
+  new Cloudevent()
+    .type("com.github.pull.create")
+    .source("urn:event:from:myapi/resourse/123");
 
 // The binding configuration using POST
 var config = {

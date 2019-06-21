@@ -66,25 +66,6 @@ describe("JSON Event Format Parser", () => {
         .to.throw("invalid json payload");
   });
 
-  it("Throw error when payload is an invalid CloudEvent spec 0.2", () => {
-    // setup
-    var payload =
-      new Cloudevent()
-        .type(type)
-        .source(source)
-        .contenttype(ceContentType)
-        .time(now)
-        .schemaurl(schemaurl)
-        .data(data)
-        .toString();
-
-    var parser = new Parser();
-
-    // act and assert
-    expect(parser.parse.bind(parser, payload))
-        .to.throw("invalid payload");
-  });
-
   it("Must accept the CloudEvent spec 0.2 as JSON", () => {
     // setup
     var payload =
@@ -97,7 +78,20 @@ describe("JSON Event Format Parser", () => {
         .data(data)
         .toString();
 
-    var parser = new Parser(new Cloudevent.specs["0.2"]());
+    var parser = new Parser();
+
+    // act
+    var actual = parser.parse(payload);
+
+    // assert
+    expect(actual)
+        .to.be.an("object");
+  });
+
+  it("Must accept when the payload is a string well formed as JSON", () => {
+    // setup
+    var payload = "{\"much\" : \"wow\"}";
+    var parser = new Parser();
 
     // act
     var actual = parser.parse(payload);

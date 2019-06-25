@@ -170,13 +170,13 @@ binding.emit(cloudevent)
 ```
 #### Receiving Events
 
-You can choose any http framework for port binding, but use the Unmarshaller
-to process the HTTP Payload and HTTP Headers to extract the CloudEvents.
+You can choose any http framework for port binding. But, use the Unmarshaller
+to process the HTTP Payload and HTTP Headers, extracting the CloudEvents.
 
-__Checkout the full working example [here](./examples/express-ex)__
+__:smiley: Checkout the full working example [here](./examples/express-ex)__
 
 ```js
-// some parts weres removed //
+// some parts were removed //
 
 var Unmarshaller02 = require("cloudevents-sdk/http/unmarshaller/v02");
 

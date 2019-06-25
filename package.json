@@ -1,6 +1,6 @@
 {
   "name": "cloudevents-sdk",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "CloudEvents SDK for JavaScript",
   "main": "index.js",
   "scripts": {

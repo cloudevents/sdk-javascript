@@ -353,6 +353,34 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.2", () => {
       expect(actual)
           .to.be.an("object");
 
+      expect(actual)
+          .to.have.property("format");
+    });
+
+    it("Should accept 'extension1'", () => {
+      // setup
+      var extension1 = "mycuston-ext1";
+      var payload = {
+        "data" : "dataString"
+      };
+      var attributes = {
+        "ce-type"        : "type",
+        "ce-specversion" : "0.2",
+        "ce-source"      : "source",
+        "ce-id"          : "id",
+        "ce-time"        : "2019-06-16T11:42:00Z",
+        "ce-schemaurl"   : "http://schema.registry/v1",
+        "Content-Type"   : "application/json",
+        "ce-extension1"  : extension1
+      };
+
+      // act
+      var actual = receiver.parse(payload, attributes);
+      var actualExtensions = actual.getExtensions();
+
+      // assert
+      expect(actualExtensions["extension1"])
+          .to.equal(extension1);
     });
   });
 });

@@ -1,10 +1,10 @@
 {
   "name": "cloudevents-sdk",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "CloudEvents SDK for JavaScript",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha -C test/*.js",
+    "test": "./node_modules/.bin/mocha -C test/**/*.js",
     "coverage": "./node_modules/.bin/istanbul cover -x '**/test/**' _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage && rm -rf ./coverage"
   },
   "repository": {
@@ -43,7 +43,8 @@
     "nock": "10.0.2",
     "codacy-coverage": "3.3.0",
     "mocha-lcov-reporter": "1.3.0",
-    "istanbul": "0.4.5"
+    "istanbul": "0.4.5",
+    "request": "^2.88.0"
   },
   "publishConfig": {
     "access": "public"

@@ -117,16 +117,17 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v0.2", () =
 
     it("Should accept event that follow the spec 0.2", () => {
       // setup
+      var id = "id-x0dk";
       var payload =
         new Cloudevent(Cloudevent.specs["0.2"])
           .type(type)
           .source(source)
+          .id(id)
           .contenttype(ceContentType)
           .time(now)
           .schemaurl(schemaurl)
           .data(data)
           .toString();
-
       var headers = {
         "content-type":"application/cloudevents+json"
       };
@@ -137,6 +138,39 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v0.2", () =
       // assert
       expect(actual)
           .to.be.an("object");
+
+      expect(actual)
+          .to.have.property("format");
+
+      expect(actual.getId())
+          .to.equals(id);
+    });
+
+    it("Should accept 'extension1'", () => {
+      // setup
+      var extension1 = "mycuston-ext1"
+      var payload =
+        new Cloudevent(Cloudevent.specs["0.2"])
+          .type(type)
+          .source(source)
+          .contenttype(ceContentType)
+          .time(now)
+          .schemaurl(schemaurl)
+          .data(data)
+          .addExtension("extension1", extension1)
+          .toString();
+
+      var headers = {
+        "content-type":"application/cloudevents+json"
+      };
+
+      // act
+      var actual = receiver.parse(payload, headers);
+      var actualExtensions = actual.getExtensions();
+
+      // assert
+      expect(actualExtensions["extension1"])
+          .to.equal(extension1);
     });
   });
 });

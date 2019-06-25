@@ -173,7 +173,7 @@ binding.emit(cloudevent)
 You can choose any http framework for port binding. But, use the Unmarshaller
 to process the HTTP Payload and HTTP Headers, extracting the CloudEvents.
 
-__:smiley: Checkout the full working example [here](./examples/express-ex)__
+__:smiley: Checkout the full working example: [here](./examples/express-ex).__
 
 ```js
 // some parts were removed //

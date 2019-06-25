@@ -10,9 +10,22 @@ npm start
 
 __A Structured One__
 
+> Payload [example](../payload/v02/structured-event-0.json)
+
 ```bash
 curl -X POST \
      -d'@../payload/v02/structured-event-0.json' \
+     -H'Content-Type:application/cloudevents+json' \
+     http://localhost:3000/
+```
+
+__A Structured One with Extension__
+
+> Payload [example](../payload/v02/structured-event-1.json)
+
+```bash
+curl -X POST \
+     -d'@../payload/v02/structured-event-1.json' \
      -H'Content-Type:application/cloudevents+json' \
      http://localhost:3000/
 ```

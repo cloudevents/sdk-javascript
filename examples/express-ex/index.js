@@ -22,22 +22,22 @@ app.post('/', function (req, res) {
   console.log(req.headers);
   console.log(req.body);
 
-  try {
-    var event = unmarshaller.unmarshall(req.body, req.headers);
+  unmarshaller.unmarshall(req.body, req.headers)
+    .then(event => {
+      // pretty print
+      console.log("Accepted event:");
+      console.log(JSON.stringify(event.format(), null, 2));
 
-    // pretty print
-    console.log("Accepted event:");
-    console.log(JSON.stringify(event.format(), null, 2));
-
-    res.status(201)
-          .send("Event Accepted");
-  }catch(e) {
-    console.error(e);
-
+      res.status(201)
+            .send("Event Accepted");
+  })
+  .catch(err => {
+    console.error(err);
     res.status(400)
           .header("Content-Type", "application/json")
-          .send(JSON.stringify(e));
-  }
+          .send(JSON.stringify(err));
+  });
+
 });
 
 app.listen(3000, function () {

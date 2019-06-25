@@ -23,10 +23,10 @@ app.post('/', function (req, res) {
   console.log(req.body);
 
   unmarshaller.unmarshall(req.body, req.headers)
-    .then(event => {
+    .then(cloudevent => {
       // pretty print
       console.log("Accepted event:");
-      console.log(JSON.stringify(event.format(), null, 2));
+      console.log(JSON.stringify(cloudevent.format(), null, 2));
 
       res.status(201)
             .send("Event Accepted");

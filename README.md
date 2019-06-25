@@ -14,7 +14,7 @@ Before create an awesome PR, please read our [guidelines](./CONTRIBUTING.md).
 
 ## Examples
 
-To see working examples, point to [examples](./examplpes).
+To see working examples, point to [examples](./examples).
 
 ## Versioning
 

@@ -168,13 +168,40 @@ binding.emit(cloudevent)
     console.error(err);
   });
 ```
-#### Receiving Events Using Express
+#### Receiving Events
 
-See how to listen to events using
-[express](https://github.com/expressjs/express).
+You can choose any http framework for port binding, but use the Unmarshaller
+to process the HTTP Payload and HTTP Headers to extract the CloudEvents.
+
+__Checkout the full working example [here](./examples/express-ex)__
 
 ```js
+// some parts weres removed //
+
 var Unmarshaller02 = require("cloudevents-sdk/http/unmarshaller/v02");
+
+// some parts were removed //
+
+app.post('/', function (req, res) {
+  try {
+    // Using the Unmarshaller
+    var cloudevent =
+      unmarshaller.unmarshall(req.body, req.headers);
+
+    // pretty print
+    console.log("Event Accepted:");
+
+    res.status(201)
+          .send("Event Accepted");
+  }catch(e) {
+    console.error(e);
+
+    res.status(400)
+          .header("Content-Type", "application/json")
+          .send(JSON.stringify(e));
+  }
+});
+
 
 ```
 

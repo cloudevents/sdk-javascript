@@ -25,6 +25,10 @@ app.post('/', function (req, res) {
   try {
     var event = unmarshaller.unmarshall(req.body, req.headers);
 
+    // pretty print
+    console.log("Accepted event:");
+    console.log(JSON.stringify(event.format(), null, 2));
+
     res.status(201)
           .send("Event Accepted");
   }catch(e) {

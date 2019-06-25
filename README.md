@@ -183,23 +183,20 @@ var Unmarshaller02 = require("cloudevents-sdk/http/unmarshaller/v02");
 // some parts were removed //
 
 app.post('/', function (req, res) {
-  try {
-    // Using the Unmarshaller
-    var cloudevent =
-      unmarshaller.unmarshall(req.body, req.headers);
+  unmarshaller.unmarshall(req.body, req.headers)
+    .then(cloudevent => {
 
-    // pretty print
-    console.log("Event Accepted:");
+      // TODO use the cloudevent
 
-    res.status(201)
-          .send("Event Accepted");
-  }catch(e) {
-    console.error(e);
-
+      res.status(201)
+            .send("Event Accepted");
+  })
+  .catch(err => {
+    console.error(err);
     res.status(400)
           .header("Content-Type", "application/json")
-          .send(JSON.stringify(e));
-  }
+          .send(JSON.stringify(err));
+  });
 });
 
 

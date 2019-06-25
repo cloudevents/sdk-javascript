@@ -170,8 +170,11 @@ binding.emit(cloudevent)
 ```
 #### Receiving Events
 
-You can choose any http framework for port binding. But, use the Unmarshaller
+You can choose any framework for port binding. But, use the Unmarshaller
 to process the HTTP Payload and HTTP Headers, extracting the CloudEvents.
+
+The Unmarshaller will parse the HTTP Request and decides if it is a binary
+or a structured version of transport binding.
 
 __:smiley: Checkout the full working example: [here](./examples/express-ex).__
 

@@ -23,8 +23,10 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.2", () => {
     var un = new Unmarshaller();
 
     // act and assert
-    expect(un.unmarshall.bind(un, payload))
-        .to.throw("payload is null or undefined");
+    return un.unmarshall(payload)
+      .then(actual => {throw {message: "failed"}})
+      .catch(err =>
+        expect(err.message).to.equal("payload is null or undefined"));
   });
 
   it("Throw error when headers is null", () => {
@@ -34,8 +36,10 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.2", () => {
     var un = new Unmarshaller();
 
     // act and assert
-    expect(un.unmarshall.bind(un, payload, headers))
-        .to.throw("headers is null or undefined");
+    return un.unmarshall(payload, headers)
+      .then(actual => {throw {message: "failed"}})
+      .catch(err =>
+        expect(err.message).to.equal("headers is null or undefined"));
   });
 
   it("Throw error when there is no content-type header", () => {
@@ -45,8 +49,10 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.2", () => {
     var un = new Unmarshaller();
 
     // act and assert
-    expect(un.unmarshall.bind(un, payload, headers))
-        .to.throw("content-type header not found");
+    un.unmarshall(payload, headers)
+      .then(actual => {throw {message: "failed"}})
+      .catch(err =>
+        expect(err.message).to.equal("content-type header not found"));
   });
 
   it("Throw error when content-type is not allowed", () => {
@@ -58,8 +64,10 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.2", () => {
     var un = new Unmarshaller();
 
     // act and assert
-    expect(un.unmarshall.bind(un, payload, headers))
-        .to.throw("content type not allowed");
+    un.unmarshall(payload, headers)
+      .then(actual => {throw {message: "failed"}})
+      .catch(err =>
+        expect(err.message).to.equal("content type not allowed"));
   });
 
   describe("Structured", () => {
@@ -72,8 +80,10 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.2", () => {
       var un = new Unmarshaller();
 
       // act and assert
-      expect(un.unmarshall.bind(un, payload, headers))
-          .to.throw("structured+type not allowed");
+      un.unmarshall(payload, headers)
+        .then(actual => {throw {message: "failed"}})
+        .catch(err =>
+          expect(err.message).to.equal("structured+type not allowed"));
     });
 
     it("Throw error when the event does not follow the spec 0.2", () => {
@@ -95,8 +105,10 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.2", () => {
       var un = new Unmarshaller();
 
       // act and assert
-      expect(un.unmarshall.bind(un, payload, headers))
-        .to.throw("invalid payload");
+      un.unmarshall(payload, headers)
+        .then(actual => {throw {message: "failed"}})
+        .catch(err =>
+          expect(err.message).to.equal("invalid payload"));
     });
 
     it("Should accept event that follow the spec 0.2", () => {
@@ -117,12 +129,11 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.2", () => {
 
       var un = new Unmarshaller();
 
-      // act
-      var actual = un.unmarshall(payload, headers);
+      // act and assert
+      un.unmarshall(payload, headers)
+        .then(actual =>
+          expect(actual).to.be.an("object"));
 
-      // assert
-      expect(actual)
-          .to.be.an("object");
     });
   });
 
@@ -145,8 +156,11 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.2", () => {
       var un = new Unmarshaller();
 
       // act and assert
-      expect(un.unmarshall.bind(un, payload, attributes))
-          .to.throw("content type not allowed");
+      un.unmarshall(payload, attributes)
+        .then(actual => {throw {message: "failed"}})
+        .catch(err =>
+          expect(err.message).to.equal("content type not allowed"));
+
     });
 
     it("Throw error when the event does not follow the spec 0.2", () => {
@@ -167,8 +181,10 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.2", () => {
       var un = new Unmarshaller();
 
       // act and assert
-      expect(un.unmarshall.bind(un, payload, attributes))
-        .to.throw();
+      un.unmarshall(payload, attributes)
+        .then(actual => {throw {message: "failed"}})
+        .catch(err =>
+          expect(err.message).to.not.empty());
     });
 
     it("No error when all attributes are in place", () => {
@@ -188,12 +204,9 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.2", () => {
 
       var un = new Unmarshaller();
 
-      // act
-      var actual = un.unmarshall(payload, attributes);
-
-      // assert
-      expect(actual)
-          .to.be.an("object");
+      // act and assert
+      un.unmarshall(payload, attributes)
+        .then(actual => expect(actual).to.be.an("object"));
 
     });
   });

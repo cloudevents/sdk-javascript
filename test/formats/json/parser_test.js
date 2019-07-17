@@ -63,7 +63,7 @@ describe("JSON Event Format Parser", () => {
 
     // act and assert
     expect(parser.parse.bind(parser, payload))
-        .to.throw("invalid json payload");
+        .to.throw("Unexpected token g in JSON at position 0");
   });
 
   it("Must accept the CloudEvent spec 0.2 as JSON", () => {

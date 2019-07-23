@@ -184,7 +184,7 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.2", () => {
       un.unmarshall(payload, attributes)
         .then(actual => {throw {message: "failed"}})
         .catch(err =>
-          expect(err.message).to.not.empty());
+          expect(err.message).to.not.empty);
     });
 
     it("No error when all attributes are in place", () => {

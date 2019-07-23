@@ -47,9 +47,9 @@ These are the supported specifications by this version.
 | HTTP Transport Binding  - Binary      | yes      | yes      |
 | JSON Event Format                     | yes      | yes      |
 
-### What we can do?
+### What we can do
 
-| __What__                           | __v0.1__ | __v0.2__ |
+| **What**                           | **v0.1** | **v0.2** |
 |------------------------------------|----------|----------|
 | Create events                      | yes      | yes      |
 | Emit Structured events over HTTP   | yes      | yes      |
@@ -176,7 +176,7 @@ to process the HTTP Payload and HTTP Headers, extracting the CloudEvents.
 The Unmarshaller will parse the HTTP Request and decides if it is a binary
 or a structured version of transport binding.
 
-__:smiley: Checkout the full working example: [here](./examples/express-ex).__
+:smiley: **Checkout the full working example: [here](./examples/express-ex).**
 
 ```js
 // some parts were removed //
@@ -361,8 +361,8 @@ Cloudevent Receiver.parse(Object, Map)
 
 The Unmarshaller classes uses the receiver API, abstracting the formats:
 
- - structured
- - binary
+- structured
+- binary
 
 Choosing the right implementation based on the `headers` map.
 

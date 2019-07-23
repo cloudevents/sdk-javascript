@@ -49,14 +49,14 @@ These are the supported specifications by this version.
 
 ### What we can do
 
-| **What**                           | **v0.1** | **v0.2** |
-|------------------------------------|----------|----------|
-| Create events                      | yes      | yes      |
-| Emit Structured events over HTTP   | yes      | yes      |
-| Emit Binary events over HTTP       | yes      | yes      |
-| JSON Event Format                  | yes      | yes      |
-| Receice Structured events over HTTP| no       | yes      |
-| Receice Binary events over HTTP    | no       | yes      |
+| **What**                            | **v0.1** | **v0.2** |
+|-------------------------------------|----------|----------|
+| Create events                       | yes      | yes      |
+| Emit Structured events over HTTP    | yes      | yes      |
+| Emit Binary events over HTTP        | yes      | yes      |
+| JSON Event Format                   | yes      | yes      |
+| Receice Structured events over HTTP | no       | yes      |
+| Receice Binary events over HTTP     | no       | yes      |
 
 ## How to use
 

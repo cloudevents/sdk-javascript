@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/cloudevents/sdk-javascript.svg?branch=master)](https://travis-ci.org/cloudevents/sdk-javascript)
 [![downloads](https://img.shields.io/npm/dy/cloudevents-sdk.svg)](https://www.npmjs.com/package/cloudevents-sdk)
 [![npm version](https://img.shields.io/npm/v/cloudevents-sdk.svg)](https://www.npmjs.com/package/cloudevents-sdk)
-[![dependencies](https://david-dm.org/cloudevents/sdk-javascript.svg)]()
+[![dependencies](https://david-dm.org/cloudevents/sdk-javascript.svg)](https://david-dm.org/cloudevents/sdk-javascript)
 
 # sdk-javascript
 

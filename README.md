@@ -20,6 +20,39 @@ Before create an awesome PR, please read our [guidelines](./CONTRIBUTING.md).
 
 To see working examples, point to [examples](./examples).
 
+## :newspaper: News Letter :newspaper:
+
+Checkout the expressive changes.
+
+### New way to import the specifications stuff
+
+```js
+// Import the v0.2. stuff
+var v02 = require("cloudevents-sdk/v02");
+
+// Access the spec
+v02.Spec;
+
+// Access the structured http event emitter
+v02.StructuredHTTPEmitter;
+
+// Access the binary http event emitter
+v02.BinaryHTTPEmitter;
+```
+
+### An easy way to create events
+
+```js
+// Import the v0.2. stuff
+var v02 = require("cloudevents-sdk/v02");
+
+// Creates an event using the v0.2 spec
+let ce =
+  v02.event()
+       .type("com.github.pull.create")
+       .source("urn:event:from:myapi/resourse/123");
+```
+
 ## Versioning
 
 ### Before Spec reaches 1.0
@@ -80,7 +113,7 @@ Cloudevent(spec, format);
 ```js
 var Cloudevent = require("cloudevents-sdk");
 
-var Spec02 = require("cloudevents-sdk/v02")
+var Spec02 = require("cloudevents-sdk/v02");
 
 /*
  * Constructs a default instance with:

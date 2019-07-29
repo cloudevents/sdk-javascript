@@ -326,7 +326,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.2", () => {
 
       // assert
       expect(actual.getContenttype())
-        .to.equal("application/json");
+        .to.equal("application/octet-stream");
     });
 
     it("Cloudevent contains 'data' (application/json)", () => {

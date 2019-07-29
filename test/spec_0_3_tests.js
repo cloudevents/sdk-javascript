@@ -21,7 +21,6 @@ var cloudevent =
     .id(id)
     .source(source)
     .type(type)
-    .dataContentEncoding(dataContentEncoding)
     .dataContentType(dataContentType)
     .schemaurl(schemaurl)
     .subject(subject)
@@ -50,7 +49,10 @@ describe("CloudEvents Spec v0.3", () => {
 
   describe("OPTIONAL Attributes", () => {
     it("Should have 'datacontentencoding'", () => {
-      expect(cloudevent.getDataContentEncoding()).to.equal(dataContentEncoding);
+      cloudevent.dataContentEncoding(dataContentEncoding);
+      expect(cloudevent.spec.payload.datacontentencoding)
+        .to.equal(dataContentEncoding);
+      delete cloudevent.spec.payload.datacontentencoding;
     });
 
     it("Should have 'datacontenttype'", () => {
@@ -162,8 +164,51 @@ describe("CloudEvents Spec v0.3", () => {
     });
 
     describe("'datacontentencoding'", () => {
-      it("should throw an erro when 'data' is not a string", () => {
+      it("should throw an error when 'data' is not a string", () => {
+        cloudevent
+          .dataContentEncoding(dataContentEncoding);
+        expect(cloudevent.format.bind(cloudevent))
+          .to
+          .throw("invalid payload");
+        cloudevent.data(data);
+        delete cloudevent.spec.payload.datacontentencoding;
+      });
 
+      it("should throw an error when is a unsupported encoding" , () => {
+        cloudevent
+          .data("Y2xvdWRldmVudHMK")
+          .dataContentEncoding("binary");
+        expect(cloudevent.format.bind(cloudevent))
+          .to
+          .throw("invalid payload");
+        delete cloudevent.spec.payload.datacontentencoding;
+        cloudevent.data(data);
+      });
+
+      it("should accept when 'data' is a string", () => {
+        cloudevent
+          .data("Y2xvdWRldmVudHMK")
+          .dataContentEncoding("base64");
+        expect(cloudevent.format()).to.have.property("datacontentencoding");
+        delete cloudevent.spec.payload.datacontentencoding;
+        cloudevent.data(data);
+      });
+    });
+
+    describe("'subject'", () => {
+      it("should throw an error when is an empty string", () => {
+        cloudevent.subject("");
+        expect(cloudevent.format.bind(cloudevent))
+          .to
+          .throw("invalid payload");
+        cloudevent.subject(type);
+      });
+    });
+
+    describe("'time'", () => {
+      it("must adhere to the format specified in RFC 3339", () => {
+        cloudevent.time(time);
+        expect(cloudevent.format()["time"]).to.equal(time.toISOString());
       });
     });
   });

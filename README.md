@@ -43,7 +43,7 @@ v02.BinaryHTTPEmitter;
 ### An easy way to create events
 
 ```js
-// Import the v0.2. stuff
+// Import the v0.2 stuff
 var v02 = require("cloudevents-sdk/v02");
 
 // Creates an event using the v0.2 spec

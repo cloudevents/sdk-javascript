@@ -44,23 +44,23 @@ npm install cloudevents-sdk
 
 These are the supported specifications by this version.
 
-| **Specifications**                    | **v0.1** | **v0.2** |
-|---------------------------------------|----------|----------|
-| CloudEvents                           | yes      | yes      |
-| HTTP Transport Binding  - Structured  | yes      | yes      |
-| HTTP Transport Binding  - Binary      | yes      | yes      |
-| JSON Event Format                     | yes      | yes      |
+| **Specifications**                    | **v0.1** | **v0.2** | **v0.3** |
+|---------------------------------------|----------|----------|----------|
+| CloudEvents                           | yes      | yes      | yes      |
+| HTTP Transport Binding  - Structured  | yes      | yes      | ??       |
+| HTTP Transport Binding  - Binary      | yes      | yes      | ?        |
+| JSON Event Format                     | yes      | yes      | ?        |
 
 ### What we can do
 
-| **What**                            | **v0.1** | **v0.2** |
-|-------------------------------------|----------|----------|
-| Create events                       | yes      | yes      |
-| Emit Structured events over HTTP    | yes      | yes      |
-| Emit Binary events over HTTP        | yes      | yes      |
-| JSON Event Format                   | yes      | yes      |
-| Receice Structured events over HTTP | no       | yes      |
-| Receice Binary events over HTTP     | no       | yes      |
+| **What**                            | **v0.1** | **v0.2** | **v0.3** |
+|-------------------------------------|----------|----------|----------|
+| Create events                       | yes      | yes      | yes      |
+| Emit Structured events over HTTP    | yes      | yes      | ?        |
+| Emit Binary events over HTTP        | yes      | yes      | ?        |
+| JSON Event Format                   | yes      | yes      | ?        |
+| Receice Structured events over HTTP | no       | yes      | ?        |
+| Receice Binary events over HTTP     | no       | yes      | ?        |
 
 ## How to use
 
@@ -80,6 +80,8 @@ Cloudevent(spec, format);
 ```js
 var Cloudevent = require("cloudevents-sdk");
 
+var Spec02 = require("cloudevents-sdk/v02")
+
 /*
  * Constructs a default instance with:
  *   - Spec 0.1
@@ -95,8 +97,8 @@ cloudevent01
   .source("urn:event:from:myapi/resourse/123");
 
 /*
- * Backward compatibility to spec 0.1 by injecting methods from spec implementation
- * to Cloudevent
+ * Backward compatibility to spec 0.1 by injecting methods from spec
+ * implementation to Cloudevent
  */
 cloudevent01
   .eventTypeVersion("1.0");

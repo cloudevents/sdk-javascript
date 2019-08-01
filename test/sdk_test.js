@@ -37,5 +37,23 @@ describe("The SDK Requirements", () => {
     it("should create an event using the right spec version", () => {
       expect(v03.event().spec.payload.specversion).to.equal("0.3");
     });
+
+    it("should exports 'Spec'", () => {
+      expect(v03).to.have.property("Spec");
+    });
+
+    // StructuredHTTPEmitter
+
+    // StructuredHTTPReceiver
+
+    it("should exports 'BinaryHTTPEmitter'", () => {
+      expect(v03).to.have.property("BinaryHTTPEmitter");
+    });
+
+    // BinaryHTTPReceiver
+
+    it("should exports 'event'", () => {
+      expect(v03).to.have.property("event");
+    });
   });
 });

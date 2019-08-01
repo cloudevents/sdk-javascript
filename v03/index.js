@@ -1,5 +1,6 @@
 const Cloudevent = require("../lib/cloudevent.js");
 const Spec = require("../lib/specs/spec_0_3.js");
+const BinaryHTTPEmitter = require("../lib/bindings/http/emitter_binary_0_3.js");
 
 function event() {
   return new Cloudevent(Spec);
@@ -7,5 +8,6 @@ function event() {
 
 module.exports = {
   Spec,
+  BinaryHTTPEmitter,
   event
 };

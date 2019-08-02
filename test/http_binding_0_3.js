@@ -58,6 +58,7 @@ const httpcfg = {
 };
 
 const binary = new BinaryHTTPEmitter(httpcfg);
+const structured = new v03.StructuredHTTPEmitter(httpcfg);
 
 describe("HTTP Transport Binding - Version 0.3", () => {
   beforeEach(() => {
@@ -65,6 +66,36 @@ describe("HTTP Transport Binding - Version 0.3", () => {
     nock(webhook)
       .post("/json")
       .reply(201, {status: "accepted"});
+  });
+
+  describe("Structured", () => {
+    describe("JSON Format", () => {
+      it("requires '" + contentType + "' Content-Type in the header", () => {
+        return structured.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers["Content-Type"])
+              .to.equal(contentType);
+          });
+      });
+
+      it("the request payload should be correct", () => {
+        return structured.emit(cloudevent)
+          .then((response) => {
+            expect(JSON.parse(response.config.data))
+              .to.deep.equal(cloudevent.format());
+          });
+      });
+
+      describe("'data' attribute with 'base64' encoding", () => {
+        it("the request payload should be correct", () => {
+          return structured.emit(cebase64)
+            .then((response) => {
+              expect(JSON.parse(response.config.data).data)
+                .to.equal(cebase64.format().data);
+            });
+        });
+      });
+    });
   });
 
   describe("Binary", () => {
@@ -133,14 +164,6 @@ describe("HTTP Transport Binding - Version 0.3", () => {
           });
       });
 
-      it("HTTP Header contains 'ce-datacontentencoding'", () => {
-        return binary.emit(cebase64)
-          .then((response) => {
-            expect(response.config.headers)
-              .to.have.property("ce-datacontentencoding");
-          });
-      });
-
       it("HTTP Header contains 'ce-" + ext1Name + "'", () => {
         return binary.emit(cloudevent)
           .then((response) => {
@@ -163,6 +186,16 @@ describe("HTTP Transport Binding - Version 0.3", () => {
             expect(response.config.headers)
               .to.have.property("ce-subject");
           });
+      });
+
+      describe("'data' attribute with 'base64' encoding", () => {
+        it("HTTP Header contains 'ce-datacontentencoding'", () => {
+          return binary.emit(cebase64)
+            .then((response) => {
+              expect(response.config.headers)
+                .to.have.property("ce-datacontentencoding");
+            });
+        });
       });
     });
   });

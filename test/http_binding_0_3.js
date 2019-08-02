@@ -188,6 +188,70 @@ describe("HTTP Transport Binding - Version 0.3", () => {
           });
       });
 
+      it("should 'ce-type' have the right value", () => {
+        return binary.emit(cloudevent)
+          .then((response) => {
+            expect(cloudevent.getType())
+              .to.equal(response.config.headers["ce-type"]);
+          });
+      });
+
+      it("should 'ce-specversion' have the right value", () => {
+        return binary.emit(cloudevent)
+          .then((response) => {
+            expect(cloudevent.getSpecversion())
+              .to.equal(response.config.headers["ce-specversion"]);
+          });
+      });
+
+      it("should 'ce-source' have the right value", () => {
+        return binary.emit(cloudevent)
+          .then((response) => {
+            expect(cloudevent.getSource())
+              .to.equal(response.config.headers["ce-source"]);
+          });
+      });
+
+      it("should 'ce-id' have the right value", () => {
+        return binary.emit(cloudevent)
+          .then((response) => {
+            expect(cloudevent.getId())
+              .to.equal(response.config.headers["ce-id"]);
+          });
+      });
+
+      it("should 'ce-time' have the right value", () => {
+        return binary.emit(cloudevent)
+          .then((response) => {
+            expect(cloudevent.getTime())
+              .to.equal(response.config.headers["ce-time"]);
+          });
+      });
+
+      it("should 'ce-schemaurl' have the right value", () => {
+        return binary.emit(cloudevent)
+          .then((response) => {
+            expect(cloudevent.getSchemaurl())
+              .to.equal(response.config.headers["ce-schemaurl"]);
+          });
+      });
+
+      it("should 'ce-" + ext1Name + "' have the right value", () => {
+        return binary.emit(cloudevent)
+          .then((response) => {
+            expect(cloudevent.getExtensions()[ext1Name])
+              .to.equal(response.config.headers["ce-" + ext1Name]);
+          });
+      });
+
+      it("should 'ce-" + ext2Name + "' have the right value", () => {
+        return binary.emit(cloudevent)
+          .then((response) => {
+            expect(cloudevent.getExtensions()[ext2Name])
+              .to.equal(response.config.headers["ce-" + ext2Name]);
+          });
+      });
+
       it("should 'ce-subject' have the right value", () => {
         return binary.emit(cloudevent)
           .then((response) => {
@@ -202,6 +266,14 @@ describe("HTTP Transport Binding - Version 0.3", () => {
             .then((response) => {
               expect(response.config.headers)
                 .to.have.property("ce-datacontentencoding");
+            });
+        });
+
+        it("should 'ce-datacontentencoding' have the right value", () => {
+          return binary.emit(cloudevent)
+            .then((response) => {
+              expect(cloudevent.getDataContentEncoding())
+                .to.equal(response.config.headers["ce-datacontentencoding"]);
             });
         });
       });

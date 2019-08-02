@@ -42,7 +42,10 @@ describe("The SDK Requirements", () => {
       expect(v03).to.have.property("Spec");
     });
 
-    // StructuredHTTPEmitter
+
+    it("should exports 'StructuredHTTPEmitter'", () => {
+      expect(v03).to.have.property("StructuredHTTPEmitter");
+    });
 
     // StructuredHTTPReceiver
 

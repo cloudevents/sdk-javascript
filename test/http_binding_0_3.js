@@ -188,6 +188,14 @@ describe("HTTP Transport Binding - Version 0.3", () => {
           });
       });
 
+      it("should 'ce-subject' have the right value", () => {
+        return binary.emit(cloudevent)
+          .then((response) => {
+            expect(cloudevent.getSubject())
+              .to.equal(response.config.headers["ce-subject"]);
+          });
+      });
+
       describe("'data' attribute with 'base64' encoding", () => {
         it("HTTP Header contains 'ce-datacontentencoding'", () => {
           return binary.emit(cebase64)

@@ -111,8 +111,6 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v0.3", () =
         "Content-Type" : "application/cloudevents+json"
       };
 
-      console.log(payload);
-
       // act and assert
       expect(receiver.parse.bind(receiver, payload, attributes))
         .to.throw("invalid payload");

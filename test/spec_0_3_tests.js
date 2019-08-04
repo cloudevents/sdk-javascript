@@ -131,7 +131,7 @@ describe("CloudEvents Spec v0.3", () => {
           cloudevent.spec.payload.specversion = "0.3";
       });
 
-      it("should throw an erro when is empty", () => {
+      it("should throw an error when is empty", () => {
         cloudevent.spec.payload.specversion = "";
         expect(cloudevent.format.bind(cloudevent))
           .to
@@ -181,6 +181,22 @@ describe("CloudEvents Spec v0.3", () => {
         expect(cloudevent.format.bind(cloudevent))
           .to
           .throw("invalid payload");
+        delete cloudevent.spec.payload.datacontentencoding;
+        cloudevent.data(data);
+      });
+
+      it("should throw an error when 'data' does not carry base64",
+        () => {
+
+        cloudevent
+          .data("no base 64 value")
+          .dataContentEncoding("base64")
+          .dataContentType("text/plain");
+
+        expect(cloudevent.format.bind(cloudevent))
+          .to
+          .throw("invalid payload");
+
         delete cloudevent.spec.payload.datacontentencoding;
         cloudevent.data(data);
       });

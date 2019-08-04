@@ -29,4 +29,18 @@ describe("Functional approach", () => {
         .equals(true);
     });
   });
+
+  describe("isBase64", () => {
+    it("should return false when is not base64 string", () => {
+      let actual = fun.isBase64("non base 64");
+
+      expect(actual).to.equal(false);
+    });
+
+    it("should return true when is a base64 string", () => {
+      let actual = fun.isBase64("Y2xvdWRldmVudHMK");
+
+      expect(actual).to.equal(true);
+    });
+  });
 });

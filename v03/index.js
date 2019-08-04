@@ -4,6 +4,12 @@ const StructuredHTTPEmitter =
   require("../lib/bindings/http/emitter_structured.js");
 const BinaryHTTPEmitter = require("../lib/bindings/http/emitter_binary_0_3.js");
 
+const StructuredHTTPReceiver =
+  require("../lib/bindings/http/receiver_structured_0_3.js");
+
+const BinaryHTTPReceiver =
+  require("../lib/bindings/http/receiver_binary_0_3.js");
+
 function event() {
   return new Cloudevent(Spec);
 }
@@ -11,6 +17,8 @@ function event() {
 module.exports = {
   Spec,
   StructuredHTTPEmitter,
+  StructuredHTTPReceiver,
   BinaryHTTPEmitter,
+  BinaryHTTPReceiver,
   event
 };

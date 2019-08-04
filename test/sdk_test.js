@@ -42,18 +42,21 @@ describe("The SDK Requirements", () => {
       expect(v03).to.have.property("Spec");
     });
 
-
     it("should exports 'StructuredHTTPEmitter'", () => {
       expect(v03).to.have.property("StructuredHTTPEmitter");
     });
 
-    // StructuredHTTPReceiver
+    it("should exports 'StructuredHTTPReceiver'", () => {
+      expect(v03).to.have.property("StructuredHTTPReceiver");
+    });
 
     it("should exports 'BinaryHTTPEmitter'", () => {
       expect(v03).to.have.property("BinaryHTTPEmitter");
     });
 
-    // BinaryHTTPReceiver
+    it("should exports 'BinaryHTTPReceiver'", () => {
+      expect(v03).to.have.property("BinaryHTTPReceiver");
+    });
 
     it("should exports 'event'", () => {
       expect(v03).to.have.property("event");

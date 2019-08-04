@@ -20,35 +20,40 @@ Before create an awesome PR, please read our [guidelines](./CONTRIBUTING.md).
 
 To see working examples, point to [examples](./examples).
 
-## :newspaper: News Letter :newspaper:
+## :newspaper: Newsletter :newspaper:
 
-Checkout the expressive changes.
+> all the API developed before, for 0.1 and 0.2, works as the same.
+
+Checkout the new expressive additions.
 
 ### New way to import the specifications stuff
 
 ```js
-// Import the v0.2. stuff
-var v02 = require("cloudevents-sdk/v02");
+// Import the v0.3 stuff
+const v03 = require("cloudevents-sdk/v03");
 
 // Access the spec
-v02.Spec;
+v03.Spec;
 
 // Access the structured http event emitter
-v02.StructuredHTTPEmitter;
+v03.StructuredHTTPEmitter;
 
 // Access the binary http event emitter
-v02.BinaryHTTPEmitter;
+v03.BinaryHTTPEmitter;
+
+// Access http unmarshaller to process incoming events
+v03.Unmarshaller;
 ```
 
 ### An easy way to create events
 
 ```js
-// Import the v0.2 stuff
-var v02 = require("cloudevents-sdk/v02");
+// Import the v0.3 stuff
+const v03 = require("cloudevents-sdk/v03");
 
-// Creates an event using the v0.2 spec
+// Creates an event using the v0.3 spec
 let ce =
-  v02.event()
+  v03.event()
        .type("com.github.pull.create")
        .source("urn:event:from:myapi/resourse/123");
 ```

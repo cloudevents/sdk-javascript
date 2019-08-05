@@ -41,8 +41,8 @@ v03.StructuredHTTPEmitter;
 // Access the binary http event emitter
 v03.BinaryHTTPEmitter;
 
-// Access http unmarshaller to process incoming events
-v03.Unmarshaller;
+// Access http unmarshaller to process incoming events, Binary or Structured
+v03.HTTPUnmarshaller;
 ```
 
 ### An easy way to create events

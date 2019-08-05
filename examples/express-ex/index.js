@@ -1,24 +1,24 @@
 var express = require("express");
 var app = express();
 
-const Unmarshaller02 = require("cloudevents-sdk/http/unmarshaller/v02");
-var unmarshaller = new Unmarshaller02();
+const v02 = require("cloudevents-sdk/v02");
+var unmarshaller = new v02.HTTPUnmarshaller();
 
 app.use((req, res, next) => {
-    var data='';
+    var data="";
 
-    req.setEncoding('utf8');
-    req.on('data', function(chunk) {
+    req.setEncoding("utf8");
+    req.on("data", function(chunk) {
        data += chunk;
     });
 
-    req.on('end', function() {
+    req.on("end", function() {
         req.body = data;
         next();
     });
 });
 
-app.post('/', function (req, res) {
+app.post("/", function (req, res) {
   console.log(req.headers);
   console.log(req.body);
 
@@ -29,11 +29,11 @@ app.post('/', function (req, res) {
       console.log(JSON.stringify(cloudevent.format(), null, 2));
 
       res.status(201)
-            .send("Event Accepted");
+            .send("Event Created");
   })
   .catch(err => {
     console.error(err);
-    res.status(400)
+    res.status(415)
           .header("Content-Type", "application/json")
           .send(JSON.stringify(err));
   });

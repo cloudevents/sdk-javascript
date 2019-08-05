@@ -8,7 +8,7 @@ const StructuredHTTPReceiver =
 const BinaryHTTPReceiver =
   require("../lib/bindings/http/receiver_binary_0_2.js");
 
-const HTTPUnmarshaller = require("../lib/bindings/http/unmarshaller_0_3.js");
+const HTTPUnmarshaller = require("../lib/bindings/http/unmarshaller_0_2.js");
 
 function event() {
   return new Cloudevent(Spec);

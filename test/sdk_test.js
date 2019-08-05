@@ -28,6 +28,10 @@ describe("The SDK Requirements", () => {
       expect(v02).to.have.property("BinaryHTTPReceiver");
     });
 
+    it("should exports 'HTTPUnmarshaller'", () => {
+      expect(v02).to.have.property("HTTPUnmarshaller");
+    });
+
     it("should exports 'event'", () => {
       expect(v02).to.have.property("event");
     });
@@ -56,6 +60,10 @@ describe("The SDK Requirements", () => {
 
     it("should exports 'BinaryHTTPReceiver'", () => {
       expect(v03).to.have.property("BinaryHTTPReceiver");
+    });
+
+    it("should exports 'HTTPUnmarshaller'", () => {
+      expect(v03).to.have.property("HTTPUnmarshaller");
     });
 
     it("should exports 'event'", () => {

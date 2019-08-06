@@ -85,20 +85,20 @@ These are the supported specifications by this version.
 | **Specifications**                    | **v0.1** | **v0.2** | **v0.3** |
 |---------------------------------------|----------|----------|----------|
 | CloudEvents                           | yes      | yes      | yes      |
-| HTTP Transport Binding  - Structured  | yes      | yes      | ??       |
-| HTTP Transport Binding  - Binary      | yes      | yes      | ?        |
-| JSON Event Format                     | yes      | yes      | ?        |
+| HTTP Transport Binding  - Structured  | yes      | yes      | yes      |
+| HTTP Transport Binding  - Binary      | yes      | yes      | yes      |
+| JSON Event Format                     | yes      | yes      | yes      |
 
 ### What we can do
 
 | **What**                            | **v0.1** | **v0.2** | **v0.3** |
 |-------------------------------------|----------|----------|----------|
 | Create events                       | yes      | yes      | yes      |
-| Emit Structured events over HTTP    | yes      | yes      | ?        |
-| Emit Binary events over HTTP        | yes      | yes      | ?        |
-| JSON Event Format                   | yes      | yes      | ?        |
-| Receice Structured events over HTTP | no       | yes      | ?        |
-| Receice Binary events over HTTP     | no       | yes      | ?        |
+| Emit Structured events over HTTP    | yes      | yes      | yes      |
+| Emit Binary events over HTTP        | yes      | yes      | yes      |
+| JSON Event Format                   | yes      | yes      | yes      |
+| Receice Structured events over HTTP | no       | yes      | yes      |
+| Receice Binary events over HTTP     | no       | yes      | yes      |
 
 ## How to use
 

@@ -225,7 +225,8 @@ or a structured version of transport binding.
 ```js
 // some parts were removed //
 
-var Unmarshaller02 = require("cloudevents-sdk/http/unmarshaller/v02");
+const v02 = require("cloudevents-sdk/v02");
+const unmarshaller = new v02.HTTPUnmarshaller();
 
 // some parts were removed //
 
@@ -240,7 +241,7 @@ app.post('/', function (req, res) {
   })
   .catch(err => {
     console.error(err);
-    res.status(400)
+    res.status(415)
           .header("Content-Type", "application/json")
           .send(JSON.stringify(err));
   });

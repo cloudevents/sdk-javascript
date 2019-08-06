@@ -1,7 +1,7 @@
 var express = require("express");
 var app = express();
 
-const v03 = require("cloudevents-sdk/v02");
+const v03 = require("cloudevents-sdk/v03");
 var unmarshaller03 = new v03.HTTPUnmarshaller();
 
 const v02 = require("cloudevents-sdk/v02");

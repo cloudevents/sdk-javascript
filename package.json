@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/istanbul cover -x 'test/**/*.js' _mocha -- -C test/**/*.js",
-    "coverage-publish": "./node_modules/.bin/istanbul cover -x 'test/**/*.js' _mocha --report lcovonly -- -C test/**/*.js -R spec && cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage && rm -rf ./coverage"
+    "coverage-publish": "./node_modules/.bin/istanbul cover -x 'test/**/*.js' _mocha --report lcovonly -- -C test/**/*.js -R spec && cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage && rm -rf ./coverage",
+    "bdd": "./node_modules/.bin/cucumber-js ./test/bdd/feature -r ./test/bdd/step"
   },
   "repository": {
     "type": "git",
@@ -38,12 +39,13 @@
   },
   "devDependencies": {
     "chai": "4.2.0",
-    "mocha": "5.2.0",
     "chai-http": "4.2.0",
-    "nock": "10.0.2",
     "codacy-coverage": "3.3.0",
-    "mocha-lcov-reporter": "1.3.0",
+    "cucumber": "^5.1.0",
     "istanbul": "0.4.5",
+    "mocha": "5.2.0",
+    "mocha-lcov-reporter": "1.3.0",
+    "nock": "10.0.2",
     "request": "^2.88.0"
   },
   "publishConfig": {

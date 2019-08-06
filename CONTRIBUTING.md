@@ -5,6 +5,13 @@
 Following you will see some guidelines about how to contribute with
 JavaScript SDK.
 
+## Branch Management
+
+We use Gitflow to manage our branches and that's ok when `develop` branch is
+ahead of `master`.
+
+- [Gitflow](https://nvie.com/posts/a-successful-git-branching-model/) by @nvie
+
 ## Pull Requests
 
 Guidelines about how to perform pull requests.

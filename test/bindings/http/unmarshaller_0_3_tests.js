@@ -1,7 +1,7 @@
 var expect = require("chai").expect;
 var Unmarshaller = require("../../../lib/bindings/http/unmarshaller_0_3.js");
 var Cloudevent   = require("../../../index.js");
-var {Spec03}     = require("../../../v03/index.js");
+var v03     = require("../../../v03/index.js");
 
 const type        = "com.github.pull.create";
 const source      = "urn:event:from:myapi/resourse/123";
@@ -115,7 +115,7 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
     it("Should accept event that follow the spec 0.3", () => {
       // setup
       var payload =
-        new Cloudevent(Spec03)
+        new Cloudevent(v03.Spec)
           .type(type)
           .source(source)
           .contenttype(ceContentType)
@@ -131,9 +131,13 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
       var un = new Unmarshaller();
 
       // act and assert
-      un.unmarshall(payload, headers)
+      return un.unmarshall(payload, headers)
         .then(actual =>
-          expect(actual).to.be.an("object"));
+          expect(actual).to.be.an("object"))
+        .catch((err) => {
+          console.log(err);
+          throw err;
+        });
 
     });
   });
@@ -208,7 +212,60 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
       // act and assert
       un.unmarshall(payload, attributes)
         .then(actual => expect(actual).to.be.an("object"));
+    });
 
+    it("Throw error when 'ce-datacontentencoding' is not allowed", () => {
+      // setup
+      var payload = "eyJtdWNoIjoid293In0=";
+
+      var attributes = {
+        "ce-type"        : "type",
+        "ce-specversion" : "0.3",
+        "ce-source"      : "source",
+        "ce-id"          : "id",
+        "ce-time"        : "2019-06-16T11:42:00Z",
+        "ce-schemaurl"   : "http://schema.registry/v1",
+        "Content-Type"   : "application/json",
+        "ce-datacontentencoding" : "binary"
+      };
+
+      var un = new Unmarshaller();
+
+      // act and assert
+      return un.unmarshall(payload, attributes)
+        .then(actual => {throw {message: "failed"}})
+        .catch(err => {
+          expect(err.message).to.equal("unsupported datacontentencoding");
+        });
+    });
+
+    it("No error when 'ce-datacontentencoding' is base64", () => {
+      // setup
+      var payload = "eyJtdWNoIjoid293In0=";
+      let expected = {
+        much : "wow"
+      };
+
+      var attributes = {
+        "ce-type"        : "type",
+        "ce-specversion" : "0.3",
+        "ce-source"      : "source",
+        "ce-id"          : "id",
+        "ce-time"        : "2019-06-16T11:42:00Z",
+        "ce-schemaurl"   : "http://schema.registry/v1",
+        "Content-Type"   : "application/json",
+        "ce-datacontentencoding" : "base64"
+      };
+
+      var un = new Unmarshaller();
+
+      // act and assert
+      return un.unmarshall(payload, attributes)
+        .then(actual => expect(actual.getData()).to.deep.equal(expected))
+        .catch(err => {
+          console.log(err);
+          throw err;
+        });
     });
   });
 });

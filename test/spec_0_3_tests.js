@@ -164,16 +164,6 @@ describe("CloudEvents Spec v0.3", () => {
     });
 
     describe("'datacontentencoding'", () => {
-      it("should throw an error when 'data' is not a string", () => {
-        cloudevent
-          .dataContentEncoding(dataContentEncoding);
-        expect(cloudevent.format.bind(cloudevent))
-          .to
-          .throw("invalid payload");
-        cloudevent.data(data);
-        delete cloudevent.spec.payload.datacontentencoding;
-      });
-
       it("should throw an error when is a unsupported encoding" , () => {
         cloudevent
           .data("Y2xvdWRldmVudHMK")

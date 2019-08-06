@@ -1,8 +1,11 @@
 var express = require("express");
 var app = express();
 
+const v03 = require("cloudevents-sdk/v02");
+var unmarshaller03 = new v03.HTTPUnmarshaller();
+
 const v02 = require("cloudevents-sdk/v02");
-var unmarshaller = new v02.HTTPUnmarshaller();
+var unmarshaller02 = new v02.HTTPUnmarshaller();
 
 app.use((req, res, next) => {
     var data="";
@@ -18,18 +21,18 @@ app.use((req, res, next) => {
     });
 });
 
-app.post("/", function (req, res) {
+app.post("/v03", function (req, res) {
   console.log(req.headers);
   console.log(req.body);
 
-  unmarshaller.unmarshall(req.body, req.headers)
+  unmarshaller03.unmarshall(req.body, req.headers)
     .then(cloudevent => {
       // pretty print
       console.log("Accepted event:");
       console.log(JSON.stringify(cloudevent.format(), null, 2));
 
       res.status(201)
-            .send("Event Created");
+            .json(cloudevent.format());
   })
   .catch(err => {
     console.error(err);
@@ -37,7 +40,27 @@ app.post("/", function (req, res) {
           .header("Content-Type", "application/json")
           .send(JSON.stringify(err));
   });
+});
 
+app.post("/v02", function (req, res) {
+  console.log(req.headers);
+  console.log(req.body);
+
+  unmarshaller02.unmarshall(req.body, req.headers)
+    .then(cloudevent => {
+      // pretty print
+      console.log("Accepted event:");
+      console.log(JSON.stringify(cloudevent.format(), null, 2));
+
+      res.status(201)
+            .json(cloudevent.format());
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(415)
+          .header("Content-Type", "application/json")
+          .send(JSON.stringify(err));
+  });
 });
 
 app.listen(3000, function () {

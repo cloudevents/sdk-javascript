@@ -326,9 +326,9 @@ Every Parser class must implement these methods to work properly.
 
 ```js
 /*
- * The default constructor with Spec as parameter
+ * The default constructor with Parser as decorator
  */
-Parser(Spec)
+Parser(Parser)
 
 /*
  * Try to parse the payload to some event format

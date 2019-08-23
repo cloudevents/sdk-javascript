@@ -12,6 +12,11 @@ ahead of `master`.
 
 - [Gitflow](https://nvie.com/posts/a-successful-git-branching-model/) by @nvie
 
+## Changelog
+
+Always update the [CHANGELOG.md](./CHANGELOG.md), following
+[this semantics](https://keepachangelog.com/en/1.0.0/).
+
 ## Pull Requests
 
 Guidelines about how to perform pull requests.

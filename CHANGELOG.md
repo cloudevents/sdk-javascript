@@ -14,5 +14,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Fix the `subject` attribute unmarshal error: issue
 [#32](https://github.com/cloudevents/sdk-javascript/issues/32)
 
-[Unreleased]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.3.1...HEAD
-[0.3.1]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.3.0...v0.3.1
+[Unreleased]: https://github.com/cloudevents/sdk-javascript/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/cloudevents/sdk-javascript/compare/v0.3.0...v0.3.1

@@ -68,7 +68,8 @@ let ce =
 
 ### Before Spec reaches 1.0
 
-- `0.x.p`: where `x` relates to spec version and `p` relates to fixes and releases.
+- `0.x.p`: where `x` relates to spec version and `p` relates to fixes, releases
+and breaking changes
 
 ### After Spec reaches 1.0
 

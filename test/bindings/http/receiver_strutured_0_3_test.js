@@ -206,5 +206,27 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v0.3", () =
       expect(actualExtensions["extension1"])
           .to.equal(extension1);
     });
+
+    it("Should parse 'data' stringfied json to json object", () => {
+      // setup
+      var payload = v03.event()
+          .type(type)
+          .source(source)
+          .contenttype(ceContentType)
+          .time(now)
+          .schemaurl(schemaurl)
+          .data(JSON.stringify(data))
+          .toString();
+
+      var headers = {
+        "content-type":"application/cloudevents+json"
+      };
+
+      // act
+      var actual = receiver.parse(payload, headers);
+
+      // assert
+      expect(actual.getData()).to.deep.equal(data);
+    });
   });
 });

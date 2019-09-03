@@ -43,4 +43,67 @@ describe("Functional approach", () => {
       expect(actual).to.equal(true);
     });
   });
+
+  describe("asData" , () => {
+    it("should throw error when data is not a valid json", () => {
+      let data = "not a json";
+
+      expect(fun.asData.bind(fun, data, "application/json"))
+        .to
+        .throws();
+    });
+
+    it("should parse string content type as string", () => {
+      let expected = "a string";
+
+      let actual = fun.asData(expected, "text/plain");
+
+      expect((typeof actual)).to.equal("string");
+      expect(actual).to.equal(expected);
+    });
+
+    it("should parse 'application/json' as json object", () => {
+      let expected = {
+        much: "wow",
+        myext : {
+          ext : "x04"
+        }
+      };
+
+      let actual = fun.asData(JSON.stringify(expected), "application/json");
+
+      expect((typeof actual)).to.equal("object");
+      expect(actual).to.deep.equal(expected);
+    });
+
+    it("should parse 'application/cloudevents+json' as json object", () => {
+      let expected = {
+        much: "wow",
+        myext : {
+          ext : "x04"
+        }
+      };
+
+      let actual = fun.asData(JSON.stringify(expected),
+        "application/cloudevents+json");
+
+      expect((typeof actual)).to.equal("object");
+      expect(actual).to.deep.equal(expected);
+    });
+
+    it("should parse 'text/json' as json object", () => {
+      let expected = {
+        much: "wow",
+        myext : {
+          ext : "x04"
+        }
+      };
+
+      let actual = fun.asData(JSON.stringify(expected),
+        "text/json");
+
+      expect((typeof actual)).to.equal("object");
+      expect(actual).to.deep.equal(expected);
+    });
+  });
 });

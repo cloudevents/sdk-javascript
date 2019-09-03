@@ -13,7 +13,10 @@ Official CloudEvents' SDK for JavaScript.
 
 <img src="https://github.com/cncf/artwork/blob/master/projects/cloudevents/horizontal/color/cloudevents-horizontal-color.png" width="300" height="58" alt="CloudEvents logo">
 
-__Checkout the [changelog](./CHANGELOG.md) to see what's going on!__
+**NOTE: This SDK is still considered work in progress, things might (and will)
+break with every update.**
+
+**Checkout the [changelog](./CHANGELOG.md) to see what's going on!**
 
 ## Contributing
 
@@ -65,7 +68,8 @@ let ce =
 
 ### Before Spec reaches 1.0
 
-- `0.x.p`: where `x` relates to spec version and `p` relates to fixes and releases.
+- `0.x.p`: where `x` relates to spec version and `p` relates to fixes, releases
+and breaking changes
 
 ### After Spec reaches 1.0
 

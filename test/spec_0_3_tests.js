@@ -201,6 +201,24 @@ describe("CloudEvents Spec v0.3", () => {
       });
     });
 
+    describe("'data'", () => {
+      it("should maintain the type of data when no data content type", () =>{
+        delete cloudevent.spec.payload.datacontenttype;
+        cloudevent
+          .data(JSON.stringify(data));
+
+        expect(typeof cloudevent.getData()).to.equal("string");  
+        cloudevent.dataContentType(dataContentType);
+      });
+
+      it("should convert data with stringified json to a json object", () => {
+        cloudevent
+          .dataContentType(dataContentType)
+          .data(JSON.stringify(data));
+        expect(cloudevent.getData()).to.deep.equal(data);
+      });
+    });
+
     describe("'subject'", () => {
       it("should throw an error when is an empty string", () => {
         cloudevent.subject("");

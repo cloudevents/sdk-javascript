@@ -141,6 +141,37 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
         });
 
     });
+
+    it("Should parse 'data' stringfied json to json object", () => {
+      // setup
+      var payload =
+        new Cloudevent(v03.Spec)
+          .type(type)
+          .source(source)
+          .dataContentType(ceContentType)
+          .time(now)
+          .schemaurl(schemaurl)
+          .subject(subject)
+          .data(JSON.stringify(data))
+          .toString();
+
+      var headers = {
+        "content-type":"application/cloudevents+json"
+      };
+
+      var un = new Unmarshaller();
+
+      // act and assert
+      return un.unmarshall(payload, headers)
+        .then(actual => {
+          expect(actual.getData()).to.deep.equal(data)
+        })
+        .catch((err) => {
+          console.log(err);
+          throw err;
+        });
+
+    });
   });
 
   describe("Binary", () => {

@@ -35,6 +35,15 @@ export class Cloudevent {
 }
 
 /**
+ * HTTP emitter for Structured mode
+ */
+export class StructuredHTTPEmitter {
+  public constructor(configuration?: any);
+
+  public emit(event: Cloudevent): Promise;
+}
+
+/**
  * Function to create CloudEvents instances
  */
 export declare function event(): Cloudevent;

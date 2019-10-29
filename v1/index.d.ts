@@ -1,5 +1,3 @@
-import * as v1js from './index.js'
-
 /**
  * CloudEvent class definition
  */
@@ -24,8 +22,6 @@ export interface Spec {
 /**
  * Function to create CloudEvents instances
  */
-export function event(): Cloudevent {
-  return new Cloudevent();
-}
+export type event = () => Cloudevent;
 
 export default Cloudevent;

@@ -79,3 +79,5 @@ typings/
 # Vim
 *.swp
 
+# Package lock
+package-lock.json

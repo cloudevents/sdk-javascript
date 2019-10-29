@@ -1,3 +1,5 @@
+import {event} from './index.js'
+
 /**
  * CloudEvent class definition
  */
@@ -16,7 +18,14 @@ export interface Cloudevent {
  * CloudEvents Spec v1.0 definitions
  */
 export interface Spec {
-  (caller: any): any;
+  new (caller: any): Spec;
+}
+
+/**
+ * Function to create CloudEvents instances
+ */
+export interface Event {
+  event:typeof event;
 }
 
 export default Cloudevent;

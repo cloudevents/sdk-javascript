@@ -2,7 +2,7 @@
  * CloudEvent class definition
  */
 export class Cloudevent {
-  public constructor();
+  public constructor(spec?: any, formatter?: any);
 
   public format(): any;
   public toString(): string;

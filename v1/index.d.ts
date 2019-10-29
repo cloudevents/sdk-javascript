@@ -7,7 +7,7 @@ export interface Cloudevent {
 
   id?: (_id: string) => void;
   getId?: string;
-  
+
   type?: (_type: string) => void;
   getType?: string;
 }
@@ -18,3 +18,5 @@ export interface Cloudevent {
 export interface Spec {
   (caller: any): any;
 }
+
+export default Cloudevent;

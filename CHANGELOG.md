@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [1.0.0]
+
+### Added
+
+- Support for [Spec v1.0](https://github.com/cloudevents/spec/tree/v1.0)
+- Typescript types for Spec v1.0: [see and example](./examples/typescript-ex)
+
 ## [0.3.2]
 
 ### Fixed
@@ -21,6 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Fix the `subject` attribute unmarshal error: issue
 [#32](https://github.com/cloudevents/sdk-javascript/issues/32)
 
-[Unreleased]: https://github.com/cloudevents/sdk-javascript/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/cloudevents/sdk-javascript/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/cloudevents/sdk-javascript/compare/v0.3.2...v1.0.0
 [0.3.2]: https://github.com/cloudevents/sdk-javascript/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/cloudevents/sdk-javascript/compare/v0.3.0...v0.3.1

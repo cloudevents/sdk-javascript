@@ -25,7 +25,7 @@ export interface Spec {
  * Function to create CloudEvents instances
  */
 export function event(): Cloudevent {
-  return v1js.event();
+  return new Cloudevent();
 }
 
 export default Cloudevent;

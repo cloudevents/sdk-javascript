@@ -10,15 +10,28 @@ export class Cloudevent {
   public id(id: string): Cloudevent;
   public getId(): string;
 
+  public source(source: string): Cloudevent;
+  public getSource(): string;
+
+  public getSpecversion(): string;
+
   public type(type: string): Cloudevent;
   public getType(): string;
-}
 
-/**
- * CloudEvents Spec v1.0 definitions
- */
-export interface Spec {
-  new (caller: any): Spec;
+  public dataContentType(dct: string): Cloudevent;
+  public getDataContentType(): string;
+
+  public dataschema(schema: string): Cloudevent;
+  public getDataschema(): string;
+
+  public subject(subject: string): Cloudevent;
+  public getSubject(): string;
+
+  public time(time: Date): Cloudevent;
+  public getTime(): Date;
+
+  public data(data: any): Cloudevent;
+  public getData(): any;
 }
 
 /**

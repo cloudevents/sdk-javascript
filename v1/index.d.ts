@@ -3,15 +3,15 @@ import * as v1js from './index.js'
 /**
  * CloudEvent class definition
  */
-export interface Cloudevent {
-  format?: any;
-  toString?: string;
+export class Cloudevent {
+  public format(): any;
+  public toString(): string;
 
-  id?: (_id: string) => void;
-  getId?: string;
+  public id(id: string): Cloudevent;
+  public getId(): string;
 
-  type?: (_type: string) => void;
-  getType?: string;
+  public type(type: string): Cloudevent;
+  public getType(): string;
 }
 
 /**

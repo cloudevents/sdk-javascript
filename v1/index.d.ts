@@ -40,7 +40,7 @@ export class Cloudevent {
 export class StructuredHTTPEmitter {
   public constructor(configuration?: any);
 
-  public emit(event: Cloudevent): Promise;
+  public emit(event: Cloudevent): Promise<any>;
 }
 
 /**

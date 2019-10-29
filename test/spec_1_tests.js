@@ -65,5 +65,122 @@ describe("CloudEvents Spec v1.0", () => {
     it("Should have 'data'", () => {
       expect(cloudevent.getData()).to.deep.equal(data);
     });
+
+    it("Should have the 'extension1'", () => {
+      cloudevent.addExtension("extension1", "value1");
+      expect(cloudevent.spec.payload["extension1"])
+        .to.equal("value1");
+    });
+
+    it("should throw an error when use a reserved name as extension", () => {
+      expect(cloudevent.addExtension.bind(cloudevent, "id"))
+        .to.throw("Reserved attribute name: 'id'");
+    });
+  });
+
+  describe("The Constraints check", () => {
+    describe("'id'", () => {
+      it("should throw an error when is absent", () => {
+          delete cloudevent.spec.payload.id;
+          expect(cloudevent.format.bind(cloudevent))
+            .to
+            .throw("invalid payload");
+          cloudevent.spec.payload.id = id;
+      });
+
+      it("should throw an erro when is empty", () => {
+        cloudevent.spec.payload.id = "";
+        expect(cloudevent.format.bind(cloudevent))
+          .to
+          .throw("invalid payload");
+        cloudevent.spec.payload.id = id;
+      });
+    });
+
+    describe("'source'", () => {
+      it("should throw an error when is absent", () => {
+          delete cloudevent.spec.payload.source;
+          expect(cloudevent.format.bind(cloudevent))
+            .to
+            .throw("invalid payload");
+          cloudevent.spec.payload.source = source;
+      });
+    });
+
+    describe("'specversion'", () => {
+      it("should throw an error when is absent", () => {
+          delete cloudevent.spec.payload.specversion;
+          expect(cloudevent.format.bind(cloudevent))
+            .to
+            .throw("invalid payload");
+          cloudevent.spec.payload.specversion = "1.0";
+      });
+
+      it("should throw an error when is empty", () => {
+        cloudevent.spec.payload.specversion = "";
+        expect(cloudevent.format.bind(cloudevent))
+          .to
+          .throw("invalid payload");
+        cloudevent.spec.payload.specversion = "1.0";
+      });
+    });
+
+    describe("'type'", () => {
+      it("should throw an error when is absent", () => {
+          delete cloudevent.spec.payload.type;
+          expect(cloudevent.format.bind(cloudevent))
+            .to
+            .throw("invalid payload");
+          cloudevent.spec.payload.type = type;
+      });
+
+      it("should throw an error when is an empty string", () => {
+        cloudevent.type("");
+        expect(cloudevent.format.bind(cloudevent))
+          .to
+          .throw("invalid payload");
+        cloudevent.type(type);
+      });
+
+      it("must be a non-empty string", () => {
+        cloudevent.type(type);
+        expect(cloudevent.spec.payload.type).to.equal(type);
+      });
+    });
+
+    describe("'data'", () => {
+      it("should maintain the type of data when no data content type", () =>{
+        delete cloudevent.spec.payload.datacontenttype;
+        cloudevent
+          .data(JSON.stringify(data));
+
+        expect(typeof cloudevent.getData()).to.equal("string");
+        cloudevent.dataContentType(dataContentType);
+      });
+
+      it("should convert data with stringified json to a json object", () => {
+        cloudevent
+          .dataContentType(dataContentType)
+          .data(JSON.stringify(data));
+        expect(cloudevent.getData()).to.deep.equal(data);
+      });
+    });
+
+    describe("'subject'", () => {
+      it("should throw an error when is an empty string", () => {
+        cloudevent.subject("");
+        expect(cloudevent.format.bind(cloudevent))
+          .to
+          .throw("invalid payload");
+        cloudevent.subject(type);
+      });
+    });
+
+    describe("'time'", () => {
+      it("must adhere to the format specified in RFC 3339", () => {
+        cloudevent.time(time);
+        expect(cloudevent.format()["time"]).to.equal(time.toISOString());
+      });
+    });
   });
 });

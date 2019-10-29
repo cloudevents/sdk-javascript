@@ -24,6 +24,6 @@ export interface Spec {
 /**
  * Function to create CloudEvents instances
  */
-export type event = () => Cloudevent;
+export declare function event(): Cloudevent;
 
 export default Cloudevent;

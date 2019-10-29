@@ -2,6 +2,8 @@
  * CloudEvent class definition
  */
 export class Cloudevent {
+  public constructor();
+
   public format(): any;
   public toString(): string;
 

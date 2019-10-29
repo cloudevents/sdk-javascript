@@ -1,4 +1,4 @@
-import {event} from './index.js'
+import * as v1js from './index.js'
 
 /**
  * CloudEvent class definition
@@ -24,8 +24,8 @@ export interface Spec {
 /**
  * Function to create CloudEvents instances
  */
-export interface Event {
-  event:typeof event;
+export function event(): Cloudevent {
+  return v1js.event();
 }
 
 export default Cloudevent;

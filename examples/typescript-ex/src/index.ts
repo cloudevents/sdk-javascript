@@ -1,4 +1,4 @@
-import Cloudevent, { event, StructuredHTTPEmitter } from 'cloudevents-sdk/v1';
+import Cloudevent, { event, StructuredHTTPEmitter, BinaryHTTPEmitter } from 'cloudevents-sdk/v1';
 
 export function doSomeStuff() {
 
@@ -17,15 +17,23 @@ export function doSomeStuff() {
     url   : "https://enu90y24i64jp.x.pipedream.net/"
   };
 
-  let emitter = new StructuredHTTPEmitter(config);
-  emitter.emit(myevent).then(res => {
+  let structured = new StructuredHTTPEmitter(config);
+  structured.emit(myevent).then(res => {
     // success
-    console.log("Success!")
+    console.log("Structured Mode: Success!")
   })
   .catch(err => {
     // error
     console.error(err);
+  });
+
+  let binary = new BinaryHTTPEmitter(config);
+  binary.emit(myevent).then(res => {
+    console.log("Binary Mode: Success!");
   })
+  .catch(err => {
+    console.error(err);
+  });
 
   return true;
 }

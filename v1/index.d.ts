@@ -44,6 +44,15 @@ export class StructuredHTTPEmitter {
 }
 
 /**
+ * HTTP emitter for Binary mode
+ */
+export class BinaryHTTPEmitter {
+  public constructor(configuration?: any);
+
+  public emit(event: Cloudevent): Promise<any>;
+}
+
+/**
  * Function to create CloudEvents instances
  */
 export declare function event(): Cloudevent;

@@ -46,7 +46,7 @@ const httpcfg = {
 
 const binary = new BinaryHTTPEmitter(httpcfg);
 
-describe("HTTP Transport Binding - Version 0.3", () => {
+describe("HTTP Transport Binding - Version 1.0", () => {
   beforeEach(() => {
     // Mocking the webhook
     nock(webhook)

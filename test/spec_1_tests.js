@@ -65,6 +65,42 @@ describe("CloudEvents Spec v1.0", () => {
     it("Should have 'data'", () => {
       expect(cloudevent.getData()).to.deep.equal(data);
     });
+  });
+
+  describe("Extenstions Constraints", () => {
+    it("should be ok when type is 'boolean'", () => {
+      cloudevent.addExtension("ext-boolean", true);
+      expect(cloudevent.spec.payload["ext-boolean"])
+        .to.equal(true);
+    });
+
+    it("should be ok when type is 'integer'", () => {
+      cloudevent.addExtension("ext-integer", 2019);
+      expect(cloudevent.spec.payload["ext-integer"])
+        .to.equal(2019);
+    });
+
+    it("should be ok when type is 'string'", () => {
+      cloudevent.addExtension("ext-string", 'an-string');
+      expect(cloudevent.spec.payload["ext-string"])
+        .to.equal("an-string");
+    });
+
+    it("should be ok when type is 'ArrayBuffer' for 'Binary'", () => {
+      let myBinary = new ArrayBuffer(2019);
+      cloudevent.addExtension("ext-binary", myBinary);
+      expect(cloudevent.spec.payload["ext-binary"])
+        .to.equal(myBinary);
+    });
+
+    // URI
+
+    it("should be ok when type is 'Date' for 'Timestamp'", () => {
+      let myDate = new Date();
+      cloudevent.addExtension("ext-date", myDate);
+      expect(cloudevent.spec.payload["ext-date"])
+        .to.equal(myDate);
+    });
 
     it("Should have the 'extension1'", () => {
       cloudevent.addExtension("extension1", "value1");
@@ -75,6 +111,11 @@ describe("CloudEvents Spec v1.0", () => {
     it("should throw an error when use a reserved name as extension", () => {
       expect(cloudevent.addExtension.bind(cloudevent, "id"))
         .to.throw("Reserved attribute name: 'id'");
+    });
+
+    it("should throw an error when use an invalid type", () => {
+      expect(cloudevent.addExtension.bind(cloudevent, "invalid-val", {cool:'nice'}))
+        .to.throw("Invalid type of extension value");
     });
   });
 

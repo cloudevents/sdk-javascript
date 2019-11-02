@@ -33,7 +33,7 @@ export class Cloudevent {
   public data(data: any): Cloudevent;
   public getData(): any;
 
-  public addExtension(name: string, value: any): void;
+  public addExtension(name: string, value: any): Cloudevent;
 
   public getExtensions(): Map<string, any>;
 }

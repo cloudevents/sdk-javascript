@@ -60,8 +60,8 @@ export class BinaryHTTPEmitter {
  * HTTP receiver for Structured mode
  */
 export class StructuredHTTPReceiver {
-  public check(payload: any, headers: Map<String, String>): void;
-  public parse(payload: any, headers: Map<String, String>): Cloudevent;
+  public check(payload: any, headers: any): void;
+  public parse(payload: any, headers: any): Cloudevent;
 }
 
 /**

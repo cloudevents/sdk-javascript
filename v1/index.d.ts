@@ -32,6 +32,10 @@ export class Cloudevent {
 
   public data(data: any): Cloudevent;
   public getData(): any;
+
+  public addExtension(name: string, value: any);
+
+  public getExtensions(): Map;
 }
 
 /**

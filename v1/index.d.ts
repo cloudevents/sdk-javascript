@@ -33,9 +33,9 @@ export class Cloudevent {
   public data(data: any): Cloudevent;
   public getData(): any;
 
-  public addExtension(name: string, value: any);
+  public addExtension(name: string, value: any): void;
 
-  public getExtensions(): Map;
+  public getExtensions(): Map<string, any>;
 }
 
 /**

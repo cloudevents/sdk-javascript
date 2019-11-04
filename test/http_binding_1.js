@@ -108,7 +108,6 @@ describe("HTTP Transport Binding - Version 1.0", () => {
 
           return structured.emit(binevent)
             .then((response) => {
-              console.log(response.config.data);
               expect(JSON.parse(response.config.data))
                 .to.have.property("data_base64");
             });

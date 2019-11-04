@@ -3,6 +3,8 @@ var v1 = require("../../../v1/index.js");
 var Cloudevent = require("../../../index.js");
 var Spec     = require("../../../lib/specs/spec_1.js");
 
+const {asBase64} = require("../../../lib/utils/fun.js");
+
 var HTTPStructuredReceiver =
   require("../../../lib/bindings/http/receiver_structured_1.js");
 
@@ -180,6 +182,32 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0", () =
 
       // assert
       expect(actual.getData()).to.deep.equal(data);
+    });
+
+    it("Should maps 'data_base64' to 'data' attribute", () => {
+      // setup
+      let bindata = Uint32Array.from(JSON.stringify(data), (c) => c.codePointAt(0));
+      let expected = asBase64(bindata);
+      let payload = v1.event()
+            .type(type)
+            .source(source)
+            .dataContentType(ceContentType)
+            .data(bindata)
+            .format();
+
+      console.log(payload);
+
+      var headers = {
+        "content-type":"application/cloudevents+json"
+      };
+
+      // act
+      var actual = receiver.parse(JSON.stringify(payload), headers);
+
+      console.log(actual);
+
+      // assert
+      expect(actual.getData()).to.equal(expected);
     });
   });
 });

@@ -61,10 +61,6 @@ describe("CloudEvents Spec v1.0", () => {
     it("Should have 'time'", () => {
       expect(cloudevent.getTime()).to.equal(time.toISOString());
     });
-
-    it("Should have 'data'", () => {
-      expect(cloudevent.getData()).to.deep.equal(data);
-    });
   });
 
   describe("Extenstions Constraints", () => {
@@ -86,8 +82,8 @@ describe("CloudEvents Spec v1.0", () => {
         .to.equal("an-string");
     });
 
-    it("should be ok when type is 'ArrayBuffer' for 'Binary'", () => {
-      let myBinary = new ArrayBuffer(2019);
+    it("should be ok when type is 'Uint32Array' for 'Binary'", () => {
+      let myBinary = new Uint32Array(2019);
       cloudevent.addExtension("ext-binary", myBinary);
       expect(cloudevent.spec.payload["ext-binary"])
         .to.equal(myBinary);
@@ -189,24 +185,6 @@ describe("CloudEvents Spec v1.0", () => {
       });
     });
 
-    describe("'data'", () => {
-      it("should maintain the type of data when no data content type", () =>{
-        delete cloudevent.spec.payload.datacontenttype;
-        cloudevent
-          .data(JSON.stringify(data));
-
-        expect(typeof cloudevent.getData()).to.equal("string");
-        cloudevent.dataContentType(dataContentType);
-      });
-
-      it("should convert data with stringified json to a json object", () => {
-        cloudevent
-          .dataContentType(dataContentType)
-          .data(JSON.stringify(data));
-        expect(cloudevent.getData()).to.deep.equal(data);
-      });
-    });
-
     describe("'subject'", () => {
       it("should throw an error when is an empty string", () => {
         cloudevent.subject("");
@@ -222,6 +200,42 @@ describe("CloudEvents Spec v1.0", () => {
         cloudevent.time(time);
         expect(cloudevent.format()["time"]).to.equal(time.toISOString());
       });
+    });
+  });
+
+  describe("Event data constraints", () => {
+    it("Should have 'data'", () => {
+      expect(cloudevent.getData()).to.deep.equal(data);
+    });
+
+    it("should maintain the type of data when no data content type", () =>{
+      delete cloudevent.spec.payload.datacontenttype;
+      cloudevent
+        .data(JSON.stringify(data));
+
+      expect(typeof cloudevent.getData()).to.equal("string");
+      cloudevent.dataContentType(dataContentType);
+    });
+
+    it("should convert data with stringified json to a json object", () => {
+      cloudevent
+        .dataContentType(dataContentType)
+        .data(JSON.stringify(data));
+      expect(cloudevent.getData()).to.deep.equal(data);
+    });
+
+    it("should be ok when type is 'Uint32Array' for 'Binary'", () => {
+      let dataString = ")(*~^my data for ce#@#$%"
+
+      let expected = Uint32Array.from(dataString, (c) => c.codePointAt(0));;
+      let olddct  = cloudevent.getDataContentType();
+
+      cloudevent
+        .dataContentType("text/plain")
+        .data(expected);
+      expect(cloudevent.getData()).to.deep.equal(expected);
+
+      cloudevent.dataContentType(olddct);
     });
   });
 });

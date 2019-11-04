@@ -195,16 +195,12 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0", () =
             .data(bindata)
             .format();
 
-      console.log(payload);
-
       var headers = {
         "content-type":"application/cloudevents+json"
       };
 
       // act
       var actual = receiver.parse(JSON.stringify(payload), headers);
-
-      console.log(actual);
 
       // assert
       expect(actual.getData()).to.equal(expected);

@@ -65,6 +65,14 @@ export class StructuredHTTPReceiver {
 }
 
 /**
+ * HTTP receiver for Structured mode
+ */
+export class BinaryHTTPReceiver {
+  public check(payload: any, headers: any): void;
+  public parse(payload: any, headers: any): Cloudevent;
+}
+
+/**
  * Function to create CloudEvents instances
  */
 export declare function event(): Cloudevent;

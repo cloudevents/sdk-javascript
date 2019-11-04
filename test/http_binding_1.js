@@ -135,6 +135,25 @@ describe("HTTP Transport Binding - Version 1.0", () => {
           });
       });
 
+      it("the request payload should be correct when event data is binary", () => {
+        let bindata = Uint32Array.from(dataString, (c) => c.codePointAt(0));
+        let expected = asBase64(bindata);
+        let binevent =
+          new Cloudevent(v1.Spec)
+            .type(type)
+            .source(source)
+            .dataContentType("text/plain")
+            .data(bindata)
+            .addExtension(ext1Name, ext1Value)
+            .addExtension(ext2Name, ext2Value);
+
+        return binary.emit(binevent)
+          .then((response) => {
+            expect(response.config.data)
+              .to.equal(expected);
+          });
+      });
+
       it("HTTP Header contains 'ce-type'", () => {
         return binary.emit(cloudevent)
           .then((response) => {

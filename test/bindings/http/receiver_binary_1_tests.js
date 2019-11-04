@@ -1,9 +1,10 @@
-var expect = require("chai").expect;
+const expect = require("chai").expect;
+const {asBase64} = require("../../../lib/utils/fun.js");
 
-var HTTPBinaryReceiver =
+const HTTPBinaryReceiver =
   require("../../../lib/bindings/http/receiver_binary_1.js");
 
-var receiver = new HTTPBinaryReceiver();
+const receiver = new HTTPBinaryReceiver();
 
 describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
   describe("Check", () => {
@@ -262,7 +263,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
         .to.equal("2019-06-16T11:42:00.000Z");
     });
 
-    it("Cloudevent contains 'schemaurl'", () => {
+    it("Cloudevent contains 'dataschema'", () => {
       // setup
       var payload = {
         "data" : "dataString"
@@ -371,6 +372,33 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       // assert
       expect(actual.getData())
         .to.deep.equal(payload);
+    });
+
+    it("The content of 'data' is base64 for binary", () => {
+      // setup
+      var expected = {
+        "data" : "dataString"
+      };
+
+      let bindata = Uint32Array.from(JSON.stringify(expected), (c) => c.codePointAt(0));
+      let payload = asBase64(bindata);
+
+      var attributes = {
+        "ce-type"        : "type",
+        "ce-specversion" : "1.0",
+        "ce-source"      : "/source",
+        "ce-id"          : "id",
+        "ce-time"        : "2019-06-16T11:42:00Z",
+        "ce-dataschema"  : "http://schema.registry/v1",
+        "Content-Type"   : "application/json"
+      };
+
+      // act
+      var actual = receiver.parse(payload, attributes);
+
+      // assert
+      expect(actual.getData())
+        .to.deep.equal(expected);
     });
 
     it("No error when all attributes are in place", () => {

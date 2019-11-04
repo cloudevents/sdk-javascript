@@ -97,9 +97,9 @@ describe("The SDK Requirements", () => {
       expect(v1).to.have.property("BinaryHTTPReceiver");
     });
 
-    // it("should exports 'HTTPUnmarshaller'", () => {
-    //   expect(v1).to.have.property("HTTPUnmarshaller");
-    // });
+    it("should exports 'HTTPUnmarshaller'", () => {
+      expect(v1).to.have.property("HTTPUnmarshaller");
+    });
 
     it("should exports 'event'", () => {
       expect(v1).to.have.property("event");

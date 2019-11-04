@@ -12,6 +12,8 @@ const StructuredHTTPReceiver =
 const BinaryHTTPReceiver =
   require("../lib/bindings/http/receiver_binary_1.js");
 
+const HTTPUnmarshaller = require("../lib/bindings/http/unmarshaller_1.js");
+
 function event() {
   return new Cloudevent(Spec);
 }
@@ -22,5 +24,6 @@ module.exports = {
   BinaryHTTPEmitter,
   StructuredHTTPReceiver,
   BinaryHTTPReceiver,
+  HTTPUnmarshaller,
   event
 };

@@ -2,6 +2,7 @@ const expect = require("chai").expect;
 const nock = require("nock");
 const http = require("http");
 const request = require("request");
+const {asBase64} = require("../lib/utils/fun.js");
 
 const BinaryHTTPEmitter =
   require("../lib/bindings/http/emitter_binary_1.js");
@@ -38,6 +39,8 @@ const cloudevent =
     .addExtension(ext1Name, ext1Value)
     .addExtension(ext2Name, ext2Value);
 
+const dataString = ")(*~^my data for ce#@#$%"
+
 const webhook = "https://cloudevents.io/webhook/v1";
 const httpcfg = {
   method : "POST",
@@ -45,6 +48,7 @@ const httpcfg = {
 };
 
 const binary = new BinaryHTTPEmitter(httpcfg);
+const structured = new v1.StructuredHTTPEmitter(httpcfg);
 
 describe("HTTP Transport Binding - Version 1.0", () => {
   beforeEach(() => {
@@ -52,6 +56,65 @@ describe("HTTP Transport Binding - Version 1.0", () => {
     nock(webhook)
       .post("/json")
       .reply(201, {status: "accepted"});
+  });
+
+  describe("Structured", () => {
+    describe("JSON Format", () => {
+      it("requires '" + contentType + "' Content-Type in the header", () => {
+        return structured.emit(cloudevent)
+          .then((response) => {
+            expect(response.config.headers["Content-Type"])
+              .to.equal(contentType);
+          });
+      });
+
+      it("the request payload should be correct", () => {
+        return structured.emit(cloudevent)
+          .then((response) => {
+            expect(JSON.parse(response.config.data))
+              .to.deep.equal(cloudevent.format());
+          });
+      });
+
+      describe("Binary event data", () => {
+        it("the request payload should be correct when data is binary", () => {
+          let bindata = Uint32Array.from(dataString, (c) => c.codePointAt(0));
+          let expected = asBase64(bindata);
+          let binevent =
+            new Cloudevent(v1.Spec)
+              .type(type)
+              .source(source)
+              .dataContentType("text/plain")
+              .data(bindata)
+              .addExtension(ext1Name, ext1Value)
+              .addExtension(ext2Name, ext2Value);
+
+          return structured.emit(binevent)
+            .then((response) => {
+              expect(JSON.parse(response.config.data).data_base64)
+                .to.equal(expected);
+            });
+        });
+
+        it("the payload must have 'data_base64' when data is binary", () => {
+          let binevent =
+            new Cloudevent(v1.Spec)
+              .type(type)
+              .source(source)
+              .dataContentType("text/plain")
+              .data(Uint32Array.from(dataString, (c) => c.codePointAt(0)))
+              .addExtension(ext1Name, ext1Value)
+              .addExtension(ext2Name, ext2Value);
+
+          return structured.emit(binevent)
+            .then((response) => {
+              console.log(response.config.data);
+              expect(JSON.parse(response.config.data))
+                .to.have.property("data_base64");
+            });
+        });
+      });
+    });
   });
 
   describe("Binary", () => {

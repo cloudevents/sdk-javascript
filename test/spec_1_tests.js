@@ -2,6 +2,7 @@ const expect = require("chai").expect;
 const Spec1 = require("../lib/specs/spec_1.js");
 const Cloudevent = require("../index.js");
 const uuid  = require("uuid/v4");
+const {asBase64} = require("../lib/utils/fun.js");
 
 const id = uuid();
 const type   = "com.github.pull.create";
@@ -227,12 +228,13 @@ describe("CloudEvents Spec v1.0", () => {
     it("should be ok when type is 'Uint32Array' for 'Binary'", () => {
       let dataString = ")(*~^my data for ce#@#$%"
 
-      let expected = Uint32Array.from(dataString, (c) => c.codePointAt(0));;
+      let dataBinary = Uint32Array.from(dataString, (c) => c.codePointAt(0));
+      let expected = asBase64(dataBinary);
       let olddct  = cloudevent.getDataContentType();
 
       cloudevent
         .dataContentType("text/plain")
-        .data(expected);
+        .data(dataBinary);
       expect(cloudevent.getData()).to.deep.equal(expected);
 
       cloudevent.dataContentType(olddct);

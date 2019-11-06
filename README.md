@@ -32,9 +32,9 @@ To see working examples, point to [examples](./examples).
 
 Checkout the new expressive additions.
 
-### Use typed CloudEvents with Typescript
+### Use typed CloudEvents in your Typescript project
 
-> There is full example: [typescript-ex](,/examples/typescript-ex)
+> There is full example: [typescript-ex](./examples/typescript-ex)
 
 ```ts
 import Cloudevent, {

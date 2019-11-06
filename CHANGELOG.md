@@ -11,7 +11,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ### Added
 
 - Support for [Spec v1.0](https://github.com/cloudevents/spec/tree/v1.0)
-- Typescript types for Spec v1.0: [see and example](./examples/typescript-ex)
+- Typescript types for Spec v1.0: [see an example](./examples/typescript-ex)
+
+### Removed
+
+- Unmarshaller docs from README, moving them to [OLDOCS.md](./OLDOCS.md)
 
 ## [0.3.2]
 

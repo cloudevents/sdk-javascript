@@ -200,7 +200,7 @@ const receiver = new v1.StructuredHTTPReceiver();
 
 app.post("/", (req, res) => {
   try {
-    let myevent = receiver.parse(req.body, req.headers)
+    let myevent = receiver.parse(req.body, req.headers);
 
     // TODO use the event
 

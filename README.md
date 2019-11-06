@@ -106,17 +106,6 @@ These are the supported specifications by this version.
 
 > If you want old examples, they are [here](./OLDOCS.md)
 
-The `Cloudevent` constructor arguments.
-
-```js
-/*
- * spec  : if is null, set the spec 0.1 impl
- * format: if is null, set the JSON Format 0.1 impl
- */
-Cloudevent(spec, format);
-
-```
-
 ### Usage
 
 ```js

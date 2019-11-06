@@ -193,25 +193,26 @@ HTTP Headers, extracting the CloudEvents.
 // some parts were removed //
 
 const v1 = require("cloudevents-sdk/v1");
+
 const receiver = new v1.StructuredHTTPReceiver();
 
 // some parts were removed //
 
-app.post("/", function (req, res) {
-  receiver.parse(req.body, req.headers)
-    .then(myevent => {
+app.post("/", (req, res) => {
+  try {
+    let myevent = receiver.parse(req.body, req.headers)
 
-      // TODO use the cloudevent
+    // TODO use the event
 
-      res.status(201)
-            .send("Event Accepted");
-  })
-  .catch(err => {
+    res.status(201).send("Event Accepted");
+
+  } catch(err) {
+    // TODO deal with errors
     console.error(err);
     res.status(415)
           .header("Content-Type", "application/json")
           .send(JSON.stringify(err));
-  });
+  }
 });
 ```
 

@@ -28,40 +28,35 @@ To see working examples, point to [examples](./examples).
 
 ## :newspaper: Newsletter :newspaper:
 
-> all the API developed before, for 0.1 and 0.2, works as the same.
+> all the API developed before, for 0.1, 0.2 and 0.3, works as the same.
 
 Checkout the new expressive additions.
 
-### New way to import the specifications stuff
+### Use typed CloudEvents in your Typescript project
 
-```js
-// Import the v0.3 stuff
-const v03 = require("cloudevents-sdk/v03");
+> There is full example: [typescript-ex](./examples/typescript-ex)
 
-// Access the spec
-v03.Spec;
+```ts
+import Cloudevent, {
+  event,
+  StructuredHTTPEmitter,
+  BinaryHTTPEmitter,
 
-// Access the structured http event emitter
-v03.StructuredHTTPEmitter;
+  StructuredHTTPReceiver,
+  BinaryHTTPReceiver
+} from 'cloudevents-sdk/v1';
 
-// Access the binary http event emitter
-v03.BinaryHTTPEmitter;
+let myevent: Cloudevent = event()
+  .source('/source')
+  .type('type')
+  .dataContentType('text/plain')
+  .dataschema('http://d.schema.com/my.json')
+  .subject('cha.json')
+  .data('my-data')
+  .addExtension("my-ext", "0x600");
 
-// Access http unmarshaller to process incoming events, Binary or Structured
-v03.HTTPUnmarshaller;
-```
+// . . .
 
-### An easy way to create events
-
-```js
-// Import the v0.3 stuff
-const v03 = require("cloudevents-sdk/v03");
-
-// Creates an event using the v0.3 spec
-let ce =
-  v03.event()
-       .type("com.github.pull.create")
-       .source("urn:event:from:myapi/resourse/123");
 ```
 
 ## Versioning
@@ -89,127 +84,82 @@ npm install cloudevents-sdk
 
 These are the supported specifications by this version.
 
-| **Specifications**                    | **v0.1** | **v0.2** | **v0.3** |
-|---------------------------------------|----------|----------|----------|
-| CloudEvents                           | yes      | yes      | yes      |
-| HTTP Transport Binding  - Structured  | yes      | yes      | yes      |
-| HTTP Transport Binding  - Binary      | yes      | yes      | yes      |
-| JSON Event Format                     | yes      | yes      | yes      |
+| **Specifications**                    | v0.1 | v0.2 | v0.3 | **v1.0** |
+|---------------------------------------|------|------|------|----------|
+| CloudEvents                           | yes  | yes  | yes  |   yes    |
+| HTTP Transport Binding  - Structured  | yes  | yes  | yes  |   yes    |
+| HTTP Transport Binding  - Binary      | yes  | yes  | yes  |   yes    |
+| JSON Event Format                     | yes  | yes  | yes  |   yes    |
 
 ### What we can do
 
-| **What**                            | **v0.1** | **v0.2** | **v0.3** |
-|-------------------------------------|----------|----------|----------|
-| Create events                       | yes      | yes      | yes      |
-| Emit Structured events over HTTP    | yes      | yes      | yes      |
-| Emit Binary events over HTTP        | yes      | yes      | yes      |
-| JSON Event Format                   | yes      | yes      | yes      |
-| Receice Structured events over HTTP | no       | yes      | yes      |
-| Receice Binary events over HTTP     | no       | yes      | yes      |
+| **What**                            | v0.1   | v0.2 | v0.3 | **v1.0** |
+|-------------------------------------|--------|------|------|----------|
+| Create events                       | yes    | yes  | yes  |   yes    |
+| Emit Structured events over HTTP    | yes    | yes  | yes  |   yes    |
+| Emit Binary events over HTTP        | yes    | yes  | yes  |   yes    |
+| JSON Event Format                   | yes    | yes  | yes  |   yes    |
+| Receice Structured events over HTTP | **no** | yes  | yes  |   yes    |
+| Receice Binary events over HTTP     | **no** | yes  | yes  |   yes    |
 
 ## How to use
 
-The `Cloudevent` constructor arguments.
-
-```js
-/*
- * spec  : if is null, set the spec 0.1 impl
- * format: if is null, set the JSON Format 0.1 impl
- */
-Cloudevent(spec, format);
-
-```
+> If you want old examples, they are [here](./OLDOCS.md)
 
 ### Usage
 
 ```js
-var Cloudevent = require("cloudevents-sdk");
-
-var Spec02 = require("cloudevents-sdk/v02");
+const v1 = require("cloudevents-sdk/v1");
 
 /*
- * Constructs a default instance with:
- *   - Spec 0.1
- *   - JSON Format 0.1
+ * Creating an event
  */
-var cloudevent01 = new Cloudevent();
-
-/*
- * Implemented using Builder Design Pattern
- */
-cloudevent01
+let myevent = v1.event()
   .type("com.github.pull.create")
   .source("urn:event:from:myapi/resourse/123");
-
-/*
- * Backward compatibility to spec 0.1 by injecting methods from spec
- * implementation to Cloudevent
- */
-cloudevent01
-  .eventTypeVersion("1.0");
-
-/*
- * Constructs an instance with:
- *   - Spec 0.2
- *   - JSON Format 0.1
- */
-var cloudevent02 = new Cloudevent(Cloudevent.specs["0.2"]);
-
-/*
- * Different specs, but the same API.
- */
-cloudevent02
-  .type("com.github.pull.create")
-  .source("urn:event:from:myapi/resourse/123");
-
 ```
 
 #### Formatting
 
 ```js
-var Cloudevent = require("cloudevents-sdk");
+const v1 = require("cloudevents-sdk/v1");
 
 /*
- * Creates an instance with default spec and format
+ * Creating an event
  */
-var cloudevent =
-  new Cloudevent()
-        .type("com.github.pull.create")
-        .source("urn:event:from:myapi/resourse/123");
+let myevent = v1.event()
+  .type("com.github.pull.create")
+  .source("urn:event:from:myapi/resourse/123");
 
 /*
  * Format the payload and return it
  */
-var formatted = cloudevent.format();
+let formatted = myevent.format();
 ```
 
 #### Emitting
 
 ```js
-var Cloudevent = require("cloudevents-sdk");
+const v1 = require("cloudevents-sdk/v1");
 
-// The event
-var cloudevent =
-  new Cloudevent()
-    .type("com.github.pull.create")
-    .source("urn:event:from:myapi/resourse/123");
+/*
+ * Creating an event
+ */
+let myevent = v1.event()
+  .type("com.github.pull.create")
+  .source("urn:event:from:myapi/resourse/123");
 
 // The binding configuration using POST
-var config = {
+let config = {
   method: "POST",
   url   : "https://myserver.com"
 };
 
-/*
- * To use HTTP Binary:
- *   Cloudevent.bindings["http-binary0.2"](config);
- */
-
 // The binding instance
-var binding = new Cloudevent.bindings["http-structured0.1"](config);
+let binding = new v1.StructuredHTTPEmitter(config);
 
 // Emit the event using Promise
-binding.emit(cloudevent)
+binding.emit(myevent)
   .then(response => {
     // Treat the response
     console.log(response.data);
@@ -219,42 +169,40 @@ binding.emit(cloudevent)
     console.error(err);
   });
 ```
+
 #### Receiving Events
 
-You can choose any framework for port binding. But, use the Unmarshaller
-to process the HTTP Payload and HTTP Headers, extracting the CloudEvents.
-
-The Unmarshaller will parse the HTTP Request and decides if it is a binary
-or a structured version of transport binding.
+You can choose any framework for port binding. But, use the
+StructuredHTTPReceiver or BinaryHTTPReceiver to process the HTTP Payload and
+HTTP Headers, extracting the CloudEvents.
 
 :smiley: **Checkout the full working example: [here](./examples/express-ex).**
 
 ```js
 // some parts were removed //
 
-const v02 = require("cloudevents-sdk/v02");
-const unmarshaller = new v02.HTTPUnmarshaller();
+const v1 = require("cloudevents-sdk/v1");
+
+const receiver = new v1.StructuredHTTPReceiver();
 
 // some parts were removed //
 
-app.post('/', function (req, res) {
-  unmarshaller.unmarshall(req.body, req.headers)
-    .then(cloudevent => {
+app.post("/", (req, res) => {
+  try {
+    let myevent = receiver.parse(req.body, req.headers);
 
-      // TODO use the cloudevent
+    // TODO use the event
 
-      res.status(201)
-            .send("Event Accepted");
-  })
-  .catch(err => {
+    res.status(201).send("Event Accepted");
+
+  } catch(err) {
+    // TODO deal with errors
     console.error(err);
     res.status(415)
           .header("Content-Type", "application/json")
           .send(JSON.stringify(err));
-  });
+  }
 });
-
-
 ```
 
 ## Repository Structure
@@ -407,29 +355,6 @@ Receiver.check(Object, Map)
  * Checks and parse as Cloudevent
  */
 Cloudevent Receiver.parse(Object, Map)
-```
-
-### `Unmarshaller` classes
-
-The Unmarshaller classes uses the receiver API, abstracting the formats:
-
-- structured
-- binary
-
-Choosing the right implementation based on the `headers` map.
-
-```js
-/*
- * Constructor without arguments
- */
-Unmarshaller()
-
-/*
- * The method to unmarshall the payload.
- * @arg payload could be a string or a object
- * @arg headers a map of headers
- */
-Promise Unmarshaller.unmarshall(payload, headers)
 ```
 
 > See how to implement the method injection [here](lib/specs/spec_0_1.js#L17)

@@ -1,0 +1,10 @@
+{
+  "specversion":"1.0",
+  "type":"com.github.pull.create",
+  "source":"https://github.com/cloudevents/spec/pull/123",
+  "id":"70d3c768-63f8-40e7-aa9d-d197d530586b",
+  "time":"2019-11-06T11:08:00Z",
+  "datacontenttype":"application/json",
+  "data_base64":"eyJtdWNoIjoid293In0=",
+  "my-extension" : "something"
+}

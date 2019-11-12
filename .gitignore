@@ -31,6 +31,7 @@ bower_components
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
+build/
 
 # Dependency directories
 node_modules/
@@ -78,3 +79,5 @@ typings/
 # Vim
 *.swp
 
+# Package lock
+package-lock.json

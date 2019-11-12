@@ -1,14 +1,18 @@
-var express = require("express");
-var app = express();
+const express = require("express");
+const app = express();
 
 const v03 = require("cloudevents-sdk/v03");
-var unmarshaller03 = new v03.HTTPUnmarshaller();
+const unmarshaller03 = new v03.HTTPUnmarshaller();
 
 const v02 = require("cloudevents-sdk/v02");
-var unmarshaller02 = new v02.HTTPUnmarshaller();
+const unmarshaller02 = new v02.HTTPUnmarshaller();
+
+const v1 = require("cloudevents-sdk/v1");
+const structured1 = new v1.StructuredHTTPReceiver();
+const binary1 = new v1.BinaryHTTPReceiver();
 
 app.use((req, res, next) => {
-    var data="";
+    let data="";
 
     req.setEncoding("utf8");
     req.on("data", function(chunk) {
@@ -19,6 +23,48 @@ app.use((req, res, next) => {
         req.body = data;
         next();
     });
+});
+
+app.post("/v1", function (req, res) {
+  console.log(req.headers);
+  console.log(req.body);
+
+  try {
+    let myevent = structured1.parse(req.body, req.headers);
+    // pretty print
+    console.log("Accepted event:");
+    console.log(JSON.stringify(myevent.format(), null, 2));
+
+    res.status(201)
+          .json(myevent.format());
+
+  } catch (err) {
+    console.error(err);
+    res.status(415)
+          .header("Content-Type", "application/json")
+          .send(JSON.stringify(err));
+  }
+});
+
+app.post("/v1/binary", function (req, res) {
+  console.log(req.headers);
+  console.log(req.body);
+
+  try {
+    let myevent = binary1.parse(req.body, req.headers);
+    // pretty print
+    console.log("Accepted event:");
+    console.log(JSON.stringify(myevent.format(), null, 2));
+
+    res.status(201)
+          .json(myevent.format());
+
+  } catch (err) {
+    console.error(err);
+    res.status(415)
+          .header("Content-Type", "application/json")
+          .send(JSON.stringify(err));
+  }
 });
 
 app.post("/v03", function (req, res) {

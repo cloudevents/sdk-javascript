@@ -99,8 +99,8 @@ These are the supported specifications by this version.
 | Emit Structured events over HTTP    | yes    | yes  | yes  |   yes    |
 | Emit Binary events over HTTP        | yes    | yes  | yes  |   yes    |
 | JSON Event Format                   | yes    | yes  | yes  |   yes    |
-| Receice Structured events over HTTP | **no** | yes  | yes  |   yes    |
-| Receice Binary events over HTTP     | **no** | yes  | yes  |   yes    |
+| Receive Structured events over HTTP | **no** | yes  | yes  |   yes    |
+| Receive Binary events over HTTP     | **no** | yes  | yes  |   yes    |
 
 ## How to use
 

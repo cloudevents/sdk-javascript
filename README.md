@@ -252,12 +252,6 @@ Object Cloudevent.format()
  * Format the payload as String.
  */
 String Cloudevent.toString()
-
-/*
- * Create a Cloudevent instance from String.
- */
-Cloudevent Cloudevent.fromString(String)
-
 ```
 
 ### `Formatter` classes

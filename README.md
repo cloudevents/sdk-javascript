@@ -13,8 +13,13 @@ Official CloudEvents' SDK for JavaScript.
 
 <img src="https://github.com/cncf/artwork/blob/master/projects/cloudevents/horizontal/color/cloudevents-horizontal-color.png" width="300" height="58" alt="CloudEvents logo">
 
-**NOTE: This SDK is still considered work in progress, things might (and will)
-break with every update.**
+## Status
+
+This SDK is still considered a work in progress, therefore things might (and
+will) break with every update.
+
+This SDK current supports the following versions of CloudEvents:
+- v1.0
 
 **Checkout the [changelog](./CHANGELOG.md) to see what's going on!**
 
@@ -356,3 +361,15 @@ Cloudevent Receiver.parse(Object, Map)
 > Learn about [Builder Design Pattern](https://en.wikipedia.org/wiki/Builder_pattern)
 >
 > Check out the produced event payload using this [tool](https://webhook.site)
+
+## Community
+
+- There are bi-weekly calls immediately following the [Serverless/CloudEvents
+  call](https://github.com/cloudevents/spec#meeting-time) at
+  9am PT (US Pacific). Which means they will typically start at 10am PT, but
+  if the other call ends early then the SDK call will start early as well.
+  See the [CloudEvents meeting minutes](https://docs.google.com/document/d/1OVF68rpuPK5shIHILK9JOqlZBbfe91RNzQ7u_P7YCDE/edit#)
+  to determine which week will have the call.
+- Slack: #cloudeventssdk channel under
+  [CNCF's Slack workspace](https://slack.cncf.io/).
+- Contact for additional information: Fabio José (`@fabiojose` on slack).

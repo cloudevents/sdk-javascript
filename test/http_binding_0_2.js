@@ -1,8 +1,6 @@
 var expect = require("chai").expect;
 var Cloudevent = require("../index.js");
 var nock = require("nock");
-var http = require("http");
-var request = require("request");
 var Spec02 = require("../lib/specs/spec_0_2.js");
 
 var {HTTPBinary02} = require("../lib/bindings/http/emitter_binary_0_2.js");

@@ -1,13 +1,12 @@
 language: node_js
 node_js:
-- 8
-- 7
-- 6
+- 12
+- 10
 cache: npm
 jobs:
   include:
   - stage: github release
-    node_js: '6'
+    node_js: '12'
     deploy:
       provider: releases
       api_key:
@@ -17,7 +16,7 @@ jobs:
         tags: true
 
   - stage: npm release
-    node_js: '6'
+    node_js: '12'
     deploy:
       provider: npm
       email: fabiojose@gmail.com

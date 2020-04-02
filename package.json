@@ -4,9 +4,10 @@
   "description": "CloudEvents SDK for JavaScript",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/istanbul cover -x 'test/**/*.js' _mocha -- -C test/**/*.js",
-    "coverage-publish": "./node_modules/.bin/istanbul cover -x 'test/**/*.js' _mocha --report lcovonly -- -C test/**/*.js -R spec && cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage && rm -rf ./coverage",
-    "bdd": "./node_modules/.bin/cucumber-js ./test/bdd/feature -r ./test/bdd/step"
+    "test": "mocha test/**/*.js",
+    "coverage": "nyc --reporter=lcov --reporter=text npm run test",
+    "precoverage-publish": "npm run coverage",
+    "coverage-publish": "wget -qO - https://coverage.codacy.com/get.sh | sh -s report -l JavaScript -r coverage/lcov.info"
   },
   "repository": {
     "type": "git",
@@ -31,23 +32,15 @@
   },
   "homepage": "https://github.com/cloudevents/sdk-javascript#readme",
   "dependencies": {
-    "ajv": "^6.7.0",
-    "axios": "0.18.1",
-    "is-empty": "1.2.0",
-    "uri-js": "4.2.2",
-    "uuid": "3.3.2"
+    "ajv": "~6.12.0",
+    "axios": "~0.19.2",
+    "uuid": "~3.3.2"
   },
   "devDependencies": {
-    "chai": "4.2.0",
-    "chai-http": "4.2.0",
-    "codacy-coverage": "3.3.0",
-    "cucumber": "^5.1.0",
-    "istanbul": "0.4.5",
-    "mocha": "5.2.0",
-    "mocha-lcov-reporter": "1.3.0",
-    "nock": "10.0.2",
-    "request": "^2.88.0",
-    "typescript": "^3.6.4"
+    "chai": "~4.2.0",
+    "mocha": "~7.1.1",
+    "nock": "~12.0.3",
+    "nyc": "~15.0.0"
   },
   "publishConfig": {
     "access": "public"

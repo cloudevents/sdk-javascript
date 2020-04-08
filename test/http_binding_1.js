@@ -1,14 +1,14 @@
 const expect = require("chai").expect;
 const nock = require("nock");
-const http = require("http");
-const request = require("request");
+const https = require("https");
 const {asBase64} = require("../lib/utils/fun.js");
 
-const BinaryHTTPEmitter =
-  require("../lib/bindings/http/emitter_binary_1.js");
-const Cloudevent = require("../lib/cloudevent.js");
-
-const v1 = require("../v1/index.js");
+const {
+  Spec,
+  BinaryHTTPEmitter,
+  StructuredHTTPEmitter,
+  Cloudevent
+} = require("../v1/index.js");
 
 const type        = "com.github.pull.create";
 const source      = "urn:event:from:myapi/resourse/123";
@@ -28,7 +28,7 @@ const ext2Name  = "extension2";
 const ext2Value = "acme";
 
 const cloudevent =
-  new Cloudevent(v1.Spec)
+  new Cloudevent(Spec)
     .type(type)
     .source(source)
     .dataContentType(ceContentType)
@@ -48,7 +48,7 @@ const httpcfg = {
 };
 
 const binary = new BinaryHTTPEmitter(httpcfg);
-const structured = new v1.StructuredHTTPEmitter(httpcfg);
+const structured = new StructuredHTTPEmitter(httpcfg);
 
 describe("HTTP Transport Binding - Version 1.0", () => {
   beforeEach(() => {
@@ -59,6 +59,21 @@ describe("HTTP Transport Binding - Version 1.0", () => {
   });
 
   describe("Structured", () => {
+    it('works with mTLS authentication', () => {
+      const event = new StructuredHTTPEmitter({
+        method: 'POST',
+        url: `${webhook}/json`,
+        httpsAgent: new https.Agent({
+          cert: 'some value',
+          key: 'other value'
+        })
+      })
+      return event.emit(cloudevent).then(response => {
+        expect(response.config.headers['Content-Type'])
+          .to.equal(contentType);
+      });
+    });
+
     describe("JSON Format", () => {
       it("requires '" + contentType + "' Content-Type in the header", () => {
         return structured.emit(cloudevent)
@@ -81,7 +96,7 @@ describe("HTTP Transport Binding - Version 1.0", () => {
           let bindata = Uint32Array.from(dataString, (c) => c.codePointAt(0));
           let expected = asBase64(bindata);
           let binevent =
-            new Cloudevent(v1.Spec)
+            new Cloudevent(Spec)
               .type(type)
               .source(source)
               .dataContentType("text/plain")
@@ -98,7 +113,7 @@ describe("HTTP Transport Binding - Version 1.0", () => {
 
         it("the payload must have 'data_base64' when data is binary", () => {
           let binevent =
-            new Cloudevent(v1.Spec)
+            new Cloudevent(Spec)
               .type(type)
               .source(source)
               .dataContentType("text/plain")
@@ -117,6 +132,21 @@ describe("HTTP Transport Binding - Version 1.0", () => {
   });
 
   describe("Binary", () => {
+    it('works with mTLS authentication', () => {
+      const event = new BinaryHTTPEmitter({
+        method: 'POST',
+        url: `${webhook}/json`,
+        httpsAgent: new https.Agent({
+          cert: 'some value',
+          key: 'other value'
+        })
+      })
+      return event.emit(cloudevent).then(response => {
+        expect(response.config.headers['Content-Type'])
+          .to.equal(cloudevent.getDataContentType());
+      });
+    });
+
     describe("JSON Format", () => {
       it("requires '" + cloudevent.getDataContentType() + "' Content-Type in the header", () => {
         return binary.emit(cloudevent)
@@ -138,7 +168,7 @@ describe("HTTP Transport Binding - Version 1.0", () => {
         let bindata = Uint32Array.from(dataString, (c) => c.codePointAt(0));
         let expected = asBase64(bindata);
         let binevent =
-          new Cloudevent(v1.Spec)
+          new Cloudevent(Spec)
             .type(type)
             .source(source)
             .dataContentType("text/plain")

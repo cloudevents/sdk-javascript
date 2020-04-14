@@ -1,22 +1,19 @@
-var expect       = require("chai").expect;
-var Cloudevent   = require("../index.js");
+var expect = require("chai").expect;
+var Cloudevent = require("../index.js");
 
-const type   = "com.github.pull.create01";
+const type = "com.github.pull.create01";
 const source = "urn:event:from:myapi/resourse/01";
-const time   = new Date();
+const time = new Date();
 const schemaurl = "http://example.com/registry/v01/myschema.json";
 const contenttype = "application/json";
 const data = {};
-const extensions = {};
 
 var cloudevent = new Cloudevent()
-                       .type(type)
-                       .source(source);
+  .type(type)
+  .source(source);
 
 describe("CloudEvents Spec 0.1 - JavaScript SDK", () => {
-
   describe("Object properties", () => {
-
     describe("Attribute getters", () => {
       it("returns 'type'", () => {
         expect(cloudevent.getType()).to.equal(type);
@@ -29,7 +26,6 @@ describe("CloudEvents Spec 0.1 - JavaScript SDK", () => {
   });
 
   describe("JSON Format", () => {
-
     describe("Required context attributes", () => {
       it("requires 'eventType'", () => {
         expect(cloudevent.format()).to.have.property("eventType");
@@ -84,7 +80,6 @@ describe("CloudEvents Spec 0.1 - JavaScript SDK", () => {
         expect(cloudevent.format().extensions)
           .to.have.property("foo");
       });
-
     });
 
     describe("The Constraints check", () => {
@@ -102,20 +97,18 @@ describe("CloudEvents Spec 0.1 - JavaScript SDK", () => {
         });
 
         it("should be prefixed with a reverse-DNS name", () => {
-          //TODO how to assert it?
+          // TODO how to assert it?
         });
       });
 
-      //TODO another attributes . . .
+      // TODO another attributes . . .
 
       describe("'eventTime'", () => {
         it("must adhere to the format specified in RFC 3339", () => {
           cloudevent.time(time);
-          expect(cloudevent.format()["eventTime"]).to.equal(time.toISOString());
+          expect(cloudevent.format().eventTime).to.equal(time.toISOString());
         });
       });
     });
-
   });
-
 });

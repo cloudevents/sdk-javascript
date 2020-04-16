@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+### Fixed
+
+- Support for mTLS in v1.0 Binary and Structured Emitters: issue [#48](https://github.com/cloudevents/sdk-javascript/issues/48). Note that this fix is only valid for v1.0 and does not address the problem in v0.3 and below.
+
 ## [1.0.0]
 
 ### Added

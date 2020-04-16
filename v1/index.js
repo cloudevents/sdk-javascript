@@ -22,5 +22,7 @@ module.exports = {
   BinaryHTTPEmitter,
   StructuredHTTPReceiver,
   BinaryHTTPReceiver,
+  Cloudevent: event,
+  CloudEvent: event,
   event
 };

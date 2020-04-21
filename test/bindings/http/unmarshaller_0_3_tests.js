@@ -8,6 +8,11 @@ const source = "urn:event:from:myapi/resourse/123";
 const now = new Date();
 const schemaurl = "http://cloudevents.io/schema.json";
 const subject = "subject.ext";
+const {
+  BINARY_HEADERS_03,
+  HEADER_CONTENT_TYPE
+} = require("../../../lib/bindings/http/constants.js");
+
 const ceContentType = "application/json";
 
 const data = {
@@ -176,13 +181,13 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
         data: "dataString"
       };
       var attributes = {
-        "ce-type": "type",
-        "ce-specversion": "0.3",
-        "ce-source": "source",
-        "ce-id": "id",
-        "ce-time": "2019-06-16T11:42:00Z",
-        "ce-schemaurl": "http://schema.registry/v1",
-        "Content-Type": "text/html"
+        [BINARY_HEADERS_03.TYPE]: "type",
+        [BINARY_HEADERS_03.SPEC_VERSION]: "0.3",
+        [BINARY_HEADERS_03.SOURCE]: "source",
+        [BINARY_HEADERS_03.ID]: "id",
+        [BINARY_HEADERS_03.TIME]: "2019-06-16T11:42:00Z",
+        [BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
+        [HEADER_CONTENT_TYPE]: "text/html"
       };
 
       var un = new Unmarshaller();
@@ -200,13 +205,13 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
         data: "dataString"
       };
       var attributes = {
-        "ce-type": "type",
+        [BINARY_HEADERS_03.TYPE]: "type",
         "CE-CloudEventsVersion": "0.1",
-        "ce-source": "source",
-        "ce-id": "id",
-        "ce-time": "2019-06-16T11:42:00Z",
-        "ce-schemaurl": "http://schema.registry/v1",
-        "Content-Type": "application/json"
+        [BINARY_HEADERS_03.SOURCE]: "source",
+        [BINARY_HEADERS_03.ID]: "id",
+        [BINARY_HEADERS_03.TIME]: "2019-06-16T11:42:00Z",
+        [BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
+        [HEADER_CONTENT_TYPE]: "application/json"
       };
 
       var un = new Unmarshaller();
@@ -224,13 +229,13 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
         data: "dataString"
       };
       var attributes = {
-        "ce-type": "type",
-        "ce-specversion": "0.3",
-        "ce-source": "source",
-        "ce-id": "id",
-        "ce-time": "2019-06-16T11:42:00Z",
-        "ce-schemaurl": "http://schema.registry/v1",
-        "Content-Type": "application/json"
+        [BINARY_HEADERS_03.TYPE]: "type",
+        [BINARY_HEADERS_03.SPEC_VERSION]: "0.3",
+        [BINARY_HEADERS_03.SOURCE]: "source",
+        [BINARY_HEADERS_03.ID]: "id",
+        [BINARY_HEADERS_03.TIME]: "2019-06-16T11:42:00Z",
+        [BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
+        [HEADER_CONTENT_TYPE]: "application/json"
       };
 
       var un = new Unmarshaller();
@@ -245,14 +250,14 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
       var payload = "eyJtdWNoIjoid293In0=";
 
       var attributes = {
-        "ce-type": "type",
-        "ce-specversion": "0.3",
-        "ce-source": "source",
-        "ce-id": "id",
-        "ce-time": "2019-06-16T11:42:00Z",
-        "ce-schemaurl": "http://schema.registry/v1",
-        "Content-Type": "application/json",
-        "ce-datacontentencoding": "binary"
+        [BINARY_HEADERS_03.TYPE]: "type",
+        [BINARY_HEADERS_03.SPEC_VERSION]: "0.3",
+        [BINARY_HEADERS_03.SOURCE]: "source",
+        [BINARY_HEADERS_03.ID]: "id",
+        [BINARY_HEADERS_03.TIME]: "2019-06-16T11:42:00Z",
+        [BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
+        [HEADER_CONTENT_TYPE]: "application/json",
+        [BINARY_HEADERS_03.CONTENT_ENCONDING]: "binary"
       };
 
       var un = new Unmarshaller();
@@ -273,14 +278,14 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
       };
 
       var attributes = {
-        "ce-type": "type",
-        "ce-specversion": "0.3",
-        "ce-source": "source",
-        "ce-id": "id",
-        "ce-time": "2019-06-16T11:42:00Z",
-        "ce-schemaurl": "http://schema.registry/v1",
-        "Content-Type": "application/json",
-        "ce-datacontentencoding": "base64"
+        [BINARY_HEADERS_03.TYPE]: "type",
+        [BINARY_HEADERS_03.SPEC_VERSION]: "0.3",
+        [BINARY_HEADERS_03.SOURCE]: "source",
+        [BINARY_HEADERS_03.ID]: "id",
+        [BINARY_HEADERS_03.TIME]: "2019-06-16T11:42:00Z",
+        [BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
+        [HEADER_CONTENT_TYPE]: "application/json",
+        [BINARY_HEADERS_03.CONTENT_ENCONDING]: "base64"
       };
 
       var un = new Unmarshaller();

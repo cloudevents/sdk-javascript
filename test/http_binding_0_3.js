@@ -1,7 +1,5 @@
 const expect = require("chai").expect;
 const nock = require("nock");
-const http = require("http");
-const request = require("request");
 const BinaryHTTPEmitter =
   require("../lib/bindings/http/emitter_binary_0_3.js");
 const Cloudevent = require("../lib/cloudevent.js");

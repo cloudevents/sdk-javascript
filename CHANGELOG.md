@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 - Support for mTLS in v1.0 Binary and Structured Emitters: issue [#48](https://github.com/cloudevents/sdk-javascript/issues/48). Note that this fix is only valid for v1.0 and does not address the problem in v0.3 and below.
 
+### Removed
+
+- Removed support for Node.js 6, 7 and 8 - all of which are EOL at this point. Travis CI modified to test on Node.js 10 and 12.
+
 ## [1.0.0]
 
 ### Added

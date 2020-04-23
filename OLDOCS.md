@@ -34,7 +34,7 @@ var cloudevent01 = new Cloudevent();
  */
 cloudevent01
   .type("com.github.pull.create")
-  .source("urn:event:from:myapi/resourse/123");
+  .source("urn:event:from:myapi/resource/123");
 
 /*
  * Backward compatibility to spec 0.1 by injecting methods from spec
@@ -55,7 +55,7 @@ var cloudevent02 = new Cloudevent(Cloudevent.specs["0.2"]);
  */
 cloudevent02
   .type("com.github.pull.create")
-  .source("urn:event:from:myapi/resourse/123");
+  .source("urn:event:from:myapi/resource/123");
 
 ```
 
@@ -70,7 +70,7 @@ var Cloudevent = require("cloudevents-sdk");
 var cloudevent =
   new Cloudevent()
         .type("com.github.pull.create")
-        .source("urn:event:from:myapi/resourse/123");
+        .source("urn:event:from:myapi/resource/123");
 
 /*
  * Format the payload and return it
@@ -87,7 +87,7 @@ var Cloudevent = require("cloudevents-sdk");
 var cloudevent =
   new Cloudevent()
     .type("com.github.pull.create")
-    .source("urn:event:from:myapi/resourse/123");
+    .source("urn:event:from:myapi/resource/123");
 
 // The binding configuration using POST
 var config = {

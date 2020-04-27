@@ -87,10 +87,10 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
     it("Throw error when the event does not follow the spec 0.3", () => {
       // setup
       var payload =
-        new Cloudevent()
+        new v03.CloudEvent(v03.Spec)
           .type(type)
           .source(source)
-          .contenttype(ceContentType)
+          .dataContentType(ceContentType)
           .time(now)
           .schemaurl(schemaurl)
           .data(data)

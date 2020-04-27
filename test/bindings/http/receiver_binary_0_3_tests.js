@@ -285,7 +285,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
         .to.equal("http://schema.registry/v1");
     });
 
-    it("Cloudevent contains 'contenttype' (application/json)", () => {
+    it("Cloudevent contains 'datacontenttype' (application/json)", () => {
       // setup
       var payload = {
         data: "dataString"
@@ -304,30 +304,31 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
       var actual = receiver.parse(payload, attributes);
 
       // assert
-      expect(actual.getContenttype())
+      expect(actual.getDataContentType())
         .to.equal("application/json");
     });
 
-    it("Cloudevent contains 'contenttype' (application/octet-stream)", () => {
+    it("Cloudevent contains 'datacontenttype' (application/octet-stream)",
+      () => {
       // setup
-      var payload = "The payload is binary data";
-      var attributes = {
-        "ce-type": "type",
-        "ce-specversion": "0.3",
-        "ce-source": "/source",
-        "ce-id": "id",
-        "ce-time": "2019-06-16T11:42:00Z",
-        "ce-schemaurl": "http://schema.registry/v1",
-        "Content-Type": "application/octet-stream"
-      };
+        var payload = "The payload is binary data";
+        var attributes = {
+          "ce-type": "type",
+          "ce-specversion": "0.3",
+          "ce-source": "/source",
+          "ce-id": "id",
+          "ce-time": "2019-06-16T11:42:00Z",
+          "ce-schemaurl": "http://schema.registry/v1",
+          "Content-Type": "application/octet-stream"
+        };
 
-      // act
-      var actual = receiver.parse(payload, attributes);
+        // act
+        var actual = receiver.parse(payload, attributes);
 
-      // assert
-      expect(actual.getContenttype())
-        .to.equal("application/octet-stream");
-    });
+        // assert
+        expect(actual.getDataContentType())
+          .to.equal("application/octet-stream");
+      });
 
     it("Cloudevent contains 'data' (application/json)", () => {
       // setup

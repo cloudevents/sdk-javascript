@@ -33,7 +33,7 @@ To see working examples, point to [examples](./examples).
 
 ## :newspaper: Newsletter :newspaper:
 
-> all the API developed before, for 0.1, 0.2 and 0.3, works as the same.
+> all the API developed before, for 0.1 and 0.3, works as the same.
 
 Checkout the new expressive additions.
 
@@ -91,21 +91,21 @@ These are the supported specifications by this version.
 
 | **Specifications**                    | v0.1 | v0.2 | v0.3 | **v1.0** |
 |---------------------------------------|------|------|------|----------|
-| CloudEvents                           | yes  | yes  | yes  |   yes    |
-| HTTP Transport Binding  - Structured  | yes  | yes  | yes  |   yes    |
-| HTTP Transport Binding  - Binary      | yes  | yes  | yes  |   yes    |
-| JSON Event Format                     | yes  | yes  | yes  |   yes    |
+| CloudEvents                           | no   | no   | yes  |   yes    |
+| HTTP Transport Binding  - Structured  | no   | no   | yes  |   yes    |
+| HTTP Transport Binding  - Binary      | no   | no   | yes  |   yes    |
+| JSON Event Format                     | no   | no   | yes  |   yes    |
 
 ### What we can do
 
 | **What**                            | v0.1   | v0.2 | v0.3 | **v1.0** |
 |-------------------------------------|--------|------|------|----------|
-| Create events                       | yes    | yes  | yes  |   yes    |
-| Emit Structured events over HTTP    | yes    | yes  | yes  |   yes    |
-| Emit Binary events over HTTP        | yes    | yes  | yes  |   yes    |
-| JSON Event Format                   | yes    | yes  | yes  |   yes    |
-| Receive Structured events over HTTP | **no** | yes  | yes  |   yes    |
-| Receive Binary events over HTTP     | **no** | yes  | yes  |   yes    |
+| Create events                       | no     | no   | yes  |   yes    |
+| Emit Structured events over HTTP    | no     | no   | yes  |   yes    |
+| Emit Binary events over HTTP        | no     | no   | yes  |   yes    |
+| JSON Event Format                   | no     | no   | yes  |   yes    |
+| Receive Structured events over HTTP | **no** | no   | yes  |   yes    |
+| Receive Binary events over HTTP     | **no** | no   | yes  |   yes    |
 
 ## How to use
 

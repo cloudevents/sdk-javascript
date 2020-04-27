@@ -57,12 +57,6 @@ describe("CloudEvents Spec v0.3", () => {
       expect(cloudevent.getDataContentType()).to.equal(dataContentType);
     });
 
-    it("contenttype() method should maps to 'datacontenttype'", () => {
-      cloudevent.contenttype("text/xml");
-      expect(cloudevent.spec.payload.datacontenttype).to.equal("text/xml");
-      cloudevent.contenttype(dataContentType);
-    });
-
     it("Should have 'schemaurl'", () => {
       expect(cloudevent.getSchemaurl()).to.equal(schemaurl);
     });

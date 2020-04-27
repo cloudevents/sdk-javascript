@@ -14,6 +14,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 - Removed support for Node.js 6, 7 and 8 - all of which are EOL at this point. Travis CI modified to test on Node.js 10 and 12.
 
+### Added
+
+- Added support for standard-version and conventional-changelog
+
 ## [1.0.0]
 
 ### Added

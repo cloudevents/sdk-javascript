@@ -1,23 +1,20 @@
-var expect     = require("chai").expect;
+var expect = require("chai").expect;
 var Cloudevent = require("../index.js");
 
-const type   = "com.github.pull.create";
+const type = "com.github.pull.create";
 const source = "urn:event:from:myapi/resourse/123";
-const time   = new Date();
+const time = new Date();
 const schemaurl = "http://example.com/registry/myschema.json";
 const contenttype = "application/json";
 const data = {};
-const extensions = {};
 
 var cloudevent =
   new Cloudevent(Cloudevent.specs["0.2"])
-        .type(type)
-        .source(source);
+    .type(type)
+    .source(source);
 
 describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
-
   describe("Object properties", () => {
-
     describe("Attribute getters", () => {
       it("returns 'type'", () => {
         expect(cloudevent.getType()).to.equal(type);
@@ -30,7 +27,6 @@ describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
   });
 
   describe("JSON Format", () => {
-
     describe("Required context attributes", () => {
       it("requires 'type'", () => {
         expect(cloudevent.format()).to.have.property("type");
@@ -93,15 +89,14 @@ describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
 
       it("'extension2' should have value equals to 'value1'", () => {
         cloudevent.addExtension("extension2", "value2");
-        expect(cloudevent.format()["extension2"]).to.equal("value2");
+        expect(cloudevent.format().extension2).to.equal("value2");
       });
 
       it("should throw an error when employ reserved name as extension", () => {
-
         var cevt =
           new Cloudevent(Cloudevent.specs["0.2"])
-                .type(type)
-                .source(source);
+            .type(type)
+            .source(source);
         expect(cevt.addExtension.bind(cevt, "id"))
           .to
           .throw("Reserved attribute name: 'id'");
@@ -123,13 +118,13 @@ describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
         });
 
         it("should be prefixed with a reverse-DNS name", () => {
-          //TODO how to assert it?
+          // TODO how to assert it?
         });
       });
 
       describe("'specversion'", () => {
         it("compliant event producers must use a value of '0.2'", () => {
-          expect(cloudevent.format()["specversion"]).to.equal("0.2");
+          expect(cloudevent.format().specversion).to.equal("0.2");
         });
 
         it("should throw an error when is an empty string", () => {
@@ -165,10 +160,9 @@ describe("CloudEvents Spec 0.2 - JavaScript SDK", () => {
       describe("'time'", () => {
         it("must adhere to the format specified in RFC 3339", () => {
           cloudevent.time(time);
-          expect(cloudevent.format()["time"]).to.equal(time.toISOString());
+          expect(cloudevent.format().time).to.equal(time.toISOString());
         });
       });
     });
   });
-
 });

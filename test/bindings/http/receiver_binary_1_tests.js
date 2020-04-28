@@ -1,5 +1,5 @@
 const expect = require("chai").expect;
-const {asBase64} = require("../../../lib/utils/fun.js");
+const { asBase64 } = require("../../../lib/utils/fun.js");
 
 const HTTPBinaryReceiver =
   require("../../../lib/bindings/http/receiver_binary_1.js");
@@ -42,10 +42,10 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       // setup
       var payload = {};
       var attributes = {
-        "ce-specversion" : "specversion",
-        "ce-source"      : "source",
-        "ce-id"          : "id",
-        "Content-Type"   : "application/json"
+        "ce-specversion": "specversion",
+        "ce-source": "source",
+        "ce-id": "id",
+        "Content-Type": "application/json"
       };
 
       // act and assert
@@ -57,10 +57,10 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       // setup
       var payload = {};
       var attributes = {
-        "ce-type"        : "type",
-        "ce-source"      : "source",
-        "ce-id"          : "id",
-        "Content-Type"   : "application/json"
+        "ce-type": "type",
+        "ce-source": "source",
+        "ce-id": "id",
+        "Content-Type": "application/json"
       };
 
       // act and assert
@@ -72,10 +72,10 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       // setup
       var payload = {};
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "specversion",
-        "ce-id"          : "id",
-        "Content-Type"   : "application/json"
+        "ce-type": "type",
+        "ce-specversion": "specversion",
+        "ce-id": "id",
+        "Content-Type": "application/json"
       };
 
       // act and assert
@@ -87,10 +87,10 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       // setup
       var payload = {};
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "specversion",
-        "ce-source"      : "source",
-        "Content-Type"   : "application/json"
+        "ce-type": "type",
+        "ce-specversion": "specversion",
+        "ce-source": "source",
+        "Content-Type": "application/json"
       };
 
       // act and assert
@@ -102,11 +102,11 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       // setup
       var payload = {};
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "0.2",
-        "ce-source"      : "source",
-        "ce-id"          : "id",
-        "Content-Type"   : "application/json"
+        "ce-type": "type",
+        "ce-specversion": "0.2",
+        "ce-source": "source",
+        "ce-id": "id",
+        "Content-Type": "application/json"
       };
 
       // act and assert
@@ -118,11 +118,11 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       // setup
       var payload = {};
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "specversion",
-        "ce-source"      : "source",
-        "ce-id"          : "id",
-        "Content-Type"   : "text/html"
+        "ce-type": "type",
+        "ce-specversion": "specversion",
+        "ce-source": "source",
+        "ce-id": "id",
+        "Content-Type": "text/html"
       };
 
       // act and assert
@@ -134,11 +134,11 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       // setup
       var payload = {};
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "1.0",
-        "ce-source"      : "source",
-        "ce-id"          : "id",
-        "Content-Type"   : "application/json"
+        "ce-type": "type",
+        "ce-specversion": "1.0",
+        "ce-source": "source",
+        "ce-id": "id",
+        "Content-Type": "application/json"
       };
 
       // act and assert
@@ -151,16 +151,16 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
     it("Cloudevent contains 'type'", () => {
       // setup
       var payload = {
-        "data" : "dataString"
+        data: "dataString"
       };
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "1.0",
-        "ce-source"      : "source",
-        "ce-id"          : "id",
-        "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-dataschema"  : "http://schema.registry/v1",
-        "Content-Type"   : "application/json"
+        "ce-type": "type",
+        "ce-specversion": "1.0",
+        "ce-source": "source",
+        "ce-id": "id",
+        "ce-time": "2019-06-16T11:42:00Z",
+        "ce-dataschema": "http://schema.registry/v1",
+        "Content-Type": "application/json"
       };
 
       // act
@@ -174,16 +174,16 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
     it("Cloudevent contains 'specversion'", () => {
       // setup
       var payload = {
-        "data" : "dataString"
+        data: "dataString"
       };
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "1.0",
-        "ce-source"      : "source",
-        "ce-id"          : "id",
-        "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-dataschema"  : "http://schema.registry/v1",
-        "Content-Type"   : "application/json"
+        "ce-type": "type",
+        "ce-specversion": "1.0",
+        "ce-source": "source",
+        "ce-id": "id",
+        "ce-time": "2019-06-16T11:42:00Z",
+        "ce-dataschema": "http://schema.registry/v1",
+        "Content-Type": "application/json"
       };
 
       // act
@@ -197,16 +197,16 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
     it("Cloudevent contains 'source'", () => {
       // setup
       var payload = {
-        "data" : "dataString"
+        data: "dataString"
       };
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "1.0",
-        "ce-source"      : "/source",
-        "ce-id"          : "id",
-        "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-dataschema"  : "http://schema.registry/v1",
-        "Content-Type"   : "application/json"
+        "ce-type": "type",
+        "ce-specversion": "1.0",
+        "ce-source": "/source",
+        "ce-id": "id",
+        "ce-time": "2019-06-16T11:42:00Z",
+        "ce-dataschema": "http://schema.registry/v1",
+        "Content-Type": "application/json"
       };
 
       // act
@@ -220,16 +220,16 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
     it("Cloudevent contains 'id'", () => {
       // setup
       var payload = {
-        "data" : "dataString"
+        data: "dataString"
       };
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "1.0",
-        "ce-source"      : "/source",
-        "ce-id"          : "id",
-        "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-dataschema"  : "http://schema.registry/v1",
-        "Content-Type"   : "application/json"
+        "ce-type": "type",
+        "ce-specversion": "1.0",
+        "ce-source": "/source",
+        "ce-id": "id",
+        "ce-time": "2019-06-16T11:42:00Z",
+        "ce-dataschema": "http://schema.registry/v1",
+        "Content-Type": "application/json"
       };
 
       // act
@@ -243,16 +243,16 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
     it("Cloudevent contains 'time'", () => {
       // setup
       var payload = {
-        "data" : "dataString"
+        data: "dataString"
       };
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "1.0",
-        "ce-source"      : "/source",
-        "ce-id"          : "id",
-        "ce-time"        : "2019-06-16T11:42:00.000Z",
-        "ce-dataschema"  : "http://schema.registry/v1",
-        "Content-Type"   : "application/json"
+        "ce-type": "type",
+        "ce-specversion": "1.0",
+        "ce-source": "/source",
+        "ce-id": "id",
+        "ce-time": "2019-06-16T11:42:00.000Z",
+        "ce-dataschema": "http://schema.registry/v1",
+        "Content-Type": "application/json"
       };
 
       // act
@@ -266,16 +266,16 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
     it("Cloudevent contains 'dataschema'", () => {
       // setup
       var payload = {
-        "data" : "dataString"
+        data: "dataString"
       };
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "1.0",
-        "ce-source"      : "/source",
-        "ce-id"          : "id",
-        "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-dataschema"  : "http://schema.registry/v1",
-        "Content-Type"   : "application/json"
+        "ce-type": "type",
+        "ce-specversion": "1.0",
+        "ce-source": "/source",
+        "ce-id": "id",
+        "ce-time": "2019-06-16T11:42:00Z",
+        "ce-dataschema": "http://schema.registry/v1",
+        "Content-Type": "application/json"
       };
 
       // act
@@ -289,16 +289,16 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
     it("Cloudevent contains 'contenttype' (application/json)", () => {
       // setup
       var payload = {
-        "data" : "dataString"
+        data: "dataString"
       };
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "1.0",
-        "ce-source"      : "/source",
-        "ce-id"          : "id",
-        "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-dataschema"  : "http://schema.registry/v1",
-        "Content-Type"   : "application/json"
+        "ce-type": "type",
+        "ce-specversion": "1.0",
+        "ce-source": "/source",
+        "ce-id": "id",
+        "ce-time": "2019-06-16T11:42:00Z",
+        "ce-dataschema": "http://schema.registry/v1",
+        "Content-Type": "application/json"
       };
 
       // act
@@ -313,13 +313,13 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       // setup
       var payload = "The payload is binary data";
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "1.0",
-        "ce-source"      : "/source",
-        "ce-id"          : "id",
-        "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-dataschema"  : "http://schema.registry/v1",
-        "Content-Type"   : "application/octet-stream"
+        "ce-type": "type",
+        "ce-specversion": "1.0",
+        "ce-source": "/source",
+        "ce-id": "id",
+        "ce-time": "2019-06-16T11:42:00Z",
+        "ce-dataschema": "http://schema.registry/v1",
+        "Content-Type": "application/octet-stream"
       };
 
       // act
@@ -333,16 +333,16 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
     it("Cloudevent contains 'data' (application/json)", () => {
       // setup
       var payload = {
-        "data" : "dataString"
+        data: "dataString"
       };
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "1.0",
-        "ce-source"      : "/source",
-        "ce-id"          : "id",
-        "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-dataschema"  : "http://schema.registry/v1",
-        "Content-Type"   : "application/json"
+        "ce-type": "type",
+        "ce-specversion": "1.0",
+        "ce-source": "/source",
+        "ce-id": "id",
+        "ce-time": "2019-06-16T11:42:00Z",
+        "ce-dataschema": "http://schema.registry/v1",
+        "Content-Type": "application/json"
       };
 
       // act
@@ -357,13 +357,13 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       // setup
       var payload = "The payload is binary data";
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "1.0",
-        "ce-source"      : "/source",
-        "ce-id"          : "id",
-        "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-dataschema"  : "http://schema.registry/v1",
-        "Content-Type"   : "application/octet-stream"
+        "ce-type": "type",
+        "ce-specversion": "1.0",
+        "ce-source": "/source",
+        "ce-id": "id",
+        "ce-time": "2019-06-16T11:42:00Z",
+        "ce-dataschema": "http://schema.registry/v1",
+        "Content-Type": "application/octet-stream"
       };
 
       // act
@@ -377,20 +377,21 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
     it("The content of 'data' is base64 for binary", () => {
       // setup
       var expected = {
-        "data" : "dataString"
+        data: "dataString"
       };
 
-      let bindata = Uint32Array.from(JSON.stringify(expected), (c) => c.codePointAt(0));
-      let payload = asBase64(bindata);
+      const bindata = Uint32Array
+        .from(JSON.stringify(expected), (c) => c.codePointAt(0));
+      const payload = asBase64(bindata);
 
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "1.0",
-        "ce-source"      : "/source",
-        "ce-id"          : "id",
-        "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-dataschema"  : "http://schema.registry/v1",
-        "Content-Type"   : "application/json"
+        "ce-type": "type",
+        "ce-specversion": "1.0",
+        "ce-source": "/source",
+        "ce-id": "id",
+        "ce-time": "2019-06-16T11:42:00Z",
+        "ce-dataschema": "http://schema.registry/v1",
+        "Content-Type": "application/json"
       };
 
       // act
@@ -404,16 +405,16 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
     it("No error when all attributes are in place", () => {
       // setup
       var payload = {
-        "data" : "dataString"
+        data: "dataString"
       };
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "1.0",
-        "ce-source"      : "source",
-        "ce-id"          : "id",
-        "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-dataschema"  : "http://schema.registry/v1",
-        "Content-Type"   : "application/json"
+        "ce-type": "type",
+        "ce-specversion": "1.0",
+        "ce-source": "source",
+        "ce-id": "id",
+        "ce-time": "2019-06-16T11:42:00Z",
+        "ce-dataschema": "http://schema.registry/v1",
+        "Content-Type": "application/json"
       };
 
       // act
@@ -421,27 +422,27 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
       // assert
       expect(actual)
-          .to.be.an("object");
+        .to.be.an("object");
 
       expect(actual)
-          .to.have.property("format");
+        .to.have.property("format");
     });
 
     it("Should accept 'extension1'", () => {
       // setup
       var extension1 = "mycuston-ext1";
       var payload = {
-        "data" : "dataString"
+        data: "dataString"
       };
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "1.0",
-        "ce-source"      : "source",
-        "ce-id"          : "id",
-        "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-dataschema"  : "http://schema.registry/v1",
-        "Content-Type"   : "application/json",
-        "ce-extension1"  : extension1
+        "ce-type": "type",
+        "ce-specversion": "1.0",
+        "ce-source": "source",
+        "ce-id": "id",
+        "ce-time": "2019-06-16T11:42:00Z",
+        "ce-dataschema": "http://schema.registry/v1",
+        "Content-Type": "application/json",
+        "ce-extension1": extension1
       };
 
       // act
@@ -449,8 +450,8 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       var actualExtensions = actual.getExtensions();
 
       // assert
-      expect(actualExtensions["extension1"])
-          .to.equal(extension1);
+      expect(actualExtensions.extension1)
+        .to.equal(extension1);
     });
   });
 });

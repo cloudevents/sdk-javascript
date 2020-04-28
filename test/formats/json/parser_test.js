@@ -2,12 +2,10 @@ var expect = require("chai").expect;
 var Parser = require("../../../lib/formats/json/parser.js");
 var Cloudevent = require("../../../index.js");
 
-const type        = "com.github.pull.create";
-const source      = "urn:event:from:myapi/resourse/123";
-const webhook     = "https://cloudevents.io/webhook";
-const contentType = "application/cloudevents+json; charset=utf-8";
-const now         = new Date();
-const schemaurl   = "http://cloudevents.io/schema.json";
+const type = "com.github.pull.create";
+const source = "urn:event:from:myapi/resourse/123";
+const now = new Date();
+const schemaurl = "http://cloudevents.io/schema.json";
 
 const ceContentType = "application/json";
 
@@ -16,7 +14,6 @@ const data = {
 };
 
 describe("JSON Event Format Parser", () => {
-
   it("Throw error when payload is an integer", () => {
     // setup
     var payload = 83;
@@ -24,7 +21,7 @@ describe("JSON Event Format Parser", () => {
 
     // act and assert
     expect(parser.parse.bind(parser, payload))
-        .to.throw("invalid payload type, allowed are: string or object");
+      .to.throw("invalid payload type, allowed are: string or object");
   });
 
   it("Throw error when payload is null", () => {
@@ -34,7 +31,7 @@ describe("JSON Event Format Parser", () => {
 
     // act and assert
     expect(parser.parse.bind(parser, payload))
-        .to.throw("null or undefined payload");
+      .to.throw("null or undefined payload");
   });
 
   it("Throw error when payload is undefined", () => {
@@ -43,7 +40,7 @@ describe("JSON Event Format Parser", () => {
 
     // act and assert
     expect(parser.parse.bind(parser))
-        .to.throw("null or undefined payload");
+      .to.throw("null or undefined payload");
   });
 
   it("Throw error when payload is a float", () => {
@@ -53,7 +50,7 @@ describe("JSON Event Format Parser", () => {
 
     // act and assert
     expect(parser.parse.bind(parser, payload))
-        .to.throw("invalid payload type, allowed are: string or object");
+      .to.throw("invalid payload type, allowed are: string or object");
   });
 
   it("Throw error when payload is an invalid JSON", () => {
@@ -63,7 +60,7 @@ describe("JSON Event Format Parser", () => {
 
     // act and assert
     expect(parser.parse.bind(parser, payload))
-        .to.throw("Unexpected token g in JSON at position 0");
+      .to.throw("Unexpected token g in JSON at position 0");
   });
 
   it("Must accept the CloudEvent spec 0.2 as JSON", () => {
@@ -85,7 +82,7 @@ describe("JSON Event Format Parser", () => {
 
     // assert
     expect(actual)
-        .to.be.an("object");
+      .to.be.an("object");
   });
 
   it("Must accept when the payload is a string well formed as JSON", () => {
@@ -98,6 +95,6 @@ describe("JSON Event Format Parser", () => {
 
     // assert
     expect(actual)
-        .to.be.an("object");
+      .to.be.an("object");
   });
 });

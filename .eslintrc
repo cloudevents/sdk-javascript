@@ -1,0 +1,26 @@
+{
+  "extends": "eslint:recommended",
+  "env": {
+    "es6": true,
+    "node": true,
+    "mocha": true
+  },
+  "rules": {
+    "space-before-function-paren": ["error", "never"],
+    "standard/no-callback-literal": "off",
+    "arrow-spacing": "error",
+    "arrow-parens": ["error", "always"],
+    "arrow-body-style": ["error", "as-needed"],
+    "prefer-template": "error",
+    "max-len": ["warn", { "code": 80 }],
+    "no-unused-vars": ["warn", {
+      "argsIgnorePattern": "^_$|^e$|^reject$|^resolve$"
+    }],
+    "no-console": ["error", {
+      "allow": ["warn", "error"]
+    }],
+    "valid-jsdoc": "error",
+    "semi": ["error", "always"],
+    "quotes": ["error", "double", { "allowTemplateLiterals": true }]
+  }
+}

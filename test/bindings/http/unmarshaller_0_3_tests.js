@@ -1,15 +1,13 @@
 var expect = require("chai").expect;
 var Unmarshaller = require("../../../lib/bindings/http/unmarshaller_0_3.js");
-var Cloudevent   = require("../../../index.js");
-var v03     = require("../../../v03/index.js");
+var Cloudevent = require("../../../index.js");
+var v03 = require("../../../v03/index.js");
 
-const type        = "com.github.pull.create";
-const source      = "urn:event:from:myapi/resourse/123";
-const webhook     = "https://cloudevents.io/webhook";
-const contentType = "application/cloudevents+json; charset=utf-8";
-const now         = new Date();
-const schemaurl   = "http://cloudevents.io/schema.json";
-const subject     = "subject.ext";
+const type = "com.github.pull.create";
+const source = "urn:event:from:myapi/resourse/123";
+const now = new Date();
+const schemaurl = "http://cloudevents.io/schema.json";
+const subject = "subject.ext";
 const ceContentType = "application/json";
 
 const data = {
@@ -17,7 +15,6 @@ const data = {
 };
 
 describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
-
   it("Throw error when payload is null", () => {
     // setup
     var payload = null;
@@ -25,8 +22,8 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
 
     // act and assert
     return un.unmarshall(payload)
-      .then(actual => {throw {message: "failed"}})
-      .catch(err =>
+      .then(() => { throw new Error("failed"); })
+      .catch((err) =>
         expect(err.message).to.equal("payload is null or undefined"));
   });
 
@@ -38,8 +35,8 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
 
     // act and assert
     return un.unmarshall(payload, headers)
-      .then(actual => {throw {message: "failed"}})
-      .catch(err =>
+      .then(() => { throw new Error("failed"); })
+      .catch((err) =>
         expect(err.message).to.equal("headers is null or undefined"));
   });
 
@@ -51,8 +48,8 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
 
     // act and assert
     un.unmarshall(payload, headers)
-      .then(actual => {throw {message: "failed"}})
-      .catch(err =>
+      .then(() => { throw new Error("failed"); })
+      .catch((err) =>
         expect(err.message).to.equal("content-type header not found"));
   });
 
@@ -60,14 +57,14 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
     // setup
     var payload = {};
     var headers = {
-      "content-type":"text/xml"
+      "content-type": "text/xml"
     };
     var un = new Unmarshaller();
 
     // act and assert
     un.unmarshall(payload, headers)
-      .then(actual => {throw {message: "failed"}})
-      .catch(err =>
+      .then(() => { throw new Error("failed"); })
+      .catch((err) =>
         expect(err.message).to.equal("content type not allowed"));
   });
 
@@ -76,14 +73,14 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
       // setup
       var payload = {};
       var headers = {
-        "content-type":"application/cloudevents+zip"
+        "content-type": "application/cloudevents+zip"
       };
       var un = new Unmarshaller();
 
       // act and assert
       un.unmarshall(payload, headers)
-        .then(actual => {throw {message: "failed"}})
-        .catch(err =>
+        .then(() => { throw new Error("failed"); })
+        .catch((err) =>
           expect(err.message).to.equal("structured+type not allowed"));
     });
 
@@ -100,15 +97,15 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
           .toString();
 
       var headers = {
-        "content-type":"application/cloudevents+json"
+        "content-type": "application/cloudevents+json"
       };
 
       var un = new Unmarshaller();
 
       // act and assert
       un.unmarshall(payload, headers)
-        .then(actual => {throw {message: "failed"}})
-        .catch(err =>
+        .then(() => { throw new Error("failed"); })
+        .catch((err) =>
           expect(err.message).to.equal("invalid payload"));
     });
 
@@ -126,20 +123,19 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
           .toString();
 
       var headers = {
-        "content-type":"application/cloudevents+json"
+        "content-type": "application/cloudevents+json"
       };
 
       var un = new Unmarshaller();
 
       // act and assert
       return un.unmarshall(payload, headers)
-        .then(actual =>
+        .then((actual) =>
           expect(actual).to.be.an("object"))
         .catch((err) => {
-          console.log(err);
+          console.error(err);
           throw err;
         });
-
     });
 
     it("Should parse 'data' stringfied json to json object", () => {
@@ -156,21 +152,20 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
           .toString();
 
       var headers = {
-        "content-type":"application/cloudevents+json"
+        "content-type": "application/cloudevents+json"
       };
 
       var un = new Unmarshaller();
 
       // act and assert
       return un.unmarshall(payload, headers)
-        .then(actual => {
-          expect(actual.getData()).to.deep.equal(data)
+        .then((actual) => {
+          expect(actual.getData()).to.deep.equal(data);
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
           throw err;
         });
-
     });
   });
 
@@ -178,72 +173,71 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
     it("Throw error when has not allowed mime", () => {
       // setup
       var payload = {
-        "data" : "dataString"
+        data: "dataString"
       };
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "0.3",
-        "ce-source"      : "source",
-        "ce-id"          : "id",
-        "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-schemaurl"   : "http://schema.registry/v1",
-        "Content-Type"   : "text/html"
+        "ce-type": "type",
+        "ce-specversion": "0.3",
+        "ce-source": "source",
+        "ce-id": "id",
+        "ce-time": "2019-06-16T11:42:00Z",
+        "ce-schemaurl": "http://schema.registry/v1",
+        "Content-Type": "text/html"
       };
 
       var un = new Unmarshaller();
 
       // act and assert
       un.unmarshall(payload, attributes)
-        .then(actual => {throw {message: "failed"}})
-        .catch(err =>
+        .then(() => { throw new Error("failed"); })
+        .catch((err) =>
           expect(err.message).to.equal("content type not allowed"));
-
     });
 
     it("Throw error when the event does not follow the spec 0.3", () => {
       // setup
       var payload = {
-        "data" : "dataString"
+        data: "dataString"
       };
       var attributes = {
-        "ce-type"               : "type",
-        "CE-CloudEventsVersion" : "0.1",
-        "ce-source"             : "source",
-        "ce-id"                 : "id",
-        "ce-time"               : "2019-06-16T11:42:00Z",
-        "ce-schemaurl"          : "http://schema.registry/v1",
-        "Content-Type"          : "application/json"
+        "ce-type": "type",
+        "CE-CloudEventsVersion": "0.1",
+        "ce-source": "source",
+        "ce-id": "id",
+        "ce-time": "2019-06-16T11:42:00Z",
+        "ce-schemaurl": "http://schema.registry/v1",
+        "Content-Type": "application/json"
       };
 
       var un = new Unmarshaller();
 
       // act and assert
       un.unmarshall(payload, attributes)
-        .then(actual => {throw {message: "failed"}})
-        .catch(err =>
+        .then(() => { throw new Error("failed"); })
+        .catch((err) =>
           expect(err.message).to.not.empty);
     });
 
     it("No error when all attributes are in place", () => {
       // setup
       var payload = {
-        "data" : "dataString"
+        data: "dataString"
       };
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "0.3",
-        "ce-source"      : "source",
-        "ce-id"          : "id",
-        "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-schemaurl"   : "http://schema.registry/v1",
-        "Content-Type"   : "application/json"
+        "ce-type": "type",
+        "ce-specversion": "0.3",
+        "ce-source": "source",
+        "ce-id": "id",
+        "ce-time": "2019-06-16T11:42:00Z",
+        "ce-schemaurl": "http://schema.registry/v1",
+        "Content-Type": "application/json"
       };
 
       var un = new Unmarshaller();
 
       // act and assert
       un.unmarshall(payload, attributes)
-        .then(actual => expect(actual).to.be.an("object"));
+        .then((actual) => expect(actual).to.be.an("object"));
     });
 
     it("Throw error when 'ce-datacontentencoding' is not allowed", () => {
@@ -251,22 +245,22 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
       var payload = "eyJtdWNoIjoid293In0=";
 
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "0.3",
-        "ce-source"      : "source",
-        "ce-id"          : "id",
-        "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-schemaurl"   : "http://schema.registry/v1",
-        "Content-Type"   : "application/json",
-        "ce-datacontentencoding" : "binary"
+        "ce-type": "type",
+        "ce-specversion": "0.3",
+        "ce-source": "source",
+        "ce-id": "id",
+        "ce-time": "2019-06-16T11:42:00Z",
+        "ce-schemaurl": "http://schema.registry/v1",
+        "Content-Type": "application/json",
+        "ce-datacontentencoding": "binary"
       };
 
       var un = new Unmarshaller();
 
       // act and assert
       return un.unmarshall(payload, attributes)
-        .then(actual => {throw {message: "failed"}})
-        .catch(err => {
+        .then(() => { throw new Error("failed"); })
+        .catch((err) => {
           expect(err.message).to.equal("unsupported datacontentencoding");
         });
     });
@@ -274,28 +268,28 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
     it("No error when 'ce-datacontentencoding' is base64", () => {
       // setup
       var payload = "eyJtdWNoIjoid293In0=";
-      let expected = {
-        much : "wow"
+      const expected = {
+        much: "wow"
       };
 
       var attributes = {
-        "ce-type"        : "type",
-        "ce-specversion" : "0.3",
-        "ce-source"      : "source",
-        "ce-id"          : "id",
-        "ce-time"        : "2019-06-16T11:42:00Z",
-        "ce-schemaurl"   : "http://schema.registry/v1",
-        "Content-Type"   : "application/json",
-        "ce-datacontentencoding" : "base64"
+        "ce-type": "type",
+        "ce-specversion": "0.3",
+        "ce-source": "source",
+        "ce-id": "id",
+        "ce-time": "2019-06-16T11:42:00Z",
+        "ce-schemaurl": "http://schema.registry/v1",
+        "Content-Type": "application/json",
+        "ce-datacontentencoding": "base64"
       };
 
       var un = new Unmarshaller();
 
       // act and assert
       return un.unmarshall(payload, attributes)
-        .then(actual => expect(actual.getData()).to.deep.equal(expected))
-        .catch(err => {
-          console.log(err);
+        .then((actual) => expect(actual.getData()).to.deep.equal(expected))
+        .catch((err) => {
+          console.error(err);
           throw err;
         });
     });

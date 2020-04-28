@@ -1,19 +1,18 @@
 const expect = require("chai").expect;
 const Spec03 = require("../lib/specs/spec_0_3.js");
 const Cloudevent = require("../index.js");
-const uuid  = require("uuid/v4");
+const uuid = require("uuid/v4");
 
 const id = uuid();
-const type   = "com.github.pull.create";
+const type = "com.github.pull.create";
 const source = "urn:event:from:myapi/resourse/123";
-const time   = new Date();
+const time = new Date();
 const schemaurl = "http://example.com/registry/myschema.json";
 const dataContentEncoding = "base64";
 const dataContentType = "application/json";
 const data = {
-  much : "wow"
+  much: "wow"
 };
-const extensions = {};
 const subject = "subject-x0";
 
 var cloudevent =
@@ -28,7 +27,6 @@ var cloudevent =
     .data(data);
 
 describe("CloudEvents Spec v0.3", () => {
-
   describe("REQUIRED Attributes", () => {
     it("Should have 'id'", () => {
       expect(cloudevent.getId()).to.equal(id);
@@ -83,7 +81,7 @@ describe("CloudEvents Spec v0.3", () => {
 
     it("Should have the 'extension1'", () => {
       cloudevent.addExtension("extension1", "value1");
-      expect(cloudevent.spec.payload["extension1"])
+      expect(cloudevent.spec.payload.extension1)
         .to.equal("value1");
     });
 
@@ -96,11 +94,11 @@ describe("CloudEvents Spec v0.3", () => {
   describe("The Constraints check", () => {
     describe("'id'", () => {
       it("should throw an error when is absent", () => {
-          delete cloudevent.spec.payload.id;
-          expect(cloudevent.format.bind(cloudevent))
-            .to
-            .throw("invalid payload");
-          cloudevent.spec.payload.id = id;
+        delete cloudevent.spec.payload.id;
+        expect(cloudevent.format.bind(cloudevent))
+          .to
+          .throw("invalid payload");
+        cloudevent.spec.payload.id = id;
       });
 
       it("should throw an erro when is empty", () => {
@@ -114,21 +112,21 @@ describe("CloudEvents Spec v0.3", () => {
 
     describe("'source'", () => {
       it("should throw an error when is absent", () => {
-          delete cloudevent.spec.payload.source;
-          expect(cloudevent.format.bind(cloudevent))
-            .to
-            .throw("invalid payload");
-          cloudevent.spec.payload.source = source;
+        delete cloudevent.spec.payload.source;
+        expect(cloudevent.format.bind(cloudevent))
+          .to
+          .throw("invalid payload");
+        cloudevent.spec.payload.source = source;
       });
     });
 
     describe("'specversion'", () => {
       it("should throw an error when is absent", () => {
-          delete cloudevent.spec.payload.specversion;
-          expect(cloudevent.format.bind(cloudevent))
-            .to
-            .throw("invalid payload");
-          cloudevent.spec.payload.specversion = "0.3";
+        delete cloudevent.spec.payload.specversion;
+        expect(cloudevent.format.bind(cloudevent))
+          .to
+          .throw("invalid payload");
+        cloudevent.spec.payload.specversion = "0.3";
       });
 
       it("should throw an error when is empty", () => {
@@ -142,11 +140,11 @@ describe("CloudEvents Spec v0.3", () => {
 
     describe("'type'", () => {
       it("should throw an error when is absent", () => {
-          delete cloudevent.spec.payload.type;
-          expect(cloudevent.format.bind(cloudevent))
-            .to
-            .throw("invalid payload");
-          cloudevent.spec.payload.type = type;
+        delete cloudevent.spec.payload.type;
+        expect(cloudevent.format.bind(cloudevent))
+          .to
+          .throw("invalid payload");
+        cloudevent.spec.payload.type = type;
       });
 
       it("should throw an error when is an empty string", () => {
@@ -164,7 +162,7 @@ describe("CloudEvents Spec v0.3", () => {
     });
 
     describe("'datacontentencoding'", () => {
-      it("should throw an error when is a unsupported encoding" , () => {
+      it("should throw an error when is a unsupported encoding", () => {
         cloudevent
           .data("Y2xvdWRldmVudHMK")
           .dataContentEncoding("binary");
@@ -177,19 +175,18 @@ describe("CloudEvents Spec v0.3", () => {
 
       it("should throw an error when 'data' does not carry base64",
         () => {
+          cloudevent
+            .data("no base 64 value")
+            .dataContentEncoding("base64")
+            .dataContentType("text/plain");
 
-        cloudevent
-          .data("no base 64 value")
-          .dataContentEncoding("base64")
-          .dataContentType("text/plain");
+          expect(cloudevent.format.bind(cloudevent))
+            .to
+            .throw("invalid payload");
 
-        expect(cloudevent.format.bind(cloudevent))
-          .to
-          .throw("invalid payload");
-
-        delete cloudevent.spec.payload.datacontentencoding;
-        cloudevent.data(data);
-      });
+          delete cloudevent.spec.payload.datacontentencoding;
+          cloudevent.data(data);
+        });
 
       it("should accept when 'data' is a string", () => {
         cloudevent
@@ -202,12 +199,12 @@ describe("CloudEvents Spec v0.3", () => {
     });
 
     describe("'data'", () => {
-      it("should maintain the type of data when no data content type", () =>{
+      it("should maintain the type of data when no data content type", () => {
         delete cloudevent.spec.payload.datacontenttype;
         cloudevent
           .data(JSON.stringify(data));
 
-        expect(typeof cloudevent.getData()).to.equal("string");  
+        expect(typeof cloudevent.getData()).to.equal("string");
         cloudevent.dataContentType(dataContentType);
       });
 
@@ -232,9 +229,8 @@ describe("CloudEvents Spec v0.3", () => {
     describe("'time'", () => {
       it("must adhere to the format specified in RFC 3339", () => {
         cloudevent.time(time);
-        expect(cloudevent.format()["time"]).to.equal(time.toISOString());
+        expect(cloudevent.format().time).to.equal(time.toISOString());
       });
     });
   });
-
 });

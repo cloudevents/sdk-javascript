@@ -14,14 +14,34 @@ ahead of `master`.
 
 ## Changelog
 
-Always update the [CHANGELOG.md](./CHANGELOG.md), following
-[this semantics](https://keepachangelog.com/en/1.0.0/).
+The [CHANGELOG.md](./CHANGELOG.md) will be updated with your commits if you format
+your commit messages following the
+[Conventional Commits specification](https://www.conventionalcommits.org/en/v1.0.0/#summary).
+If you are unsure what prefix to use for a commit, you can consult the
+[package.json](https://github.com/cloudevents/sdk-javascript/blob/master/package.json) file
+in this repository. In the `standard-version.types` section, you can see all of the commit
+types that will be committed to the changelog based on the prefix in the first line of
+your commit message. For example, the commit message:
+
+```log
+fix: removed a bug that was causing the rotation of the earth to change
+```
+
+will show up in the "Bug Fixes" section of the changelog for a given release.
 
 ## Pull Requests
 
 Guidelines about how to perform pull requests.
 
 - before submit the PR, open an issue and link them
+
+### Commit Messages
+
+Please follow the Conventional Commits specification noted above. the first line of
+your commit should be prefixed with a type, be a single sentence with no period, and
+succinctly indicate what this commit changes.
+
+All commit message lines should be kept to fewer than 80 characters if possible.
 
 ### PR to `develop`
 

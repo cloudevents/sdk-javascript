@@ -9,7 +9,57 @@
     "test": "mocha test/**/*.js",
     "coverage": "nyc --reporter=lcov --reporter=text npm run test",
     "precoverage-publish": "npm run coverage",
-    "coverage-publish": "wget -qO - https://coverage.codacy.com/get.sh | sh -s report -l JavaScript -r coverage/lcov.info"
+    "coverage-publish": "wget -qO - https://coverage.codacy.com/get.sh | bash -s report -l JavaScript -r coverage/lcov.info",
+    "release": "standard-version"
+  },
+  "standard-version": {
+    "types": [
+      {
+        "type": "feat",
+        "section": "Features",
+        "hidden": false
+      },
+      {
+        "type": "fix",
+        "section": "Bug Fixes",
+        "hidden": false
+      },
+      {
+        "type": "docs",
+        "section": "Documentation",
+        "hidden": false
+      },
+      {
+        "type": "chore",
+        "section": "Miscellaneous",
+        "hidden": false
+      },
+      {
+        "type": "src",
+        "section": "Miscellaneous",
+        "hidden": false
+      },
+      {
+        "type": "style",
+        "section": "Miscellaneous",
+        "hidden": false
+      },
+      {
+        "type": "refactor",
+        "section": "Miscellaneous",
+        "hidden": false
+      },
+      {
+        "type": "perf",
+        "section": "Performance",
+        "hidden": false
+      },
+      {
+        "type": "test",
+        "section": "Tests",
+        "hidden": false
+      }
+    ]
   },
   "repository": {
     "type": "git",
@@ -23,11 +73,13 @@
     "cncf"
   ],
   "author": "cloudevents.io",
-  "contributors": {
-    "name": "Fábio José de Moraes",
-    "email": "fabiojose@gmail.com",
-    "url": "https://github.com/fabiojose"
-  },
+  "contributors": [
+    {
+      "name": "Fábio José de Moraes",
+      "email": "fabiojose@gmail.com",
+      "url": "https://github.com/fabiojose"
+    }
+  ],
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/cloudevents/sdk-javascript/issues"
@@ -46,7 +98,8 @@
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
-    "standardx": "^5.0.0"
+    "standardx": "^5.0.0",
+    "standard-version": "^7.1.0"
   },
   "publishConfig": {
     "access": "public"

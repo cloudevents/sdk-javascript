@@ -89,7 +89,7 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
           expect(err.message).to.equal("structured+type not allowed"));
     });
 
-    it("Throw error when the event does not follow the spec 0.3", () => {
+    it("Throw error when the event does not follow the spec 0.3", async() => {
       // setup
       const payload =
         new v03.CloudEvent(v03.Spec)
@@ -108,10 +108,13 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
       const un = new Unmarshaller();
 
       // act and assert
-      un.unmarshall(payload, headers)
-        .then(() => { throw new Error("failed"); })
-        .catch((err) =>
-          expect(err.message).to.equal("invalid payload"));
+      try {
+        await un.unmarshall(payload, headers);
+        const spec = new v03.Spec();
+        spec.check(payload);
+      } catch (err) {
+        expect(err.message).to.equal("invalid payload");
+      }
     });
 
     it("Should accept event that follow the spec 0.3", () => {

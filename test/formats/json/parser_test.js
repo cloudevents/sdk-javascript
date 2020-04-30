@@ -1,11 +1,11 @@
-var expect = require("chai").expect;
-var Parser = require("../../../lib/formats/json/parser.js");
+const expect = require("chai").expect;
+const Parser = require("../../../lib/formats/json/parser.js");
 
 describe("JSON Event Format Parser", () => {
   it("Throw error when payload is an integer", () => {
     // setup
-    var payload = 83;
-    var parser = new Parser();
+    const payload = 83;
+    const parser = new Parser();
 
     // act and assert
     expect(parser.parse.bind(parser, payload))
@@ -14,8 +14,8 @@ describe("JSON Event Format Parser", () => {
 
   it("Throw error when payload is null", () => {
     // setup
-    var payload = null;
-    var parser = new Parser();
+    const payload = null;
+    const parser = new Parser();
 
     // act and assert
     expect(parser.parse.bind(parser, payload))
@@ -24,7 +24,7 @@ describe("JSON Event Format Parser", () => {
 
   it("Throw error when payload is undefined", () => {
     // setup
-    var parser = new Parser();
+    const parser = new Parser();
 
     // act and assert
     expect(parser.parse.bind(parser))
@@ -33,8 +33,8 @@ describe("JSON Event Format Parser", () => {
 
   it("Throw error when payload is a float", () => {
     // setup
-    var payload = 8.3;
-    var parser = new Parser();
+    const payload = 8.3;
+    const parser = new Parser();
 
     // act and assert
     expect(parser.parse.bind(parser, payload))
@@ -43,8 +43,8 @@ describe("JSON Event Format Parser", () => {
 
   it("Throw error when payload is an invalid JSON", () => {
     // setup
-    var payload = "gg";
-    var parser = new Parser();
+    const payload = "gg";
+    const parser = new Parser();
 
     // act and assert
     expect(parser.parse.bind(parser, payload))
@@ -53,11 +53,11 @@ describe("JSON Event Format Parser", () => {
 
   it("Must accept when the payload is a string well formed as JSON", () => {
     // setup
-    var payload = "{\"much\" : \"wow\"}";
-    var parser = new Parser();
+    const payload = "{\"much\" : \"wow\"}";
+    const parser = new Parser();
 
     // act
-    var actual = parser.parse(payload);
+    const actual = parser.parse(payload);
 
     // assert
     expect(actual)

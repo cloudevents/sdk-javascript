@@ -15,7 +15,7 @@ const data = {
 };
 const subject = "subject-x0";
 
-var cloudevent =
+const cloudevent =
   new Cloudevent(Spec03)
     .id(id)
     .source(source)

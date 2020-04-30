@@ -7,7 +7,7 @@ const {
   Spec,
   BinaryHTTPEmitter,
   StructuredHTTPEmitter,
-  Cloudevent
+  CloudEvent
 } = require("../v1/index.js");
 
 const type = "com.github.pull.create";
@@ -28,7 +28,7 @@ const ext2Name = "extension2";
 const ext2Value = "acme";
 
 const cloudevent =
-  new Cloudevent(Spec)
+  new CloudEvent(Spec)
     .type(type)
     .source(source)
     .dataContentType(ceContentType)
@@ -94,7 +94,7 @@ describe("HTTP Transport Binding - Version 1.0", () => {
           const bindata = Uint32Array.from(dataString, (c) => c.codePointAt(0));
           const expected = asBase64(bindata);
           const binevent =
-            new Cloudevent(Spec)
+            new CloudEvent(Spec)
               .type(type)
               .source(source)
               .dataContentType("text/plain")
@@ -111,7 +111,7 @@ describe("HTTP Transport Binding - Version 1.0", () => {
 
         it("the payload must have 'data_base64' when data is binary", () => {
           const binevent =
-            new Cloudevent(Spec)
+            new CloudEvent(Spec)
               .type(type)
               .source(source)
               .dataContentType("text/plain")
@@ -164,7 +164,7 @@ describe("HTTP Transport Binding - Version 1.0", () => {
           const bindata = Uint32Array.from(dataString, (c) => c.codePointAt(0));
           const expected = asBase64(bindata);
           const binevent =
-          new Cloudevent(Spec)
+          new CloudEvent(Spec)
             .type(type)
             .source(source)
             .dataContentType("text/plain")

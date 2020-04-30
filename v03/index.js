@@ -1,4 +1,4 @@
-const Cloudevent = require("../lib/cloudevent.js");
+const CloudEvent = require("../lib/cloudevent.js");
 const Spec = require("../lib/specs/spec_0_3.js");
 const StructuredHTTPEmitter =
   require("../lib/bindings/http/emitter_structured.js");
@@ -12,8 +12,8 @@ const BinaryHTTPReceiver =
 
 const HTTPUnmarshaller = require("../lib/bindings/http/unmarshaller_0_3.js");
 
-function event() {
-  return new Cloudevent(Spec);
+function newEvent() {
+  return new CloudEvent(Spec);
 }
 
 module.exports = {
@@ -23,7 +23,6 @@ module.exports = {
   BinaryHTTPEmitter,
   BinaryHTTPReceiver,
   HTTPUnmarshaller,
-  Cloudevent,
-  CloudEvent: Cloudevent,
-  event
+  CloudEvent: newEvent,
+  event: newEvent
 };

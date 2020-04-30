@@ -1,4 +1,4 @@
-import Cloudevent, {
+import CloudEvent, {
   event,
   StructuredHTTPEmitter,
   BinaryHTTPEmitter,
@@ -8,7 +8,7 @@ import Cloudevent, {
 
 export function doSomeStuff() {
 
-  const myevent: Cloudevent = event()
+  const myevent: CloudEvent = event()
     .source('/source')
     .type('type')
     .dataContentType('text/plain')

@@ -1,3 +1,3 @@
-var Cloudevent = require("./lib/cloudevent.js");
+var CloudEvent = require("./lib/cloudevent.js");
 
-module.exports = Cloudevent;
+module.exports = CloudEvent;

@@ -1,6 +1,6 @@
 var expect = require("chai").expect;
 var Unmarshaller = require("../../../lib/bindings/http/unmarshaller_0_3.js");
-var Cloudevent = require("../../../index.js");
+var CloudEvent = require("../../../index.js");
 var v03 = require("../../../v03/index.js");
 
 const type = "com.github.pull.create";
@@ -117,7 +117,7 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
     it("Should accept event that follow the spec 0.3", () => {
       // setup
       var payload =
-        new Cloudevent(v03.Spec)
+        new CloudEvent(v03.Spec)
           .type(type)
           .source(source)
           .dataContentType(ceContentType)
@@ -146,7 +146,7 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
     it("Should parse 'data' stringfied json to json object", () => {
       // setup
       var payload =
-        new Cloudevent(v03.Spec)
+        new CloudEvent(v03.Spec)
           .type(type)
           .source(source)
           .dataContentType(ceContentType)

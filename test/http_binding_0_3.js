@@ -2,7 +2,7 @@ const expect = require("chai").expect;
 const nock = require("nock");
 const BinaryHTTPEmitter =
   require("../lib/bindings/http/emitter_binary_0_3.js");
-const Cloudevent = require("../lib/cloudevent.js");
+const CloudEvent = require("../lib/cloudevent.js");
 const v03 = require("../v03/index.js");
 
 const type = "com.github.pull.create";
@@ -25,7 +25,7 @@ const ext2Name = "extension2";
 const ext2Value = "acme";
 
 const cloudevent =
-  new Cloudevent(v03.Spec)
+  new CloudEvent(v03.Spec)
     .type(type)
     .source(source)
     .dataContentType(ceContentType)
@@ -37,7 +37,7 @@ const cloudevent =
     .addExtension(ext2Name, ext2Value);
 
 const cebase64 =
-  new Cloudevent(v03.Spec)
+  new CloudEvent(v03.Spec)
     .type(type)
     .source(source)
     .dataContentType(ceContentType)

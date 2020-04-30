@@ -1,6 +1,6 @@
 const expect = require("chai").expect;
 const v1 = require("../../../v1/index.js");
-const Cloudevent = require("../../../index.js");
+const CloudEvent = require("../../../index.js");
 
 const { asBase64 } = require("../../../lib/utils/fun.js");
 
@@ -82,7 +82,7 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0",
       it("Throw error when the event does not follow the spec", () => {
       // setup
         const payload =
-        new Cloudevent()
+        new CloudEvent()
           .type(type)
           .source(source)
           .time(now)

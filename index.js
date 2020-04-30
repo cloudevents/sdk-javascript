@@ -1,3 +1,3 @@
-const Cloudevent = require("./lib/cloudevent.js");
+const CloudEvent = require("./lib/cloudevent.js");
 
-module.exports = Cloudevent;
+module.exports = CloudEvent;

@@ -147,7 +147,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
   });
 
   describe("Parse", () => {
-    it("Cloudevent contains 'type'", () => {
+    it("CloudEvent contains 'type'", () => {
       // setup
       const payload = {
         data: "dataString"
@@ -170,7 +170,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
         .to.equal("type");
     });
 
-    it("Cloudevent contains 'specversion'", () => {
+    it("CloudEvent contains 'specversion'", () => {
       // setup
       const payload = {
         data: "dataString"
@@ -193,7 +193,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
         .to.equal("0.3");
     });
 
-    it("Cloudevent contains 'source'", () => {
+    it("CloudEvent contains 'source'", () => {
       // setup
       const payload = {
         data: "dataString"
@@ -216,7 +216,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
         .to.equal("/source");
     });
 
-    it("Cloudevent contains 'id'", () => {
+    it("CloudEvent contains 'id'", () => {
       // setup
       const payload = {
         data: "dataString"
@@ -239,7 +239,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
         .to.equal("id");
     });
 
-    it("Cloudevent contains 'time'", () => {
+    it("CloudEvent contains 'time'", () => {
       // setup
       const payload = {
         data: "dataString"
@@ -262,7 +262,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
         .to.equal("2019-06-16T11:42:00.000Z");
     });
 
-    it("Cloudevent contains 'schemaurl'", () => {
+    it("CloudEvent contains 'schemaurl'", () => {
       // setup
       const payload = {
         data: "dataString"
@@ -285,7 +285,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
         .to.equal("http://schema.registry/v1");
     });
 
-    it("Cloudevent contains 'datacontenttype' (application/json)", () => {
+    it("CloudEvent contains 'datacontenttype' (application/json)", () => {
       // setup
       const payload = {
         data: "dataString"
@@ -308,7 +308,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
         .to.equal("application/json");
     });
 
-    it("Cloudevent contains 'datacontenttype' (application/octet-stream)",
+    it("CloudEvent contains 'datacontenttype' (application/octet-stream)",
       () => {
       // setup
         const payload = "The payload is binary data";
@@ -330,7 +330,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
           .to.equal("application/octet-stream");
       });
 
-    it("Cloudevent contains 'data' (application/json)", () => {
+    it("CloudEvent contains 'data' (application/json)", () => {
       // setup
       const payload = {
         data: "dataString"
@@ -353,7 +353,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
         .to.deep.equal(payload);
     });
 
-    it("Cloudevent contains 'data' (application/octet-stream)", () => {
+    it("CloudEvent contains 'data' (application/octet-stream)", () => {
       // setup
       const payload = "The payload is binary data";
       const attributes = {

@@ -1,6 +1,6 @@
 const expect = require("chai").expect;
 const Spec03 = require("../lib/specs/spec_0_3.js");
-const Cloudevent = require("../index.js");
+const CloudEvent = require("../index.js");
 const { v4: uuidv4 } = require("uuid");
 
 const id = uuidv4();
@@ -16,7 +16,7 @@ const data = {
 const subject = "subject-x0";
 
 const cloudevent =
-  new Cloudevent(Spec03)
+  new CloudEvent(Spec03)
     .id(id)
     .source(source)
     .type(type)

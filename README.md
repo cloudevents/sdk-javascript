@@ -42,7 +42,7 @@ Checkout the new expressive additions.
 > There is full example: [typescript-ex](./examples/typescript-ex)
 
 ```ts
-import Cloudevent, {
+import CloudEvent, {
   event,
   StructuredHTTPEmitter,
   BinaryHTTPEmitter,
@@ -51,7 +51,7 @@ import Cloudevent, {
   BinaryHTTPReceiver
 } from 'cloudevents-sdk/v1';
 
-let myevent: Cloudevent = event()
+let myevent: CloudEvent = event()
   .source('/source')
   .type('type')
   .dataContentType('text/plain')
@@ -231,7 +231,7 @@ app.post("/", (req, res) => {
 - `ext`: external stuff, e.g, Cloud Events JSONSchema
 - `lib/bindings`: every binding implementation goes here
 - `lib/bindings/http`: every http binding implementation goes here
-- `lib/cloudevent.js`: implementation of Cloudevent, an interface
+- `lib/cloudevent.js`: implementation of CloudEvent, an interface
 - `lib/formats/`: every format implementation goes here
 - `lib/specs/`: every spec implementation goes here
 
@@ -245,18 +245,18 @@ npm test
 
 ## The API
 
-### `Cloudevent` class
+### `CloudEvent` class
 
 ```js
 /*
  * Format the payload and return an Object.
  */
-Object Cloudevent.format()
+Object CloudEvent.format()
 
 /*
  * Format the payload as String.
  */
-String Cloudevent.toString()
+String CloudEvent.toString()
 ```
 
 ### `Formatter` classes
@@ -265,12 +265,12 @@ Every formatter class must implement these methods to work properly.
 
 ```js
 /*
- * Format the Cloudevent payload argument and return an Object.
+ * Format the CloudEvent payload argument and return an Object.
  */
 Object Formatter.format(Object)
 
 /*
- * Format the Cloudevent payload as String.
+ * Format the CloudEvent payload as String.
  */
 String Formatter.toString(Object)
 ```
@@ -297,9 +297,9 @@ Every Spec class must implement these methods to work properly.
 
 ```js
 /*
- * The constructor must receives the Cloudevent type.
+ * The constructor must receives the CloudEvent type.
  */
-Spec(Cloudevent)
+Spec(CloudEvent)
 
 /*
  * Checks the spec constraints, throwing an error if do not pass.
@@ -320,7 +320,7 @@ Every Binding class must implement these methods to work properly.
 
 #### Emitter Binding
 
-Following we have the signature for the binding to emit Cloudevents.
+Following we have the signature for the binding to emit CloudEvents.
 
 ```js
 /*
@@ -329,14 +329,14 @@ Following we have the signature for the binding to emit Cloudevents.
 Binding(config)
 
 /*
- * Emits the event using an instance of Cloudevent.
+ * Emits the event using an instance of CloudEvent.
  */
-Binding.emit(cloudevent)
+Binding.emit(cloudEvent)
 ```
 
 #### Receiver Binding
 
-Following we have the signature for the binding to receive Cloudevents.
+Following we have the signature for the binding to receive CloudEvents.
 
 ```js
 /*
@@ -351,9 +351,9 @@ Receiver(config)
 Receiver.check(Object, Map)
 
 /*
- * Checks and parse as Cloudevent
+ * Checks and parse as CloudEvent
  */
-Cloudevent Receiver.parse(Object, Map)
+CloudEvent Receiver.parse(Object, Map)
 ```
 
 > See how to implement the method injection [here](lib/specs/spec_0_1.js#L17)

@@ -1,4 +1,4 @@
-import Cloudevent, {
+import CloudEvent, {
   event,
   StructuredHTTPEmitter,
   BinaryHTTPEmitter,
@@ -8,7 +8,7 @@ import Cloudevent, {
 
 export function doSomeStuff() {
 
-  const myevent: Cloudevent = event()
+  const myevent: CloudEvent = event()
     .source('/source')
     .type('type')
     .dataContentType('text/plain')
@@ -20,13 +20,13 @@ export function doSomeStuff() {
   console.log(myevent.toString());
   console.log(myevent.getExtensions());
 
-  let config = {
+  const config = {
     method: "POST",
     url   : "https://enu90y24i64jp.x.pipedream.net/"
   };
 
   // ------ emitter structured
-  let structured = new StructuredHTTPEmitter(config);
+  const structured = new StructuredHTTPEmitter(config);
   structured.emit(myevent).then(res => {
     // success
     console.log("Structured Mode: Success!")
@@ -37,7 +37,7 @@ export function doSomeStuff() {
   });
 
   // ------ emitter binary
-  let binary = new BinaryHTTPEmitter(config);
+  const binary = new BinaryHTTPEmitter(config);
   binary.emit(myevent).then(res => {
     console.log("Binary Mode: Success!");
   })
@@ -46,20 +46,20 @@ export function doSomeStuff() {
   });
 
   // ------ receiver structured
-  let payload = myevent.toString();
-  let headers = {
+  const payload = myevent.toString();
+  const headers = {
     "Content-Type":"application/cloudevents+json"
   };
 
-  let receiverStructured = new StructuredHTTPReceiver();
+  const receiverStructured = new StructuredHTTPReceiver();
   console.log(receiverStructured.parse(payload, headers).toString());
 
   // ------ receiver binary
-  let extension1 = "mycuston-ext1";
-  let data = {
+  const extension1 = "mycuston-ext1";
+  const data = {
     "data" : "dataString"
   };
-  var attributes = {
+  const attributes = {
     "ce-type"        : "type",
     "ce-specversion" : "1.0",
     "ce-source"      : "source",
@@ -70,7 +70,7 @@ export function doSomeStuff() {
     "ce-extension1"  : extension1
   };
 
-  let receiverBinary = new BinaryHTTPReceiver();
+  const receiverBinary = new BinaryHTTPReceiver();
   console.log(receiverBinary.parse(data, attributes).toString());
 
 return true;

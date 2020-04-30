@@ -1,7 +1,7 @@
-var expect = require("chai").expect;
-var Unmarshaller = require("../../../lib/bindings/http/unmarshaller_0_3.js");
-var CloudEvent = require("../../../index.js");
-var v03 = require("../../../v03/index.js");
+const expect = require("chai").expect;
+const Unmarshaller = require("../../../lib/bindings/http/unmarshaller_0_3.js");
+const CloudEvent = require("../../../index.js");
+const v03 = require("../../../v03/index.js");
 
 const type = "com.github.pull.create";
 const source = "urn:event:from:myapi/resourse/123";
@@ -22,8 +22,8 @@ const data = {
 describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
   it("Throw error when payload is null", () => {
     // setup
-    var payload = null;
-    var un = new Unmarshaller();
+    const payload = null;
+    const un = new Unmarshaller();
 
     // act and assert
     return un.unmarshall(payload)
@@ -34,9 +34,9 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
 
   it("Throw error when headers is null", () => {
     // setup
-    var payload = {};
-    var headers = null;
-    var un = new Unmarshaller();
+    const payload = {};
+    const headers = null;
+    const un = new Unmarshaller();
 
     // act and assert
     return un.unmarshall(payload, headers)
@@ -47,9 +47,9 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
 
   it("Throw error when there is no content-type header", () => {
     // setup
-    var payload = {};
-    var headers = {};
-    var un = new Unmarshaller();
+    const payload = {};
+    const headers = {};
+    const un = new Unmarshaller();
 
     // act and assert
     un.unmarshall(payload, headers)
@@ -60,11 +60,11 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
 
   it("Throw error when content-type is not allowed", () => {
     // setup
-    var payload = {};
-    var headers = {
+    const payload = {};
+    const headers = {
       "content-type": "text/xml"
     };
-    var un = new Unmarshaller();
+    const un = new Unmarshaller();
 
     // act and assert
     un.unmarshall(payload, headers)
@@ -76,11 +76,11 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
   describe("Structured", () => {
     it("Throw error when has not allowed mime", () => {
       // setup
-      var payload = {};
-      var headers = {
+      const payload = {};
+      const headers = {
         "content-type": "application/cloudevents+zip"
       };
-      var un = new Unmarshaller();
+      const un = new Unmarshaller();
 
       // act and assert
       un.unmarshall(payload, headers)
@@ -91,7 +91,7 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
 
     it("Throw error when the event does not follow the spec 0.3", () => {
       // setup
-      var payload =
+      const payload =
         new v03.CloudEvent(v03.Spec)
           .type(type)
           .source(source)
@@ -101,11 +101,11 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
           .data(data)
           .toString();
 
-      var headers = {
+      const headers = {
         "content-type": "application/cloudevents+json"
       };
 
-      var un = new Unmarshaller();
+      const un = new Unmarshaller();
 
       // act and assert
       un.unmarshall(payload, headers)
@@ -116,7 +116,7 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
 
     it("Should accept event that follow the spec 0.3", () => {
       // setup
-      var payload =
+      const payload =
         new CloudEvent(v03.Spec)
           .type(type)
           .source(source)
@@ -127,11 +127,11 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
           .data(data)
           .toString();
 
-      var headers = {
+      const headers = {
         "content-type": "application/cloudevents+json"
       };
 
-      var un = new Unmarshaller();
+      const un = new Unmarshaller();
 
       // act and assert
       return un.unmarshall(payload, headers)
@@ -145,7 +145,7 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
 
     it("Should parse 'data' stringfied json to json object", () => {
       // setup
-      var payload =
+      const payload =
         new CloudEvent(v03.Spec)
           .type(type)
           .source(source)
@@ -156,11 +156,11 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
           .data(JSON.stringify(data))
           .toString();
 
-      var headers = {
+      const headers = {
         "content-type": "application/cloudevents+json"
       };
 
-      var un = new Unmarshaller();
+      const un = new Unmarshaller();
 
       // act and assert
       return un.unmarshall(payload, headers)
@@ -177,10 +177,10 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
   describe("Binary", () => {
     it("Throw error when has not allowed mime", () => {
       // setup
-      var payload = {
+      const payload = {
         data: "dataString"
       };
-      var attributes = {
+      const attributes = {
         [BINARY_HEADERS_03.TYPE]: "type",
         [BINARY_HEADERS_03.SPEC_VERSION]: "0.3",
         [BINARY_HEADERS_03.SOURCE]: "source",
@@ -190,7 +190,7 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
         [HEADER_CONTENT_TYPE]: "text/html"
       };
 
-      var un = new Unmarshaller();
+      const un = new Unmarshaller();
 
       // act and assert
       un.unmarshall(payload, attributes)
@@ -201,10 +201,10 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
 
     it("Throw error when the event does not follow the spec 0.3", () => {
       // setup
-      var payload = {
+      const payload = {
         data: "dataString"
       };
-      var attributes = {
+      const attributes = {
         [BINARY_HEADERS_03.TYPE]: "type",
         "CE-CloudEventsVersion": "0.1",
         [BINARY_HEADERS_03.SOURCE]: "source",
@@ -214,7 +214,7 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
         [HEADER_CONTENT_TYPE]: "application/json"
       };
 
-      var un = new Unmarshaller();
+      const un = new Unmarshaller();
 
       // act and assert
       un.unmarshall(payload, attributes)
@@ -225,10 +225,10 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
 
     it("No error when all attributes are in place", () => {
       // setup
-      var payload = {
+      const payload = {
         data: "dataString"
       };
-      var attributes = {
+      const attributes = {
         [BINARY_HEADERS_03.TYPE]: "type",
         [BINARY_HEADERS_03.SPEC_VERSION]: "0.3",
         [BINARY_HEADERS_03.SOURCE]: "source",
@@ -238,7 +238,7 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
         [HEADER_CONTENT_TYPE]: "application/json"
       };
 
-      var un = new Unmarshaller();
+      const un = new Unmarshaller();
 
       // act and assert
       un.unmarshall(payload, attributes)
@@ -247,9 +247,9 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
 
     it("Throw error when 'ce-datacontentencoding' is not allowed", () => {
       // setup
-      var payload = "eyJtdWNoIjoid293In0=";
+      const payload = "eyJtdWNoIjoid293In0=";
 
-      var attributes = {
+      const attributes = {
         [BINARY_HEADERS_03.TYPE]: "type",
         [BINARY_HEADERS_03.SPEC_VERSION]: "0.3",
         [BINARY_HEADERS_03.SOURCE]: "source",
@@ -260,7 +260,7 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
         [BINARY_HEADERS_03.CONTENT_ENCONDING]: "binary"
       };
 
-      var un = new Unmarshaller();
+      const un = new Unmarshaller();
 
       // act and assert
       return un.unmarshall(payload, attributes)
@@ -272,12 +272,12 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
 
     it("No error when 'ce-datacontentencoding' is base64", () => {
       // setup
-      var payload = "eyJtdWNoIjoid293In0=";
+      const payload = "eyJtdWNoIjoid293In0=";
       const expected = {
         much: "wow"
       };
 
-      var attributes = {
+      const attributes = {
         [BINARY_HEADERS_03.TYPE]: "type",
         [BINARY_HEADERS_03.SPEC_VERSION]: "0.3",
         [BINARY_HEADERS_03.SOURCE]: "source",
@@ -288,7 +288,7 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
         [BINARY_HEADERS_03.CONTENT_ENCONDING]: "base64"
       };
 
-      var un = new Unmarshaller();
+      const un = new Unmarshaller();
 
       // act and assert
       return un.unmarshall(payload, attributes)

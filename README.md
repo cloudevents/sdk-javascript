@@ -89,23 +89,23 @@ npm install cloudevents-sdk
 
 These are the supported specifications by this version.
 
-| **Specifications**                    | v0.1 | v0.2 | v0.3 | **v1.0** |
-|---------------------------------------|------|------|------|----------|
-| CloudEvents                           | no   | no   | yes  |   yes    |
-| HTTP Transport Binding  - Structured  | no   | no   | yes  |   yes    |
-| HTTP Transport Binding  - Binary      | no   | no   | yes  |   yes    |
-| JSON Event Format                     | no   | no   | yes  |   yes    |
+| **Specifications**                    | v0.3 | **v1.0** |
+|---------------------------------------|------|----------|
+| CloudEvents                           | yes  |   yes    |
+| HTTP Transport Binding  - Structured  | yes  |   yes    |
+| HTTP Transport Binding  - Binary      | yes  |   yes    |
+| JSON Event Format                     | yes  |   yes    |
 
 ### What we can do
 
-| **What**                            | v0.1   | v0.2 | v0.3 | **v1.0** |
-|-------------------------------------|--------|------|------|----------|
-| Create events                       | no     | no   | yes  |   yes    |
-| Emit Structured events over HTTP    | no     | no   | yes  |   yes    |
-| Emit Binary events over HTTP        | no     | no   | yes  |   yes    |
-| JSON Event Format                   | no     | no   | yes  |   yes    |
-| Receive Structured events over HTTP | **no** | no   | yes  |   yes    |
-| Receive Binary events over HTTP     | **no** | no   | yes  |   yes    |
+| **What**                            | v0.3 | **v1.0** |
+|-------------------------------------|------|----------|
+| Create events                       | yes  |   yes    |
+| Emit Structured events over HTTP    | yes  |   yes    |
+| Emit Binary events over HTTP        | yes  |   yes    |
+| JSON Event Format                   | yes  |   yes    |
+| Receive Structured events over HTTP | yes  |   yes    |
+| Receive Binary events over HTTP     | yes  |   yes    |
 
 ## How to use
 

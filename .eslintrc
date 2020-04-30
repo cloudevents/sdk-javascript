@@ -6,6 +6,7 @@
     "mocha": true
   },
   "rules": {
+    "no-var": "error",
     "space-before-function-paren": ["error", "never"],
     "standard/no-callback-literal": "off",
     "arrow-spacing": "error",

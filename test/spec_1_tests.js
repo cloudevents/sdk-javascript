@@ -1,10 +1,10 @@
 const expect = require("chai").expect;
 const Spec1 = require("../lib/specs/spec_1.js");
 const CloudEvent = require("../index.js");
-const uuid = require("uuid/v4");
+const { v4: uuidv4 } = require("uuid");
 const { asBase64 } = require("../lib/utils/fun.js");
 
-const id = uuid();
+const id = uuidv4();
 const type = "com.github.pull.create";
 const source = "urn:event:from:myapi/resourse/123";
 const time = new Date();

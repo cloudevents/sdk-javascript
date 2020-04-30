@@ -10,8 +10,8 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
   describe("Check", () => {
     it("Throw error when payload arg is null or undefined", () => {
       // setup
-      var payload = null;
-      var attributes = {};
+      const payload = null;
+      const attributes = {};
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
@@ -20,8 +20,8 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("Throw error when attributes arg is null or undefined", () => {
       // setup
-      var payload = {};
-      var attributes = null;
+      const payload = {};
+      const attributes = null;
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
@@ -30,8 +30,8 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("Throw error when payload is not an object or string", () => {
       // setup
-      var payload = 1.2;
-      var attributes = {};
+      const payload = 1.2;
+      const attributes = {};
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
@@ -40,8 +40,8 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("Throw error when headers has no 'ce-type'", () => {
       // setup
-      var payload = {};
-      var attributes = {
+      const payload = {};
+      const attributes = {
         "ce-specversion": "specversion",
         "ce-source": "source",
         "ce-id": "id",
@@ -55,8 +55,8 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("Throw error when headers has no 'ce-specversion'", () => {
       // setup
-      var payload = {};
-      var attributes = {
+      const payload = {};
+      const attributes = {
         "ce-type": "type",
         "ce-source": "source",
         "ce-id": "id",
@@ -70,8 +70,8 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("Throw error when headers has no 'ce-source'", () => {
       // setup
-      var payload = {};
-      var attributes = {
+      const payload = {};
+      const attributes = {
         "ce-type": "type",
         "ce-specversion": "specversion",
         "ce-id": "id",
@@ -85,8 +85,8 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("Throw error when headers has no 'ce-id'", () => {
       // setup
-      var payload = {};
-      var attributes = {
+      const payload = {};
+      const attributes = {
         "ce-type": "type",
         "ce-specversion": "specversion",
         "ce-source": "source",
@@ -100,8 +100,8 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("Throw error when spec is not 1.0", () => {
       // setup
-      var payload = {};
-      var attributes = {
+      const payload = {};
+      const attributes = {
         "ce-type": "type",
         "ce-specversion": "0.2",
         "ce-source": "source",
@@ -116,8 +116,8 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("Throw error when the content-type is invalid", () => {
       // setup
-      var payload = {};
-      var attributes = {
+      const payload = {};
+      const attributes = {
         "ce-type": "type",
         "ce-specversion": "specversion",
         "ce-source": "source",
@@ -132,8 +132,8 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("No error when all required headers are in place", () => {
       // setup
-      var payload = {};
-      var attributes = {
+      const payload = {};
+      const attributes = {
         "ce-type": "type",
         "ce-specversion": "1.0",
         "ce-source": "source",
@@ -150,10 +150,10 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
   describe("Parse", () => {
     it("CloudEvent contains 'type'", () => {
       // setup
-      var payload = {
+      const payload = {
         data: "dataString"
       };
-      var attributes = {
+      const attributes = {
         "ce-type": "type",
         "ce-specversion": "1.0",
         "ce-source": "source",
@@ -164,7 +164,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
 
       // act
-      var actual = receiver.parse(payload, attributes);
+      const actual = receiver.parse(payload, attributes);
 
       // assert
       expect(actual.getType())
@@ -173,10 +173,10 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("CloudEvent contains 'specversion'", () => {
       // setup
-      var payload = {
+      const payload = {
         data: "dataString"
       };
-      var attributes = {
+      const attributes = {
         "ce-type": "type",
         "ce-specversion": "1.0",
         "ce-source": "source",
@@ -187,7 +187,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
 
       // act
-      var actual = receiver.parse(payload, attributes);
+      const actual = receiver.parse(payload, attributes);
 
       // assert
       expect(actual.getSpecversion())
@@ -196,10 +196,10 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("CloudEvent contains 'source'", () => {
       // setup
-      var payload = {
+      const payload = {
         data: "dataString"
       };
-      var attributes = {
+      const attributes = {
         "ce-type": "type",
         "ce-specversion": "1.0",
         "ce-source": "/source",
@@ -210,7 +210,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
 
       // act
-      var actual = receiver.parse(payload, attributes);
+      const actual = receiver.parse(payload, attributes);
 
       // assert
       expect(actual.getSource())
@@ -219,10 +219,10 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("CloudEvent contains 'id'", () => {
       // setup
-      var payload = {
+      const payload = {
         data: "dataString"
       };
-      var attributes = {
+      const attributes = {
         "ce-type": "type",
         "ce-specversion": "1.0",
         "ce-source": "/source",
@@ -233,7 +233,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
 
       // act
-      var actual = receiver.parse(payload, attributes);
+      const actual = receiver.parse(payload, attributes);
 
       // assert
       expect(actual.getId())
@@ -242,10 +242,10 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("CloudEvent contains 'time'", () => {
       // setup
-      var payload = {
+      const payload = {
         data: "dataString"
       };
-      var attributes = {
+      const attributes = {
         "ce-type": "type",
         "ce-specversion": "1.0",
         "ce-source": "/source",
@@ -256,7 +256,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
 
       // act
-      var actual = receiver.parse(payload, attributes);
+      const actual = receiver.parse(payload, attributes);
 
       // assert
       expect(actual.getTime())
@@ -265,10 +265,10 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("CloudEvent contains 'dataschema'", () => {
       // setup
-      var payload = {
+      const payload = {
         data: "dataString"
       };
-      var attributes = {
+      const attributes = {
         "ce-type": "type",
         "ce-specversion": "1.0",
         "ce-source": "/source",
@@ -279,7 +279,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
 
       // act
-      var actual = receiver.parse(payload, attributes);
+      const actual = receiver.parse(payload, attributes);
 
       // assert
       expect(actual.getDataschema())
@@ -288,10 +288,10 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("CloudEvent contains 'contenttype' (application/json)", () => {
       // setup
-      var payload = {
+      const payload = {
         data: "dataString"
       };
-      var attributes = {
+      const attributes = {
         "ce-type": "type",
         "ce-specversion": "1.0",
         "ce-source": "/source",
@@ -302,7 +302,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
 
       // act
-      var actual = receiver.parse(payload, attributes);
+      const actual = receiver.parse(payload, attributes);
 
       // assert
       expect(actual.getDataContentType())
@@ -311,8 +311,8 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("CloudEvent contains 'contenttype' (application/octet-stream)", () => {
       // setup
-      var payload = "The payload is binary data";
-      var attributes = {
+      const payload = "The payload is binary data";
+      const attributes = {
         "ce-type": "type",
         "ce-specversion": "1.0",
         "ce-source": "/source",
@@ -323,7 +323,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
 
       // act
-      var actual = receiver.parse(payload, attributes);
+      const actual = receiver.parse(payload, attributes);
 
       // assert
       expect(actual.getDataContentType())
@@ -332,10 +332,10 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("CloudEvent contains 'data' (application/json)", () => {
       // setup
-      var payload = {
+      const payload = {
         data: "dataString"
       };
-      var attributes = {
+      const attributes = {
         "ce-type": "type",
         "ce-specversion": "1.0",
         "ce-source": "/source",
@@ -346,7 +346,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
 
       // act
-      var actual = receiver.parse(payload, attributes);
+      const actual = receiver.parse(payload, attributes);
 
       // assert
       expect(actual.getData())
@@ -355,8 +355,8 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("CloudEvent contains 'data' (application/octet-stream)", () => {
       // setup
-      var payload = "The payload is binary data";
-      var attributes = {
+      const payload = "The payload is binary data";
+      const attributes = {
         "ce-type": "type",
         "ce-specversion": "1.0",
         "ce-source": "/source",
@@ -367,7 +367,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
 
       // act
-      var actual = receiver.parse(payload, attributes);
+      const actual = receiver.parse(payload, attributes);
 
       // assert
       expect(actual.getData())
@@ -376,7 +376,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("The content of 'data' is base64 for binary", () => {
       // setup
-      var expected = {
+      const expected = {
         data: "dataString"
       };
 
@@ -384,7 +384,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
         .from(JSON.stringify(expected), (c) => c.codePointAt(0));
       const payload = asBase64(bindata);
 
-      var attributes = {
+      const attributes = {
         "ce-type": "type",
         "ce-specversion": "1.0",
         "ce-source": "/source",
@@ -395,7 +395,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
 
       // act
-      var actual = receiver.parse(payload, attributes);
+      const actual = receiver.parse(payload, attributes);
 
       // assert
       expect(actual.getData())
@@ -404,10 +404,10 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("No error when all attributes are in place", () => {
       // setup
-      var payload = {
+      const payload = {
         data: "dataString"
       };
-      var attributes = {
+      const attributes = {
         "ce-type": "type",
         "ce-specversion": "1.0",
         "ce-source": "source",
@@ -418,7 +418,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
 
       // act
-      var actual = receiver.parse(payload, attributes);
+      const actual = receiver.parse(payload, attributes);
 
       // assert
       expect(actual)
@@ -430,11 +430,11 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("Should accept 'extension1'", () => {
       // setup
-      var extension1 = "mycuston-ext1";
-      var payload = {
+      const extension1 = "mycuston-ext1";
+      const payload = {
         data: "dataString"
       };
-      var attributes = {
+      const attributes = {
         "ce-type": "type",
         "ce-specversion": "1.0",
         "ce-source": "source",
@@ -446,8 +446,8 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
 
       // act
-      var actual = receiver.parse(payload, attributes);
-      var actualExtensions = actual.getExtensions();
+      const actual = receiver.parse(payload, attributes);
+      const actualExtensions = actual.getExtensions();
 
       // assert
       expect(actualExtensions.extension1)

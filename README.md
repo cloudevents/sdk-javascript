@@ -210,31 +210,6 @@ app.post("/", (req, res) => {
 });
 ```
 
-## Repository Structure
-
-```text
-├── index.js
-├── ext
-├── lib
-│   ├── bindings
-│   │   └── http
-│   ├── cloudevent.js
-│   ├── formats
-│   │   └── json
-│   └── specs
-├── LICENSE
-├── package.json
-├── README.md
-```
-
-- `index.js`: library exports
-- `ext`: external stuff, e.g, Cloud Events JSONSchema
-- `lib/bindings`: every binding implementation goes here
-- `lib/bindings/http`: every http binding implementation goes here
-- `lib/cloudevent.js`: implementation of CloudEvent, an interface
-- `lib/formats/`: every format implementation goes here
-- `lib/specs/`: every spec implementation goes here
-
 ## Unit Testing
 
 The unit test checks the result of formatted payload and the constraints.

@@ -356,12 +356,6 @@ Receiver.check(Object, Map)
 CloudEvent Receiver.parse(Object, Map)
 ```
 
-> See how to implement the method injection [here](lib/specs/spec_0_1.js#L17)
->
-> Learn about [Builder Design Pattern](https://en.wikipedia.org/wiki/Builder_pattern)
->
-> Check out the produced event payload using this [tool](https://webhook.site)
-
 ## Community
 
 - There are bi-weekly calls immediately following the [Serverless/CloudEvents

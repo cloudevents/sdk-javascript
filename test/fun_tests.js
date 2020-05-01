@@ -16,20 +16,6 @@ describe("Functional approach", () => {
     });
   });
 
-  describe("equalsOrThrow", () => {
-    it("should throw when they are not equals", () => {
-      expect(fun.equalsOrThrow.bind(fun, "z", "a", { message: "works!" }))
-        .to
-        .throw("works!");
-    });
-
-    it("should return true when they are equals", () => {
-      expect(fun.equalsOrThrow("z", "z", { message: "not throws!" }))
-        .to
-        .equals(true);
-    });
-  });
-
   describe("isBase64", () => {
     it("should return false when is not base64 string", () => {
       const actual = fun.isBase64("non base 64");

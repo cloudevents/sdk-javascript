@@ -121,7 +121,7 @@ const v1 = require("cloudevents-sdk/v1");
  */
 let myevent = v1.event()
   .type("com.github.pull.create")
-  .source("urn:event:from:myapi/resourse/123");
+  .source("urn:event:from:myapi/resource/123");
 ```
 
 #### Formatting
@@ -134,7 +134,7 @@ const v1 = require("cloudevents-sdk/v1");
  */
 let myevent = v1.event()
   .type("com.github.pull.create")
-  .source("urn:event:from:myapi/resourse/123");
+  .source("urn:event:from:myapi/resource/123");
 
 /*
  * Format the payload and return it
@@ -152,7 +152,7 @@ const v1 = require("cloudevents-sdk/v1");
  */
 let myevent = v1.event()
   .type("com.github.pull.create")
-  .source("urn:event:from:myapi/resourse/123");
+  .source("urn:event:from:myapi/resource/123");
 
 // The binding configuration using POST
 let config = {

@@ -6,7 +6,7 @@ const { asBase64 } = require("../lib/utils/fun.js");
 
 const id = uuidv4();
 const type = "com.github.pull.create";
-const source = "urn:event:from:myapi/resourse/123";
+const source = "urn:event:from:myapi/resource/123";
 const time = new Date();
 const dataschema = "http://example.com/registry/myschema.json";
 const dataContentType = "application/json";
@@ -63,7 +63,7 @@ describe("CloudEvents Spec v1.0", () => {
     });
   });
 
-  describe("Extenstions Constraints", () => {
+  describe("Extensions Constraints", () => {
     it("should be ok when type is 'boolean'", () => {
       cloudevent.addExtension("ext-boolean", true);
       expect(cloudevent.spec.payload["ext-boolean"])
@@ -126,7 +126,7 @@ describe("CloudEvents Spec v1.0", () => {
         cloudevent.spec.payload.id = id;
       });
 
-      it("should throw an erro when is empty", () => {
+      it("should throw an error when is empty", () => {
         cloudevent.spec.payload.id = "";
         expect(cloudevent.format.bind(cloudevent))
           .to

@@ -430,7 +430,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("Should accept 'extension1'", () => {
       // setup
-      const extension1 = "mycuston-ext1";
+      const extension1 = "mycustom-ext1";
       const payload = {
         data: "dataString"
       };

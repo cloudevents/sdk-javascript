@@ -11,7 +11,7 @@ const {
 } = require("../v1/index.js");
 
 const type = "com.github.pull.create";
-const source = "urn:event:from:myapi/resourse/123";
+const source = "urn:event:from:myapi/resource/123";
 const contentType = "application/cloudevents+json; charset=utf-8";
 const now = new Date();
 const dataschema = "http://cloudevents.io/schema.json";

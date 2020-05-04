@@ -64,7 +64,7 @@ const v1 = require("cloudevents-sdk/v1");
  */
 let myevent = v1.event()
   .type("com.github.pull.create")
-  .source("urn:event:from:myapi/resourse/123");
+  .source("urn:event:from:myapi/resource/123");
 ```
 
 #### Formatting
@@ -77,7 +77,7 @@ const v1 = require("cloudevents-sdk/v1");
  */
 let myevent = v1.event()
   .type("com.github.pull.create")
-  .source("urn:event:from:myapi/resourse/123");
+  .source("urn:event:from:myapi/resource/123");
 
 /*
  * Format the payload and return it
@@ -95,7 +95,7 @@ const v1 = require("cloudevents-sdk/v1");
  */
 let myevent = v1.event()
   .type("com.github.pull.create")
-  .source("urn:event:from:myapi/resourse/123");
+  .source("urn:event:from:myapi/resource/123");
 
 // The binding configuration using POST
 let config = {
@@ -152,35 +152,6 @@ app.post("/", (req, res) => {
   }
 });
 ```
-
-## Examples
-
-To see working examples, point to [examples](./examples).
-
-## Repository Structure
-
-```text
-├── index.js
-├── ext
-├── lib
-│   ├── bindings
-│   │   └── http
-│   ├── cloudevent.js
-│   ├── formats
-│   │   └── json
-│   └── specs
-├── LICENSE
-├── package.json
-├── README.md
-```
-
-- `index.js`: library exports
-- `ext`: external stuff, e.g, Cloud Events JSONSchema
-- `lib/bindings`: every binding implementation goes here
-- `lib/bindings/http`: every http binding implementation goes here
-- `lib/cloudevent.js`: implementation of CloudEvent, an interface
-- `lib/formats/`: every format implementation goes here
-- `lib/specs/`: every spec implementation goes here
 
 ## Unit Testing
 

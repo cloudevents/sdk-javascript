@@ -10,7 +10,7 @@ const HTTPStructuredReceiver =
 const receiver = new HTTPStructuredReceiver();
 
 const type = "com.github.pull.create";
-const source = "urn:event:from:myapi/resourse/123";
+const source = "urn:event:from:myapi/resource/123";
 const now = new Date();
 const dataschema = "http://cloudevents.io/schema.json";
 
@@ -130,7 +130,7 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0",
 
       it("Should accept 'extension1'", () => {
       // setup
-        const extension1 = "mycuston-ext1";
+        const extension1 = "mycustom-ext1";
         const payload = v1.event()
           .type(type)
           .source(source)
@@ -154,7 +154,7 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0",
           .to.equal(extension1);
       });
 
-      it("Should parse 'data' stringfied json to json object", () => {
+      it("Should parse 'data' stringified json to json object", () => {
       // setup
         const payload = v1.event()
           .type(type)

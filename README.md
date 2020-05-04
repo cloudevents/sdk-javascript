@@ -1,80 +1,25 @@
-[![licence](https://img.shields.io/github/license/cloudevents/sdk-javascript)](http://www.apache.org/licenses/LICENSE-2.0)
+# JavaScript SDK for CloudEvents
+
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bd66e7c52002481993cd6d610534b0f7)](https://www.codacy.com/app/fabiojose/sdk-javascript?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cloudevents/sdk-javascript&amp;utm_campaign=Badge_Grade)
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/bd66e7c52002481993cd6d610534b0f7)](https://www.codacy.com/app/fabiojose/sdk-javascript?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cloudevents/sdk-javascript&amp;utm_campaign=Badge_Coverage)
 [![Build Status](https://travis-ci.org/cloudevents/sdk-javascript.svg?branch=master)](https://travis-ci.org/cloudevents/sdk-javascript)
 [![downloads](https://img.shields.io/npm/dy/cloudevents-sdk.svg)](https://www.npmjs.com/package/cloudevents-sdk)
 [![npm version](https://img.shields.io/npm/v/cloudevents-sdk.svg)](https://www.npmjs.com/package/cloudevents-sdk)
-[![dependencies](https://david-dm.org/cloudevents/sdk-javascript.svg)](https://david-dm.org/cloudevents/sdk-javascript)
 [![vulnerabilities](https://snyk.io/test/github/cloudevents/sdk-javascript/badge.svg)](https://snyk.io/test/github/cloudevents/sdk-javascript)
+[![licence](https://img.shields.io/github/license/cloudevents/sdk-javascript)](http://www.apache.org/licenses/LICENSE-2.0)
 
-# sdk-javascript
 
-Official CloudEvents' SDK for JavaScript.
-
-<img src="https://github.com/cncf/artwork/blob/master/projects/cloudevents/horizontal/color/cloudevents-horizontal-color.png" width="300" height="58" alt="CloudEvents logo">
+The CloudEvents SDK for JavaScript.
 
 ## Status
 
-This SDK is still considered a work in progress, therefore things might (and
-will) break with every update.
+This SDK is still considered a work in progress.
 
 This SDK current supports the following versions of CloudEvents:
+
 - v1.0
 
-**Checkout the [changelog](./CHANGELOG.md) to see what's going on!**
-
-## Contributing
-
-Before create an awesome PR, please read our [guidelines](./CONTRIBUTING.md).
-
-## Examples
-
-To see working examples, point to [examples](./examples).
-
-## :newspaper: Newsletter :newspaper:
-
-> all the API developed before, for 0.1 and 0.3, works as the same.
-
-Checkout the new expressive additions.
-
-### Use typed CloudEvents in your Typescript project
-
-> There is full example: [typescript-ex](./examples/typescript-ex)
-
-```ts
-import CloudEvent, {
-  event,
-  StructuredHTTPEmitter,
-  BinaryHTTPEmitter,
-
-  StructuredHTTPReceiver,
-  BinaryHTTPReceiver
-} from 'cloudevents-sdk/v1';
-
-let myevent: CloudEvent = event()
-  .source('/source')
-  .type('type')
-  .dataContentType('text/plain')
-  .dataschema('http://d.schema.com/my.json')
-  .subject('cha.json')
-  .data('my-data')
-  .addExtension("my-ext", "0x600");
-
-// . . .
-
-```
-
-## Versioning
-
-### Before Spec reaches 1.0
-
-- `0.x.p`: where `x` relates to spec version and `p` relates to fixes, releases
-and breaking changes
-
-### After Spec reaches 1.0
-
-- `x.M.p`: where `x` relates to spec version, `M` relates to minor and `p` relates
-to fixes. See [semver](https://semver.org/)
+**Checkout the [changelog](CHANGELOG.md) to see what's going on!**
 
 ## Installation
 
@@ -108,8 +53,6 @@ These are the supported specifications by this version.
 | Receive Binary events over HTTP     | yes  |   yes    |
 
 ## How to use
-
-> If you want old examples, they are [here](./OLDOCS.md)
 
 ### Usage
 
@@ -330,6 +273,11 @@ Receiver.check(Object, Map)
  */
 CloudEvent Receiver.parse(Object, Map)
 ```
+
+## Versioning
+
+- `x.M.p`: where `x` relates to spec version, `M` relates to minor and `p` relates
+to fixes. See [semver](https://semver.org/)
 
 ## Community
 

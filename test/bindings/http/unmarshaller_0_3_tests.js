@@ -1,6 +1,6 @@
 const expect = require("chai").expect;
 const Unmarshaller = require("../../../lib/bindings/http/unmarshaller_0_3.js");
-const CloudEvent = require("../../../index.js");
+const { CloudEvent } = require("../../../index.js");
 const v03 = require("../../../v03/index.js");
 
 const type = "com.github.pull.create";

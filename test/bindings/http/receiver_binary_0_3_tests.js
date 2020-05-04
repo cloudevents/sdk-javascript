@@ -144,6 +144,20 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
       expect(receiver.check.bind(receiver, payload, attributes))
         .to.not.throw();
     });
+
+    it("No error when content-type is unspecified", () => {
+      const payload = {};
+      const attributes = {
+        "ce-type": "type",
+        "ce-specversion": "0.3",
+        "ce-source": "source",
+        "ce-id": "id"
+      };
+
+      // act and assert
+      expect(receiver.check.bind(receiver, payload, attributes))
+        .to.not.throw();
+    });
   });
 
   describe("Parse", () => {

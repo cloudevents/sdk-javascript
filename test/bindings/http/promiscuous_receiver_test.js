@@ -24,7 +24,7 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
       };
 
       const headers = {
-        "Content-Type": "application/cloudevents+json"
+        [constants.HEADER_CONTENT_TYPE]: constants.MIME_CE_JSON
       };
 
       const event = receiver.accept(headers, payload);
@@ -33,7 +33,7 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
 
     it("Binary data returns a CloudEvent", () => {
       const headers = {
-        "Content-Type": constants.DEFAULT_CONTENT_TYPE,
+        [constants.HEADER_CONTENT_TYPE]: constants.DEFAULT_CONTENT_TYPE,
         [constants.DEFAULT_SPEC_VERSION_HEADER]: specversion,
         [constants.BINARY_HEADERS_1.ID]: id,
         [constants.BINARY_HEADERS_1.TYPE]: type,
@@ -58,7 +58,7 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
       };
 
       const headers = {
-        "Content-Type": "application/cloudevents+json"
+        [constants.HEADER_CONTENT_TYPE]: constants.MIME_CE_JSON
       };
 
       const event = receiver.accept(headers, payload);
@@ -67,7 +67,7 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
 
     it("Binary data returns a CloudEvent", () => {
       const headers = {
-        "Content-Type": constants.DEFAULT_CONTENT_TYPE,
+        [constants.HEADER_CONTENT_TYPE]: constants.DEFAULT_CONTENT_TYPE,
         [constants.DEFAULT_SPEC_VERSION_HEADER]: specversion,
         [constants.BINARY_HEADERS_03.ID]: id,
         [constants.BINARY_HEADERS_03.TYPE]: type,

@@ -130,20 +130,6 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
         .to.throw("invalid content type");
     });
 
-    it("No error when content-type is unspecified", () => {
-      const payload = {};
-      const attributes = {
-        "ce-type": "type",
-        "ce-specversion": "1.0",
-        "ce-source": "source",
-        "ce-id": "id"
-      };
-
-      // act and assert
-      expect(receiver.check.bind(receiver, payload, attributes))
-        .to.not.throw();
-    });
-
     it("No error when all required headers are in place", () => {
       // setup
       const payload = {};

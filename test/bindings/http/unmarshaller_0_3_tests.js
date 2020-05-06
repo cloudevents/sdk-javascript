@@ -10,8 +10,7 @@ const schemaurl = "http://cloudevents.io/schema.json";
 const subject = "subject.ext";
 const {
   BINARY_HEADERS_03,
-  HEADER_CONTENT_TYPE,
-  SPEC_V03
+  HEADER_CONTENT_TYPE
 } = require("../../../lib/bindings/http/constants.js");
 
 const ceContentType = "application/json";

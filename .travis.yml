@@ -1,12 +1,12 @@
 language: node_js
 node_js:
-- 12
+- lts/*
 - 10
 cache: npm
 jobs:
   include:
   - stage: github release
-    node_js: '12'
+    node_js: lts/*
     deploy:
       provider: releases
       api_key:
@@ -16,7 +16,7 @@ jobs:
         tags: true
 
   - stage: npm release
-    node_js: '12'
+    node_js: lts/*
     deploy:
       provider: npm
       email: fabiojose@gmail.com
@@ -31,3 +31,7 @@ env:
     secure: t0A5/Fk1Qj8WkAk0ZuQqpFjrpINV6gfL+d1fXgq03EOAG/7FEyyz+AKkYaLT6avp26VWBzLgEoWC3RNmWD0v1/Ruckb95YpQcb5e4JotAce1ZsHgGTgx0UO146tkyGvXBw6MmO2nX2O/sHzkmyR6rlKkBi9LEKokJ9OFd6fi9nNtksgUDxkqNlNTu100fIQAV2RcN47C6iUx+gJIa+H/8QX/Cz02MyheXLe8a763wMQapz5GHrk2KuVY6FpylcAlSi2so+PjEGfKq3MWaQnTPkevkRDLtGcecVtFAq/0VbvoKc97PHoVT0x+nf48k1gj2VnQtYj6EVB74yRvqM9KkNOsfAQ0z9zF5wXMRs11SZywSViLQsnD9Ue6eYbYmodOKn4DFlLtoRyLBUspzLuoL76lERGe2cHU+Ebz2Nb9jL88o+SjfGrSJQEJU7SLZLbzJ7T/3SspWcAlo+Fo9UTCOB4/yL22Yge/SWQkdd1orBhohpjpyrU9Z1+IRvVoU1EICr04zSFUwEwn6Yxbt0ArgTZBEf11bf+YpCo+rBXNAd+XbZ79PGOEppFb+Hxrt9i1S1RnesDJnwC0k7cswU55Rv5gcNCo9lC+N4ZwS5y+5r6DsBfB+12YdsFORFyNbClECro1ODv4STf3rBBnjL8+ziPFjP4d4OwiGY+vG8bvLXY=
 script:
   - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then npm run coverage-publish; else npm test; fi
+
+branches:
+  only:
+    - master

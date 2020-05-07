@@ -19,128 +19,75 @@ const data = {
   foo: "bar"
 };
 
+const un = new Unmarshaller();
+
 describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
   it("Throw error when payload is null", () => {
-    // setup
-    const payload = null;
-    const un = new Unmarshaller();
-
-    // act and assert
-    return un.unmarshall(payload)
-      .then(() => { throw new Error("failed"); })
-      .catch((err) =>
-        expect(err.message).to.equal("payload is null or undefined"));
+    expect(() => un.unmarshall(null)).to.throw("payload is null or undefined");
   });
 
   it("Throw error when headers is null", () => {
-    // setup
-    const payload = {};
-    const headers = null;
-    const un = new Unmarshaller();
-
-    // act and assert
-    return un.unmarshall(payload, headers)
-      .then(() => { throw new Error("failed"); })
-      .catch((err) =>
-        expect(err.message).to.equal("headers is null or undefined"));
+    expect(() => un.unmarshall({})).to.throw("headers is null or undefined");
+    expect(() => un.unmarshall({}, null)).to
+      .throw("headers is null or undefined");
   });
 
   it("Throw error when there is no content-type header", () => {
-    // setup
-    const payload = {};
-    const headers = {};
-    const un = new Unmarshaller();
-
-    // act and assert
-    un.unmarshall(payload, headers)
-      .then(() => { throw new Error("failed"); })
-      .catch((err) =>
-        expect(err.message).to.equal("content-type header not found"));
+    expect(() => un.unmarshall({}, {})).to
+      .throw("content-type header not found");
   });
 
   it("Throw error when content-type is not allowed", () => {
-    // setup
-    const payload = {};
     const headers = {
       "content-type": "text/xml"
     };
-    const un = new Unmarshaller();
-
-    // act and assert
-    un.unmarshall(payload, headers)
-      .then(() => { throw new Error("failed"); })
-      .catch((err) =>
-        expect(err.message).to.equal("content type not allowed"));
+    expect(() => un.unmarshall({}, headers)).to
+      .throw("content type not allowed");
   });
 
   describe("Structured", () => {
     it("Throw error when has not allowed mime", () => {
       // setup
-      const payload = {};
       const headers = {
         "content-type": "application/cloudevents+zip"
       };
-      const un = new Unmarshaller();
 
       // act and assert
-      un.unmarshall(payload, headers)
-        .then(() => { throw new Error("failed"); })
-        .catch((err) =>
-          expect(err.message).to.equal("structured+type not allowed"));
+      expect(() => un.unmarshall({}, headers)).to
+        .throw("structured+type not allowed");
     });
 
     it("Throw error when the event does not follow the spec 0.3", () => {
-      // setup
       const payload =
-        new v03.CloudEvent(v03.Spec)
-          .type(type)
-          .source(source)
-          .dataContentType(ceContentType)
+        new CloudEvent(v03.Spec)
           .time(now)
-          .schemaurl(schemaurl)
-          .data(data)
           .toString();
 
       const headers = {
         "content-type": "application/cloudevents+json"
       };
 
-      const un = new Unmarshaller();
-
-      // act and assert
-      un.unmarshall(payload, headers)
-        .then(() => { throw new Error("failed"); })
-        .catch((err) =>
-          expect(err.message).to.equal("invalid payload"));
+      expect(() => un.unmarshall(payload, headers)).to
+        .throw(TypeError);
     });
 
     it("Should accept event that follow the spec 0.3", () => {
-      // setup
       const payload =
         new CloudEvent(v03.Spec)
           .type(type)
+          .data(data)
           .source(source)
           .dataContentType(ceContentType)
           .time(now)
           .schemaurl(schemaurl)
           .subject(subject)
-          .data(data)
-          .toString();
+          .format();
 
       const headers = {
         "content-type": "application/cloudevents+json"
       };
-
-      const un = new Unmarshaller();
-
-      // act and assert
-      return un.unmarshall(payload, headers)
-        .then((actual) =>
-          expect(actual).to.be.an("object"))
-        .catch((err) => {
-          console.error(err);
-          throw err;
-        });
+      const event = un.unmarshall(payload, headers);
+      expect(event instanceof CloudEvent).to.equal(true);
     });
 
     it("Should parse 'data' stringfied json to json object", () => {
@@ -160,17 +107,8 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
         "content-type": "application/cloudevents+json"
       };
 
-      const un = new Unmarshaller();
-
-      // act and assert
-      return un.unmarshall(payload, headers)
-        .then((actual) => {
-          expect(actual.getData()).to.deep.equal(data);
-        })
-        .catch((err) => {
-          console.error(err);
-          throw err;
-        });
+      const event = un.unmarshall(payload, headers);
+      expect(event.getData()).to.deep.equal(data);
     });
   });
 
@@ -190,13 +128,8 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
         [HEADER_CONTENT_TYPE]: "text/html"
       };
 
-      const un = new Unmarshaller();
-
-      // act and assert
-      un.unmarshall(payload, attributes)
-        .then(() => { throw new Error("failed"); })
-        .catch((err) =>
-          expect(err.message).to.equal("content type not allowed"));
+      expect(() => un.unmarshall(payload, attributes)).to
+        .throw("content type not allowed");
     });
 
     it("Throw error when the event does not follow the spec 0.3", () => {
@@ -214,13 +147,8 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
         [HEADER_CONTENT_TYPE]: "application/json"
       };
 
-      const un = new Unmarshaller();
-
-      // act and assert
-      un.unmarshall(payload, attributes)
-        .then(() => { throw new Error("failed"); })
-        .catch((err) =>
-          expect(err.message).to.not.empty);
+      expect(() => un.unmarshall(payload, attributes)).to
+        .throw("header 'ce-specversion' not found");
     });
 
     it("No error when all attributes are in place", () => {
@@ -238,11 +166,8 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
         [HEADER_CONTENT_TYPE]: "application/json"
       };
 
-      const un = new Unmarshaller();
-
-      // act and assert
-      un.unmarshall(payload, attributes)
-        .then((actual) => expect(actual).to.be.an("object"));
+      const event = un.unmarshall(payload, attributes);
+      expect(event instanceof CloudEvent).to.equal(true);
     });
 
     it("Throw error when 'ce-datacontentencoding' is not allowed", () => {
@@ -260,14 +185,8 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
         [BINARY_HEADERS_03.CONTENT_ENCONDING]: "binary"
       };
 
-      const un = new Unmarshaller();
-
-      // act and assert
-      return un.unmarshall(payload, attributes)
-        .then(() => { throw new Error("failed"); })
-        .catch((err) => {
-          expect(err.message).to.equal("unsupported datacontentencoding");
-        });
+      expect(() => un.unmarshall(payload, attributes)).to
+        .throw("unsupported datacontentencoding");
     });
 
     it("No error when 'ce-datacontentencoding' is base64", () => {
@@ -288,15 +207,8 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
         [BINARY_HEADERS_03.CONTENT_ENCONDING]: "base64"
       };
 
-      const un = new Unmarshaller();
-
-      // act and assert
-      return un.unmarshall(payload, attributes)
-        .then((actual) => expect(actual.getData()).to.deep.equal(expected))
-        .catch((err) => {
-          console.error(err);
-          throw err;
-        });
+      const event = un.unmarshall(payload, attributes);
+      expect(event.getData()).to.deep.equal(expected);
     });
   });
 });

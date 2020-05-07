@@ -7,6 +7,8 @@
     "lint": "standardx",
     "fix": "standardx --fix",
     "pretest": "npm run lint",
+    "build": "tsc --project tsconfig.json",
+    "watch": "tsc --project tsconfig.json --watch",
     "test": "mocha test/**/*.js",
     "coverage": "nyc --reporter=lcov --reporter=text npm run test",
     "precoverage-publish": "npm run coverage",
@@ -92,15 +94,16 @@
     "uuid": "~8.0.0"
   },
   "devDependencies": {
+    "@types/node": "^13.13.5",
     "chai": "~4.2.0",
-    "mocha": "~7.1.1",
-    "nock": "~12.0.3",
-    "nyc": "~15.0.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
-    "standardx": "^5.0.0",
-    "standard-version": "^7.1.0"
+    "mocha": "~7.1.1",
+    "nock": "~12.0.3",
+    "nyc": "~15.0.0",
+    "standard-version": "^7.1.0",
+    "standardx": "^5.0.0"
   },
   "publishConfig": {
     "access": "public"

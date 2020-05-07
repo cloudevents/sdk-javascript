@@ -83,4 +83,4 @@ typings/
 package-lock.json
 
 # Incremental TypeScript Support
-index.ts
+index.js

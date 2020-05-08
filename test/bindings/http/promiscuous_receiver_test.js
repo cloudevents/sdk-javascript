@@ -93,7 +93,7 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
     const source =
       "/apis/v1/namespaces/kafka/kafkasources/kafka-source#knative-demo-topic";
 
-    it("Should be parseable", () => {
+    it("Should be parsable", () => {
       const headers = {
         host: "event-display.kafka.svc.cluster.local",
         "user-agent": "Go-http-client/1.1",

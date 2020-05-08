@@ -18,6 +18,22 @@ const data = {
 };
 
 describe("HTTP Transport Binding Receiver for CloudEvents", () => {
+  describe("HTTP CloudEvent format detection", () => {
+    const specversion = "1.0";
+    it("Throws when the event format cannot be detected", () => {
+      const payload = {
+        id,
+        type,
+        source,
+        data,
+        specversion
+      };
+
+      expect(receiver.accept.bind(receiver, {}, payload))
+        .to.throw("no cloud event detected");
+    });
+  });
+
   describe("V1", () => {
     const specversion = "1.0";
 

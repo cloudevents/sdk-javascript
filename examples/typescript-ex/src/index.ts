@@ -1,14 +1,9 @@
-import CloudEvent, {
-  event,
-  StructuredHTTPEmitter,
-  BinaryHTTPEmitter,
-  StructuredHTTPReceiver,
-  BinaryHTTPReceiver
-} from 'cloudevents-sdk/v1';
+import { CloudEvent, HTTPREceiver } from '../../';
 
 export function doSomeStuff() {
+  const receiver = new HTTPREceiver();
 
-  const myevent: CloudEvent = event()
+  const myevent: CloudEvent = new CloudEvent()
     .source('/source')
     .type('type')
     .dataContentType('text/plain')
@@ -20,39 +15,13 @@ export function doSomeStuff() {
   console.log(myevent.toString());
   console.log(myevent.getExtensions());
 
-  const config = {
-    method: "POST",
-    url   : "https://enu90y24i64jp.x.pipedream.net/"
-  };
-
-  // ------ emitter structured
-  const structured = new StructuredHTTPEmitter(config);
-  structured.emit(myevent).then(res => {
-    // success
-    console.log("Structured Mode: Success!")
-  })
-  .catch(err => {
-    // error
-    console.error(err);
-  });
-
-  // ------ emitter binary
-  const binary = new BinaryHTTPEmitter(config);
-  binary.emit(myevent).then(res => {
-    console.log("Binary Mode: Success!");
-  })
-  .catch(err => {
-    console.error(err);
-  });
-
   // ------ receiver structured
   const payload = myevent.toString();
   const headers = {
     "Content-Type":"application/cloudevents+json"
   };
 
-  const receiverStructured = new StructuredHTTPReceiver();
-  console.log(receiverStructured.parse(payload, headers).toString());
+  console.log(receiver.accept(headers, payload).toString());
 
   // ------ receiver binary
   const extension1 = "mycuston-ext1";
@@ -70,10 +39,9 @@ export function doSomeStuff() {
     "ce-extension1"  : extension1
   };
 
-  const receiverBinary = new BinaryHTTPReceiver();
-  console.log(receiverBinary.parse(data, attributes).toString());
+  console.log(receiver.accept(attributes, data).toString());
 
-return true;
+  return true;
 }
 
 doSomeStuff();

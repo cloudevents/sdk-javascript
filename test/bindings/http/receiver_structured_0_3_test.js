@@ -1,7 +1,8 @@
 const expect = require("chai").expect;
-const v03 = require("../../../v03/index.js");
 const ValidationError = require("../../../lib/validation_error.js");
 const HTTPStructuredReceiver = require("../../../lib/bindings/http/receiver_structured_0_3.js");
+const CloudEvent = require("../../../lib/cloudevent.js");
+const { Spec } = require("../../../v03/index.js");
 
 const receiver = new HTTPStructuredReceiver();
 
@@ -68,7 +69,7 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
     it("Throw error data content encoding is base64, but 'data' is not",
       () => {
         // setup
-        const payload = v03.event()
+        const payload = new CloudEvent(Spec)
           .type(type)
           .source(source)
           .dataContentType("text/plain")
@@ -119,14 +120,13 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
   describe("Parse", () => {
     it("Throw error when the event does not follow the spec", () => {
       // setup
-      const payload =
-        v03.event()
-          .type(type)
-          .source(source)
-          .time(now)
-          .schemaurl(schemaurl)
-          .data(data)
-          .toString();
+      const payload = new CloudEvent(Spec)
+        .type(type)
+        .source(source)
+        .time(now)
+        .schemaurl(schemaurl)
+        .data(data)
+        .toString();
 
       const headers = {
         "Content-Type": "application/cloudevents+xml"
@@ -140,7 +140,7 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
     it("Should accept event that follows the spec", () => {
       // setup
       const id = "id-x0dk";
-      const payload = v03.event()
+      const payload = new CloudEvent(Spec)
         .type(type)
         .source(source)
         .id(id)
@@ -170,7 +170,7 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
     it("Should accept 'extension1'", () => {
       // setup
       const extension1 = "mycuston-ext1";
-      const payload = v03.event()
+      const payload = new CloudEvent(Spec)
         .type(type)
         .source(source)
         .dataContentType(ceContentType)
@@ -195,7 +195,7 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
 
     it("Should parse 'data' stringfied json to json object", () => {
       // setup
-      const payload = v03.event()
+      const payload = new CloudEvent(Spec)
         .type(type)
         .source(source)
         .dataContentType(ceContentType)

@@ -1,7 +1,7 @@
 const expect = require("chai").expect;
 
-const HTTPBinaryReceiver =
-  require("../../../lib/bindings/http/receiver_binary_0_3.js");
+const HTTPBinaryReceiver = require("../../../lib/bindings/http/receiver_binary_0_3.js");
+const ValidationError = require("../../../lib/validation_error.js");
 const {
   BINARY_HEADERS_03,
   SPEC_V03,
@@ -19,7 +19,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("payload is null or undefined");
+        .to.throw(ValidationError, "payload is null or undefined");
     });
 
     it("Throw error when attributes arg is null or undefined", () => {
@@ -29,7 +29,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("attributes is null or undefined");
+        .to.throw(ValidationError, "attributes is null or undefined");
     });
 
     it("Throw error when payload is not an object or string", () => {
@@ -39,7 +39,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("payload must be an object or a string");
+        .to.throw(ValidationError, "payload must be an object or a string");
     });
 
     it("Throw error when headers has no 'ce-type'", () => {
@@ -54,7 +54,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("header 'ce-type' not found");
+        .to.throw(ValidationError, "header 'ce-type' not found");
     });
 
     it("Throw error when headers has no 'ce-specversion'", () => {
@@ -69,7 +69,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("header 'ce-specversion' not found");
+        .to.throw(ValidationError, "header 'ce-specversion' not found");
     });
 
     it("Throw error when headers has no 'ce-source'", () => {
@@ -84,7 +84,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("header 'ce-source' not found");
+        .to.throw(ValidationError, "header 'ce-source' not found");
     });
 
     it("Throw error when headers has no 'ce-id'", () => {
@@ -99,7 +99,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("header 'ce-id' not found");
+        .to.throw(ValidationError, "header 'ce-id' not found");
     });
 
     it("Throw error when spec is not 0.3", () => {
@@ -115,7 +115,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
 
       // act and assert
       expect(receiver.parse.bind(receiver, payload, attributes))
-        .to.throw("invalid spec version");
+        .to.throw(ValidationError, "invalid spec version");
     });
 
     it("Throw error when the content-type is invalid", () => {
@@ -131,7 +131,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("invalid content type");
+        .to.throw(ValidationError, "invalid content type");
     });
 
     it("No error when all required headers are in place", () => {

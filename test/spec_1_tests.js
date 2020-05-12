@@ -3,6 +3,7 @@ const Spec1 = require("../lib/specs/spec_1.js");
 const { CloudEvent } = require("../index.js");
 const { v4: uuidv4 } = require("uuid");
 const { asBase64 } = require("../lib/utils/fun.js");
+const ValidationError = require("../lib/validation_error.js");
 
 const id = uuidv4();
 const type = "com.github.pull.create";
@@ -106,13 +107,13 @@ describe("CloudEvents Spec v1.0", () => {
 
     it("should throw an error when use a reserved name as extension", () => {
       expect(cloudevent.addExtension.bind(cloudevent, "id"))
-        .to.throw("Reserved attribute name: 'id'");
+        .to.throw(ValidationError, "Reserved attribute name: 'id'");
     });
 
     it("should throw an error when use an invalid type", () => {
       expect(cloudevent
         .addExtension.bind(cloudevent, "invalid-val", { cool: "nice" }))
-        .to.throw("Invalid type of extension value");
+        .to.throw(ValidationError, "Invalid type of extension value");
     });
   });
 
@@ -122,15 +123,14 @@ describe("CloudEvents Spec v1.0", () => {
         delete cloudevent.spec.payload.id;
         expect(cloudevent.format.bind(cloudevent))
           .to
-          .throw("invalid payload");
+          .throw(ValidationError, "invalid payload");
         cloudevent.spec.payload.id = id;
       });
 
       it("should throw an error when is empty", () => {
         cloudevent.spec.payload.id = "";
         expect(cloudevent.format.bind(cloudevent))
-          .to
-          .throw("invalid payload");
+          .to.throw(ValidationError, "invalid payload");
         cloudevent.spec.payload.id = id;
       });
     });
@@ -139,8 +139,7 @@ describe("CloudEvents Spec v1.0", () => {
       it("should throw an error when is absent", () => {
         delete cloudevent.spec.payload.source;
         expect(cloudevent.format.bind(cloudevent))
-          .to
-          .throw("invalid payload");
+          .to.throw(ValidationError, "invalid payload");
         cloudevent.spec.payload.source = source;
       });
     });
@@ -149,16 +148,14 @@ describe("CloudEvents Spec v1.0", () => {
       it("should throw an error when is absent", () => {
         delete cloudevent.spec.payload.specversion;
         expect(cloudevent.format.bind(cloudevent))
-          .to
-          .throw("invalid payload");
+          .to.throw(ValidationError, "invalid payload");
         cloudevent.spec.payload.specversion = "1.0";
       });
 
       it("should throw an error when is empty", () => {
         cloudevent.spec.payload.specversion = "";
         expect(cloudevent.format.bind(cloudevent))
-          .to
-          .throw("invalid payload");
+          .to.throw(ValidationError, "invalid payload");
         cloudevent.spec.payload.specversion = "1.0";
       });
     });
@@ -167,16 +164,14 @@ describe("CloudEvents Spec v1.0", () => {
       it("should throw an error when is absent", () => {
         delete cloudevent.spec.payload.type;
         expect(cloudevent.format.bind(cloudevent))
-          .to
-          .throw("invalid payload");
+          .to.throw(ValidationError, "invalid payload");
         cloudevent.spec.payload.type = type;
       });
 
       it("should throw an error when is an empty string", () => {
         cloudevent.type("");
         expect(cloudevent.format.bind(cloudevent))
-          .to
-          .throw("invalid payload");
+          .to.throw(ValidationError, "invalid payload");
         cloudevent.type(type);
       });
 
@@ -190,8 +185,7 @@ describe("CloudEvents Spec v1.0", () => {
       it("should throw an error when is an empty string", () => {
         cloudevent.subject("");
         expect(cloudevent.format.bind(cloudevent))
-          .to
-          .throw("invalid payload");
+          .to.throw(ValidationError, "invalid payload");
         cloudevent.subject(type);
       });
     });

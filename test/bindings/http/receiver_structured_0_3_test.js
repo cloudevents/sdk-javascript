@@ -1,8 +1,7 @@
 const expect = require("chai").expect;
 const v03 = require("../../../v03/index.js");
-
-const HTTPStructuredReceiver =
-  require("../../../lib/bindings/http/receiver_structured_0_3.js");
+const ValidationError = require("../../../lib/validation_error.js");
+const HTTPStructuredReceiver = require("../../../lib/bindings/http/receiver_structured_0_3.js");
 
 const receiver = new HTTPStructuredReceiver();
 
@@ -31,7 +30,7 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("payload is null or undefined");
+        .to.throw(ValidationError, "payload is null or undefined");
     });
 
     it("Throw error when attributes arg is null or undefined", () => {
@@ -41,7 +40,7 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("attributes is null or undefined");
+        .to.throw(ValidationError, "attributes is null or undefined");
     });
 
     it("Throw error when payload is not an object or string", () => {
@@ -51,7 +50,7 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("payload must be an object or string");
+        .to.throw(ValidationError, "payload must be an object or string");
     });
 
     it("Throw error when the content-type is invalid", () => {
@@ -63,7 +62,7 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("invalid content type");
+        .to.throw(ValidationError, "invalid content type");
     });
 
     it("Throw error data content encoding is base64, but 'data' is not",
@@ -87,7 +86,7 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
 
         // act and assert
         expect(receiver.parse.bind(receiver, payload, attributes))
-          .to.throw("invalid payload");
+          .to.throw(ValidationError, "invalid payload");
       });
 
     it("No error when all required stuff are in place", () => {
@@ -135,7 +134,7 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
 
       // act and assert
       expect(receiver.parse.bind(receiver, payload, headers))
-        .to.throw("invalid content type");
+        .to.throw(ValidationError, "invalid content type");
     });
 
     it("Should accept event that follows the spec", () => {

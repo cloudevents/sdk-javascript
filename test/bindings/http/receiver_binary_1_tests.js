@@ -5,6 +5,7 @@ const {
   SPEC_V1,
   HEADER_CONTENT_TYPE
 } = require("../../../lib/bindings/http/constants.js");
+const ValidationError = require("../../../lib/validation_error.js");
 
 const HTTPBinaryReceiver =
   require("../../../lib/bindings/http/receiver_binary_1.js");
@@ -20,7 +21,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("payload is null or undefined");
+        .to.throw(ValidationError, "payload is null or undefined");
     });
 
     it("Throw error when attributes arg is null or undefined", () => {
@@ -30,7 +31,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("attributes is null or undefined");
+        .to.throw(ValidationError, "attributes is null or undefined");
     });
 
     it("Throw error when payload is not an object or string", () => {
@@ -40,7 +41,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("payload must be an object or a string");
+        .to.throw(ValidationError, "payload must be an object or a string");
     });
 
     it("Throw error when headers has no 'ce-type'", () => {
@@ -55,7 +56,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("header 'ce-type' not found");
+        .to.throw(ValidationError, "header 'ce-type' not found");
     });
 
     it("Throw error when headers has no 'ce-specversion'", () => {
@@ -70,7 +71,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("header 'ce-specversion' not found");
+        .to.throw(ValidationError, "header 'ce-specversion' not found");
     });
 
     it("Throw error when headers has no 'ce-source'", () => {
@@ -85,7 +86,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("header 'ce-source' not found");
+        .to.throw(ValidationError, "header 'ce-source' not found");
     });
 
     it("Throw error when headers has no 'ce-id'", () => {
@@ -100,7 +101,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("header 'ce-id' not found");
+        .to.throw(ValidationError, "header 'ce-id' not found");
     });
 
     it("Throw error when spec is not 1.0", () => {
@@ -116,7 +117,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
       // act and assert
       expect(receiver.parse.bind(receiver, payload, attributes))
-        .to.throw("invalid spec version");
+        .to.throw(ValidationError, "invalid spec version");
     });
 
     it("Throw error when the content-type is invalid", () => {
@@ -132,7 +133,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw("invalid content type");
+        .to.throw(ValidationError, "invalid content type");
     });
 
     it("No error when content-type is unspecified", () => {
@@ -186,8 +187,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       const actual = receiver.parse(payload, attributes);
 
       // assert
-      expect(actual.getType())
-        .to.equal("type");
+      expect(actual.getType()).to.equal("type");
     });
 
     it("CloudEvent contains 'specversion'", () => {
@@ -209,8 +209,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       const actual = receiver.parse(payload, attributes);
 
       // assert
-      expect(actual.getSpecversion())
-        .to.equal(SPEC_V1);
+      expect(actual.getSpecversion()).to.equal(SPEC_V1);
     });
 
     it("CloudEvent contains 'source'", () => {
@@ -232,8 +231,8 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       const actual = receiver.parse(payload, attributes);
 
       // assert
-      expect(actual.getSource())
-        .to.equal("/source");
+      expect(actual.getSource()).to.equal("/source");
+
     });
 
     it("CloudEvent contains 'id'", () => {
@@ -255,8 +254,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       const actual = receiver.parse(payload, attributes);
 
       // assert
-      expect(actual.getId())
-        .to.equal("id");
+      expect(actual.getId()).to.equal("id");
     });
 
     it("CloudEvent contains 'time'", () => {
@@ -278,8 +276,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       const actual = receiver.parse(payload, attributes);
 
       // assert
-      expect(actual.getTime())
-        .to.equal("2019-06-16T11:42:00.000Z");
+      expect(actual.getTime()).to.equal("2019-06-16T11:42:00.000Z");
     });
 
     it("CloudEvent contains 'dataschema'", () => {
@@ -301,8 +298,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       const actual = receiver.parse(payload, attributes);
 
       // assert
-      expect(actual.getDataschema())
-        .to.equal("http://schema.registry/v1");
+      expect(actual.getDataschema()).to.equal("http://schema.registry/v1");
     });
 
     it("CloudEvent contains 'contenttype' (application/json)", () => {
@@ -324,8 +320,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       const actual = receiver.parse(payload, attributes);
 
       // assert
-      expect(actual.getDataContentType())
-        .to.equal("application/json");
+      expect(actual.getDataContentType()).to.equal("application/json");
     });
 
     it("CloudEvent contains 'contenttype' (application/octet-stream)", () => {
@@ -345,8 +340,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       const actual = receiver.parse(payload, attributes);
 
       // assert
-      expect(actual.getDataContentType())
-        .to.equal("application/octet-stream");
+      expect(actual.getDataContentType()).to.equal("application/octet-stream");
     });
 
     it("CloudEvent contains 'data' (application/json)", () => {
@@ -368,8 +362,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       const actual = receiver.parse(payload, attributes);
 
       // assert
-      expect(actual.getData())
-        .to.deep.equal(payload);
+      expect(actual.getData()).to.deep.equal(payload);
     });
 
     it("CloudEvent contains 'data' (application/octet-stream)", () => {
@@ -389,8 +382,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       const actual = receiver.parse(payload, attributes);
 
       // assert
-      expect(actual.getData())
-        .to.deep.equal(payload);
+      expect(actual.getData()).to.deep.equal(payload);
     });
 
     it("The content of 'data' is base64 for binary", () => {
@@ -417,8 +409,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       const actual = receiver.parse(payload, attributes);
 
       // assert
-      expect(actual.getData())
-        .to.deep.equal(expected);
+      expect(actual.getData()).to.deep.equal(expected);
     });
 
     it("No error when all attributes are in place", () => {
@@ -440,11 +431,9 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       const actual = receiver.parse(payload, attributes);
 
       // assert
-      expect(actual)
-        .to.be.an("object");
+      expect(actual).to.be.an("object");
 
-      expect(actual)
-        .to.have.property("format");
+      expect(actual).to.have.property("format");
     });
 
     it("Should accept 'extension1'", () => {
@@ -469,8 +458,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       const actualExtensions = actual.getExtensions();
 
       // assert
-      expect(actualExtensions.extension1)
-        .to.equal(extension1);
+      expect(actualExtensions.extension1).to.equal(extension1);
     });
   });
 });

@@ -62,25 +62,52 @@ console.log(receivedEvent.format());
 
 #### Emitting Events
 
-Currently, to emit events, you'll need to decide whether the event is in
+To emit events, you'll need to decide whether the event should be sent in
 binary or structured format, and determine what version of the CloudEvents
 specification you want to send the event as.
 
+By default, the `HTTPEmitter` will emit events over HTTP POST using the
+1.0 specification, in binary mode. You can emit 0.3 events by providing
+the specication version in the constructor to `HTTPEmitter`. To send
+structured events, add that string as a parameter to `emitter.sent()`.
+
 ```js
-const { CloudEvent } = require("cloudevents-sdk");
-const { StructuredHTTPEmitter } = require("cloudevents-sdk/v1");
+const { CloudEvent, HTTPEmitter } = require("cloudevents-sdk");
 
-const myevent = new CloudEvent()
-  .type("com.github.pull.create")
-  .source("urn:event:from:myapi/resource/123");
+// Without any parameters, this creates a v1 emitter
+const v1Emitter = new HTTPEmitter();
+const event = new CloudEvent()
+  .type(type)
+  .source(source)
+  .time(new Date())
+  .data(data)
 
-const emitter = new StructuredHTTPEmitter({
-  method: "POST",
-  url   : "https://myserver.com"
-});
+// By default, the emitter will send binary events
+v1Emitter.send({ url: "https://cloudevents.io/example" }, event)
+  .then((response) => {
+    // handle the response
+  })
+  .catch(console.error);
 
-// Emit the event
-emitter.emit(myevent)
+// To send a structured event, just add that as a parameter
+v1Emitter.send({ url: "https://cloudevents.io/example" }, event, "structured")
+  .then((response) => {
+    // handle the response
+  })
+  .catch(console.error);
+
+// Sending a v0.3 event works the same, just let the emitter know when
+// you create it that you are working with the 0.3 spec
+const v03Emitter = new HTTPEmitter("0.3");
+
+// Again, the default is to send binary events
+// To send a structured event, add "structured" as a final parameter
+v3Emitter.send({ url: "https://cloudevents.io/example" }, event)
+  .then((response) => {
+    // handle the response
+  })
+  .catch(console.error);
+
 ```
 
 ## Supported specification features

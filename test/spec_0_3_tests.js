@@ -2,14 +2,17 @@ const expect = require("chai").expect;
 const Spec03 = require("../lib/specs/spec_0_3.js");
 const { CloudEvent } = require("../index.js");
 const { v4: uuidv4 } = require("uuid");
+const {
+  MIME_JSON,
+  ENCODING_BASE64,
+  SPEC_V03
+} = require("../lib/bindings/http/constants.js");
 
 const id = uuidv4();
 const type = "com.github.pull.create";
 const source = "urn:event:from:myapi/resourse/123";
 const time = new Date();
 const schemaurl = "http://example.com/registry/myschema.json";
-const dataContentEncoding = "base64";
-const dataContentType = "application/json";
 const data = {
   much: "wow"
 };
@@ -20,7 +23,7 @@ const cloudevent =
     .id(id)
     .source(source)
     .type(type)
-    .dataContentType(dataContentType)
+    .dataContentType(MIME_JSON)
     .schemaurl(schemaurl)
     .subject(subject)
     .time(time)
@@ -37,7 +40,7 @@ describe("CloudEvents Spec v0.3", () => {
     });
 
     it("Should have 'specversion'", () => {
-      expect(cloudevent.getSpecversion()).to.equal("0.3");
+      expect(cloudevent.getSpecversion()).to.equal(SPEC_V03);
     });
 
     it("Should have 'type'", () => {
@@ -47,14 +50,14 @@ describe("CloudEvents Spec v0.3", () => {
 
   describe("OPTIONAL Attributes", () => {
     it("Should have 'datacontentencoding'", () => {
-      cloudevent.dataContentEncoding(dataContentEncoding);
+      cloudevent.dataContentEncoding(ENCODING_BASE64);
       expect(cloudevent.spec.payload.datacontentencoding)
-        .to.equal(dataContentEncoding);
+        .to.equal(ENCODING_BASE64);
       delete cloudevent.spec.payload.datacontentencoding;
     });
 
     it("Should have 'datacontenttype'", () => {
-      expect(cloudevent.getDataContentType()).to.equal(dataContentType);
+      expect(cloudevent.getDataContentType()).to.equal(MIME_JSON);
     });
 
     it("Should have 'schemaurl'", () => {
@@ -120,7 +123,7 @@ describe("CloudEvents Spec v0.3", () => {
         expect(cloudevent.format.bind(cloudevent))
           .to
           .throw("invalid payload");
-        cloudevent.spec.payload.specversion = "0.3";
+        cloudevent.spec.payload.specversion = SPEC_V03;
       });
 
       it("should throw an error when is empty", () => {
@@ -128,7 +131,7 @@ describe("CloudEvents Spec v0.3", () => {
         expect(cloudevent.format.bind(cloudevent))
           .to
           .throw("invalid payload");
-        cloudevent.spec.payload.specversion = "0.3";
+        cloudevent.spec.payload.specversion = SPEC_V03;
       });
     });
 
@@ -171,7 +174,7 @@ describe("CloudEvents Spec v0.3", () => {
         () => {
           cloudevent
             .data("no base 64 value")
-            .dataContentEncoding("base64")
+            .dataContentEncoding(ENCODING_BASE64)
             .dataContentType("text/plain");
 
           expect(cloudevent.format.bind(cloudevent))
@@ -185,7 +188,7 @@ describe("CloudEvents Spec v0.3", () => {
       it("should accept when 'data' is a string", () => {
         cloudevent
           .data("Y2xvdWRldmVudHMK")
-          .dataContentEncoding("base64");
+          .dataContentEncoding(ENCODING_BASE64);
         expect(cloudevent.format()).to.have.property("datacontentencoding");
         delete cloudevent.spec.payload.datacontentencoding;
         cloudevent.data(data);
@@ -199,12 +202,12 @@ describe("CloudEvents Spec v0.3", () => {
           .data(JSON.stringify(data));
 
         expect(typeof cloudevent.getData()).to.equal("string");
-        cloudevent.dataContentType(dataContentType);
+        cloudevent.dataContentType(MIME_JSON);
       });
 
       it("should convert data with stringified json to a json object", () => {
         cloudevent
-          .dataContentType(dataContentType)
+          .dataContentType(MIME_JSON)
           .data(JSON.stringify(data));
         expect(cloudevent.getData()).to.deep.equal(data);
       });

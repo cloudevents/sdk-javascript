@@ -13,7 +13,7 @@
     "arrow-parens": ["error", "always"],
     "arrow-body-style": ["error", "as-needed"],
     "prefer-template": "error",
-    "max-len": ["warn", { "code": 80 }],
+    "max-len": ["warn", { "code": 120 }],
     "no-unused-vars": ["warn", {
       "argsIgnorePattern": "^_$|^e$|^reject$|^resolve$"
     }],

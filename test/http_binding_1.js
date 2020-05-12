@@ -27,17 +27,16 @@ const ext1Value = "foobar";
 const ext2Name = "extension2";
 const ext2Value = "acme";
 
-const cloudevent =
-  new CloudEvent(Spec)
-    .type(type)
-    .source(source)
-    .dataContentType(ceContentType)
-    .subject("subject.ext")
-    .time(now)
-    .dataschema(dataschema)
-    .data(data)
-    .addExtension(ext1Name, ext1Value)
-    .addExtension(ext2Name, ext2Value);
+const cloudevent = new CloudEvent(Spec)
+  .type(type)
+  .source(source)
+  .dataContentType(ceContentType)
+  .subject("subject.ext")
+  .time(now)
+  .dataschema(dataschema)
+  .data(data)
+  .addExtension(ext1Name, ext1Value)
+  .addExtension(ext2Name, ext2Value);
 
 const dataString = ")(*~^my data for ce#@#$%";
 

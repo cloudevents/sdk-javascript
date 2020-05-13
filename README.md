@@ -74,8 +74,10 @@ structured events, add that string as a parameter to `emitter.sent()`.
 ```js
 const { CloudEvent, HTTPEmitter } = require("cloudevents-sdk");
 
-// Without any parameters, this creates a v1 emitter
-const v1Emitter = new HTTPEmitter();
+// With only an endpoint URL, this creates a v1 emitter
+const v1Emitter = new HTTPEmitter({
+  url: "https://cloudevents.io/example"
+});
 const event = new CloudEvent()
   .type(type)
   .source(source)
@@ -83,30 +85,36 @@ const event = new CloudEvent()
   .data(data)
 
 // By default, the emitter will send binary events
-v1Emitter.send({ url: "https://cloudevents.io/example" }, event)
-  .then((response) => {
+v1Emitter.send(event).then((response) => {
     // handle the response
-  })
-  .catch(console.error);
+  }).catch(console.error);
 
-// To send a structured event, just add that as a parameter
-v1Emitter.send({ url: "https://cloudevents.io/example" }, event, "structured")
+// To send a structured event, just add that as an option
+v1Emitter.send(event, { mode: "structured" })
   .then((response) => {
     // handle the response
-  })
-  .catch(console.error);
+  }).catch(console.error);
+
+// To send an event to an alternate URL, add that as an option
+v1Emitter.send(event, { url: "https://alternate.com/api" })
+  .then((response) => {
+    // handle the response
+  }).catch(console.error);
 
 // Sending a v0.3 event works the same, just let the emitter know when
 // you create it that you are working with the 0.3 spec
-const v03Emitter = new HTTPEmitter("0.3");
+const v03Emitter = new HTTPEmitter({
+  url: "https://cloudevents.io/example",
+  version: "0.3"
+});
 
 // Again, the default is to send binary events
-// To send a structured event, add "structured" as a final parameter
-v3Emitter.send({ url: "https://cloudevents.io/example" }, event)
+// To send a structured event or to an alternate URL, provide those
+// as parameters in a options object as above
+v3Emitter.send(event)
   .then((response) => {
     // handle the response
-  })
-  .catch(console.error);
+  }).catch(console.error);
 
 ```
 

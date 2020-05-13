@@ -65,6 +65,15 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
         }).catch(expect.fail);
     });
 
+    it("Provides the HTTP headers for a binary event", () => {
+      const headers = emitter.headers(event);
+      expect(headers[BINARY_HEADERS_1.TYPE]).to.equal(event.getType());
+      expect(headers[BINARY_HEADERS_1.SPEC_VERSION]).to.equal(event.getSpecversion());
+      expect(headers[BINARY_HEADERS_1.SOURCE]).to.equal(event.getSource());
+      expect(headers[BINARY_HEADERS_1.ID]).to.equal(event.getId());
+      expect(headers[BINARY_HEADERS_1.TIME]).to.equal(event.getTime());
+    });
+
     it("Sends a structured 1.0 CloudEvent if specified", () => {
       emitter.send(event, { mode: "structured" })
         .then((response) => {
@@ -126,6 +135,15 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
           // A binary message will have a request body for the data
           expect(response.data.lunchBreak).to.equal(data.lunchBreak);
         }).catch(expect.fail);
+    });
+
+    it("Provides the HTTP headers for a binary event", () => {
+      const headers = emitter.headers(event);
+      expect(headers[BINARY_HEADERS_03.TYPE]).to.equal(event.getType());
+      expect(headers[BINARY_HEADERS_03.SPEC_VERSION]).to.equal(event.getSpecversion());
+      expect(headers[BINARY_HEADERS_03.SOURCE]).to.equal(event.getSource());
+      expect(headers[BINARY_HEADERS_03.ID]).to.equal(event.getId());
+      expect(headers[BINARY_HEADERS_03.TIME]).to.equal(event.getTime());
     });
 
     it("Sends a structured 0.3 CloudEvent if specified", () => {

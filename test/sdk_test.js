@@ -19,7 +19,9 @@ describe("The SDK Requirements", () => {
   });
 
   it("should expose an HTTPEmitter type", () => {
-    const emitter = new HTTPEmitter();
+    const emitter = new HTTPEmitter({
+      url: "http://example.com"
+    });
     expect(emitter instanceof HTTPEmitter).to.equal(true);
   });
 

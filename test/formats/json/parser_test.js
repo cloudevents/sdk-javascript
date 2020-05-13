@@ -1,5 +1,6 @@
 const expect = require("chai").expect;
 const Parser = require("../../../lib/formats/json/parser.js");
+const ValidationError = require("../../../lib/validation_error.js");
 
 describe("JSON Event Format Parser", () => {
   it("Throw error when payload is an integer", () => {
@@ -9,7 +10,7 @@ describe("JSON Event Format Parser", () => {
 
     // act and assert
     expect(parser.parse.bind(parser, payload))
-      .to.throw("invalid payload type, allowed are: string or object");
+      .to.throw(ValidationError, "invalid payload type, allowed are: string or object");
   });
 
   it("Throw error when payload is null", () => {
@@ -18,8 +19,7 @@ describe("JSON Event Format Parser", () => {
     const parser = new Parser();
 
     // act and assert
-    expect(parser.parse.bind(parser, payload))
-      .to.throw("null or undefined payload");
+    expect(parser.parse.bind(parser, payload)).to.throw(ValidationError, "null or undefined payload");
   });
 
   it("Throw error when payload is undefined", () => {
@@ -27,8 +27,7 @@ describe("JSON Event Format Parser", () => {
     const parser = new Parser();
 
     // act and assert
-    expect(parser.parse.bind(parser))
-      .to.throw("null or undefined payload");
+    expect(parser.parse.bind(parser)).to.throw(ValidationError, "null or undefined payload");
   });
 
   it("Throw error when payload is a float", () => {
@@ -38,7 +37,7 @@ describe("JSON Event Format Parser", () => {
 
     // act and assert
     expect(parser.parse.bind(parser, payload))
-      .to.throw("invalid payload type, allowed are: string or object");
+      .to.throw(ValidationError, "invalid payload type, allowed are: string or object");
   });
 
   it("Throw error when payload is an invalid JSON", () => {
@@ -46,9 +45,8 @@ describe("JSON Event Format Parser", () => {
     const payload = "gg";
     const parser = new Parser();
 
-    // act and assert
-    expect(parser.parse.bind(parser, payload))
-      .to.throw("Unexpected token g in JSON at position 0");
+    // TODO: Should the parser catch the SyntaxError and re-throw a ValidationError?
+    expect(parser.parse.bind(parser, payload)).to.throw(SyntaxError, "Unexpected token g in JSON at position 0");
   });
 
   it("Must accept when the payload is a string well formed as JSON", () => {
@@ -60,7 +58,6 @@ describe("JSON Event Format Parser", () => {
     const actual = parser.parse(payload);
 
     // assert
-    expect(actual)
-      .to.be.an("object");
+    expect(actual).to.be.an("object");
   });
 });

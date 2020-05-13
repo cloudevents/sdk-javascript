@@ -8,6 +8,7 @@ const {
   BINARY_HEADERS_03,
   BINARY_HEADERS_1
 } = require("../../../lib/bindings/http/constants.js");
+const ValidationError = require("../../../lib/validation_error.js");
 
 const receiver = new HTTPReceiver();
 const id = "1234";
@@ -30,7 +31,7 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
       };
 
       expect(receiver.accept.bind(receiver, {}, payload))
-        .to.throw("no cloud event detected");
+        .to.throw(ValidationError, "no cloud event detected");
     });
   });
 

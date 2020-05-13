@@ -6,6 +6,7 @@ const {
   ENCODING_BASE64,
   SPEC_V03
 } = require("../lib/bindings/http/constants.js");
+const ValidationError = require("../lib/validation_error.js");
 
 const id = "97699ec2-a8d9-47c1-bfa0-ff7aa526f838";
 const type = "com.github.pull.create";
@@ -83,7 +84,7 @@ describe("CloudEvents Spec v0.3", () => {
 
     it("should throw an error when use a reserved name as extension", () => {
       expect(cloudevent.addExtension.bind(cloudevent, "id"))
-        .to.throw("Reserved attribute name: 'id'");
+        .to.throw(ValidationError, "Reserved attribute name: 'id'");
     });
   });
 
@@ -92,16 +93,14 @@ describe("CloudEvents Spec v0.3", () => {
       it("should throw an error when is absent", () => {
         delete cloudevent.spec.payload.id;
         expect(cloudevent.format.bind(cloudevent))
-          .to
-          .throw("invalid payload");
+          .to.throw(ValidationError, "invalid payload");
         cloudevent.spec.payload.id = id;
       });
 
       it("should throw an erro when is empty", () => {
         cloudevent.spec.payload.id = "";
         expect(cloudevent.format.bind(cloudevent))
-          .to
-          .throw("invalid payload");
+          .to.throw(ValidationError, "invalid payload");
         cloudevent.spec.payload.id = id;
       });
     });
@@ -110,8 +109,7 @@ describe("CloudEvents Spec v0.3", () => {
       it("should throw an error when is absent", () => {
         delete cloudevent.spec.payload.source;
         expect(cloudevent.format.bind(cloudevent))
-          .to
-          .throw("invalid payload");
+          .to.throw(ValidationError, "invalid payload");
         cloudevent.spec.payload.source = source;
       });
     });
@@ -120,16 +118,14 @@ describe("CloudEvents Spec v0.3", () => {
       it("should throw an error when is absent", () => {
         delete cloudevent.spec.payload.specversion;
         expect(cloudevent.format.bind(cloudevent))
-          .to
-          .throw("invalid payload");
+          .to.throw(ValidationError, "invalid payload");
         cloudevent.spec.payload.specversion = SPEC_V03;
       });
 
       it("should throw an error when is empty", () => {
         cloudevent.spec.payload.specversion = "";
         expect(cloudevent.format.bind(cloudevent))
-          .to
-          .throw("invalid payload");
+          .to.throw(ValidationError, "invalid payload");
         cloudevent.spec.payload.specversion = SPEC_V03;
       });
     });
@@ -138,16 +134,14 @@ describe("CloudEvents Spec v0.3", () => {
       it("should throw an error when is absent", () => {
         delete cloudevent.spec.payload.type;
         expect(cloudevent.format.bind(cloudevent))
-          .to
-          .throw("invalid payload");
+          .to.throw(ValidationError, "invalid payload");
         cloudevent.spec.payload.type = type;
       });
 
       it("should throw an error when is an empty string", () => {
         cloudevent.type("");
         expect(cloudevent.format.bind(cloudevent))
-          .to
-          .throw("invalid payload");
+          .to.throw(ValidationError, "invalid payload");
         cloudevent.type(type);
       });
 
@@ -163,8 +157,7 @@ describe("CloudEvents Spec v0.3", () => {
           .data("Y2xvdWRldmVudHMK")
           .dataContentEncoding("binary");
         expect(cloudevent.format.bind(cloudevent))
-          .to
-          .throw("invalid payload");
+          .to.throw(ValidationError, "invalid payload");
         delete cloudevent.spec.payload.datacontentencoding;
         cloudevent.data(data);
       });
@@ -177,8 +170,7 @@ describe("CloudEvents Spec v0.3", () => {
             .dataContentType("text/plain");
 
           expect(cloudevent.format.bind(cloudevent))
-            .to
-            .throw("invalid payload");
+            .to.throw(ValidationError, "invalid payload");
 
           delete cloudevent.spec.payload.datacontentencoding;
           cloudevent.data(data);
@@ -216,8 +208,7 @@ describe("CloudEvents Spec v0.3", () => {
       it("should throw an error when is an empty string", () => {
         cloudevent.subject("");
         expect(cloudevent.format.bind(cloudevent))
-          .to
-          .throw("invalid payload");
+          .to.throw(ValidationError, "invalid payload");
         cloudevent.subject(type);
       });
     });

@@ -1,5 +1,5 @@
 const expect = require("chai").expect;
-const v1 = require("../../../v1/index.js");
+const { Spec } = require("../../../v1/index.js");
 const { CloudEvent } = require("../../../index.js");
 const { asBase64 } = require("../../../lib/utils/fun.js");
 const ValidationError = require("../../../lib/validation_error.js");
@@ -99,7 +99,7 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0",
       it("Should accept event that follows the spec", () => {
       // setup
         const id = "id-x0dk";
-        const payload = v1.event()
+        const payload = new CloudEvent(Spec)
           .type(type)
           .source(source)
           .id(id)
@@ -129,7 +129,7 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0",
       it("Should accept 'extension1'", () => {
       // setup
         const extension1 = "mycustom-ext1";
-        const payload = v1.event()
+        const payload = new CloudEvent(Spec)
           .type(type)
           .source(source)
           .dataContentType(ceContentType)
@@ -154,7 +154,7 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0",
 
       it("Should parse 'data' stringified json to json object", () => {
       // setup
-        const payload = v1.event()
+        const payload = new CloudEvent(Spec)
           .type(type)
           .source(source)
           .dataContentType(ceContentType)
@@ -179,7 +179,7 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0",
         const bindata = Uint32Array
           .from(JSON.stringify(data), (c) => c.codePointAt(0));
         const expected = asBase64(bindata);
-        const payload = v1.event()
+        const payload = new CloudEvent(Spec)
           .type(type)
           .source(source)
           .dataContentType(ceContentType)

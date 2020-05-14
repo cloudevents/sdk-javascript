@@ -4,7 +4,8 @@ const { CloudEvent } = require("../index.js");
 const {
   MIME_JSON,
   ENCODING_BASE64,
-  SPEC_V03
+  SPEC_V03,
+  BINARY
 } = require("../lib/bindings/http/constants.js");
 const ValidationError = require("../lib/validation_error.js");
 
@@ -155,7 +156,7 @@ describe("CloudEvents Spec v0.3", () => {
       it("should throw an error when is a unsupported encoding", () => {
         cloudevent
           .data("Y2xvdWRldmVudHMK")
-          .dataContentEncoding("binary");
+          .dataContentEncoding(BINARY);
         expect(cloudevent.format.bind(cloudevent))
           .to.throw(ValidationError, "invalid payload");
         delete cloudevent.spec.payload.datacontentencoding;

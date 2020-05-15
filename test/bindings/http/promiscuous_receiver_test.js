@@ -8,7 +8,7 @@ const {
   BINARY_HEADERS_03,
   BINARY_HEADERS_1
 } = require("../../../lib/bindings/http/constants.js");
-const ValidationError = require("../../../lib/validation_error.js");
+const ValidationError = require("../../../lib/bindings/http/validation/validation_error.js");
 
 const receiver = new HTTPReceiver();
 const id = "1234";

@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+      HTTPEmitter - Documentation
+  </title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+  <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+  <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+  
+  <link type="text/css" rel="stylesheet" href="styles/collapse.css">
+  
+
+  
+</head>
+
+<body>
+  <svg style="display: none;">
+    <defs>
+      <symbol id="linkIcon" fill="#706d77" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0h24v24H0z" fill="none"/>
+          <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+  <label for="nav-trigger" class="navicon-button x">
+    <div class="navicon"></div>
+  </label>
+
+  <label for="nav-trigger" class="overlay"></label>
+
+  <div class="top-nav-wrapper">
+    <ul>
+      <li >
+        <a href="index.html">
+          
+            <svg fill="#6D6D6D" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              <path d="M0 0h24v24H0z" fill="none"/>
+            </svg>
+          
+          
+        </a>
+      </li>
+
+      
+
+    </ul>
+  </div>
+
+  <nav>
+    <h3 class="reference-title">
+      cloudevents-sdk
+    </h3>
+
+    
+      <h3>
+        Resources
+      </h3>
+      
+        <a href="concepts.html">Concepts</a>
+      
+    
+
+    <h3>Classes</h3><ul><li id="BinaryHTTPEmitter-nav"><a href="BinaryHTTPEmitter.html">BinaryHTTPEmitter</a><ul class='methods'><li data-type="method" id="BinaryHTTPEmitter-emit-nav"><a href="BinaryHTTPEmitter.html#emit">emit</a></li></ul></li><li id="BinaryHTTPReceiver-nav"><a href="BinaryHTTPReceiver.html">BinaryHTTPReceiver</a><ul class='methods'><li data-type="method" id="BinaryHTTPReceiver-check-nav"><a href="BinaryHTTPReceiver.html#check">check</a></li><li data-type="method" id="BinaryHTTPReceiver-parse-nav"><a href="BinaryHTTPReceiver.html#parse">parse</a></li></ul></li><li id="CloudEvent-nav"><a href="CloudEvent.html">CloudEvent</a><ul class='methods'><li data-type="method" id="CloudEvent-addExtension-nav"><a href="CloudEvent.html#addExtension">addExtension</a></li><li data-type="method" id="CloudEvent-data-nav"><a href="CloudEvent.html#data">data</a></li><li data-type="method" id="CloudEvent-dataContenttype-nav"><a href="CloudEvent.html#dataContenttype">dataContenttype</a></li><li data-type="method" id="CloudEvent-format-nav"><a href="CloudEvent.html#format">format</a></li><li data-type="method" id="CloudEvent-getData-nav"><a href="CloudEvent.html#getData">getData</a></li><li data-type="method" id="CloudEvent-getDataContenttype-nav"><a href="CloudEvent.html#getDataContenttype">getDataContenttype</a></li><li data-type="method" id="CloudEvent-getExtensions-nav"><a href="CloudEvent.html#getExtensions">getExtensions</a></li><li data-type="method" id="CloudEvent-getFormats-nav"><a href="CloudEvent.html#getFormats">getFormats</a></li><li data-type="method" id="CloudEvent-getId-nav"><a href="CloudEvent.html#getId">getId</a></li><li data-type="method" id="CloudEvent-getSource-nav"><a href="CloudEvent.html#getSource">getSource</a></li><li data-type="method" id="CloudEvent-getSpecversion-nav"><a href="CloudEvent.html#getSpecversion">getSpecversion</a></li><li data-type="method" id="CloudEvent-getTime-nav"><a href="CloudEvent.html#getTime">getTime</a></li><li data-type="method" id="CloudEvent-getType-nav"><a href="CloudEvent.html#getType">getType</a></li><li data-type="method" id="CloudEvent-id-nav"><a href="CloudEvent.html#id">id</a></li><li data-type="method" id="CloudEvent-source-nav"><a href="CloudEvent.html#source">source</a></li><li data-type="method" id="CloudEvent-time-nav"><a href="CloudEvent.html#time">time</a></li><li data-type="method" id="CloudEvent-toString-nav"><a href="CloudEvent.html#toString">toString</a></li><li data-type="method" id="CloudEvent-type-nav"><a href="CloudEvent.html#type">type</a></li></ul></li><li id="HTTPEmitter-nav"><a href="HTTPEmitter.html">HTTPEmitter</a><ul class='methods'><li data-type="method" id="HTTPEmitter-headers-nav"><a href="HTTPEmitter.html#headers">headers</a></li><li data-type="method" id="HTTPEmitter-send-nav"><a href="HTTPEmitter.html#send">send</a></li></ul></li><li id="HTTPReceiver-nav"><a href="HTTPReceiver.html">HTTPReceiver</a><ul class='methods'><li data-type="method" id="HTTPReceiver-accept-nav"><a href="HTTPReceiver.html#accept">accept</a></li></ul></li><li id="StructuredHTTPEmitter-nav"><a href="StructuredHTTPEmitter.html">StructuredHTTPEmitter</a><ul class='methods'><li data-type="method" id="StructuredHTTPEmitter-emit-nav"><a href="StructuredHTTPEmitter.html#emit">emit</a></li></ul></li><li id="ValidationError-nav"><a href="ValidationError.html">ValidationError</a></li></ul>
+  </nav>
+
+  <div id="main">
+    
+      <h1 class="page-title">
+        HTTPEmitter
+      </h1>
+    
+
+    
+
+<section>
+  <header>
+    
+      <h2>
+        
+        HTTPEmitter
+        
+      </h2>
+
+      
+        <div class="class-description">
+          <p>A class which is capable of sending binary and structured events using
+the CloudEvents HTTP Protocol Binding specification.</p>
+        </div>
+      
+    
+  </header>
+
+  <article>
+    <div class="container-overview">
+      
+        
+
+
+  
+    <h2>Constructor</h2>
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#HTTPEmitter">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="HTTPEmitter">
+      <span class="type-signature"></span>new HTTPEmitter<span class="signature">(options<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Creates a new instance of {HTTPEmitter}. The default emitter uses the 1.0
+protocol specification in binary mode.</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+        <th>Attributes</th>
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>options</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>The configuration options for this event emitter</p>
+          
+            <h6>Properties</h6>
+            
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+        <th>Attributes</th>
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>url</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      URL
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>The endpoint that will receive the sent events.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>version</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>The HTTP binding specification version. Default: &quot;1.0&quot;</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="bindings_http_http_emitter.js.html">bindings/http/http_emitter.js</a>, <a href="bindings_http_http_emitter.js.html#line26">line 26</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+      <ul>
+        
+          <li>
+            <a href="https://github.com/cloudevents/spec/blob/v1.0/http-protocol-binding.md">https://github.com/cloudevents/spec/blob/v1.0/http-protocol-binding.md</a>
+          </li>
+        
+          <li>
+            <a href="https://github.com/cloudevents/spec/blob/v1.0/http-protocol-binding.md#13-content-modes">https://github.com/cloudevents/spec/blob/v1.0/http-protocol-binding.md#13-content-modes</a>
+          </li>
+        
+      </ul>
+    </dd>
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <dl>
+    <dt>
+      <div class="param-desc">
+        <p>if no options.url is provided or an unknown specification version is provided.</p>
+      </div>
+    </dt>
+    <dd></dd>
+    <dt>
+      <dl>
+        <dt>Type</dt>
+        <dd>
+          
+    <span class="param-type">
+      TypeError
+    </span>
+
+    
+
+
+        </dd>
+      </dl>
+    </dt>
+    <dd></dd>
+  </dl>
+
+
+    
+
+
+
+      
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+      <h3 class="subsection-title">Methods</h3>
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#headers">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="headers">
+      <span class="type-signature"></span>headers<span class="signature">(event)</span><span class="type-signature"> &rarr; {Object}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Returns the HTTP headers that will be sent for this event when the HTTP transmission
+mode is &quot;binary&quot;. Events sent over HTTP in structured mode only have a single CE header
+and that is &quot;ce-id&quot;, corresponding to the event ID.</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>event</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      <a href="CloudEvent.html">CloudEvent</a>
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>a CloudEvent</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="bindings_http_http_emitter.js.html">bindings/http/http_emitter.js</a>, <a href="bindings_http_http_emitter.js.html#line72">line 72</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#send">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="send">
+      <span class="type-signature"></span>send<span class="signature">(event, options<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Sends the {CloudEvent} to an event receiver over HTTP POST</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+        <th>Attributes</th>
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>event</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      <a href="CloudEvent.html">CloudEvent</a>
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>the CloudEvent to be sent</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>options</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>The configuration options for this event. Options
+provided will be passed along to Node.js <code>http.request()</code>.
+https://nodejs.org/api/http.html#http_http_request_options_callback</p>
+          
+            <h6>Properties</h6>
+            
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+        <th>Attributes</th>
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>url</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      URL
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>The HTTP/S url that should receive this event.
+The URL is optional if one was provided when this emitter was constructed.
+In that case, it will be used as the recipient endpoint. The endpoint can
+be overridden by providing a URL here.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>mode</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>the message mode for sending this event.
+Possible values are &quot;binary&quot; and &quot;structured&quot;. Default: structured</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="bindings_http_http_emitter.js.html">bindings/http/http_emitter.js</a>, <a href="bindings_http_http_emitter.js.html#line54">line 54</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+    
+
+    
+
+    
+  </article>
+</section>
+
+
+
+
+  </div>
+
+  <br class="clear">
+
+  <footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a>
+  </footer>
+
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/pagelocation.js"></script>
+
+  
+
+</body>
+</html>

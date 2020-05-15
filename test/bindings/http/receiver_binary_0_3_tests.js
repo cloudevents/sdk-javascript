@@ -1,14 +1,14 @@
 const expect = require("chai").expect;
 
-const HTTPBinaryReceiver = require("../../../lib/bindings/http/receiver_binary_0_3.js");
-const ValidationError = require("../../../lib/validation_error.js");
+const BinaryHTTPReceiver = require("../../../lib/bindings/http/receiver_binary.js");
+const ValidationError = require("../../../lib/bindings/http/validation/validation_error.js");
 const {
   BINARY_HEADERS_03,
   SPEC_V03,
   HEADER_CONTENT_TYPE
 } = require("../../../lib/bindings/http/constants.js");
 
-const receiver = new HTTPBinaryReceiver();
+const receiver = new BinaryHTTPReceiver(SPEC_V03);
 
 describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
   describe("Check", () => {

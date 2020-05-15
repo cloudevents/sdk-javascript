@@ -11,8 +11,8 @@ const {
 
 const { CloudEvent, HTTPEmitter } = require("../../../");
 
-const V1Spec = require("../../../v1").Spec;
-const V03Spec = require("../../../v03").Spec;
+const V1Spec = require("../../../lib/bindings/http/v1").Spec;
+const V03Spec = require("../../../lib/bindings/http/v03").Spec;
 
 const receiver = "https://cloudevents.io/";
 const type = "com.example.test";

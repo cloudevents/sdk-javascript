@@ -1,7 +1,7 @@
 const expect = require("chai").expect;
 const { CloudEvent, HTTPReceiver, HTTPEmitter } = require("../");
-const SpecV03 = require("../v03").Spec;
-const SpecV1 = require("../v1").Spec;
+const SpecV03 = require("../lib/bindings/http/v03").Spec;
+const SpecV1 = require("../lib/bindings/http/v1").Spec;
 const {
   SPEC_V03,
   SPEC_V1

@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
-      formats/json/parser.js - Documentation
+      bindings/http/emitter_structured.js - Documentation
   </title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
@@ -81,7 +81,7 @@
   <div id="main">
     
       <h1 class="page-title">
-        formats/json/parser.js
+        bindings/http/emitter_structured.js
       </h1>
     
 
@@ -90,43 +90,44 @@
 
 <section>
   <article>
-    <pre class="prettyprint source linenums"><code>const {
-  isString,
-  isDefinedOrThrow,
-  isStringOrObjectOrThrow
-} = require("../../bindings/http/validation/fun.js");
-const ValidationError = require("../../bindings/http/validation/validation_error.js");
+    <pre class="prettyprint source linenums"><code>const axios = require("axios");
+const {
+  DATA_ATTRIBUTE,
+  DEFAULT_CE_CONTENT_TYPE,
+  HEADERS,
+  HEADER_CONTENT_TYPE
+} = require("./constants.js");
 
-const invalidPayloadTypeError = new ValidationError("invalid payload type, allowed are: string or object");
-const nullOrUndefinedPayload = new ValidationError("null or undefined payload");
+const defaults = {
+  [HEADERS]: {
+    [HEADER_CONTENT_TYPE]: DEFAULT_CE_CONTENT_TYPE
+  },
+  method: "POST"
+};
 
-const asJSON = (v) => (isString(v) ? JSON.parse(v) : v);
-
-class JSONParser {
-  constructor(decorator) {
-    this.decorator = decorator;
-  }
+/**
+ * A class for sending {CloudEvent} instances over HTTP.
+ */
+class StructuredHTTPEmitter {
+  // TODO: Do we really need a class here? There is no state maintenance
 
   /**
-   * Parses the payload with an optional decorator
-   * @param {object|string} payload the JSON payload
-   * @return {object} the parsed JSON payload.
+   * Sends the event over HTTP
+   * @param {Object} options The configuration options for this event. Options
+   * provided will be passed along to Node.js `http.request()`.
+   * https://nodejs.org/api/http.html#http_http_request_options_callback
+   * @param {URL} options.url The HTTP/S url that should receive this event
+   * @param {CloudEvent} cloudevent The CloudEvent to be sent
+   * @returns {Promise} Promise with an eventual response from the receiver
    */
-  parse(payload) {
-    if (this.decorator) {
-      payload = this.decorator.parse(payload);
-    }
-
-    return Array.of(payload)
-
-      .filter((p) => isDefinedOrThrow(p, nullOrUndefinedPayload))
-      .filter((p) => isStringOrObjectOrThrow(p, invalidPayloadTypeError))
-      .map(asJSON)
-      .shift();
+  async emit(options, cloudevent) {
+    const config = { ...defaults, ...options };
+    config[DATA_ATTRIBUTE] = cloudevent.format();
+    return axios.request(config);
   }
 }
 
-module.exports = JSONParser;
+module.exports = StructuredHTTPEmitter;
 </code></pre>
   </article>
 </section>

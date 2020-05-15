@@ -73,7 +73,7 @@
       
     
 
-    <h3>Classes</h3><ul><li id="CloudEvent-nav"><a href="CloudEvent.html">CloudEvent</a><ul class='methods'><li data-type="method" id="CloudEvent-addExtension-nav"><a href="CloudEvent.html#addExtension">addExtension</a></li><li data-type="method" id="CloudEvent-data-nav"><a href="CloudEvent.html#data">data</a></li><li data-type="method" id="CloudEvent-dataContenttype-nav"><a href="CloudEvent.html#dataContenttype">dataContenttype</a></li><li data-type="method" id="CloudEvent-format-nav"><a href="CloudEvent.html#format">format</a></li><li data-type="method" id="CloudEvent-getData-nav"><a href="CloudEvent.html#getData">getData</a></li><li data-type="method" id="CloudEvent-getDataContenttype-nav"><a href="CloudEvent.html#getDataContenttype">getDataContenttype</a></li><li data-type="method" id="CloudEvent-getExtensions-nav"><a href="CloudEvent.html#getExtensions">getExtensions</a></li><li data-type="method" id="CloudEvent-getFormats-nav"><a href="CloudEvent.html#getFormats">getFormats</a></li><li data-type="method" id="CloudEvent-getId-nav"><a href="CloudEvent.html#getId">getId</a></li><li data-type="method" id="CloudEvent-getSource-nav"><a href="CloudEvent.html#getSource">getSource</a></li><li data-type="method" id="CloudEvent-getSpecversion-nav"><a href="CloudEvent.html#getSpecversion">getSpecversion</a></li><li data-type="method" id="CloudEvent-getTime-nav"><a href="CloudEvent.html#getTime">getTime</a></li><li data-type="method" id="CloudEvent-getType-nav"><a href="CloudEvent.html#getType">getType</a></li><li data-type="method" id="CloudEvent-id-nav"><a href="CloudEvent.html#id">id</a></li><li data-type="method" id="CloudEvent-source-nav"><a href="CloudEvent.html#source">source</a></li><li data-type="method" id="CloudEvent-time-nav"><a href="CloudEvent.html#time">time</a></li><li data-type="method" id="CloudEvent-toString-nav"><a href="CloudEvent.html#toString">toString</a></li><li data-type="method" id="CloudEvent-type-nav"><a href="CloudEvent.html#type">type</a></li></ul></li><li id="HTTPReceiver-nav"><a href="HTTPReceiver.html">HTTPReceiver</a><ul class='methods'><li data-type="method" id="HTTPReceiver-accept-nav"><a href="HTTPReceiver.html#accept">accept</a></li></ul></li></ul>
+    <h3>Classes</h3><ul><li id="BinaryHTTPEmitter-nav"><a href="BinaryHTTPEmitter.html">BinaryHTTPEmitter</a><ul class='methods'><li data-type="method" id="BinaryHTTPEmitter-emit-nav"><a href="BinaryHTTPEmitter.html#emit">emit</a></li></ul></li><li id="BinaryHTTPReceiver-nav"><a href="BinaryHTTPReceiver.html">BinaryHTTPReceiver</a><ul class='methods'><li data-type="method" id="BinaryHTTPReceiver-check-nav"><a href="BinaryHTTPReceiver.html#check">check</a></li><li data-type="method" id="BinaryHTTPReceiver-parse-nav"><a href="BinaryHTTPReceiver.html#parse">parse</a></li></ul></li><li id="CloudEvent-nav"><a href="CloudEvent.html">CloudEvent</a><ul class='methods'><li data-type="method" id="CloudEvent-addExtension-nav"><a href="CloudEvent.html#addExtension">addExtension</a></li><li data-type="method" id="CloudEvent-data-nav"><a href="CloudEvent.html#data">data</a></li><li data-type="method" id="CloudEvent-dataContenttype-nav"><a href="CloudEvent.html#dataContenttype">dataContenttype</a></li><li data-type="method" id="CloudEvent-format-nav"><a href="CloudEvent.html#format">format</a></li><li data-type="method" id="CloudEvent-getData-nav"><a href="CloudEvent.html#getData">getData</a></li><li data-type="method" id="CloudEvent-getDataContenttype-nav"><a href="CloudEvent.html#getDataContenttype">getDataContenttype</a></li><li data-type="method" id="CloudEvent-getExtensions-nav"><a href="CloudEvent.html#getExtensions">getExtensions</a></li><li data-type="method" id="CloudEvent-getFormats-nav"><a href="CloudEvent.html#getFormats">getFormats</a></li><li data-type="method" id="CloudEvent-getId-nav"><a href="CloudEvent.html#getId">getId</a></li><li data-type="method" id="CloudEvent-getSource-nav"><a href="CloudEvent.html#getSource">getSource</a></li><li data-type="method" id="CloudEvent-getSpecversion-nav"><a href="CloudEvent.html#getSpecversion">getSpecversion</a></li><li data-type="method" id="CloudEvent-getTime-nav"><a href="CloudEvent.html#getTime">getTime</a></li><li data-type="method" id="CloudEvent-getType-nav"><a href="CloudEvent.html#getType">getType</a></li><li data-type="method" id="CloudEvent-id-nav"><a href="CloudEvent.html#id">id</a></li><li data-type="method" id="CloudEvent-source-nav"><a href="CloudEvent.html#source">source</a></li><li data-type="method" id="CloudEvent-time-nav"><a href="CloudEvent.html#time">time</a></li><li data-type="method" id="CloudEvent-toString-nav"><a href="CloudEvent.html#toString">toString</a></li><li data-type="method" id="CloudEvent-type-nav"><a href="CloudEvent.html#type">type</a></li></ul></li><li id="HTTPEmitter-nav"><a href="HTTPEmitter.html">HTTPEmitter</a><ul class='methods'><li data-type="method" id="HTTPEmitter-headers-nav"><a href="HTTPEmitter.html#headers">headers</a></li><li data-type="method" id="HTTPEmitter-send-nav"><a href="HTTPEmitter.html#send">send</a></li></ul></li><li id="HTTPReceiver-nav"><a href="HTTPReceiver.html">HTTPReceiver</a><ul class='methods'><li data-type="method" id="HTTPReceiver-accept-nav"><a href="HTTPReceiver.html#accept">accept</a></li></ul></li><li id="StructuredHTTPEmitter-nav"><a href="StructuredHTTPEmitter.html">StructuredHTTPEmitter</a><ul class='methods'><li data-type="method" id="StructuredHTTPEmitter-emit-nav"><a href="StructuredHTTPEmitter.html#emit">emit</a></li></ul></li><li id="ValidationError-nav"><a href="ValidationError.html">ValidationError</a></li></ul>
   </nav>
 
   <div id="main">
@@ -136,23 +136,57 @@ const receivedEvent = receiver.accept(req.body, req.headers);
 console.log(receivedEvent.format());
 </code></pre>
 <h4>Emitting Events</h4>
-<p>Currently, to emit events, you'll need to decide whether the event is in
+<p>To emit events, you'll need to decide whether the event should be sent in
 binary or structured format, and determine what version of the CloudEvents
 specification you want to send the event as.</p>
-<pre class="prettyprint source lang-js"><code>const { CloudEvent } = require(&quot;cloudevents-sdk&quot;);
-const { StructuredHTTPEmitter } = require(&quot;cloudevents-sdk/v1&quot;);
+<p>By default, the <code>HTTPEmitter</code> will emit events over HTTP POST using the
+1.0 specification, in binary mode. You can emit 0.3 events by providing
+the specication version in the constructor to <code>HTTPEmitter</code>. To send
+structured events, add that string as a parameter to <code>emitter.sent()</code>.</p>
+<pre class="prettyprint source lang-js"><code>const { CloudEvent, HTTPEmitter } = require(&quot;cloudevents-sdk&quot;);
 
-const myevent = new CloudEvent()
-  .type(&quot;com.github.pull.create&quot;)
-  .source(&quot;urn:event:from:myapi/resource/123&quot;);
+// With only an endpoint URL, this creates a v1 emitter
+const v1Emitter = new HTTPEmitter({
+  url: &quot;https://cloudevents.io/example&quot;
+});
+const event = new CloudEvent()
+  .type(type)
+  .source(source)
+  .time(new Date())
+  .data(data)
 
-const emitter = new StructuredHTTPEmitter({
-  method: &quot;POST&quot;,
-  url   : &quot;https://myserver.com&quot;
+// By default, the emitter will send binary events
+v1Emitter.send(event).then((response) => {
+    // handle the response
+  }).catch(console.error);
+
+// To send a structured event, just add that as an option
+v1Emitter.send(event, { mode: &quot;structured&quot; })
+  .then((response) => {
+    // handle the response
+  }).catch(console.error);
+
+// To send an event to an alternate URL, add that as an option
+v1Emitter.send(event, { url: &quot;https://alternate.com/api&quot; })
+  .then((response) => {
+    // handle the response
+  }).catch(console.error);
+
+// Sending a v0.3 event works the same, just let the emitter know when
+// you create it that you are working with the 0.3 spec
+const v03Emitter = new HTTPEmitter({
+  url: &quot;https://cloudevents.io/example&quot;,
+  version: &quot;0.3&quot;
 });
 
-// Emit the event
-emitter.emit(myevent)
+// Again, the default is to send binary events
+// To send a structured event or to an alternate URL, provide those
+// as parameters in a options object as above
+v3Emitter.send(event)
+  .then((response) => {
+    // handle the response
+  }).catch(console.error);
+
 </code></pre>
 <h2>Supported specification features</h2>
 <table>

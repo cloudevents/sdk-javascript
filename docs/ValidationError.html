@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
-      formats/json/parser.js - Documentation
+      ValidationError - Documentation
   </title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
@@ -81,57 +79,260 @@
   <div id="main">
     
       <h1 class="page-title">
-        formats/json/parser.js
+        ValidationError
       </h1>
     
 
     
-      
 
 <section>
+  <header>
+    
+      <h2>
+        
+        ValidationError
+        
+      </h2>
+
+      
+        <div class="class-description">
+          <p>A Error class that will be thrown when a CloudEvent
+cannot be properly validated against a the specification.</p>
+        </div>
+      
+    
+  </header>
+
   <article>
-    <pre class="prettyprint source linenums"><code>const {
-  isString,
-  isDefinedOrThrow,
-  isStringOrObjectOrThrow
-} = require("../../bindings/http/validation/fun.js");
-const ValidationError = require("../../bindings/http/validation/validation_error.js");
+    <div class="container-overview">
+      
+        
 
-const invalidPayloadTypeError = new ValidationError("invalid payload type, allowed are: string or object");
-const nullOrUndefinedPayload = new ValidationError("null or undefined payload");
 
-const asJSON = (v) => (isString(v) ? JSON.parse(v) : v);
+  
+    <h2>Constructor</h2>
+  
 
-class JSONParser {
-  constructor(decorator) {
-    this.decorator = decorator;
-  }
+  <span class='name-container'>
+    <a class="link-icon" href="#ValidationError">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="ValidationError">
+      <span class="type-signature"></span>new ValidationError<span class="signature">(message, errors<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+    </h4>
+  </span>
 
-  /**
-   * Parses the payload with an optional decorator
-   * @param {object|string} payload the JSON payload
-   * @return {object} the parsed JSON payload.
-   */
-  parse(payload) {
-    if (this.decorator) {
-      payload = this.decorator.parse(payload);
-    }
+  
 
-    return Array.of(payload)
 
-      .filter((p) => isDefinedOrThrow(p, nullOrUndefinedPayload))
-      .filter((p) => isStringOrObjectOrThrow(p, invalidPayloadTypeError))
-      .map(asJSON)
-      .shift();
-  }
-}
 
-module.exports = JSONParser;
-</code></pre>
+  <div class="description">
+    <p>Constructs a new {ValidationError} with the message
+and array of additional errors.</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+        <th>Attributes</th>
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>message</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>the error message</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>errors</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Array.&lt;string>
+    </span>
+
+    |
+
+    <span class="param-type">
+      Array.&lt;ErrorObject>
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>any additional errors related to validation</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="bindings_http_validation_validation_error.js.html">bindings/http/validation/validation_error.js</a>, <a href="bindings_http_validation_validation_error.js.html#line12">line 12</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
   </article>
 </section>
 
-    
+
 
 
   </div>

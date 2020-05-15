@@ -1,10 +1,11 @@
 const expect = require("chai").expect;
-const ValidationError = require("../../../lib/validation_error.js");
-const HTTPStructuredReceiver = require("../../../lib/bindings/http/receiver_structured_0_3.js");
+const ValidationError = require("../../../lib/bindings/http/validation/validation_error.js");
+const HTTPStructuredReceiver = require("../../../lib/bindings/http/receiver_structured.js");
 const CloudEvent = require("../../../lib/cloudevent.js");
-const { Spec } = require("../../../v03/index.js");
+const { Spec } = require("../../../lib/bindings/http/v03/index.js");
+const { SPEC_V03 } = require("../../../lib/bindings/http/constants.js");
 
-const receiver = new HTTPStructuredReceiver();
+const receiver = new HTTPStructuredReceiver(SPEC_V03);
 
 const type = "com.github.pull.create";
 const source = "urn:event:from:myapi/resourse/123";
@@ -51,7 +52,7 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
 
       // act and assert
       expect(receiver.check.bind(receiver, payload, attributes))
-        .to.throw(ValidationError, "payload must be an object or string");
+        .to.throw(ValidationError, "payload must be an object or a string");
     });
 
     it("Throw error when the content-type is invalid", () => {

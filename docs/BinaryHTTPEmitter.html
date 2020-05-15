@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
-      formats/json/parser.js - Documentation
+      BinaryHTTPEmitter - Documentation
   </title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
@@ -81,57 +79,443 @@
   <div id="main">
     
       <h1 class="page-title">
-        formats/json/parser.js
+        BinaryHTTPEmitter
       </h1>
     
 
     
-      
 
 <section>
+  <header>
+    
+      <h2>
+        
+        BinaryHTTPEmitter
+        
+      </h2>
+
+      
+        <div class="class-description">
+          <p>A class to emit binary CloudEvents over HTTP.</p>
+        </div>
+      
+    
+  </header>
+
   <article>
-    <pre class="prettyprint source linenums"><code>const {
-  isString,
-  isDefinedOrThrow,
-  isStringOrObjectOrThrow
-} = require("../../bindings/http/validation/fun.js");
-const ValidationError = require("../../bindings/http/validation/validation_error.js");
+    <div class="container-overview">
+      
+        
 
-const invalidPayloadTypeError = new ValidationError("invalid payload type, allowed are: string or object");
-const nullOrUndefinedPayload = new ValidationError("null or undefined payload");
 
-const asJSON = (v) => (isString(v) ? JSON.parse(v) : v);
+  
+    <h2>Constructor</h2>
+  
 
-class JSONParser {
-  constructor(decorator) {
-    this.decorator = decorator;
-  }
+  <span class='name-container'>
+    <a class="link-icon" href="#BinaryHTTPEmitter">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="BinaryHTTPEmitter">
+      <span class="type-signature"></span>new BinaryHTTPEmitter<span class="signature">(version)</span><span class="type-signature"></span>
+    </h4>
+  </span>
 
-  /**
-   * Parses the payload with an optional decorator
-   * @param {object|string} payload the JSON payload
-   * @return {object} the parsed JSON payload.
-   */
-  parse(payload) {
-    if (this.decorator) {
-      payload = this.decorator.parse(payload);
-    }
+  
 
-    return Array.of(payload)
 
-      .filter((p) => isDefinedOrThrow(p, nullOrUndefinedPayload))
-      .filter((p) => isStringOrObjectOrThrow(p, invalidPayloadTypeError))
-      .map(asJSON)
-      .shift();
-  }
-}
 
-module.exports = JSONParser;
-</code></pre>
+  <div class="description">
+    <p>Create a new {BinaryHTTPEmitter} for the provided CloudEvent specification version.
+Once an instance is created for a given spec version, it may only be used to send
+events for that version.
+Default version is 1.0</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>version</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>the CloudEvent HTTP specification version.
+Default: 1.0</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="bindings_http_emitter_binary.js.html">bindings/http/emitter_binary.js</a>, <a href="bindings_http_emitter_binary.js.html#line35">line 35</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+      <h3 class="subsection-title">Methods</h3>
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#emit">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="emit">
+      <span class="type-signature">(async) </span>emit<span class="signature">(options, cloudevent)</span><span class="type-signature"> &rarr; {Promise}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Sends this cloud event to a receiver over HTTP.</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>options</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>The configuration options for this event. Options
+provided other than <code>url</code> will be passed along to Node.js <code>http.request</code>.
+https://nodejs.org/api/http.html#http_http_request_options_callback</p>
+          
+            <h6>Properties</h6>
+            
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>url</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      URL
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>The HTTP/S url that should receive this event</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>cloudevent</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>the CloudEvent to be sent</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="bindings_http_emitter_binary.js.html">bindings/http/emitter_binary.js</a>, <a href="bindings_http_emitter_binary.js.html#line55">line 55</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+    
+
+    
+
+    
   </article>
 </section>
 
-    
+
 
 
   </div>

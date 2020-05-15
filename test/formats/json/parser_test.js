@@ -1,6 +1,6 @@
 const expect = require("chai").expect;
 const Parser = require("../../../lib/formats/json/parser.js");
-const ValidationError = require("../../../lib/validation_error.js");
+const ValidationError = require("../../../lib/bindings/http/validation/validation_error.js");
 
 describe("JSON Event Format Parser", () => {
   it("Throw error when payload is an integer", () => {

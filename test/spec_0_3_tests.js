@@ -1,5 +1,5 @@
 const expect = require("chai").expect;
-const Spec03 = require("../lib/specs/spec_0_3.js");
+const Spec03 = require("../lib/bindings/http/v03/spec_0_3.js");
 const { CloudEvent } = require("../index.js");
 const {
   MIME_JSON,
@@ -7,7 +7,7 @@ const {
   SPEC_V03,
   BINARY
 } = require("../lib/bindings/http/constants.js");
-const ValidationError = require("../lib/validation_error.js");
+const ValidationError = require("../lib/bindings/http/validation/validation_error.js");
 
 const id = "97699ec2-a8d9-47c1-bfa0-ff7aa526f838";
 const type = "com.github.pull.create";

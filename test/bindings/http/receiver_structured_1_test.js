@@ -1,11 +1,12 @@
 const expect = require("chai").expect;
-const { Spec } = require("../../../v1/index.js");
+const { Spec } = require("../../../lib/bindings/http/v1/index.js");
 const { CloudEvent } = require("../../../index.js");
-const { asBase64 } = require("../../../lib/utils/fun.js");
-const ValidationError = require("../../../lib/validation_error.js");
-const HTTPStructuredReceiver = require("../../../lib/bindings/http/receiver_structured_1.js");
+const { asBase64 } = require("../../../lib/bindings/http/validation/fun.js");
+const { SPEC_V1 } = require("../../../lib/bindings/http/constants.js");
+const ValidationError = require("../../../lib/bindings/http/validation/validation_error.js");
+const HTTPStructuredReceiver = require("../../../lib/bindings/http/receiver_structured.js");
 
-const receiver = new HTTPStructuredReceiver();
+const receiver = new HTTPStructuredReceiver(SPEC_V1);
 
 const type = "com.github.pull.create";
 const source = "urn:event:from:myapi/resource/123";
@@ -48,7 +49,7 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0",
 
         // act and assert
         expect(receiver.check.bind(receiver, payload, attributes))
-          .to.throw(ValidationError, "payload must be an object or string");
+          .to.throw(ValidationError, "payload must be an object or a string");
       });
 
       it("Throw error when the content-type is invalid", () => {

@@ -1,5 +1,5 @@
 const expect = require("chai").expect;
-const fun = require("../lib/utils/fun.js");
+const fun = require("../lib/bindings/http/validation/fun.js");
 
 describe("Functional approach", () => {
   describe("isStringOrThrow", () => {

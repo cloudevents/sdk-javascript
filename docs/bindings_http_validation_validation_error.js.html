@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
-      formats/json/parser.js - Documentation
+      bindings/http/validation/validation_error.js - Documentation
   </title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
@@ -81,7 +81,7 @@
   <div id="main">
     
       <h1 class="page-title">
-        formats/json/parser.js
+        bindings/http/validation/validation_error.js
       </h1>
     
 
@@ -90,44 +90,24 @@
 
 <section>
   <article>
-    <pre class="prettyprint source linenums"><code>const {
-  isString,
-  isDefinedOrThrow,
-  isStringOrObjectOrThrow
-} = require("../../bindings/http/validation/fun.js");
-const ValidationError = require("../../bindings/http/validation/validation_error.js");
-
-const invalidPayloadTypeError = new ValidationError("invalid payload type, allowed are: string or object");
-const nullOrUndefinedPayload = new ValidationError("null or undefined payload");
-
-const asJSON = (v) => (isString(v) ? JSON.parse(v) : v);
-
-class JSONParser {
-  constructor(decorator) {
-    this.decorator = decorator;
-  }
-
+    <pre class="prettyprint source linenums"><code>/**
+ * A Error class that will be thrown when a CloudEvent
+ * cannot be properly validated against a the specification.
+ */
+class ValidationError extends TypeError {
   /**
-   * Parses the payload with an optional decorator
-   * @param {object|string} payload the JSON payload
-   * @return {object} the parsed JSON payload.
+   * Constructs a new {ValidationError} with the message
+   * and array of additional errors.
+   * @param {string} message the error message
+   * @param {string[]|ErrorObject[]} [errors] any additional errors related to validation
    */
-  parse(payload) {
-    if (this.decorator) {
-      payload = this.decorator.parse(payload);
-    }
-
-    return Array.of(payload)
-
-      .filter((p) => isDefinedOrThrow(p, nullOrUndefinedPayload))
-      .filter((p) => isStringOrObjectOrThrow(p, invalidPayloadTypeError))
-      .map(asJSON)
-      .shift();
+  constructor(message, errors) {
+    super(message);
+    this.errors = errors ? errors : [];
   }
 }
 
-module.exports = JSONParser;
-</code></pre>
+module.exports = ValidationError;</code></pre>
   </article>
 </section>
 

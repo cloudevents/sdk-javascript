@@ -15,9 +15,7 @@
     "release": "standard-version"
   },
   "files": [
-    "lib",
-    "v03",
-    "v1"
+    "lib"
   ],
   "standard-version": {
     "types": [

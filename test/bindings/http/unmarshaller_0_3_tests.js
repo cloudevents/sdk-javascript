@@ -11,7 +11,8 @@ const schemaurl = "http://cloudevents.io/schema.json";
 const subject = "subject.ext";
 const {
   BINARY_HEADERS_03,
-  HEADER_CONTENT_TYPE
+  HEADER_CONTENT_TYPE,
+  BINARY
 } = require("../../../lib/bindings/http/constants.js");
 
 const ceContentType = "application/json";
@@ -182,7 +183,7 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
         [BINARY_HEADERS_03.TIME]: "2019-06-16T11:42:00Z",
         [BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
         [HEADER_CONTENT_TYPE]: "application/json",
-        [BINARY_HEADERS_03.CONTENT_ENCONDING]: "binary"
+        [BINARY_HEADERS_03.CONTENT_ENCONDING]: BINARY
       };
 
       expect(() => un.unmarshall(payload, attributes)).to

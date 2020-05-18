@@ -17,7 +17,8 @@
     "release": "standard-version"
   },
   "files": [
-    "lib"
+    "lib",
+    "index.d.ts"
   ],
   "standard-version": {
     "types": [

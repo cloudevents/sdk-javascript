@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
-      bindings/http/http_receiver.js - Documentation
+      bindings/http/receiver_binary.js - Documentation
   </title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
@@ -81,7 +81,7 @@
   <div id="main">
     
       <h1 class="page-title">
-        bindings/http/http_receiver.js
+        bindings/http/receiver_binary.js
       </h1>
     
 
@@ -90,95 +90,60 @@
 
 <section>
   <article>
-    <pre class="prettyprint source linenums"><code>// const V03Binary = require("./receiver_binary_0_3.js");
-// const V03Structured = require("./v03/receiver_structured_0_3.js");
-// const V1Binary = require("./receiver_binary_1.js");
-// const V1Structured = require("./v1/receiver_structured_1.js");
-const BinaryReceiver = require("./receiver_binary.js");
-const StructuredReceiver = require("./receiver_structured.js");
-const ValidationError = require("./validation/validation_error.js");
-const {
-  BINARY,
-  STRUCTURED,
-  SPEC_V03,
-  SPEC_V1,
-  HEADER_CONTENT_TYPE,
-  MIME_CE,
-  BINARY_HEADERS_1,
-  DEFAULT_SPEC_VERSION_HEADER
-} = require("./constants");
+    <pre class="prettyprint source linenums"><code>const ReceiverV1 = require("./v1/receiver_binary_1.js");
+const ReceiverV3 = require("./v03/receiver_binary_0_3.js");
+
+const { SPEC_V03, SPEC_V1 } = require("./constants.js");
+const { check, parse } = require("./validation/binary.js");
 
 /**
- * A class to receive a CloudEvent from an HTTP POST request.
+ * A class that receives binary CloudEvents over HTTP. This class can be used
+ * if you know that all incoming events will be using binary transport. If
+ * events can come as either binary or structured, use {HTTPReceiver}.
  */
-class HTTPReceiver {
+class BinaryHTTPReceiver {
   /**
-   * Create an instance of an HTTPReceiver to accept incoming CloudEvents.
-   */
-  constructor() {
-    this.receivers = {
-      v1: {
-        structured: new StructuredReceiver(SPEC_V1),
-        binary: new BinaryReceiver(SPEC_V1)
-      },
-      v03: {
-        structured: new StructuredReceiver(SPEC_V03),
-        binary: new BinaryReceiver(SPEC_V03)
-      }
-    };
-  }
-
-  /**
-   * Acceptor for an incoming HTTP CloudEvent POST. Can process
-   * binary and structured incoming CloudEvents.
+   * Creates a new BinaryHTTPReceiver to accept events over HTTP.
    *
-   * @param {Object} headers HTTP headers keyed by header name ("Content-Type")
-   * @param {Object|JSON} body The body of the HTTP request
-   * @return {CloudEvent} A new {CloudEvent} instance
+   * @param {string} version the Cloud Event specification version to use. Default "1.0"
    */
-  accept(headers, body) {
-    const mode = getMode(headers);
-    const version = getVersion(mode, headers, body);
-    switch (version) {
-      case SPEC_V1:
-        return this.receivers.v1[mode].parse(body, headers);
-      case SPEC_V03:
-        return this.receivers.v03[mode].parse(body, headers);
-      default:
-        console.error(
-          `Unknown spec version ${version}. Default to ${SPEC_V1}`);
-        return this.receivers.v1[mode].parse(body, headers);
+  constructor(version = SPEC_V1) {
+    if (version === SPEC_V1) {
+      this.receiver = new ReceiverV1();
+    } else if (version === SPEC_V03) {
+      this.receiver = new ReceiverV3();
     }
   }
+
+  /**
+   * Checks an incoming HTTP request to determine if it conforms to the
+   * Cloud Event specification for this receiver.
+   *
+   * @throws {ValidationError} if the event does not conform to the spec
+   * @param {Object} payload the HTTP request body
+   * @param {Object} headers  the HTTP request headers
+   *
+   * @returns {void}
+   */
+  check(payload, headers) {
+    return check(payload, headers, this.receiver);
+  }
+
+  /**
+   * Parses an incoming HTTP request, converting it to a {CloudEvent}
+   * instance if it conforms to the Cloud Event specification for this receiver.
+   *
+   * @throws {ValidationError} of the event does not conform to the spec
+   * @param {Object} payload the HTTP request body
+   * @param {Object} headers the HTTP request headers
+   * @returns {CloudEvent} an instance of CloudEvent representing the incoming request
+   */
+  parse(payload, headers) {
+    return parse(payload, headers, this.receiver);
+  }
 }
 
-function getMode(headers) {
-  const contentType = headers[HEADER_CONTENT_TYPE];
-  if (contentType &amp;&amp; contentType.startsWith(MIME_CE)) {
-    return STRUCTURED;
-  }
-  if (headers[BINARY_HEADERS_1.ID]) {
-    return BINARY;
-  }
-  throw new ValidationError("no cloud event detected");
-}
-
-function getVersion(mode, headers, body) {
-  if (mode === BINARY) {
-    // Check the headers for the version
-    const versionHeader = headers[DEFAULT_SPEC_VERSION_HEADER];
-    if (versionHeader) {
-      return versionHeader;
-    }
-  } else {
-    // structured mode - the version is in the body
-    return body instanceof String
-      ? JSON.parse(body).specversion : body.specversion;
-  }
-  return SPEC_V1;
-}
-
-module.exports = HTTPReceiver;
+module.exports = BinaryHTTPReceiver;
 </code></pre>
   </article>
 </section>

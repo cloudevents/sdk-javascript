@@ -1,9 +1,9 @@
 const expect = require("chai").expect;
-const Spec1 = require("../lib/specs/spec_1.js");
+const Spec1 = require("../lib/bindings/http/v1/spec_1.js");
 const { CloudEvent } = require("../index.js");
 const { v4: uuidv4 } = require("uuid");
-const { asBase64 } = require("../lib/utils/fun.js");
-const ValidationError = require("../lib/validation_error.js");
+const { asBase64 } = require("../lib/bindings/http/validation/fun.js");
+const ValidationError = require("../lib/bindings/http/validation/validation_error.js");
 
 const id = uuidv4();
 const type = "com.github.pull.create";

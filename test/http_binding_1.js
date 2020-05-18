@@ -1,12 +1,12 @@
 const expect = require("chai").expect;
 const nock = require("nock");
 const https = require("https");
-const { asBase64 } = require("../lib/utils/fun.js");
+const { asBase64 } = require("../lib/bindings/http/validation/fun.js");
 const {
   SPEC_V1
 } = require("../lib/bindings/http/constants.js");
 
-const { Spec } = require("../v1/index.js");
+const { Spec } = require("../lib/bindings/http/v1/index.js");
 const CloudEvent = require("../lib/cloudevent.js");
 const BinaryHTTPEmitter = require("../lib/bindings/http/emitter_binary.js");
 const StructuredHTTPEmitter = require("../lib/bindings/http/emitter_structured.js");

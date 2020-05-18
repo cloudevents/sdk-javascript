@@ -3,7 +3,7 @@ const nock = require("nock");
 const BinaryHTTPEmitter = require("../lib/bindings/http/emitter_binary.js");
 const StructuredHTTPEmitter = require("../lib/bindings/http/emitter_structured.js");
 const CloudEvent = require("../lib/cloudevent.js");
-const v03 = require("../v03/index.js");
+const v03 = require("../lib/bindings/http/v03/index.js");
 const {
   SPEC_V03
 } = require("../lib/bindings/http/constants.js");

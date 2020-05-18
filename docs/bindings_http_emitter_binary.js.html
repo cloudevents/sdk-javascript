@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
-      bindings/http/http_receiver.js - Documentation
+      bindings/http/emitter_binary.js - Documentation
   </title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
@@ -81,7 +81,7 @@
   <div id="main">
     
       <h1 class="page-title">
-        bindings/http/http_receiver.js
+        bindings/http/emitter_binary.js
       </h1>
     
 
@@ -90,95 +90,93 @@
 
 <section>
   <article>
-    <pre class="prettyprint source linenums"><code>// const V03Binary = require("./receiver_binary_0_3.js");
-// const V03Structured = require("./v03/receiver_structured_0_3.js");
-// const V1Binary = require("./receiver_binary_1.js");
-// const V1Structured = require("./v1/receiver_structured_1.js");
-const BinaryReceiver = require("./receiver_binary.js");
-const StructuredReceiver = require("./receiver_structured.js");
-const ValidationError = require("./validation/validation_error.js");
+    <pre class="prettyprint source linenums"><code>const axios = require("axios");
+const EmitterV1 = require("./v1").BinaryEmitter;
+const EmitterV3 = require("./v03").BinaryEmitter;
+
 const {
-  BINARY,
-  STRUCTURED,
-  SPEC_V03,
-  SPEC_V1,
-  HEADER_CONTENT_TYPE,
-  MIME_CE,
+  HEADERS,
+  BINARY_HEADERS_03,
   BINARY_HEADERS_1,
-  DEFAULT_SPEC_VERSION_HEADER
-} = require("./constants");
+  HEADER_CONTENT_TYPE,
+  DEFAULT_CONTENT_TYPE,
+  DATA_ATTRIBUTE,
+  SPEC_V1,
+  SPEC_V03
+} = require("./constants.js");
+
+const defaults = {
+  [HEADERS]: {
+    [HEADER_CONTENT_TYPE]: DEFAULT_CONTENT_TYPE
+  },
+  method: "POST"
+};
 
 /**
- * A class to receive a CloudEvent from an HTTP POST request.
+ * A class to emit binary CloudEvents over HTTP.
  */
-class HTTPReceiver {
+class BinaryHTTPEmitter {
   /**
-   * Create an instance of an HTTPReceiver to accept incoming CloudEvents.
+   * Create a new {BinaryHTTPEmitter} for the provided CloudEvent specification version.
+   * Once an instance is created for a given spec version, it may only be used to send
+   * events for that version.
+   * Default version is 1.0
+   * @param {string} version - the CloudEvent HTTP specification version.
+   * Default: 1.0
    */
-  constructor() {
-    this.receivers = {
-      v1: {
-        structured: new StructuredReceiver(SPEC_V1),
-        binary: new BinaryReceiver(SPEC_V1)
-      },
-      v03: {
-        structured: new StructuredReceiver(SPEC_V03),
-        binary: new BinaryReceiver(SPEC_V03)
-      }
-    };
+  constructor(version) {
+    if (version === SPEC_V1) {
+      this.headerByGetter = EmitterV1;
+      this.extensionPrefix = BINARY_HEADERS_1.EXTENSIONS_PREFIX;
+    } else if (version === SPEC_V03) {
+      this.headerByGetter = EmitterV3;
+      this.extensionPrefix = BINARY_HEADERS_03.EXTENSIONS_PREFIX;
+    }
   }
 
   /**
-   * Acceptor for an incoming HTTP CloudEvent POST. Can process
-   * binary and structured incoming CloudEvents.
+   * Sends this cloud event to a receiver over HTTP.
    *
-   * @param {Object} headers HTTP headers keyed by header name ("Content-Type")
-   * @param {Object|JSON} body The body of the HTTP request
-   * @return {CloudEvent} A new {CloudEvent} instance
+   * @param {Object} options The configuration options for this event. Options
+   * provided other than `url` will be passed along to Node.js `http.request`.
+   * https://nodejs.org/api/http.html#http_http_request_options_callback
+   * @param {URL} options.url The HTTP/S url that should receive this event
+   * @param {Object} cloudevent the CloudEvent to be sent
+   * @returns {Promise} Promise with an eventual response from the receiver
    */
-  accept(headers, body) {
-    const mode = getMode(headers);
-    const version = getVersion(mode, headers, body);
-    switch (version) {
-      case SPEC_V1:
-        return this.receivers.v1[mode].parse(body, headers);
-      case SPEC_V03:
-        return this.receivers.v03[mode].parse(body, headers);
-      default:
-        console.error(
-          `Unknown spec version ${version}. Default to ${SPEC_V1}`);
-        return this.receivers.v1[mode].parse(body, headers);
-    }
+  async emit(options, cloudevent) {
+    const config = { ...options, ...defaults };
+    const headers = config[HEADERS];
+
+    Object.keys(this.headerByGetter)
+      .filter((getter) => cloudevent[getter]())
+      .forEach((getter) => {
+        const header = this.headerByGetter[getter];
+        headers[header.name] = header.parser(cloudevent[getter]());
+      });
+
+    // Set the cloudevent payload
+    const formatted = cloudevent.format();
+    let data = formatted.data;
+    data = (formatted.data_base64 ? formatted.data_base64 : data);
+
+    // Have extensions?
+    const exts = cloudevent.getExtensions();
+    Object.keys(exts)
+      .filter((ext) => Object.hasOwnProperty.call(exts, ext))
+      .forEach((ext) => {
+        headers[this.extensionPrefix + ext] = exts[ext];
+      });
+
+    config[DATA_ATTRIBUTE] = data;
+    config.headers = headers;
+
+    // Return the Promise
+    return axios.request(config);
   }
 }
 
-function getMode(headers) {
-  const contentType = headers[HEADER_CONTENT_TYPE];
-  if (contentType &amp;&amp; contentType.startsWith(MIME_CE)) {
-    return STRUCTURED;
-  }
-  if (headers[BINARY_HEADERS_1.ID]) {
-    return BINARY;
-  }
-  throw new ValidationError("no cloud event detected");
-}
-
-function getVersion(mode, headers, body) {
-  if (mode === BINARY) {
-    // Check the headers for the version
-    const versionHeader = headers[DEFAULT_SPEC_VERSION_HEADER];
-    if (versionHeader) {
-      return versionHeader;
-    }
-  } else {
-    // structured mode - the version is in the body
-    return body instanceof String
-      ? JSON.parse(body).specversion : body.specversion;
-  }
-  return SPEC_V1;
-}
-
-module.exports = HTTPReceiver;
+module.exports = BinaryHTTPEmitter;
 </code></pre>
   </article>
 </section>

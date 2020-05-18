@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
-      bindings/http/http_receiver.js - Documentation
+      ValidationError - Documentation
   </title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
@@ -81,109 +79,260 @@
   <div id="main">
     
       <h1 class="page-title">
-        bindings/http/http_receiver.js
+        ValidationError
       </h1>
     
 
     
-      
 
 <section>
+  <header>
+    
+      <h2>
+        
+        ValidationError
+        
+      </h2>
+
+      
+        <div class="class-description">
+          <p>A Error class that will be thrown when a CloudEvent
+cannot be properly validated against a specification.</p>
+        </div>
+      
+    
+  </header>
+
   <article>
-    <pre class="prettyprint source linenums"><code>// const V03Binary = require("./receiver_binary_0_3.js");
-// const V03Structured = require("./v03/receiver_structured_0_3.js");
-// const V1Binary = require("./receiver_binary_1.js");
-// const V1Structured = require("./v1/receiver_structured_1.js");
-const BinaryReceiver = require("./receiver_binary.js");
-const StructuredReceiver = require("./receiver_structured.js");
-const ValidationError = require("./validation/validation_error.js");
-const {
-  BINARY,
-  STRUCTURED,
-  SPEC_V03,
-  SPEC_V1,
-  HEADER_CONTENT_TYPE,
-  MIME_CE,
-  BINARY_HEADERS_1,
-  DEFAULT_SPEC_VERSION_HEADER
-} = require("./constants");
+    <div class="container-overview">
+      
+        
 
-/**
- * A class to receive a CloudEvent from an HTTP POST request.
- */
-class HTTPReceiver {
-  /**
-   * Create an instance of an HTTPReceiver to accept incoming CloudEvents.
-   */
-  constructor() {
-    this.receivers = {
-      v1: {
-        structured: new StructuredReceiver(SPEC_V1),
-        binary: new BinaryReceiver(SPEC_V1)
-      },
-      v03: {
-        structured: new StructuredReceiver(SPEC_V03),
-        binary: new BinaryReceiver(SPEC_V03)
-      }
-    };
-  }
 
-  /**
-   * Acceptor for an incoming HTTP CloudEvent POST. Can process
-   * binary and structured incoming CloudEvents.
-   *
-   * @param {Object} headers HTTP headers keyed by header name ("Content-Type")
-   * @param {Object|JSON} body The body of the HTTP request
-   * @return {CloudEvent} A new {CloudEvent} instance
-   */
-  accept(headers, body) {
-    const mode = getMode(headers);
-    const version = getVersion(mode, headers, body);
-    switch (version) {
-      case SPEC_V1:
-        return this.receivers.v1[mode].parse(body, headers);
-      case SPEC_V03:
-        return this.receivers.v03[mode].parse(body, headers);
-      default:
-        console.error(
-          `Unknown spec version ${version}. Default to ${SPEC_V1}`);
-        return this.receivers.v1[mode].parse(body, headers);
-    }
-  }
-}
+  
+    <h2>Constructor</h2>
+  
 
-function getMode(headers) {
-  const contentType = headers[HEADER_CONTENT_TYPE];
-  if (contentType &amp;&amp; contentType.startsWith(MIME_CE)) {
-    return STRUCTURED;
-  }
-  if (headers[BINARY_HEADERS_1.ID]) {
-    return BINARY;
-  }
-  throw new ValidationError("no cloud event detected");
-}
+  <span class='name-container'>
+    <a class="link-icon" href="#ValidationError">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="ValidationError">
+      <span class="type-signature"></span>new ValidationError<span class="signature">(message, errors<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+    </h4>
+  </span>
 
-function getVersion(mode, headers, body) {
-  if (mode === BINARY) {
-    // Check the headers for the version
-    const versionHeader = headers[DEFAULT_SPEC_VERSION_HEADER];
-    if (versionHeader) {
-      return versionHeader;
-    }
-  } else {
-    // structured mode - the version is in the body
-    return body instanceof String
-      ? JSON.parse(body).specversion : body.specversion;
-  }
-  return SPEC_V1;
-}
+  
 
-module.exports = HTTPReceiver;
-</code></pre>
+
+
+  <div class="description">
+    <p>Constructs a new {ValidationError} with the message
+and array of additional errors.</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+        <th>Attributes</th>
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>message</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>the error message</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>errors</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Array.&lt;string>
+    </span>
+
+    |
+
+    <span class="param-type">
+      Array.&lt;ErrorObject>
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>any additional errors related to validation</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="bindings_http_validation_validation_error.js.html">bindings/http/validation/validation_error.js</a>, <a href="bindings_http_validation_validation_error.js.html#line12">line 12</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
   </article>
 </section>
 
-    
+
 
 
   </div>

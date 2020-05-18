@@ -1,16 +1,15 @@
 const expect = require("chai").expect;
-const { asBase64 } = require("../../../lib/utils/fun.js");
+const { asBase64 } = require("../../../lib/bindings/http/validation/fun.js");
 const {
   BINARY_HEADERS_1,
   SPEC_V1,
   HEADER_CONTENT_TYPE
 } = require("../../../lib/bindings/http/constants.js");
-const ValidationError = require("../../../lib/validation_error.js");
+const ValidationError = require("../../../lib/bindings/http/validation/validation_error.js");
 
-const HTTPBinaryReceiver =
-  require("../../../lib/bindings/http/receiver_binary_1.js");
+const BinaryHTTPReceiver = require("../../../lib/bindings/http/receiver_binary.js");
 
-const receiver = new HTTPBinaryReceiver();
+const receiver = new BinaryHTTPReceiver(SPEC_V1);
 
 describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
   describe("Check", () => {

@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
-      HTTPReceiver - Documentation
+      BinaryHTTPReceiver - Documentation
   </title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
@@ -79,7 +79,7 @@
   <div id="main">
     
       <h1 class="page-title">
-        HTTPReceiver
+        BinaryHTTPReceiver
       </h1>
     
 
@@ -90,13 +90,15 @@
     
       <h2>
         
-        HTTPReceiver
+        BinaryHTTPReceiver
         
       </h2>
 
       
         <div class="class-description">
-          <p>A class to receive a CloudEvent from an HTTP POST request.</p>
+          <p>A class that receives binary CloudEvents over HTTP. This class can be used
+if you know that all incoming events will be using binary transport. If
+events can come as either binary or structured, use {HTTPReceiver}.</p>
         </div>
       
     
@@ -113,13 +115,13 @@
   
 
   <span class='name-container'>
-    <a class="link-icon" href="#HTTPReceiver">
+    <a class="link-icon" href="#BinaryHTTPReceiver">
       <svg height="20" width="20" style="fill: black;">
         <use xlink:href="#linkIcon"></use>
       </svg>
     </a>
-    <h4 class="name" id="HTTPReceiver">
-      <span class="type-signature"></span>new HTTPReceiver<span class="signature">()</span><span class="type-signature"></span>
+    <h4 class="name" id="BinaryHTTPReceiver">
+      <span class="type-signature"></span>new BinaryHTTPReceiver<span class="signature">(version)</span><span class="type-signature"></span>
     </h4>
   </span>
 
@@ -128,13 +130,68 @@
 
 
   <div class="description">
-    <p>Create an instance of an HTTPReceiver to accept incoming CloudEvents.</p>
+    <p>Creates a new BinaryHTTPReceiver to accept events over HTTP.</p>
   </div>
 
 
 
 
 
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>version</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>the Cloud Event specification version to use. Default &quot;1.0&quot;</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
 
 
 
@@ -171,7 +228,7 @@
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="bindings_http_http_receiver.js.html">bindings/http/http_receiver.js</a>, <a href="bindings_http_http_receiver.js.html#line26">line 26</a>
+          <a href="bindings_http_receiver_binary.js.html">bindings/http/receiver_binary.js</a>, <a href="bindings_http_receiver_binary.js.html#line18">line 18</a>
         </li>
       </ul>
     </dd>
@@ -222,13 +279,13 @@
   
 
   <span class='name-container'>
-    <a class="link-icon" href="#accept">
+    <a class="link-icon" href="#check">
       <svg height="20" width="20" style="fill: black;">
         <use xlink:href="#linkIcon"></use>
       </svg>
     </a>
-    <h4 class="name" id="accept">
-      <span class="type-signature"></span>accept<span class="signature">(headers, body)</span><span class="type-signature"> &rarr; {<a href="CloudEvent.html">CloudEvent</a>}</span>
+    <h4 class="name" id="check">
+      <span class="type-signature"></span>check<span class="signature">(payload, headers)</span><span class="type-signature"> &rarr; {void}</span>
     </h4>
   </span>
 
@@ -237,8 +294,8 @@
 
 
   <div class="description">
-    <p>Acceptor for an incoming HTTP CloudEvent POST. Can process
-binary and structured incoming CloudEvents.</p>
+    <p>Checks an incoming HTTP request to determine if it conforms to the
+Cloud Event specification for this receiver.</p>
   </div>
 
 
@@ -271,6 +328,35 @@ binary and structured incoming CloudEvents.</p>
     
       <tr>
         
+          <td class="name"><code>payload</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>the HTTP request body</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
           <td class="name"><code>headers</code></td>
         
 
@@ -292,42 +378,7 @@ binary and structured incoming CloudEvents.</p>
         
 
         <td class="description last">
-          <p>HTTP headers keyed by header name (&quot;Content-Type&quot;)</p>
-          
-        </td>
-      </tr>
-
-    
-      <tr>
-        
-          <td class="name"><code>body</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      Object
-    </span>
-
-    |
-
-    <span class="param-type">
-      JSON
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-
-        
-
-        <td class="description last">
-          <p>The body of the HTTP request</p>
+          <p>the HTTP request headers</p>
           
         </td>
       </tr>
@@ -371,7 +422,7 @@ binary and structured incoming CloudEvents.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="bindings_http_http_receiver.js.html">bindings/http/http_receiver.js</a>, <a href="bindings_http_http_receiver.js.html#line47">line 47</a>
+          <a href="bindings_http_receiver_binary.js.html">bindings/http/receiver_binary.js</a>, <a href="bindings_http_receiver_binary.js.html#line36">line 36</a>
         </li>
       </ul>
     </dd>
@@ -394,6 +445,244 @@ binary and structured incoming CloudEvents.</p>
 
 
 
+  <h5>Throws:</h5>
+  
+      
+
+  <dl>
+    <dt>
+      <div class="param-desc">
+        <p>if the event does not conform to the spec</p>
+      </div>
+    </dt>
+    <dd></dd>
+    <dt>
+      <dl>
+        <dt>Type</dt>
+        <dd>
+          
+    <span class="param-type">
+      <a href="ValidationError.html">ValidationError</a>
+    </span>
+
+    
+
+
+        </dd>
+      </dl>
+    </dt>
+    <dd></dd>
+  </dl>
+
+
+    
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#parse">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="parse">
+      <span class="type-signature"></span>parse<span class="signature">(payload, headers)</span><span class="type-signature"> &rarr; {<a href="CloudEvent.html">CloudEvent</a>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Parses an incoming HTTP request, converting it to a {CloudEvent}
+instance if it conforms to the Cloud Event specification for this receiver.</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>payload</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>the HTTP request body</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>headers</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>the HTTP request headers</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="bindings_http_receiver_binary.js.html">bindings/http/receiver_binary.js</a>, <a href="bindings_http_receiver_binary.js.html#line49">line 49</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <dl>
+    <dt>
+      <div class="param-desc">
+        <p>of the event does not conform to the spec</p>
+      </div>
+    </dt>
+    <dd></dd>
+    <dt>
+      <dl>
+        <dt>Type</dt>
+        <dd>
+          
+    <span class="param-type">
+      <a href="ValidationError.html">ValidationError</a>
+    </span>
+
+    
+
+
+        </dd>
+      </dl>
+    </dt>
+    <dd></dd>
+  </dl>
+
+
+    
 
 
 

@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
-      bindings/http/http_receiver.js - Documentation
+      bindings/http/http_emitter.js - Documentation
   </title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
@@ -81,7 +81,7 @@
   <div id="main">
     
       <h1 class="page-title">
-        bindings/http/http_receiver.js
+        bindings/http/http_emitter.js
       </h1>
     
 
@@ -90,95 +90,92 @@
 
 <section>
   <article>
-    <pre class="prettyprint source linenums"><code>// const V03Binary = require("./receiver_binary_0_3.js");
-// const V03Structured = require("./v03/receiver_structured_0_3.js");
-// const V1Binary = require("./receiver_binary_1.js");
-// const V1Structured = require("./v1/receiver_structured_1.js");
-const BinaryReceiver = require("./receiver_binary.js");
-const StructuredReceiver = require("./receiver_structured.js");
-const ValidationError = require("./validation/validation_error.js");
+    <pre class="prettyprint source linenums"><code>const BinaryHTTPEmitter = require("./emitter_binary.js");
+const StructuredEmitter = require("./emitter_structured.js");
+
 const {
-  BINARY,
-  STRUCTURED,
   SPEC_V03,
-  SPEC_V1,
-  HEADER_CONTENT_TYPE,
-  MIME_CE,
-  BINARY_HEADERS_1,
-  DEFAULT_SPEC_VERSION_HEADER
+  SPEC_V1
 } = require("./constants");
 
 /**
- * A class to receive a CloudEvent from an HTTP POST request.
+ * A class which is capable of sending binary and structured events using
+ * the CloudEvents HTTP Protocol Binding specification.
+ *
+ * @see https://github.com/cloudevents/spec/blob/v1.0/http-protocol-binding.md
+ * @see https://github.com/cloudevents/spec/blob/v1.0/http-protocol-binding.md#13-content-modes
  */
-class HTTPReceiver {
+class HTTPEmitter {
   /**
-   * Create an instance of an HTTPReceiver to accept incoming CloudEvents.
-   */
-  constructor() {
-    this.receivers = {
-      v1: {
-        structured: new StructuredReceiver(SPEC_V1),
-        binary: new BinaryReceiver(SPEC_V1)
-      },
-      v03: {
-        structured: new StructuredReceiver(SPEC_V03),
-        binary: new BinaryReceiver(SPEC_V03)
-      }
-    };
-  }
-
-  /**
-   * Acceptor for an incoming HTTP CloudEvent POST. Can process
-   * binary and structured incoming CloudEvents.
+   * Creates a new instance of {HTTPEmitter}. The default emitter uses the 1.0
+   * protocol specification in binary mode.
    *
-   * @param {Object} headers HTTP headers keyed by header name ("Content-Type")
-   * @param {Object|JSON} body The body of the HTTP request
-   * @return {CloudEvent} A new {CloudEvent} instance
+   * @param {Object} [options] The configuration options for this event emitter
+   * @param {URL} options.url The endpoint that will receive the sent events.
+   * @param {string} [options.version] The HTTP binding specification version. Default: "1.0"
+   * @throws {TypeError} if no options.url is provided or an unknown specification version is provided.
    */
-  accept(headers, body) {
-    const mode = getMode(headers);
-    const version = getVersion(mode, headers, body);
-    switch (version) {
-      case SPEC_V1:
-        return this.receivers.v1[mode].parse(body, headers);
-      case SPEC_V03:
-        return this.receivers.v03[mode].parse(body, headers);
-      default:
-        console.error(
-          `Unknown spec version ${version}. Default to ${SPEC_V1}`);
-        return this.receivers.v1[mode].parse(body, headers);
+  constructor({ url, version = SPEC_V1 } = {}) {
+    if (version !== SPEC_V03 &amp;&amp; version !== SPEC_V1) {
+      throw new TypeError(
+        `Unknown CloudEvent specification version: ${version}`);
     }
-  }
-}
-
-function getMode(headers) {
-  const contentType = headers[HEADER_CONTENT_TYPE];
-  if (contentType &amp;&amp; contentType.startsWith(MIME_CE)) {
-    return STRUCTURED;
-  }
-  if (headers[BINARY_HEADERS_1.ID]) {
-    return BINARY;
-  }
-  throw new ValidationError("no cloud event detected");
-}
-
-function getVersion(mode, headers, body) {
-  if (mode === BINARY) {
-    // Check the headers for the version
-    const versionHeader = headers[DEFAULT_SPEC_VERSION_HEADER];
-    if (versionHeader) {
-      return versionHeader;
+    if (!url) {
+      throw new TypeError("A default endpoint URL is required for a CloudEvent emitter");
     }
-  } else {
-    // structured mode - the version is in the body
-    return body instanceof String
-      ? JSON.parse(body).specversion : body.specversion;
+    this.binary = new BinaryHTTPEmitter(version);
+    this.structured = new StructuredEmitter();
+    this.url = url;
   }
-  return SPEC_V1;
+
+  /**
+   * Sends the {CloudEvent} to an event receiver over HTTP POST
+   *
+   * @param {CloudEvent} event the CloudEvent to be sent
+   * @param {Object} [options] The configuration options for this event. Options
+   * provided will be passed along to Node.js `http.request()`.
+   * https://nodejs.org/api/http.html#http_http_request_options_callback
+   * @param {URL} [options.url] The HTTP/S url that should receive this event.
+   * The URL is optional if one was provided when this emitter was constructed.
+   * In that case, it will be used as the recipient endpoint. The endpoint can
+   * be overridden by providing a URL here.
+   * @param {string} [options.mode] the message mode for sending this event.
+   * Possible values are "binary" and "structured". Default: structured
+   * @returns {Promise} Promise with an eventual response from the receiver
+   */
+  send(event, { url, mode = "binary", ...httpOpts } = {}) {
+    if (!url) { url = this.url; }
+    httpOpts.url = url;
+    if (mode === "binary") {
+      return this.binary.emit(httpOpts, event);
+    } else if (mode === "structured") {
+      return this.structured.emit(httpOpts, event);
+    }
+    throw new TypeError(`Unknown transport mode ${mode}.`);
+  }
+
+  /**
+   * Returns the HTTP headers that will be sent for this event when the HTTP transmission
+   * mode is "binary". Events sent over HTTP in structured mode only have a single CE header
+   * and that is "ce-id", corresponding to the event ID.
+   * @param {CloudEvent} event a CloudEvent
+   * @returns {Object} the headers that will be sent for the event
+   */
+  headers(event) {
+    const headers = {};
+
+    Object.keys(this.binary.headerByGetter)
+      .filter((getter) => event[getter]())
+      .forEach((getter) => {
+        const header = this.binary.headerByGetter[getter];
+        headers[header.name] = header.parser(event[getter]());
+      });
+
+    return headers;
+  }
 }
 
-module.exports = HTTPReceiver;
+module.exports = HTTPEmitter;
 </code></pre>
   </article>
 </section>

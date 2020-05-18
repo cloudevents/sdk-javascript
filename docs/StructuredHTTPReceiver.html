@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
-      BinaryHTTPReceiver - Documentation
+      StructuredHTTPReceiver - Documentation
   </title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
@@ -79,7 +79,7 @@
   <div id="main">
     
       <h1 class="page-title">
-        BinaryHTTPReceiver
+        StructuredHTTPReceiver
       </h1>
     
 
@@ -90,15 +90,14 @@
     
       <h2>
         
-        BinaryHTTPReceiver
+        StructuredHTTPReceiver
         
       </h2>
 
       
         <div class="class-description">
-          <p>A class that receives binary CloudEvents over HTTP. This class can be used
-if you know that all incoming events will be using binary transport. If
-events can come as either binary or structured, use {HTTPReceiver}.</p>
+          <p>A utility class used to receive structured CloudEvents
+over HTTP.</p>
         </div>
       
     
@@ -115,13 +114,13 @@ events can come as either binary or structured, use {HTTPReceiver}.</p>
   
 
   <span class='name-container'>
-    <a class="link-icon" href="#BinaryHTTPReceiver">
+    <a class="link-icon" href="#StructuredHTTPReceiver">
       <svg height="20" width="20" style="fill: black;">
         <use xlink:href="#linkIcon"></use>
       </svg>
     </a>
-    <h4 class="name" id="BinaryHTTPReceiver">
-      <span class="type-signature"></span>new BinaryHTTPReceiver<span class="signature">(version)</span><span class="type-signature"></span>
+    <h4 class="name" id="StructuredHTTPReceiver">
+      <span class="type-signature"></span>new StructuredHTTPReceiver<span class="signature">(version)</span><span class="type-signature"></span>
     </h4>
   </span>
 
@@ -130,7 +129,8 @@ events can come as either binary or structured, use {HTTPReceiver}.</p>
 
 
   <div class="description">
-    <p>Creates a new BinaryHTTPReceiver to accept events over HTTP.</p>
+    <p>Creates a new StructuredHTTPReceiver. Supports Cloud Events specification
+versions 0.3 and 1.0 (default).</p>
   </div>
 
 
@@ -184,7 +184,7 @@ events can come as either binary or structured, use {HTTPReceiver}.</p>
         
 
         <td class="description last">
-          <p>the Cloud Event specification version to use. Default &quot;1.0&quot;</p>
+          <p>the Cloud Events specification version. Default: 1.0.</p>
           
         </td>
       </tr>
@@ -228,7 +228,7 @@ events can come as either binary or structured, use {HTTPReceiver}.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="bindings_http_receiver_binary.js.html">bindings/http/receiver_binary.js</a>, <a href="bindings_http_receiver_binary.js.html#line18">line 18</a>
+          <a href="bindings_http_receiver_structured.js.html">bindings/http/receiver_structured.js</a>, <a href="bindings_http_receiver_structured.js.html#line19">line 19</a>
         </li>
       </ul>
     </dd>
@@ -236,6 +236,17 @@ events can come as either binary or structured, use {HTTPReceiver}.</p>
 
   
 
+  
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+      <ul>
+        
+          <li>
+            {StructuredReceiver}
+          </li>
+        
+      </ul>
+    </dd>
   
 
   
@@ -294,8 +305,8 @@ events can come as either binary or structured, use {HTTPReceiver}.</p>
 
 
   <div class="description">
-    <p>Checks an incoming HTTP request to determine if it conforms to the
-Cloud Event specification for this receiver.</p>
+    <p>Checks whether the provided payload and headers conform to the Cloud Events
+specification version supported by this instance.</p>
   </div>
 
 
@@ -335,7 +346,7 @@ Cloud Event specification for this receiver.</p>
           
             
     <span class="param-type">
-      Object
+      object
     </span>
 
     
@@ -349,7 +360,7 @@ Cloud Event specification for this receiver.</p>
         
 
         <td class="description last">
-          <p>the HTTP request body</p>
+          <p>the cloud event data payload</p>
           
         </td>
       </tr>
@@ -364,7 +375,7 @@ Cloud Event specification for this receiver.</p>
           
             
     <span class="param-type">
-      Object
+      object
     </span>
 
     
@@ -378,7 +389,7 @@ Cloud Event specification for this receiver.</p>
         
 
         <td class="description last">
-          <p>the HTTP request headers</p>
+          <p>the HTTP headers received for this cloud event</p>
           
         </td>
       </tr>
@@ -422,7 +433,7 @@ Cloud Event specification for this receiver.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="bindings_http_receiver_binary.js.html">bindings/http/receiver_binary.js</a>, <a href="bindings_http_receiver_binary.js.html#line35">line 35</a>
+          <a href="bindings_http_receiver_structured.js.html">bindings/http/receiver_structured.js</a>, <a href="bindings_http_receiver_structured.js.html#line36">line 36</a>
         </li>
       </ul>
     </dd>
@@ -452,7 +463,7 @@ Cloud Event specification for this receiver.</p>
   <dl>
     <dt>
       <div class="param-desc">
-        <p>if the event does not conform to the spec</p>
+        <p>if the payload and header combination do not conform to the spec</p>
       </div>
     </dt>
     <dd></dd>
@@ -501,8 +512,7 @@ Cloud Event specification for this receiver.</p>
 
 
   <div class="description">
-    <p>Parses an incoming HTTP request, converting it to a {CloudEvent}
-instance if it conforms to the Cloud Event specification for this receiver.</p>
+    <p>Creates a new CloudEvent instance based on the provided payload and headers.</p>
   </div>
 
 
@@ -542,7 +552,7 @@ instance if it conforms to the Cloud Event specification for this receiver.</p>
           
             
     <span class="param-type">
-      Object
+      object
     </span>
 
     
@@ -556,7 +566,7 @@ instance if it conforms to the Cloud Event specification for this receiver.</p>
         
 
         <td class="description last">
-          <p>the HTTP request body</p>
+          <p>the cloud event data payload</p>
           
         </td>
       </tr>
@@ -571,7 +581,7 @@ instance if it conforms to the Cloud Event specification for this receiver.</p>
           
             
     <span class="param-type">
-      Object
+      object
     </span>
 
     
@@ -585,7 +595,7 @@ instance if it conforms to the Cloud Event specification for this receiver.</p>
         
 
         <td class="description last">
-          <p>the HTTP request headers</p>
+          <p>the HTTP headers received for this cloud event</p>
           
         </td>
       </tr>
@@ -629,7 +639,7 @@ instance if it conforms to the Cloud Event specification for this receiver.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="bindings_http_receiver_binary.js.html">bindings/http/receiver_binary.js</a>, <a href="bindings_http_receiver_binary.js.html#line48">line 48</a>
+          <a href="bindings_http_receiver_structured.js.html">bindings/http/receiver_structured.js</a>, <a href="bindings_http_receiver_structured.js.html#line48">line 48</a>
         </li>
       </ul>
     </dd>
@@ -659,7 +669,7 @@ instance if it conforms to the Cloud Event specification for this receiver.</p>
   <dl>
     <dt>
       <div class="param-desc">
-        <p>of the event does not conform to the spec</p>
+        <p>if the payload and header combination do not conform to the spec</p>
       </div>
     </dt>
     <dd></dd>

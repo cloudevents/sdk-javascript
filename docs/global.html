@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
-      bindings/http/emitter_structured.js - Documentation
+      Global - Documentation
   </title>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
@@ -81,62 +79,233 @@
   <div id="main">
     
       <h1 class="page-title">
-        bindings/http/emitter_structured.js
+        Global
       </h1>
     
 
     
-      
 
 <section>
+  <header>
+    
+      <h2>
+        
+        
+        
+      </h2>
+
+      
+    
+  </header>
+
   <article>
-    <pre class="prettyprint source linenums"><code>const { default: Axios } = require("axios");
+    <div class="container-overview">
+      
+        
 
-/** @typedef {import("../../cloudevent")} CloudEvent */
+        
 
-const {
-  DATA_ATTRIBUTE,
-  DEFAULT_CE_CONTENT_TYPE,
-  HEADERS,
-  HEADER_CONTENT_TYPE
-} = require("./constants.js");
+<dl class="details">
 
-const defaults = {
-  [HEADERS]: {
-    [HEADER_CONTENT_TYPE]: DEFAULT_CE_CONTENT_TYPE
-  },
-  method: "POST"
-};
+  
 
-/**
- * A class for sending {CloudEvent} instances over HTTP.
- */
-class StructuredHTTPEmitter {
-  // TODO: Do we really need a class here? There is no state maintenance
+  
 
-  /**
-   * Sends the event over HTTP
-   * @param {Object} options The configuration options for this event. Options
-   * provided will be passed along to Node.js `http.request()`.
-   * https://nodejs.org/api/http.html#http_http_request_options_callback
-   * @param {URL} options.url The HTTP/S url that should receive this event
-   * @param {CloudEvent} cloudevent The CloudEvent to be sent
-   * @returns {Promise} Promise with an eventual response from the receiver
-   */
-  async emit(options, cloudevent) {
-    const config = { ...defaults, ...options };
-    config[DATA_ATTRIBUTE] = cloudevent.format();
-    // @ts-ignore Types of property 'url' are incompatible. Type 'URL' is not assignable to type 'string'.
-    return Axios.request(config);
-  }
-}
+  
 
-module.exports = StructuredHTTPEmitter;
-</code></pre>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+        
+      
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+
+<h4 class="name" id="headerByGetter">
+  <span class="type-signature">(constant) </span>headerByGetter<span class="type-signature"></span>
+</h4>
+
+
+
+
+  <div class="description">
+    <p>A utility object used to retrieve the header names for a CloudEvent
+using the CloudEvent getter function.</p>
+  </div>
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="bindings_http_v03_emitter_binary_0_3.js.html">bindings/http/v03/emitter_binary_0_3.js</a>, <a href="bindings_http_v03_emitter_binary_0_3.js.html#line12">line 12</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+          
+        
+            
+
+<h4 class="name" id="headerByGetter">
+  <span class="type-signature">(constant) </span>headerByGetter<span class="type-signature"></span>
+</h4>
+
+
+
+
+  <div class="description">
+    <p>A utility object used to retrieve the header names for a CloudEvent
+using the CloudEvent getter function.</p>
+  </div>
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="bindings_http_v1_emitter_binary_1.js.html">bindings/http/v1/emitter_binary_1.js</a>, <a href="bindings_http_v1_emitter_binary_1.js.html#line12">line 12</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+          
+        
+    
+
+    
+
+    
+
+    
   </article>
 </section>
 
-    
+
 
 
   </div>

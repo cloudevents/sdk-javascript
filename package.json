@@ -4,6 +4,8 @@
   "description": "CloudEvents SDK for JavaScript",
   "main": "index.js",
   "scripts": {
+    "type-check": "tsc --noEmitOnError --emitDeclarationOnly",
+    "prelint": "npm run type-check",
     "lint": "standardx index.js lib examples",
     "fix": "standardx --fix",
     "pretest": "npm run lint",
@@ -15,7 +17,8 @@
     "release": "standard-version"
   },
   "files": [
-    "lib"
+    "lib",
+    "index.d.ts"
   ],
   "standard-version": {
     "types": [
@@ -96,6 +99,9 @@
     "uuid": "~8.0.0"
   },
   "devDependencies": {
+    "@types/ajv": "^1.0.0",
+    "@types/axios": "^0.14.0",
+    "@types/node": "^13.13.5",
     "chai": "~4.2.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.20.2",
@@ -106,7 +112,8 @@
     "nock": "~12.0.3",
     "nyc": "~15.0.0",
     "standard-version": "^7.1.0",
-    "standardx": "^5.0.0"
+    "standardx": "^5.0.0",
+    "typescript": "^3.8.3"
   },
   "publishConfig": {
     "access": "public"

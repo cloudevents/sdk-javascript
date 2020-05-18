@@ -183,7 +183,7 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
         [BINARY_HEADERS_03.TIME]: "2019-06-16T11:42:00Z",
         [BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
         [HEADER_CONTENT_TYPE]: "application/json",
-        [BINARY_HEADERS_03.CONTENT_ENCONDING]: BINARY
+        [BINARY_HEADERS_03.CONTENT_ENCODING]: BINARY
       };
 
       expect(() => un.unmarshall(payload, attributes)).to
@@ -205,7 +205,7 @@ describe("HTTP Transport Binding Unmarshaller for CloudEvents v0.3", () => {
         [BINARY_HEADERS_03.TIME]: "2019-06-16T11:42:00Z",
         [BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
         [HEADER_CONTENT_TYPE]: "application/json",
-        [BINARY_HEADERS_03.CONTENT_ENCONDING]: "base64"
+        [BINARY_HEADERS_03.CONTENT_ENCODING]: "base64"
       };
 
       const event = un.unmarshall(payload, attributes);

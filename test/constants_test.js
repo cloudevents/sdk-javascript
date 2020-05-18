@@ -92,7 +92,7 @@ describe("Constants exposed by top level exports", () => {
       expect(BINARY_HEADERS_03.SCHEMA_URL).to.equal("ce-schemaurl");
     });
     it("Provides a CONTENT_ENCODING header", () => {
-      expect(BINARY_HEADERS_03.CONTENT_ENCONDING).to.equal("ce-datacontentencoding");
+      expect(BINARY_HEADERS_03.CONTENT_ENCODING).to.equal("ce-datacontentencoding");
     });
     it("Provides a SUBJECT header", () => {
       expect(BINARY_HEADERS_03.SUBJECT).to.equal("ce-subject");
@@ -121,7 +121,7 @@ describe("Constants exposed by top level exports", () => {
       expect(STRUCTURED_ATTRS_03.SCHEMA_URL).to.equal("schemaurl");
     });
     it("Provides a CONTENT_ENCODING attribute", () => {
-      expect(STRUCTURED_ATTRS_03.CONTENT_ENCONDING).to.equal("datacontentencoding");
+      expect(STRUCTURED_ATTRS_03.CONTENT_ENCODING).to.equal("datacontentencoding");
     });
     it("Provides a SUBJECT attribute", () => {
       expect(STRUCTURED_ATTRS_03.SUBJECT).to.equal("subject");

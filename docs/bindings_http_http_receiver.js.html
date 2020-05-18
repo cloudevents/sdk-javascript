@@ -98,6 +98,8 @@ const BinaryReceiver = require("./receiver_binary.js");
 const StructuredReceiver = require("./receiver_structured.js");
 const ValidationError = require("./validation/validation_error.js");
 const {
+  BINARY,
+  STRUCTURED,
   SPEC_V03,
   SPEC_V1,
   HEADER_CONTENT_TYPE,
@@ -153,27 +155,27 @@ class HTTPReceiver {
 function getMode(headers) {
   const contentType = headers[HEADER_CONTENT_TYPE];
   if (contentType &amp;&amp; contentType.startsWith(MIME_CE)) {
-    return "structured";
+    return STRUCTURED;
   }
   if (headers[BINARY_HEADERS_1.ID]) {
-    return "binary";
+    return BINARY;
   }
   throw new ValidationError("no cloud event detected");
 }
 
 function getVersion(mode, headers, body) {
-  let version = SPEC_V1; // default to 1.0
-
-  if (mode === "binary") {
+  if (mode === BINARY) {
     // Check the headers for the version
     const versionHeader = headers[DEFAULT_SPEC_VERSION_HEADER];
-    if (versionHeader) { version = versionHeader; }
+    if (versionHeader) {
+      return versionHeader;
+    }
   } else {
     // structured mode - the version is in the body
-    version = body instanceof String
+    return body instanceof String
       ? JSON.parse(body).specversion : body.specversion;
   }
-  return version;
+  return SPEC_V1;
 }
 
 module.exports = HTTPReceiver;

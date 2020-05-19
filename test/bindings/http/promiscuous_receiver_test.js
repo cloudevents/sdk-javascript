@@ -131,20 +131,20 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
       };
       const event = receiver.accept(headers, data);
       expect(event instanceof CloudEvent).to.equal(true);
-      expect(event.getId()).to.equal(id);
-      expect(event.getType()).to.equal(type);
-      expect(event.getSource()).to.equal(source);
-      expect(event.getData()).to.deep.equal(data);
-      expect(event.getSpecversion()).to.equal(specversion);
+      expect(event.id).to.equal(id);
+      expect(event.type).to.equal(type);
+      expect(event.source).to.equal(source);
+      expect(event.data).to.deep.equal(data);
+      expect(event.specversion).to.equal(specversion);
     });
   });
 });
 
 function validateEvent(event, specversion) {
   expect(event instanceof CloudEvent).to.equal(true);
-  expect(event.getId()).to.equal(id);
-  expect(event.getType()).to.equal(type);
-  expect(event.getSource()).to.equal(source);
-  expect(event.getData()).to.deep.equal(data);
-  expect(event.getSpecversion()).to.equal(specversion);
+  expect(event.id).to.equal(id);
+  expect(event.type).to.equal(type);
+  expect(event.source).to.equal(source);
+  expect(event.data).to.deep.equal(data);
+  expect(event.specversion).to.equal(specversion);
 }

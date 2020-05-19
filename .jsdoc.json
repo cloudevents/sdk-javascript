@@ -9,7 +9,8 @@
         "excludePattern": "(node_modules/|docs|examples|coverage|test)"
     },
     "plugins": [
-        "plugins/markdown"
+        "plugins/markdown",
+        "plugins/ignore-import"
     ],
     "templates": {
         "referenceTitle": "cloudevents-sdk",

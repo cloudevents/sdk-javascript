@@ -7,9 +7,14 @@ const {
   SPEC_V1
 } = require("../lib/bindings/http/constants.js");
 
+const fixture = {
+  type: "org.cloudevents.test",
+  source: "http://cloudevents.io"
+};
+
 describe("The SDK Requirements", () => {
   it("should expose a CloudEvent type", () => {
-    const event = new CloudEvent();
+    const event = new CloudEvent(fixture);
     expect(event instanceof CloudEvent).to.equal(true);
   });
 
@@ -27,13 +32,16 @@ describe("The SDK Requirements", () => {
 
   describe("v0.3", () => {
     it("should create an event using the right spec version", () => {
-      expect(new CloudEvent(SpecV03).spec.payload.specversion).to.equal(SPEC_V03);
+      expect(new CloudEvent({
+        specversion: SPEC_V03,
+        ...fixture
+      }).spec.payload.specversion).to.equal(SPEC_V03);
     });
   });
 
   describe("v1.0", () => {
     it("should create an event using the right spec version", () => {
-      expect(new CloudEvent(SpecV1).spec.payload.specversion).to.equal(SPEC_V1);
+      expect(new CloudEvent(fixture).spec.payload.specversion).to.equal(SPEC_V1);
     });
   });
 });

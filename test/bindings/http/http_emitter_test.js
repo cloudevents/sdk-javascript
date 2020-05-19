@@ -46,32 +46,33 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
 
   describe("V1", () => {
     const emitter = new HTTPEmitter({ url: receiver });
-    const event = new CloudEvent(V1Spec)
-      .type(type)
-      .source(source)
-      .time(new Date())
-      .data(data)
-      .addExtension(ext1Name, ext1Value)
-      .addExtension(ext2Name, ext2Value);
+    const event = new CloudEvent({
+      specversion: SPEC_V1,
+      type,
+      source,
+      time: new Date(),
+      data
+    });
+    event.addExtension(ext1Name, ext1Value)
+    event.addExtension(ext2Name, ext2Value);
 
     it("Sends a binary 1.0 CloudEvent by default", () => {
-      emitter.send(event)
-        .then((response) => {
+      emitter.send(event).then((response) => {
           // A binary message will have a ce-id header
-          expect(response.data[BINARY_HEADERS_1.ID]).to.equal(event.getId());
+          expect(response.data[BINARY_HEADERS_1.ID]).to.equal(event.id);
           expect(response.data[BINARY_HEADERS_1.SPEC_VERSION]).to.equal(SPEC_V1);
           // A binary message will have a request body for the data
           expect(response.data.lunchBreak).to.equal(data.lunchBreak);
-        }).catch(expect.fail);
+      }).catch(expect.fail);
     });
 
     it("Provides the HTTP headers for a binary event", () => {
       const headers = emitter.headers(event);
-      expect(headers[BINARY_HEADERS_1.TYPE]).to.equal(event.getType());
-      expect(headers[BINARY_HEADERS_1.SPEC_VERSION]).to.equal(event.getSpecversion());
-      expect(headers[BINARY_HEADERS_1.SOURCE]).to.equal(event.getSource());
-      expect(headers[BINARY_HEADERS_1.ID]).to.equal(event.getId());
-      expect(headers[BINARY_HEADERS_1.TIME]).to.equal(event.getTime());
+      expect(headers[BINARY_HEADERS_1.TYPE]).to.equal(event.type);
+      expect(headers[BINARY_HEADERS_1.SPEC_VERSION]).to.equal(event.specversion);
+      expect(headers[BINARY_HEADERS_1.SOURCE]).to.equal(event.source);
+      expect(headers[BINARY_HEADERS_1.ID]).to.equal(event.id);
+      expect(headers[BINARY_HEADERS_1.TIME]).to.equal(event.time);
     });
 
     it("Sends a structured 1.0 CloudEvent if specified", () => {
@@ -118,32 +119,33 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
 
   describe("V03", () => {
     const emitter = new HTTPEmitter({ url: receiver, version: SPEC_V03 });
-    const event = new CloudEvent(V03Spec)
-      .type(type)
-      .source(source)
-      .time(new Date())
-      .data(data)
-      .addExtension(ext1Name, ext1Value)
-      .addExtension(ext2Name, ext2Value);
+    const event = new CloudEvent({
+      specversion: SPEC_V03,
+      type,
+      source,
+      time: new Date(),
+      data
+    });
+    event.addExtension(ext1Name, ext1Value)
+    event.addExtension(ext2Name, ext2Value);
 
     it("Sends a binary 0.3 CloudEvent", () => {
-      emitter.send(event)
-        .then((response) => {
-          // A binary message will have a ce-id header
-          expect(response.data[BINARY_HEADERS_03.ID]).to.equal(event.getId());
-          expect(response.data[BINARY_HEADERS_03.SPEC_VERSION]).to.equal(SPEC_V03);
-          // A binary message will have a request body for the data
-          expect(response.data.lunchBreak).to.equal(data.lunchBreak);
-        }).catch(expect.fail);
+      emitter.send(event).then((response) => {
+        // A binary message will have a ce-id header
+        expect(response.data[BINARY_HEADERS_03.ID]).to.equal(event.id);
+        expect(response.data[BINARY_HEADERS_03.SPEC_VERSION]).to.equal(SPEC_V03);
+        // A binary message will have a request body for the data
+        expect(response.data.lunchBreak).to.equal(data.lunchBreak);
+      }).catch(expect.fail);
     });
 
     it("Provides the HTTP headers for a binary event", () => {
       const headers = emitter.headers(event);
-      expect(headers[BINARY_HEADERS_03.TYPE]).to.equal(event.getType());
-      expect(headers[BINARY_HEADERS_03.SPEC_VERSION]).to.equal(event.getSpecversion());
-      expect(headers[BINARY_HEADERS_03.SOURCE]).to.equal(event.getSource());
-      expect(headers[BINARY_HEADERS_03.ID]).to.equal(event.getId());
-      expect(headers[BINARY_HEADERS_03.TIME]).to.equal(event.getTime());
+      expect(headers[BINARY_HEADERS_03.TYPE]).to.equal(event.type);
+      expect(headers[BINARY_HEADERS_03.SPEC_VERSION]).to.equal(event.specversion);
+      expect(headers[BINARY_HEADERS_03.SOURCE]).to.equal(event.source);
+      expect(headers[BINARY_HEADERS_03.ID]).to.equal(event.id);
+      expect(headers[BINARY_HEADERS_03.TIME]).to.equal(event.time);
     });
 
     it("Sends a structured 0.3 CloudEvent if specified", () => {
@@ -158,6 +160,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
           expect(response.data.data.lunchBreak).to.equal(data.lunchBreak);
         }).catch(expect.fail);
     });
+
     it("Sends to an alternate URL if specified", () => {
       nock(receiver)
         .post("/alternate")

@@ -103,7 +103,7 @@
  }
 } = require("../constants.js");
 
-function parser(header, parser = v => v) {
+function parser(header, parser = (v) => v) {
   return { headerName: header, parse: parser };
 }
 const passThroughParser = parser;

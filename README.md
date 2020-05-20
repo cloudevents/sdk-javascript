@@ -78,11 +78,9 @@ const { CloudEvent, HTTPEmitter } = require("cloudevents-sdk");
 const v1Emitter = new HTTPEmitter({
   url: "https://cloudevents.io/example"
 });
-const event = new CloudEvent()
-  .type(type)
-  .source(source)
-  .time(new Date())
-  .data(data)
+const event = new CloudEvent({
+  type, source, data
+});
 
 // By default, the emitter will send binary events
 v1Emitter.send(event).then((response) => {

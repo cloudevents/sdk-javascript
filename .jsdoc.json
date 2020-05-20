@@ -10,7 +10,7 @@
     },
     "plugins": [
         "plugins/markdown",
-        "plugins/ignore-import"
+        "plugins/ignore-typedef"
     ],
     "templates": {
         "referenceTitle": "cloudevents-sdk",

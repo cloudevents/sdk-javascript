@@ -27,6 +27,9 @@ versions of the CloudEvent specification.
 
 ## Usage
 
+**NOTE: The examples below are for the current codebase on `master`. If you are using the 1.0.0 npm
+module, please see the [v1.0 README](https://github.com/cloudevents/sdk-javascript/blob/v1.0.0/README.md#how-to-use).**
+
 **See the full working example: [here](./examples/express-ex).**
 
 ### Installation

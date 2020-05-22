@@ -11,9 +11,6 @@ const {
 
 const { CloudEvent, HTTPEmitter } = require("../../../");
 
-const V1Spec = require("../../../lib/bindings/http/v1").Spec;
-const V03Spec = require("../../../lib/bindings/http/v03").Spec;
-
 const receiver = "https://cloudevents.io/";
 const type = "com.example.test";
 const source = "urn:event:from:myapi/resource/123";
@@ -67,7 +64,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
     });
 
     it("Provides the HTTP headers for a binary event", () => {
-      const headers = emitter.headers(event);
+      const headers = HTTPEmitter.headers(event);
       expect(headers[BINARY_HEADERS_1.TYPE]).to.equal(event.type);
       expect(headers[BINARY_HEADERS_1.SPEC_VERSION]).to.equal(event.specversion);
       expect(headers[BINARY_HEADERS_1.SOURCE]).to.equal(event.source);
@@ -140,7 +137,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
     });
 
     it("Provides the HTTP headers for a binary event", () => {
-      const headers = emitter.headers(event);
+      const headers = HTTPEmitter.headers(event, SPEC_V03);
       expect(headers[BINARY_HEADERS_03.TYPE]).to.equal(event.type);
       expect(headers[BINARY_HEADERS_03.SPEC_VERSION]).to.equal(event.specversion);
       expect(headers[BINARY_HEADERS_03.SOURCE]).to.equal(event.source);

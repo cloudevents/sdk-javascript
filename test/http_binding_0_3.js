@@ -3,7 +3,6 @@ const nock = require("nock");
 const BinaryHTTPEmitter = require("../lib/bindings/http/emitter_binary.js");
 const StructuredHTTPEmitter = require("../lib/bindings/http/emitter_structured.js");
 const CloudEvent = require("../lib/cloudevent.js");
-const v03 = require("../lib/bindings/http/v03/index.js");
 const {
   SPEC_V03
 } = require("../lib/bindings/http/constants.js");
@@ -12,8 +11,8 @@ const type = "com.github.pull.create";
 const source = "urn:event:from:myapi/resourse/123";
 const contentEncoding = "base64";
 const contentType = "application/cloudevents+json; charset=utf-8";
-const now = new Date();
-const schemaurl = "http://cloudevents.io/schema.json";
+const time = new Date();
+const schemaURL = "http://cloudevents.io/schema.json";
 
 const ceContentType = "application/json";
 
@@ -27,29 +26,31 @@ const ext1Value = "foobar";
 const ext2Name = "extension2";
 const ext2Value = "acme";
 
-const cloudevent =
-  new CloudEvent(v03.Spec)
-    .type(type)
-    .source(source)
-    .dataContentType(ceContentType)
-    .subject("subject.ext")
-    .time(now)
-    .schemaurl(schemaurl)
-    .data(data)
-    .addExtension(ext1Name, ext1Value)
-    .addExtension(ext2Name, ext2Value);
+const cloudevent = new CloudEvent({
+  specversion: SPEC_V03,
+  type,
+  source,
+  dataContentType: ceContentType,
+  subject: "subject.ext",
+  time,
+  schemaURL,
+  data
+});
+cloudevent.addExtension(ext1Name, ext1Value);
+cloudevent.addExtension(ext2Name, ext2Value);
 
-const cebase64 =
-  new CloudEvent(v03.Spec)
-    .type(type)
-    .source(source)
-    .dataContentType(ceContentType)
-    .dataContentEncoding(contentEncoding)
-    .time(now)
-    .schemaurl(schemaurl)
-    .data(dataBase64)
-    .addExtension(ext1Name, ext1Value)
-    .addExtension(ext2Name, ext2Value);
+const cebase64 = new CloudEvent({
+  specversion: SPEC_V03,
+  type,
+  source,
+  dataContentType: ceContentType,
+  dataContentEncoding: contentEncoding,
+  time,
+  schemaURL,
+  data: dataBase64
+});
+cebase64.addExtension(ext1Name, ext1Value);
+cebase64.addExtension(ext2Name, ext2Value);
 
 const webhook = "https://cloudevents.io/webhook";
 const httpcfg = {
@@ -97,17 +98,17 @@ describe("HTTP Transport Binding - Version 0.3", () => {
 
   describe("Binary", () => {
     describe("JSON Format", () => {
-      it(`requires ${cloudevent.getDataContentType()} in the header`,
+      it(`requires ${cloudevent.dataContentType} in the header`,
         () => binary.emit(httpcfg, cloudevent)
           .then((response) => {
             expect(response.config.headers["Content-Type"])
-              .to.equal(cloudevent.getDataContentType());
+              .to.equal(cloudevent.dataContentType);
           }));
 
       it("the request payload should be correct", () => binary.emit(httpcfg, cloudevent)
         .then((response) => {
           expect(JSON.parse(response.config.data))
-            .to.deep.equal(cloudevent.getData());
+            .to.deep.equal(cloudevent.data);
         }));
 
       it("HTTP Header contains 'ce-type'", () => binary.emit(httpcfg, cloudevent)
@@ -166,40 +167,40 @@ describe("HTTP Transport Binding - Version 0.3", () => {
 
       it("should 'ce-type' have the right value", () => binary.emit(httpcfg, cloudevent)
         .then((response) => {
-          expect(cloudevent.getType())
+          expect(cloudevent.type)
             .to.equal(response.config.headers["ce-type"]);
         }));
 
       it("should 'ce-specversion' have the right value",
         () => binary.emit(httpcfg, cloudevent)
           .then((response) => {
-            expect(cloudevent.getSpecversion())
+            expect(cloudevent.specversion)
               .to.equal(response.config.headers["ce-specversion"]);
           }));
 
       it("should 'ce-source' have the right value",
         () => binary.emit(httpcfg, cloudevent)
           .then((response) => {
-            expect(cloudevent.getSource())
+            expect(cloudevent.source)
               .to.equal(response.config.headers["ce-source"]);
           }));
 
       it("should 'ce-id' have the right value", () => binary.emit(httpcfg, cloudevent)
         .then((response) => {
-          expect(cloudevent.getId())
+          expect(cloudevent.id)
             .to.equal(response.config.headers["ce-id"]);
         }));
 
       it("should 'ce-time' have the right value", () => binary.emit(httpcfg, cloudevent)
         .then((response) => {
-          expect(cloudevent.getTime())
+          expect(cloudevent.time)
             .to.equal(response.config.headers["ce-time"]);
         }));
 
       it("should 'ce-schemaurl' have the right value",
         () => binary.emit(httpcfg, cloudevent)
           .then((response) => {
-            expect(cloudevent.getSchemaurl())
+            expect(cloudevent.schemaURL)
               .to.equal(response.config.headers["ce-schemaurl"]);
           }));
 
@@ -220,7 +221,7 @@ describe("HTTP Transport Binding - Version 0.3", () => {
       it("should 'ce-subject' have the right value",
         () => binary.emit(httpcfg, cloudevent)
           .then((response) => {
-            expect(cloudevent.getSubject())
+            expect(cloudevent.subject)
               .to.equal(response.config.headers["ce-subject"]);
           }));
 
@@ -235,7 +236,7 @@ describe("HTTP Transport Binding - Version 0.3", () => {
         it("should 'ce-datacontentencoding' have the right value",
           () => binary.emit(httpcfg, cebase64)
             .then((response) => {
-              expect(cebase64.getDataContentEncoding())
+              expect(cebase64.dataContentEncoding)
                 .to.equal(response.config.headers["ce-datacontentencoding"]);
             }));
       });

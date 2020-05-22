@@ -1,66 +1,69 @@
 const expect = require("chai").expect;
-const Spec1 = require("../lib/bindings/http/v1/spec_1.js");
 const { CloudEvent } = require("../index.js");
 const { v4: uuidv4 } = require("uuid");
 const { asBase64 } = require("../lib/bindings/http/validation/fun.js");
 const ValidationError = require("../lib/bindings/http/validation/validation_error.js");
+const {
+  SPEC_V1
+} = require("../lib/bindings/http/constants.js");
 
 const id = uuidv4();
 const type = "com.github.pull.create";
 const source = "urn:event:from:myapi/resource/123";
 const time = new Date();
-const dataschema = "http://example.com/registry/myschema.json";
+const dataSchema = "http://example.com/registry/myschema.json";
 const dataContentType = "application/json";
 const data = {
   much: "wow"
 };
 const subject = "subject-x0";
 
-const cloudevent =
-  new CloudEvent(Spec1)
-    .id(id)
-    .source(source)
-    .type(type)
-    .dataContentType(dataContentType)
-    .dataschema(dataschema)
-    .subject(subject)
-    .time(time)
-    .data(data);
+const cloudevent = new CloudEvent({
+  specversion: SPEC_V1,
+  id,
+  source,
+  type,
+  dataContentType,
+  dataSchema,
+  subject,
+  time,
+  data
+});
 
 describe("CloudEvents Spec v1.0", () => {
   describe("REQUIRED Attributes", () => {
     it("Should have 'id'", () => {
-      expect(cloudevent.getId()).to.equal(id);
+      expect(cloudevent.id).to.equal(id);
     });
 
     it("Should have 'source'", () => {
-      expect(cloudevent.getSource()).to.equal(source);
+      expect(cloudevent.source).to.equal(source);
     });
 
     it("Should have 'specversion'", () => {
-      expect(cloudevent.getSpecversion()).to.equal("1.0");
+      expect(cloudevent.specversion).to.equal("1.0");
     });
 
     it("Should have 'type'", () => {
-      expect(cloudevent.getType()).to.equal(type);
+      expect(cloudevent.type).to.equal(type);
     });
   });
 
   describe("OPTIONAL Attributes", () => {
     it("Should have 'datacontenttype'", () => {
-      expect(cloudevent.getDataContentType()).to.equal(dataContentType);
+      expect(cloudevent.dataContentType).to.equal(dataContentType);
     });
 
     it("Should have 'dataschema'", () => {
-      expect(cloudevent.getDataschema()).to.equal(dataschema);
+      expect(cloudevent.dataSchema).to.equal(dataSchema);
     });
 
     it("Should have 'subject'", () => {
-      expect(cloudevent.getSubject()).to.equal(subject);
+      expect(cloudevent.subject).to.equal(subject);
     });
 
     it("Should have 'time'", () => {
-      expect(cloudevent.getTime()).to.equal(time.toISOString());
+      expect(cloudevent.time).to.equal(time.toISOString());
     });
   });
 
@@ -169,30 +172,30 @@ describe("CloudEvents Spec v1.0", () => {
       });
 
       it("should throw an error when is an empty string", () => {
-        cloudevent.type("");
+        cloudevent.type = "";
         expect(cloudevent.format.bind(cloudevent))
           .to.throw(ValidationError, "invalid payload");
-        cloudevent.type(type);
+        cloudevent.type = type;
       });
 
       it("must be a non-empty string", () => {
-        cloudevent.type(type);
+        cloudevent.type = type;
         expect(cloudevent.spec.payload.type).to.equal(type);
       });
     });
 
     describe("'subject'", () => {
       it("should throw an error when is an empty string", () => {
-        cloudevent.subject("");
+        cloudevent.subject = "";
         expect(cloudevent.format.bind(cloudevent))
           .to.throw(ValidationError, "invalid payload");
-        cloudevent.subject(type);
+        cloudevent.subject = type;
       });
     });
 
     describe("'time'", () => {
       it("must adhere to the format specified in RFC 3339", () => {
-        cloudevent.time(time);
+        cloudevent.time = time;
         expect(cloudevent.format().time).to.equal(time.toISOString());
       });
     });
@@ -200,23 +203,21 @@ describe("CloudEvents Spec v1.0", () => {
 
   describe("Event data constraints", () => {
     it("Should have 'data'", () => {
-      expect(cloudevent.getData()).to.deep.equal(data);
+      expect(cloudevent.data).to.deep.equal(data);
     });
 
     it("should maintain the type of data when no data content type", () => {
       delete cloudevent.spec.payload.datacontenttype;
-      cloudevent
-        .data(JSON.stringify(data));
+      cloudevent.data = JSON.stringify(data);
 
-      expect(typeof cloudevent.getData()).to.equal("string");
-      cloudevent.dataContentType(dataContentType);
+      expect(typeof cloudevent.data).to.equal("string");
+      cloudevent.dataContentType = dataContentType;
     });
 
     it("should convert data with stringified json to a json object", () => {
-      cloudevent
-        .dataContentType(dataContentType)
-        .data(JSON.stringify(data));
-      expect(cloudevent.getData()).to.deep.equal(data);
+      cloudevent.dataContentType = dataContentType;
+      cloudevent.data = JSON.stringify(data);
+      expect(cloudevent.data).to.deep.equal(data);
     });
 
     it("should be ok when type is 'Uint32Array' for 'Binary'", () => {
@@ -224,14 +225,13 @@ describe("CloudEvents Spec v1.0", () => {
 
       const dataBinary = Uint32Array.from(dataString, (c) => c.codePointAt(0));
       const expected = asBase64(dataBinary);
-      const olddct = cloudevent.getDataContentType();
+      const olddct = cloudevent.dataContentType;
 
-      cloudevent
-        .dataContentType("text/plain")
-        .data(dataBinary);
-      expect(cloudevent.getData()).to.deep.equal(expected);
+      cloudevent.dataContentType = "text/plain";
+      cloudevent.data = dataBinary;
+      expect(cloudevent.data).to.deep.equal(expected);
 
-      cloudevent.dataContentType(olddct);
+      cloudevent.dataContentType = olddct;
     });
   });
 });

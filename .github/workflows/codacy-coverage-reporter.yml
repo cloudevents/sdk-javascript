@@ -1,19 +1,22 @@
-name: codacy-coverage-reporter
+name: Code Coverage
 
 on:
   push:
-    branches: [master]
+    branches: [ master ]
   pull_request:
-    branches: [master]
+    branches: [ master ]
 
 jobs:
-  codacy-coverage-reporter:
+  build:
     runs-on: ubuntu-latest
-    name: codacy-coverage-reporter
     steps:
-      - uses: actions/checkout@master
-      - name: Run codacy-coverage-reporter
-        uses: codacy/codacy-coverage-reporter-action@master
-        with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: coverage/lcov.info
+    - uses: actions/checkout@v2
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm run coverage-publish
+      env:
+        CODACY_PROJECT_TOKEN: ${{secrets.CODACY_PROJECT_TOKEN}}

@@ -11,19 +11,55 @@ on:
 
 jobs:
   build:
-
+    name: Build and test
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [10.x, 12.x]
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Test on Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
+
+  coverage:
+    name: Code coverage
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Generate coverage report
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm run coverage
+    - name: Upload coverage report to storage
+      uses: actions/upload-artifact@v1
+      with:
+        name: coverage
+        path: coverage/lcov.info
+
+  publish:
+    name: Publish code coverage report
+    needs: coverage
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download coverage report from storage
+      uses: actions/download-artifact@v1
+      with:
+        name: coverage
+    - name: Upload coverage report to codacy
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - run: |
+        [[ "${CODACY_PROJECT_TOKEN}" != ""  ]] && npm run coverage-publish
+      env:
+        CODACY_PROJECT_TOKEN: ${{secrets.CODACY_PROJECT_TOKEN}}

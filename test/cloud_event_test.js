@@ -86,6 +86,11 @@ describe("A 1.0 CloudEvent", () => {
     expect(ce.data).to.equal(data);
   });
 
+  it("has extensions as an empty array by default", () => {
+    const ce = new CloudEvent(fixture);
+    expect(ce.extensions).to.be.an('array').that.has.a.lengthOf(0);
+  });
+
   it("throws ValidationError if the CloudEvent does not conform to the schema");
   it("returns a JSON string even if format is invalid");
   it("correctly formats a CloudEvent as JSON");

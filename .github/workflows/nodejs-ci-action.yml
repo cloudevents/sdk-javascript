@@ -60,6 +60,6 @@ jobs:
       with:
         node-version: 12.x
     - run: |
-        [[ "${CODACY_PROJECT_TOKEN}" != ""  ]] && npm run coverage-publish
+        ( [[ "${CODACY_PROJECT_TOKEN}" != ""  ]] && npm run coverage-publish ) || echo "Coverage report not published"
       env:
         CODACY_PROJECT_TOKEN: ${{secrets.CODACY_PROJECT_TOKEN}}

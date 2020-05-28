@@ -33,7 +33,7 @@ export class CloudEvent {
    * @param {string} [event.specversion] The CloudEvent specification version for this event - default: 1.0
    * @param {*} [event.data] The event payload
    */
-  constructor(event: CloudEventV1 | CloudEventV03) {
+  constructor(event: CloudEventV1 | CloudEventV03 | any) {
     if (!event || !event.type || !event.source) {
       throw new TypeError("event type and source are required");
     }

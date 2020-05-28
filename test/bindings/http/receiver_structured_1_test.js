@@ -1,6 +1,6 @@
 const expect = require("chai").expect;
 const { Spec } = require("../../../lib/bindings/http/v1/index.js");
-const { CloudEvent } = require("../../../index.js");
+const { CloudEvent } = require("../../..//index.js");
 const { asBase64 } = require("../../../lib/bindings/http/validation/fun.js");
 const { SPEC_V1 } = require("../../../lib/bindings/http/constants.js");
 const ValidationError = require("../../../lib/bindings/http/validation/validation_error.js");

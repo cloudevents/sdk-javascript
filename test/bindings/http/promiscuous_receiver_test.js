@@ -1,5 +1,5 @@
 const { expect } = require("chai");
-const { CloudEvent, HTTPReceiver } = require("../../../index.js");
+const { CloudEvent, HTTPReceiver } = require("../../..//index.js");
 const {
   HEADER_CONTENT_TYPE,
   DEFAULT_CONTENT_TYPE,

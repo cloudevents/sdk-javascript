@@ -13,13 +13,10 @@
     "declaration": true
   },
   "compileOnSave": true,
-  "files": [
-    "src/index.ts",
-    "src/lib/cloudevent.ts",
-    "src/lib/bindings/http/constants.ts",
-    "src/lib/bindings/http/http_receiver.ts",
-    "src/lib/bindings/http/http_emitter.ts"
+  "include": [
+    "src/**/*.ts"
   ],
+  "exclude": [],
   "typedocOptions": {
     "out": "docs",
     "mode": "library"

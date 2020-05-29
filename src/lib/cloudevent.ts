@@ -8,7 +8,7 @@ import { isBinary } from "./bindings/http/validation/fun.js";
 
 const { SPEC_V1, SPEC_V03 } = require("./bindings/http/constants.js");
 
-export type Event = CloudEventV1 | CloudEventV1Attributes | CloudEventV03 | CloudEventV03Attributes
+export type CE = CloudEventV1 | CloudEventV1Attributes | CloudEventV03 | CloudEventV03Attributes
 
 /**
  * A CloudEvent describes event data in common formats to provide
@@ -35,7 +35,7 @@ export class CloudEvent {
    * @param {string} [event.specversion] The CloudEvent specification version for this event - default: 1.0
    * @param {*} [event.data] The event payload
    */
-  constructor(event: Event) {
+  constructor(event: CE) {
     if (!event || !event.type || !event.source) {
       throw new TypeError("event type and source are required");
     }

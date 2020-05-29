@@ -1,7 +1,7 @@
 const expect = require("chai").expect;
 const ValidationError = require("../../../lib/bindings/http/validation/validation_error.js");
 const HTTPStructuredReceiver = require("../../../lib/bindings/http/receiver_structured.js");
-const CloudEvent = require("../../../lib/cloudevent.js");
+const { CloudEvent } = require("../../../index.js");
 const { SPEC_V03 } = require("../../../lib/bindings/http/constants.js");
 
 const receiver = new HTTPStructuredReceiver(SPEC_V03);

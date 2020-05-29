@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 const express = require("express");
-const { HTTPReceiver } = require("../../");
+const { HTTPReceiver } = require("../../src");
 
 const app = express();
 const receiver = new HTTPReceiver();

@@ -1,5 +1,4 @@
 const expect = require("chai").expect;
-const Spec03 = require("../lib/bindings/http/v03/spec_0_3.js");
 const { CloudEvent } = require("../index.js");
 const {
   MIME_JSON,

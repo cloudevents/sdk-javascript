@@ -4,20 +4,23 @@
   "description": "CloudEvents SDK for JavaScript",
   "main": "index.js",
   "scripts": {
-    "type-check": "tsc --noEmitOnError --emitDeclarationOnly",
-    "prelint": "npm run type-check",
-    "lint": "standardx index.js lib examples",
+    "watch": "tsc --project tsconfig.json --watch",
+    "build": "tsc --project tsconfig.json",
+    "prelint": "npm run build",
+    "lint": "standardx src examples",
     "fix": "standardx --fix",
     "pretest": "npm run lint",
     "test": "mocha test/**/*.js",
     "coverage": "nyc --reporter=lcov --reporter=text npm run test",
     "coverage-publish": "wget -qO - https://coverage.codacy.com/get.sh | bash -s report -l JavaScript -r coverage/lcov.info",
-    "generate-docs": "jsdoc --configure .jsdoc.json --verbose",
-    "release": "standard-version"
+    "generate-docs": "typedoc --tsconfig ./tsconfig.json src",
+    "release": "standard-version",
+    "prepublish": "npm run build"
   },
   "files": [
-    "lib",
-    "index.d.ts"
+    "index.js",
+    "index.d.ts",
+    "lib"
   ],
   "standard-version": {
     "types": [
@@ -98,15 +101,14 @@
     "uuid": "~8.0.0"
   },
   "devDependencies": {
+    "@paztis/typedoc": "^0.1.6",
     "@types/ajv": "^1.0.0",
     "@types/axios": "^0.14.0",
-    "@types/node": "^13.13.5",
+    "@types/node": "^13.13.9",
     "chai": "~4.2.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
-    "jsdoc": "^3.6.4",
-    "jsdoc-fresh": "^1.0.2",
     "mocha": "~7.1.1",
     "nock": "~12.0.3",
     "nyc": "~15.0.0",

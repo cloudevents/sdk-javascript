@@ -1,4 +1,4 @@
-const CloudEvent = require("../lib/cloudevent.js");
+const { CloudEvent } = require("../");
 const { SPEC_V1, SPEC_V03 } = require("../lib/bindings/http/constants.js");
 
 const { expect } = require("chai");

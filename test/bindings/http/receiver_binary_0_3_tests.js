@@ -1,6 +1,6 @@
 const expect = require("chai").expect;
 
-const CloudEvent = require("../../../lib/cloudevent.js");
+const { CloudEvent } = require("../../../lib/cloudevent.js");
 const BinaryHTTPReceiver = require("../../../lib/bindings/http/receiver_binary.js");
 const ValidationError = require("../../../lib/bindings/http/validation/validation_error.js");
 const {

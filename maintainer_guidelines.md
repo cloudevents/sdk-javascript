@@ -7,11 +7,11 @@ Here are a few tips for repository maintainers.
 * Stay on top of your pull requests. PRs that languish for too long can become difficult to merge.
 * Work from your own fork. As you are making contributions to the project, you should be working from your own fork just as outside contributors do. This keeps the branches in github to a minimum and reduces unnecessary CI runs.
 * Try to proactively label issues and pull requests with labels
-* Actively review pull requests as the are submitted
+* Actively review pull requests as they are submitted
 * Triage issues once in a while in order to keep the repository alive.
   * If some issues are stale for too long because they are no longer valid/relevant or because the discussion reached no significant action items to perform, close them and invite the users to reopen if they need it.
-  * If some PRs are no longer valid due to conflicts, but the PR is still needed, ask the contributor to rebase their PR
-  * If some issues and PRs are still relevant, use labels to help organize tasks
+  * If some PRs are no longer valid due to conflicts, but the PR is still needed, ask the contributor to rebase their PR.
+  * If some issues and PRs are still relevant, use labels to help organize tasks.
   * If you find an issue that you want to create a pull request for, be sure to assign it to yourself so that other maintainers don't start working on it at the same time.
 
 ## Landing Pull Requests
@@ -26,7 +26,7 @@ When landing pull requests, be sure to check the first line uses an appropriate 
 
 ## Branch Management
 
-The `master` branch is is the bleeding edge. New major versions of the module
+The `master` branch is the bleeding edge. New major versions of the module
 are cut from this branch and tagged. If you intend to submit a pull request
 you should use `master HEAD` as your starting point.
 

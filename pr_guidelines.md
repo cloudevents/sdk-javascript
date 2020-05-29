@@ -36,6 +36,7 @@ you might create a branch named `48-fix-http-agent-error`.
 ```console
 git fetch upstream
 git reset --hard upstream/master
+git checkout FETCH_HEAD
 git checkout -b 48-fix-http-agent-error
 ```
 
@@ -82,7 +83,7 @@ Use your real name (sorry, no pseudonyms or anonymous contributions.)
 
 The sign-off is a signature line at the end of your commit message. Your
 signature certifies that you wrote the patch or otherwise have the right to pass
-it on as open-source code. See [developercertificate.org](http://developercertificate.org/))
+it on as open-source code. See [developercertificate.org](http://developercertificate.org/)
 for the full text of the certification.
 
 Be sure to have your `user.name` and `user.email` set in your git config.

@@ -2,7 +2,7 @@
  * The object interface for CloudEvents 1.0.
  * @see https://github.com/cloudevents/spec/blob/v1.0/spec.md
  */
-export interface CloudEventV1 {
+export interface CloudEventV1 extends CloudEventV1Attributes {
   // REQUIRED Attributes
   /**
    * [REQUIRED] Identifies the event. Producers MUST ensure that `source` + `id`
@@ -14,6 +14,18 @@ export interface CloudEventV1 {
    * @example A UUID
    */
   id: string;
+
+    /**
+   * [REQUIRED] The version of the CloudEvents specification which the event
+   * uses. This enables the interpretation of the context. Compliant event
+   * producers MUST use a value of `1.0` when referring to this version of the
+   * specification.
+   * @required MUST be a non-empty string.
+   */
+  specversion: string;
+}
+
+export interface CloudEventV1Attributes {
   /**
    * [REQUIRED] Identifies the context in which an event happened. Often this
    * will include information such as the type of the event source, the
@@ -30,14 +42,7 @@ export interface CloudEventV1 {
    * @required Non-empty URI-reference
    */
   source: string;
-  /**
-   * [REQUIRED] The version of the CloudEvents specification which the event
-   * uses. This enables the interpretation of the context. Compliant event
-   * producers MUST use a value of `1.0` when referring to this version of the
-   * specification.
-   * @required MUST be a non-empty string.
-   */
-  specversion: string;
+
   /**
    * [REQUIRED] This attribute contains a value describing the type of event
    * related to the originating occurrence. Often this attribute is used for

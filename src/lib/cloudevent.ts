@@ -1,5 +1,5 @@
-import { CloudEventV1 } from "./v1";
-import { CloudEventV03 } from "./v03";
+import { CloudEventV1, CloudEventV1Attributes } from "./v1";
+import { CloudEventV03, CloudEventV03Attributes } from "./v03";
 
 import Spec1 from "./bindings/http/v1/spec_1.js";
 import Spec03 from "./bindings/http/v03/spec_0_3.js";
@@ -7,6 +7,8 @@ import Formatter from "./formats/json/formatter.js";
 import { isBinary } from "./bindings/http/validation/fun.js";
 
 const { SPEC_V1, SPEC_V03 } = require("./bindings/http/constants.js");
+
+export type Event = CloudEventV1 | CloudEventV1Attributes | CloudEventV03 | CloudEventV03Attributes
 
 /**
  * A CloudEvent describes event data in common formats to provide
@@ -33,7 +35,7 @@ export class CloudEvent {
    * @param {string} [event.specversion] The CloudEvent specification version for this event - default: 1.0
    * @param {*} [event.data] The event payload
    */
-  constructor(event: CloudEventV1 | CloudEventV03 | any) {
+  constructor(event: Event) {
     if (!event || !event.type || !event.source) {
       throw new TypeError("event type and source are required");
     }

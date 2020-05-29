@@ -8,7 +8,7 @@ yarn-error.log*
 # Generated files
 *.d.ts
 index.js
-./lib
+lib
 
 # Runtime data
 pids

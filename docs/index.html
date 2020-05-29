@@ -1,0 +1,345 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>cloudevents-sdk</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">cloudevents-sdk</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>cloudevents-sdk</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#javascript-sdk-for-cloudevents" id="javascript-sdk-for-cloudevents" style="color: inherit; text-decoration: none;">
+					<h1>JavaScript SDK for CloudEvents</h1>
+				</a>
+				<p><a href="https://www.codacy.com/app/fabiojose/sdk-javascript?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cloudevents/sdk-javascript&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/bd66e7c52002481993cd6d610534b0f7" alt="Codacy Badge"></a>
+					<a href="https://www.codacy.com/app/fabiojose/sdk-javascript?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cloudevents/sdk-javascript&amp;utm_campaign=Badge_Coverage"><img src="https://api.codacy.com/project/badge/Coverage/bd66e7c52002481993cd6d610534b0f7" alt="Codacy Badge"></a>
+					<img src="https://github.com/cloudevents/sdk-javascript/workflows/Node.js%20CI/badge.svg" alt="Node.js CI">
+					<a href="https://www.npmjs.com/package/cloudevents-sdk"><img src="https://img.shields.io/npm/v/cloudevents-sdk.svg" alt="npm version"></a>
+					<a href="https://snyk.io/test/github/cloudevents/sdk-javascript"><img src="https://snyk.io/test/github/cloudevents/sdk-javascript/badge.svg" alt="vulnerabilities"></a>
+				<a href="http://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/github/license/cloudevents/sdk-javascript" alt="licence"></a></p>
+				<p>The CloudEvents SDK for JavaScript.</p>
+				<p>This module will help you to:</p>
+				<ul>
+					<li>Represent CloudEvents in memory</li>
+					<li>Use <a href="https://github.com/cloudevents/spec/blob/v1.0/spec.md#event-format">Event Formats</a> to serialize/deserialize CloudEvents</li>
+					<li>Use <a href="https://github.com/cloudevents/spec/blob/v1.0/spec.md#protocol-binding">Protocol Bindings</a> to send/receive CloudEvents</li>
+				</ul>
+				<p><em>Note:</em> Supported
+				<a href="https://github.com/cloudevents/spec">CloudEvents specification</a>: 0.3, 1.0</p>
+				<a href="#a-note-on-versioning" id="a-note-on-versioning" style="color: inherit; text-decoration: none;">
+					<h3>A Note on Versioning</h3>
+				</a>
+				<p>The CloudEvents protocol version is distinct from this module&#39;s version number.
+					For example, this module may be versioned as v2.0.0 but support the v0.3 and v1.0
+				versions of the CloudEvent specification.</p>
+				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+					<h2>Usage</h2>
+				</a>
+				<p><strong>See the full working example: <a href="./examples/express-ex">here</a>.</strong></p>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h3>Installation</h3>
+				</a>
+				<p>The CloudEvents SDK requires a current LTS version of Node.js. At the moment
+				those are Node.js 10.x and Node.js 12.x. To install in your Node.js project:</p>
+				<pre><code class="language-console">npm install --save cloudevents-sdk</code></pre>
+				<a href="#receiving-and-emitting-events" id="receiving-and-emitting-events" style="color: inherit; text-decoration: none;">
+					<h3>Receiving and Emitting Events</h3>
+				</a>
+				<a href="#receiving-events" id="receiving-events" style="color: inherit; text-decoration: none;">
+					<h4>Receiving Events</h4>
+				</a>
+				<p>You can choose almost any popular web framework for port binding. Use an
+					<code>HTTPReceiver</code> to process the incoming HTTP request. The receiver accepts
+				binary and structured events in either the 1.0 or 0.3 protocol formats.</p>
+				<pre><code class="language-js"><span class="hljs-keyword">const</span> {
+  CloudEvent,
+  HTTPReceiever
+} = <span class="hljs-built_in">require</span>(<span class="hljs-string">"cloudevents-sdk"</span>);
+
+<span class="hljs-comment">// Create a receiver to accept events over HTTP</span>
+<span class="hljs-keyword">const</span> receiver = <span class="hljs-keyword">new</span> HTTPReceiver();
+
+<span class="hljs-comment">// body and headers come from an incoming HTTP request, e.g. express.js</span>
+<span class="hljs-keyword">const</span> receivedEvent = receiver.accept(req.body, req.headers);
+<span class="hljs-built_in">console</span>.log(receivedEvent.format());</code></pre>
+				<a href="#emitting-events" id="emitting-events" style="color: inherit; text-decoration: none;">
+					<h4>Emitting Events</h4>
+				</a>
+				<p>To emit events, you&#39;ll need to decide whether the event should be sent in
+					binary or structured format, and determine what version of the CloudEvents
+				specification you want to send the event as.</p>
+				<p>By default, the <code>HTTPEmitter</code> will emit events over HTTP POST using the
+					1.0 specification, in binary mode. You can emit 0.3 events by providing
+					the specication version in the constructor to <code>HTTPEmitter</code>. To send
+				structured events, add that string as a parameter to <code>emitter.sent()</code>.</p>
+				<pre><code class="language-js"><span class="hljs-keyword">const</span> { CloudEvent, HTTPEmitter } = <span class="hljs-built_in">require</span>(<span class="hljs-string">"cloudevents-sdk"</span>);
+
+<span class="hljs-comment">// With only an endpoint URL, this creates a v1 emitter</span>
+<span class="hljs-keyword">const</span> v1Emitter = <span class="hljs-keyword">new</span> HTTPEmitter({
+  <span class="hljs-attr">url</span>: <span class="hljs-string">"https://cloudevents.io/example"</span>
+});
+<span class="hljs-keyword">const</span> event = <span class="hljs-keyword">new</span> CloudEvent({
+  type, source, data
+});
+
+<span class="hljs-comment">// By default, the emitter will send binary events</span>
+v1Emitter.send(event).then(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> {
+    <span class="hljs-comment">// handle the response</span>
+  }).catch(<span class="hljs-built_in">console</span>.error);
+
+<span class="hljs-comment">// To send a structured event, just add that as an option</span>
+v1Emitter.send(event, { <span class="hljs-attr">mode</span>: <span class="hljs-string">"structured"</span> })
+  .then(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> {
+    <span class="hljs-comment">// handle the response</span>
+  }).catch(<span class="hljs-built_in">console</span>.error);
+
+<span class="hljs-comment">// To send an event to an alternate URL, add that as an option</span>
+v1Emitter.send(event, { <span class="hljs-attr">url</span>: <span class="hljs-string">"https://alternate.com/api"</span> })
+  .then(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> {
+    <span class="hljs-comment">// handle the response</span>
+  }).catch(<span class="hljs-built_in">console</span>.error);
+
+<span class="hljs-comment">// Sending a v0.3 event works the same, just let the emitter know when</span>
+<span class="hljs-comment">// you create it that you are working with the 0.3 spec</span>
+<span class="hljs-keyword">const</span> v03Emitter = <span class="hljs-keyword">new</span> HTTPEmitter({
+  <span class="hljs-attr">url</span>: <span class="hljs-string">"https://cloudevents.io/example"</span>,
+  <span class="hljs-attr">version</span>: <span class="hljs-string">"0.3"</span>
+});
+
+<span class="hljs-comment">// Again, the default is to send binary events</span>
+<span class="hljs-comment">// To send a structured event or to an alternate URL, provide those</span>
+<span class="hljs-comment">// as parameters in a options object as above</span>
+v3Emitter.send(event)
+  .then(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> {
+    <span class="hljs-comment">// handle the response</span>
+  }).catch(<span class="hljs-built_in">console</span>.error);
+</code></pre>
+				<a href="#supported-specification-features" id="supported-specification-features" style="color: inherit; text-decoration: none;">
+					<h2>Supported specification features</h2>
+				</a>
+				<table>
+					<thead>
+						<tr>
+							<th></th>
+							<th><a href="https://github.com/cloudevents/spec/tree/v0.3">v0.3</a></th>
+							<th><a href="https://github.com/cloudevents/spec/tree/v1.0">v1.0</a></th>
+						</tr>
+					</thead>
+					<tbody><tr>
+							<td>CloudEvents Core</td>
+							<td>:heavy_check_mark:</td>
+							<td>:heavy_check_mark:</td>
+						</tr>
+						<tr>
+							<td>AMQP Protocol Binding</td>
+							<td>:x:</td>
+							<td>:x:</td>
+						</tr>
+						<tr>
+							<td>AVRO Event Format</td>
+							<td>:x:</td>
+							<td>:x:</td>
+						</tr>
+						<tr>
+							<td>HTTP Protocol Binding</td>
+							<td>:heavy_check_mark:</td>
+							<td>:heavy_check_mark:</td>
+						</tr>
+						<tr>
+							<td>JSON Event Format</td>
+							<td>:heavy_check_mark:</td>
+							<td>:heavy_check_mark:</td>
+						</tr>
+						<tr>
+							<td>Kafka Protocol Binding</td>
+							<td>:x:</td>
+							<td>:x:</td>
+						</tr>
+						<tr>
+							<td>NATS Protocol Binding</td>
+							<td>:x:</td>
+							<td>:x:</td>
+						</tr>
+						<tr>
+							<td>STAN Protocol Binding</td>
+							<td>:x:</td>
+							<td>:x:</td>
+						</tr>
+				</tbody></table>
+				<a href="#community" id="community" style="color: inherit; text-decoration: none;">
+					<h2>Community</h2>
+				</a>
+				<ul>
+					<li>There are bi-weekly calls immediately following the <a href="https://github.com/cloudevents/spec#meeting-time">Serverless/CloudEvents
+						call</a> at
+						9am PT (US Pacific). Which means they will typically start at 10am PT, but
+						if the other call ends early then the SDK call will start early as well.
+						See the <a href="https://docs.google.com/document/d/1OVF68rpuPK5shIHILK9JOqlZBbfe91RNzQ7u_P7YCDE/edit#">CloudEvents meeting minutes</a>
+					to determine which week will have the call.</li>
+					<li>Slack: #cloudeventssdk channel under
+					<a href="https://slack.cncf.io/">CNCF&#39;s Slack workspace</a>.</li>
+					<li>Email: <a href="https://lists.cncf.io/g/cncf-cloudevents-sdk">https://lists.cncf.io/g/cncf-cloudevents-sdk</a></li>
+					<li>Contact for additional information: Fabio José (<code>@fabiojose</code> on slack).</li>
+				</ul>
+				<a href="#contributing" id="contributing" style="color: inherit; text-decoration: none;">
+					<h2>Contributing</h2>
+				</a>
+				<p>We love contributions from the community! Please check the
+					<a href="https://github.com/cloudevents/sdk-javascript/blob/master/CONTRIBUTING.md">Contributor&#39;s Guide</a>
+				for information on how to get involved.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/lib_bindings_http_http_emitter.html">lib/bindings/http/http_<wbr>emitter</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/lib_bindings_http_http_receiver.html">lib/bindings/http/http_<wbr>receiver</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/lib_cloudevent.html">lib/cloudevent</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/lib_v03.html">lib/v03</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/lib_v1.html">lib/v1</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

@@ -15,7 +15,7 @@ export interface CloudEventV1 extends CloudEventV1Attributes {
    */
   id: string;
 
-    /**
+  /**
    * [REQUIRED] The version of the CloudEvents specification which the event
    * uses. This enables the interpretation of the context. Compliant event
    * producers MUST use a value of `1.0` when referring to this version of the

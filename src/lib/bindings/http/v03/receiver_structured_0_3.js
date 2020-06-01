@@ -13,7 +13,7 @@ const {
     SUBJECT,
     DATA
   }
-} = require("../constants.js");
+} = require("../constants");
 const Spec = require("./spec_0_3.js");
 const JSONParser = require("../../../formats/json/parser.js");
 

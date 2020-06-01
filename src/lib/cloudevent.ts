@@ -6,7 +6,7 @@ import Spec03 from "./bindings/http/v03/spec_0_3.js";
 import Formatter from "./formats/json/formatter.js";
 import { isBinary } from "./bindings/http/validation/fun.js";
 
-const { SPEC_V1, SPEC_V03 } = require("./bindings/http/constants.js");
+const { SPEC_V1, SPEC_V03 } = require("./bindings/http/constants");
 
 export type CE = CloudEventV1 | CloudEventV1Attributes | CloudEventV03 | CloudEventV03Attributes
 

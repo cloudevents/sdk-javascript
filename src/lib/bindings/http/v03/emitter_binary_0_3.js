@@ -10,7 +10,7 @@ const {
    TIME,
    SCHEMA_URL
   }
-} = require("../constants.js");
+} = require("../constants");
 
 function parser(header, parser = (v) => v) {
   return { headerName: header, parse: parser };

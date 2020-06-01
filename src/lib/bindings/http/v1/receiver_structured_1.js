@@ -13,7 +13,7 @@ const {
     DATA_BASE64,
     MIME_JSON
   }
-} = require("../constants.js");
+} = require("../constants");
 
 const Spec = require("./spec_1.js");
 const JSONParser = require("../../../formats/json/parser.js");

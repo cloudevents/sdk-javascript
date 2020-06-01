@@ -1,5 +1,5 @@
 const ValidationError = require("./validation_error.js");
-const Constants = require("../constants.js");
+const Constants = require("../constants");
 const {
   isDefinedOrThrow,
   isStringOrObjectOrThrow

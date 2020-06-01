@@ -7,7 +7,7 @@ const {
   DEFAULT_CE_CONTENT_TYPE,
   HEADERS,
   HEADER_CONTENT_TYPE
-} = require("./constants.js");
+} = require("./constants");
 
 const defaults = {
   [HEADERS]: {

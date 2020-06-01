@@ -5,7 +5,7 @@ const {
   ENCODING_BASE64,
   HEADER_CONTENT_TYPE,
   BINARY_HEADERS_03
-} = require("../constants.js");
+} = require("../constants");
 const Spec = require("./spec_0_3.js");
 
 const JSONParser = require("../../../formats/json/parser.js");

@@ -9,7 +9,7 @@ const {
    TIME,
    DATA_SCHEMA
  }
-} = require("../constants.js");
+} = require("../constants");
 
 function parser(header, parser = (v) => v) {
   return { headerName: header, parse: parser };

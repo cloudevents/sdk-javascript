@@ -1,7 +1,7 @@
 const ReceiverV1 = require("./v1/receiver_structured_1.js");
 const ReceiverV3 = require("./v03/receiver_structured_0_3.js");
 
-const { SPEC_V03, SPEC_V1 } = require("./constants.js");
+const { SPEC_V03, SPEC_V1 } = require("./constants");
 const { check, parse } = require("./validation/structured.js");
 
 /** @typedef {import("../../cloudevent")} CloudEvent */

@@ -9,7 +9,7 @@ const {
   HEADER_CONTENT_TYPE,
   MIME_JSON,
   DEFAULT_SPEC_VERSION_HEADER
-} = require("../constants.js");
+} = require("../constants");
 
 const {
   isString,

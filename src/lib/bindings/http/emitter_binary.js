@@ -11,7 +11,7 @@ const {
   DATA_ATTRIBUTE,
   SPEC_V1,
   SPEC_V03
-} = require("./constants.js");
+} = require("./constants");
 
 const defaults = {
   [HEADERS]: {

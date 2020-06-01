@@ -6,7 +6,7 @@ const {
 } = require("./commons.js");
 const {
   HEADER_CONTENT_TYPE
-} = require("../constants.js");
+} = require("../constants");
 
 function check(payload, headers, receiver) {
   validateArgs(payload, headers);

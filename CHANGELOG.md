@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.1](https://github.com/cloudevents/sdk-javascript/compare/v2.0.0...v2.0.1) (2020-06-01)
+
+
+### Bug Fixes
+
+* initialize CloudEvent's extensions property ([#192](https://github.com/cloudevents/sdk-javascript/issues/192)) ([0710166](https://github.com/cloudevents/sdk-javascript/commit/0710166ce9397f402b835fae745923d11357d15e))
+* introduce CloudEventV1 and CloudEventV03 interfaces ([#194](https://github.com/cloudevents/sdk-javascript/issues/194)) ([a5befbe](https://github.com/cloudevents/sdk-javascript/commit/a5befbe0cf11a53e39f3ea33990b037e2f165611))
+
+
+### Miscellaneous
+
+* CI workflow to only upload report if CODACY_PROJECT_TOKEN is set ([#193](https://github.com/cloudevents/sdk-javascript/issues/193)) ([aa320e7](https://github.com/cloudevents/sdk-javascript/commit/aa320e7fe4ce59284378cdd9420c0191d6a54b39))
+* minor typos in guidance docs ([#196](https://github.com/cloudevents/sdk-javascript/issues/196)) ([15cd763](https://github.com/cloudevents/sdk-javascript/commit/15cd7638da2906c7be7b550cc07ce551c2f7d1f8))
+
 ## [2.0.0](https://github.com/cloudevents/sdk-javascript/compare/v1.0.0...v2.0.0) (2020-05-27)
 
 

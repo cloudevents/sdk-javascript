@@ -44,7 +44,7 @@ export class HTTPReceiver {
    * @param {Object|JSON} body The body of the HTTP request
    * @return {CloudEvent} A new {CloudEvent} instance
    */
-  accept(headers: {}, body: { specversion: string }) {
+  accept(headers: {}, body: { specversion?: string, [k:string]: any }) {
     const mode: string = getMode(headers);
     const version = getVersion(mode, headers, body);
     switch (version) {
@@ -70,7 +70,7 @@ function getMode(headers: { [key: string]: string }) {
   throw new ValidationError("no cloud event detected");
 }
 
-function getVersion(mode: string, headers: { [key: string]: string }, body: string | { specversion: string }) {
+function getVersion(mode: string, headers: { [key: string]: string }, body: string | { specversion?: string }) {
   if (mode === BINARY) {
     // Check the headers for the version
     const versionHeader = headers[DEFAULT_SPEC_VERSION_HEADER];

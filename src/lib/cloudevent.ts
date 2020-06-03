@@ -81,7 +81,7 @@ export class CloudEvent {
       this.time = event.time;
     }
     this.formatter = new Formatter();
-    this.extensions = [];
+    this.extensions = {};
   }
 
   /**

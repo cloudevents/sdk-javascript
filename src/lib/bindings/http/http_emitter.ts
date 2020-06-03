@@ -1,4 +1,4 @@
-import { CloudEvent } from "../../cloudevent.js";
+import { CloudEvent } from "../../cloudevent";
 
 const BinaryHTTPEmitter = require("./emitter_binary.js");
 const StructuredEmitter = require("./emitter_structured.js");
@@ -20,7 +20,7 @@ const {
  * @see https://github.com/cloudevents/spec/blob/v1.0/http-protocol-binding.md#13-content-modes
  */
 export class HTTPEmitter {
-  url: URL | undefined;
+  url: URL | string;
   binary: any;
   structured: any;
   static headers: Function;
@@ -34,7 +34,7 @@ export class HTTPEmitter {
    * @param {string} [options.version] The HTTP binding specification version. Default: "1.0"
    * @throws {TypeError} if no options.url is provided or an unknown specification version is provided.
    */
-  constructor({ url, version = SPEC_V1 } = { url: undefined }) {
+  constructor({ url = "", version = SPEC_V1 }) {
     if (version !== SPEC_V03 && version !== SPEC_V1) {
       throw new TypeError(
         `Unknown CloudEvent specification version: ${version}`);
@@ -62,7 +62,7 @@ export class HTTPEmitter {
    * Possible values are "binary" and "structured". Default: structured
    * @returns {Promise} Promise with an eventual response from the receiver
    */
-  send(event: CloudEvent, { url, mode = "binary", ...httpOpts } = { url: undefined }) {
+  send(event: CloudEvent, { url = "", mode = "binary", ...httpOpts } = {}) {
     // @ts-ignore Type 'URL | undefined' is not assignable to type 'undefined'. Type 'URL' is not assignable to type 'undefined'.ts(2322)
     if (!url) { url = this.url; }
     // @ts-ignore Property 'url' does not exist on type '{}'
@@ -85,7 +85,7 @@ export class HTTPEmitter {
  * @param {string} [version] spec version number - default 1.0
  * @returns {Object} the headers that will be sent for the event
  */
-function headers(event: CloudEvent, version = SPEC_V1) {
+function headers(event: CloudEvent, version: string = SPEC_V1) {
   const headers = {};
   let headerMap;
   if (version === SPEC_V1) {

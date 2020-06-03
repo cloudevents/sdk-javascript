@@ -5,37 +5,24 @@
 ![Node.js CI](https://github.com/cloudevents/sdk-javascript/workflows/Node.js%20CI/badge.svg)
 [![npm version](https://img.shields.io/npm/v/cloudevents-sdk.svg)](https://www.npmjs.com/package/cloudevents-sdk)
 [![vulnerabilities](https://snyk.io/test/github/cloudevents/sdk-javascript/badge.svg)](https://snyk.io/test/github/cloudevents/sdk-javascript)
-[![licence](https://img.shields.io/github/license/cloudevents/sdk-javascript)](http://www.apache.org/licenses/LICENSE-2.0)
-
 
 The CloudEvents SDK for JavaScript.
 
-This module will help you to:
+## Features
 
 * Represent CloudEvents in memory
-* Use [Event Formats](https://github.com/cloudevents/spec/blob/v1.0/spec.md#event-format) to serialize/deserialize CloudEvents
-* Use [Protocol Bindings](https://github.com/cloudevents/spec/blob/v1.0/spec.md#protocol-binding) to send/receive CloudEvents
+* Serialize and deserialize CloudEvents in different [event formats](https://github.com/cloudevents/spec/blob/v1.0/spec.md#event-format).
+* Send and recieve CloudEvents with via different [protocol bindings](https://github.com/cloudevents/spec/blob/v1.0/spec.md#protocol-binding).
 
-_Note:_ Supported
-[CloudEvents specification](https://github.com/cloudevents/spec): 0.3, 1.0
+_Note:_ Supports CloudEvent versions 0.3, 1.0
 
-### A Note on Versioning
-
-The CloudEvents protocol version is distinct from this module's version number.
-For example, this module may be versioned as v2.0.0 but support the v0.3 and v1.0
-versions of the CloudEvent specification.
-
-## Usage
-
-**See the full working example: [here](./examples/express-ex).**
-
-### Installation
+## Installation
 
 The CloudEvents SDK requires a current LTS version of Node.js. At the moment
 those are Node.js 10.x and Node.js 12.x. To install in your Node.js project:
 
 ```console
-npm install --save cloudevents-sdk
+npm install cloudevents-sdk
 ```
 
 ### Receiving and Emitting Events

@@ -44,7 +44,7 @@ export class HTTPReceiver {
    * @param {Object|JSON} body The body of the HTTP request
    * @return {CloudEvent} A new {CloudEvent} instance
    */
-  accept(headers: {}, body: { specversion?: string, [k:string]: any }) {
+  accept(headers: {}, body: {}) {
     const mode: string = getMode(headers);
     const version = getVersion(mode, headers, body);
     switch (version) {

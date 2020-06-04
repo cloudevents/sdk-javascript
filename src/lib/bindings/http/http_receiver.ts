@@ -1,6 +1,7 @@
 import BinaryReceiver = require("./receiver_binary.js");
 import StructuredReceiver = require("./receiver_structured.js");
 import ValidationError = require("./validation/validation_error.js");
+import { CloudEvent } from "../../cloudevent.js";
 const { BINARY, STRUCTURED, SPEC_V03, SPEC_V1, HEADER_CONTENT_TYPE, MIME_CE, BINARY_HEADERS_1, DEFAULT_SPEC_VERSION_HEADER } = require("./constants");
 
 /** @typedef {import("../../cloudevent")} CloudEvent */
@@ -44,7 +45,7 @@ export class HTTPReceiver {
    * @param {Object|JSON} body The body of the HTTP request
    * @return {CloudEvent} A new {CloudEvent} instance
    */
-  accept(headers: {}, body: { specversion?: string, [k:string]: any }) {
+  accept(headers: {}, body: {}) : CloudEvent {
     const mode: string = getMode(headers);
     const version = getVersion(mode, headers, body);
     switch (version) {

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 const express = require("express");
-const { HTTPReceiver } = require("../../src");
+const { HTTPReceiver } = require("cloudevents-sdk");
 
 const app = express();
 const receiver = new HTTPReceiver();

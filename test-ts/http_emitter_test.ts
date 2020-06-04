@@ -1,5 +1,6 @@
-const { expect } = require("chai");
-const nock = require("nock");
+import "mocha";
+import { expect } from "chai";
+import nock from "nock";
 
 const {
   SPEC_V1,
@@ -7,17 +8,17 @@ const {
   DEFAULT_CE_CONTENT_TYPE,
   BINARY_HEADERS_03,
   BINARY_HEADERS_1
-} = require("../../../lib/bindings/http/constants.js");
+} = require("../lib/bindings/http/constants");
 
-const { CloudEvent, HTTPEmitter } = require("../../../");
+import { CloudEvent, HTTPEmitter } from "..";
 
-const receiver = "https://cloudevents.io/";
-const type = "com.example.test";
-const source = "urn:event:from:myapi/resource/123";
-const ext1Name = "lunch";
-const ext1Value = "tacos";
-const ext2Name = "supper";
-const ext2Value = "sushi";
+const receiver:string = "https://cloudevents.io/";
+const type:string = "com.example.test";
+const source:string = "urn:event:from:myapi/resource/123";
+const ext1Name:string = "lunch";
+const ext1Value:string = "tacos";
+const ext2Name:string = "supper";
+const ext2Value:string = "sushi";
 
 const data = {
   lunchBreak: "noon"
@@ -27,7 +28,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
   beforeEach(() => {
     nock(receiver)
       .post("/")
-      .reply(function(uri, requestBody) {
+      .reply(function (uri, requestBody: {}) {
         // return the request body and the headers so they can be
         // examined in the test
         if (typeof requestBody === "string") {
@@ -54,7 +55,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
     event.addExtension(ext2Name, ext2Value);
 
     it("Sends a binary 1.0 CloudEvent by default", () => {
-      emitter.send(event).then((response) => {
+      emitter.send(event).then((response: { data: { [k: string]: string } }) => {
           // A binary message will have a ce-id header
           expect(response.data[BINARY_HEADERS_1.ID]).to.equal(event.id);
           expect(response.data[BINARY_HEADERS_1.SPEC_VERSION]).to.equal(SPEC_V1);
@@ -74,7 +75,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
 
     it("Sends a structured 1.0 CloudEvent if specified", () => {
       emitter.send(event, { mode: "structured" })
-        .then((response) => {
+        .then((response: { data: { [k: string]: string | {}, data: { lunchBreak: string } } }) => {
           // A structured message will have a cloud event content type
           expect(response.data["content-type"]).to.equal(DEFAULT_CE_CONTENT_TYPE);
           // Ensure other CE headers don't exist - just testing for ID
@@ -88,7 +89,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
     it("Sends to an alternate URL if specified", () => {
       nock(receiver)
         .post("/alternate")
-        .reply(function(uri, requestBody) {
+        .reply(function (uri, requestBody: {}) {
           // return the request body and the headers so they can be
           // examined in the test
           if (typeof requestBody === "string") {
@@ -102,7 +103,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
         });
 
       emitter.send(event, { mode: "structured", url: `${receiver}alternate` })
-        .then((response) => {
+        .then((response: { [k: string]: string | {}, data: { [k: string]: string | {}, specversion: string, data: { lunchBreak: string }} }) => {
           // A structured message will have a cloud event content type
           expect(response.data["content-type"]).to.equal(DEFAULT_CE_CONTENT_TYPE);
           // Ensure other CE headers don't exist - just testing for ID
@@ -127,7 +128,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
     event.addExtension(ext2Name, ext2Value);
 
     it("Sends a binary 0.3 CloudEvent", () => {
-      emitter.send(event).then((response) => {
+      emitter.send(event).then((response: { data: { lunchBreak: string, [k:string]: string }}) => {
         // A binary message will have a ce-id header
         expect(response.data[BINARY_HEADERS_03.ID]).to.equal(event.id);
         expect(response.data[BINARY_HEADERS_03.SPEC_VERSION]).to.equal(SPEC_V03);
@@ -146,8 +147,8 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
     });
 
     it("Sends a structured 0.3 CloudEvent if specified", () => {
-      emitter.send(event, { mode: "structured", foo: "bar" })
-        .then((response) => {
+      emitter.send(event, { mode: "structured" })
+        .then((response: { data: { [k:string]: any, specversion: string, data: { lunchBreak: string } }}) => {
           // A structured message will have a cloud event content type
           expect(response.data["content-type"]).to.equal(DEFAULT_CE_CONTENT_TYPE);
           // Ensure other CE headers don't exist - just testing for ID
@@ -161,7 +162,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
     it("Sends to an alternate URL if specified", () => {
       nock(receiver)
         .post("/alternate")
-        .reply(function(uri, requestBody) {
+        .reply(function (uri, requestBody: {}) {
           // return the request body and the headers so they can be
           // examined in the test
           if (typeof requestBody === "string") {
@@ -175,7 +176,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
         });
 
       emitter.send(event, { mode: "structured", url: `${receiver}alternate` })
-        .then((response) => {
+        .then((response: { data: { specversion: string, data: { lunchBreak: string }, [k:string]: any }}) => {
           // A structured message will have a cloud event content type
           expect(response.data["content-type"]).to.equal(DEFAULT_CE_CONTENT_TYPE);
           // Ensure other CE headers don't exist - just testing for ID

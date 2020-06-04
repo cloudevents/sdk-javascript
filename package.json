@@ -9,11 +9,12 @@
     "prelint": "npm run build",
     "lint": "standardx src examples",
     "fix": "standardx --fix",
-    "pretest": "npm run lint",
+    "pretest": "npm run lint && npm run test:ts",
     "test": "mocha test/**/*.js",
+    "test:ts": "mocha --require ts-node/register ./test-ts/**/*.ts",
     "coverage": "nyc --reporter=lcov --reporter=text npm run test",
     "coverage-publish": "wget -qO - https://coverage.codacy.com/get.sh | bash -s report -l JavaScript -r coverage/lcov.info",
-    "generate-docs": "typedoc --tsconfig ./tsconfig.json src",
+    "generate-docs": "typedoc --tsconfig ./tsconfig.json --plugin typedoc-plugin-markdown src",
     "release": "standard-version",
     "prepublish": "npm run build"
   },
@@ -101,9 +102,10 @@
     "uuid": "~8.0.0"
   },
   "devDependencies": {
-    "@paztis/typedoc": "^0.1.6",
     "@types/ajv": "^1.0.0",
     "@types/axios": "^0.14.0",
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^7.0.2",
     "@types/node": "^13.13.9",
     "chai": "~4.2.0",
     "eslint-config-standard": "^14.1.1",
@@ -114,6 +116,9 @@
     "nyc": "~15.0.0",
     "standard-version": "^7.1.0",
     "standardx": "^5.0.0",
+    "ts-node": "^8.10.2",
+    "typedoc": "^0.17.7",
+    "typedoc-plugin-markdown": "^2.2.17",
     "typescript": "^3.8.3"
   },
   "publishConfig": {

@@ -1,5 +1,7 @@
-const { expect } = require("chai");
-const { CloudEvent, HTTPReceiver } = require("../../../index.js");
+import "mocha";
+import { expect } from "chai";
+import { CloudEvent, HTTPReceiver } from "..";
+import { CloudEventV1 } from "../lib/v1";
 const {
   HEADER_CONTENT_TYPE,
   DEFAULT_CONTENT_TYPE,
@@ -7,8 +9,8 @@ const {
   DEFAULT_SPEC_VERSION_HEADER,
   BINARY_HEADERS_03,
   BINARY_HEADERS_1
-} = require("../../../lib/bindings/http/constants.js");
-const ValidationError = require("../../../lib/bindings/http/validation/validation_error.js");
+} = require("../lib/bindings/http/constants");
+const ValidationError = require("../lib/bindings/http/validation/validation_error.js");
 
 const receiver = new HTTPReceiver();
 const id = "1234";
@@ -140,7 +142,7 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
   });
 });
 
-function validateEvent(event, specversion) {
+function validateEvent(event: CloudEventV1, specversion: string) {
   expect(event instanceof CloudEvent).to.equal(true);
   expect(event.id).to.equal(id);
   expect(event.type).to.equal(type);

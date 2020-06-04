@@ -1,18 +1,45 @@
-const { CloudEvent } = require("../");
-const { SPEC_V1, SPEC_V03 } = require("../lib/bindings/http/constants.js");
+import { expect } from "chai";
+import { CloudEvent } from "../";
+import { CloudEventV03Attributes } from "../lib/v03";
+import { CloudEventV1Attributes } from "../lib/v1";
 
-const { expect } = require("chai");
+const { SPEC_V1, SPEC_V03 } = require("../lib/bindings/http/constants");
 
-const fixture = {
-  source: "http://unit.test",
-  type: "org.cncf.cloudevents.example"
+interface Message {
+  type: string;
+  subject: string;
+  data: any;
+  source: string;
+  dataContentType: string;
+}
+
+const type = "org.cncf.cloudevents.example";
+const source = "http://unit.test";
+
+const message: Message = {
+  type,
+  source,
+  subject: "greeting",
+  data: {
+      hello: "world"
+  },
+  dataContentType: "application/json"
 };
 
-describe("A 1.0 CloudEvent", () => {
-  it("must be created with a source and type", () => {
-    expect(() => new CloudEvent()).to.throw(TypeError, "event type and source are required");
-  });
+const fixture: CloudEventV1Attributes|CloudEventV03Attributes = {
+  source,
+  type
+};
 
+describe("A CloudEvent", () => {
+  it("Can be constructed with a typed Message", () => {
+    const ce = new CloudEvent(message);
+    expect(ce.type).to.equal(type);
+    expect(ce.source).to.equal(source);
+  });
+});
+
+describe("A 1.0 CloudEvent", () => {
   it("has retreivable source and type attributes", () => {
     const ce = new CloudEvent(fixture);
     expect(ce.source).to.equal("http://unit.test");
@@ -86,9 +113,10 @@ describe("A 1.0 CloudEvent", () => {
     expect(ce.data).to.equal(data);
   });
 
-  it("has extensions as an empty array by default", () => {
+  it("has extensions as an empty object by default", () => {
     const ce = new CloudEvent(fixture);
-    expect(ce.extensions).to.be.an('array').that.has.a.lengthOf(0);
+    expect(ce.extensions).to.be.an('object')
+    expect(Object.keys(ce.extensions).length).to.equal(0);
   });
 
   it("throws ValidationError if the CloudEvent does not conform to the schema");
@@ -98,13 +126,7 @@ describe("A 1.0 CloudEvent", () => {
 
 
 describe("A 0.3 CloudEvent", () => {
-
-  const specversion = { specversion: SPEC_V03 };
-  const v03fixture = { ...specversion, ...fixture };
-
-  it("must be created with a source and type", () => {
-    expect(() => new CloudEvent(specversion)).to.throw(TypeError, "event type and source are required");
-  });
+  const v03fixture: CloudEventV03Attributes = { specversion: SPEC_V03, ...fixture };
 
   it("has retreivable source and type attributes", () => {
     const ce = new CloudEvent(v03fixture);

@@ -16,9 +16,11 @@
   "include": [
     "src/**/*.ts"
   ],
-  "exclude": [],
+  "exclude": [
+    "node_modules"
+  ],
   "typedocOptions": {
     "out": "docs",
-    "mode": "library"
+    "mode": "file"
   }
 }

@@ -36,7 +36,7 @@ binary and structured events in either the 1.0 or 0.3 protocol formats.
 ```js
 const {
   CloudEvent,
-  HTTPReceiever
+  HTTPReceiver
 } = require("cloudevents-sdk");
 
 // Create a receiver to accept events over HTTP

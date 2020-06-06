@@ -1,9 +1,11 @@
 class Base64Parser {
-  constructor(decorator) {
+  decorator: any;
+
+  constructor(decorator: any) {
     this.decorator = decorator;
   }
 
-  parse(payload) {
+  parse(payload: any): any {
     let payloadToParse = payload;
     if (this.decorator) {
       payloadToParse = this.decorator.parse(payload);

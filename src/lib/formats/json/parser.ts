@@ -2,16 +2,17 @@ const {
   isString,
   isDefinedOrThrow,
   isStringOrObjectOrThrow
-} = require("../../bindings/http/validation/fun.js");
+} = require("../../bindings/http/validation/fun");
 const ValidationError = require("../../bindings/http/validation/validation_error.js");
 
 const invalidPayloadTypeError = new ValidationError("invalid payload type, allowed are: string or object");
 const nullOrUndefinedPayload = new ValidationError("null or undefined payload");
 
-const asJSON = (v) => (isString(v) ? JSON.parse(v) : v);
+const asJSON = (v: object|string) => (isString(v) ? JSON.parse(v as string) : v);
 
 class JSONParser {
-  constructor(decorator) {
+  decorator: any
+  constructor(decorator: Base64Parser) {
     this.decorator = decorator;
   }
 
@@ -20,7 +21,7 @@ class JSONParser {
    * @param {object|string} payload the JSON payload
    * @return {object} the parsed JSON payload.
    */
-  parse(payload) {
+  parse(payload: object|string) {
     if (this.decorator) {
       payload = this.decorator.parse(payload);
     }

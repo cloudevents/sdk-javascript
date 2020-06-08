@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.2](https://github.com/cloudevents/sdk-javascript/compare/v2.0.1...v2.0.2) (2020-06-08)
+
+
+### Bug Fixes
+
+* add correct types to improve TypeScript behavior ([#202](https://github.com/cloudevents/sdk-javascript/issues/202)) ([da365e0](https://github.com/cloudevents/sdk-javascript/commit/da365e09ebcb493f63e6962800230899f1b978ad))
+* fix references to constants - remove .js extension ([#200](https://github.com/cloudevents/sdk-javascript/issues/200)) ([c757a2b](https://github.com/cloudevents/sdk-javascript/commit/c757a2bce1e5432c420db7a4ae4755058964cff7))
+* use /lib in gitignore so src/lib is not ignored ([#199](https://github.com/cloudevents/sdk-javascript/issues/199)) ([fba3294](https://github.com/cloudevents/sdk-javascript/commit/fba3294ce04a30be0e5ab551a1fa01727dc8d1f8))
+
+
+### Documentation
+
+* **README:** fix example typo ([#208](https://github.com/cloudevents/sdk-javascript/issues/208)) ([9857eda](https://github.com/cloudevents/sdk-javascript/commit/9857eda5ef85e64898f7c742e1ffabb714236d6a)), closes [#173](https://github.com/cloudevents/sdk-javascript/issues/173)
+
+
+### Miscellaneous
+
+* ts formatter ([#210](https://github.com/cloudevents/sdk-javascript/issues/210)) ([90782a9](https://github.com/cloudevents/sdk-javascript/commit/90782a9e17dbd293d379f0ec134cf7fb06d0f36f))
+
 ### [2.0.1](https://github.com/cloudevents/sdk-javascript/compare/v2.0.0...v2.0.1) (2020-06-01)
 
 

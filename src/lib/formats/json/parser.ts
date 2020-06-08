@@ -11,7 +11,7 @@ const nullOrUndefinedPayload = new ValidationError("null or undefined payload");
 const asJSON = (v: object|string) => (isString(v) ? JSON.parse(v as string) : v);
 
 class JSONParser {
-  decorator: any
+  decorator: Base64Parser
   constructor(decorator: Base64Parser) {
     this.decorator = decorator;
   }

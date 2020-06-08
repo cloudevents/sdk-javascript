@@ -21,6 +21,7 @@
   ],
   "typedocOptions": {
     "out": "docs",
-    "mode": "file"
+    "mode": "file",
+    "theme": "node_modules/typedoc-clarity-theme/bin"
   }
 }

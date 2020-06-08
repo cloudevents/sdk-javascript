@@ -1,0 +1,27 @@
+name: API Docs
+
+on: release
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Generate API documentation
+        run: npm install && npm run generate-docs
+      -
+        name: Deploy to GitHub Pages
+        if: success()
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: gh-pages
+          build_dir: docs
+          commit_message: |
+            Deploy to GitHub Pages
+            Signed-off-by: Lance Ball <lball@redhat.com>
+          allow_empty_commit: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

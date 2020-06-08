@@ -18,7 +18,7 @@ export type CE = CloudEventV1 | CloudEventV1Attributes | CloudEventV03 | CloudEv
 export class CloudEvent {
   spec: any;
   formatter: any;
-  extensions: {};
+  extensions: object;
 
   /**
    * Creates a new CloudEvent instance
@@ -33,6 +33,7 @@ export class CloudEvent {
    * @param {string} [event.schemaURL]  The URI of the schema that the event data adheres to (v0.3 events)
    * @param {string} [event.dataContentEncoding] The content encoding for the event data (v0.3 events)
    * @param {string} [event.specversion] The CloudEvent specification version for this event - default: 1.0
+   * @param {object} [event.extensions] The CloudEvent extensions for this event
    * @param {*} [event.data] The event payload
    */
   constructor(event: CE) {
@@ -81,7 +82,13 @@ export class CloudEvent {
       this.time = event.time;
     }
     this.formatter = new Formatter();
+
     this.extensions = {};
+    if (event.extensions) {
+        for (const key in event.extensions) {
+            this.addExtension(key, event.extensions[key]);
+        }
+    }
   }
 
   /**

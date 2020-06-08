@@ -119,6 +119,16 @@ describe("A 1.0 CloudEvent", () => {
     expect(Object.keys(ce.extensions).length).to.equal(0);
   });
 
+  it("can be constructed with extensions", () => {
+    const extensions = {
+      "extension-key": "extension-value"
+    };
+    const ce = new CloudEvent({
+      extensions, ...fixture
+    });
+    expect(Object.keys(ce.extensions).length).to.equal(1);
+  });
+
   it("throws ValidationError if the CloudEvent does not conform to the schema");
   it("returns a JSON string even if format is invalid");
   it("correctly formats a CloudEvent as JSON");

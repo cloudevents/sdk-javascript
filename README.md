@@ -54,9 +54,9 @@ binary or structured format, and determine what version of the CloudEvents
 specification you want to send the event as.
 
 By default, the `HTTPEmitter` will emit events over HTTP POST using the
-1.0 specification, in binary mode. You can emit 0.3 events by providing
+latest supported specification version, in binary mode. You can emit version specific events by providing
 the specication version in the constructor to `HTTPEmitter`. To send
-structured events, add that string as a parameter to `emitter.sent()`.
+structured events, add that string as a parameter to `emitter.send()`.
 
 ```js
 const { CloudEvent, HTTPEmitter } = require("cloudevents-sdk");

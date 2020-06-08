@@ -6,7 +6,7 @@
 npm start
 ```
 
-## Spec v1.0
+## Latest Supported Spec (v1.0)
 
 
 __A Structured One__

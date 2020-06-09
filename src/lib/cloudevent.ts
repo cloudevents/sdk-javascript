@@ -5,6 +5,7 @@ import Spec1 from "./bindings/http/v1/spec_1.js";
 import Spec03 from "./bindings/http/v03/spec_0_3.js";
 import Formatter from "./formats/json/formatter.js";
 import { isBinary } from "./bindings/http/validation/fun.js";
+import Extensions from "./extensions";
 
 const { SPEC_V1, SPEC_V03 } = require("./bindings/http/constants");
 
@@ -18,7 +19,7 @@ export type CE = CloudEventV1 | CloudEventV1Attributes | CloudEventV03 | CloudEv
 export class CloudEvent {
   spec: any;
   formatter: any;
-  extensions: object;
+  extensions: Extensions;
 
   /**
    * Creates a new CloudEvent instance

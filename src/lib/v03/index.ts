@@ -1,3 +1,5 @@
+import Extensions from "../extensions";
+
 /**
  * The object interface for CloudEvents 0.3.
  * @see https://github.com/cloudevents/spec/blob/v0.3/spec.md
@@ -130,6 +132,8 @@ export interface CloudEventV03Attributes {
   /**
    * [OPTIONAL] CloudEvents extension attributes.
    */
+  extensions?: Extensions;
+
   // tslint:disable-next-line:no-any
   [key: string]: any;
 }

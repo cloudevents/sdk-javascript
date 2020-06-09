@@ -14,7 +14,7 @@
   "author": "fabiojose@gmail.com",
   "license": "Apache-2.0",
   "dependencies": {
-    "cloudevents-sdk": "~1.0.0",
+    "cloudevents-sdk": "~2.0.2",
     "express": "^4.17.1"
   }
 }

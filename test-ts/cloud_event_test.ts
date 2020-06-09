@@ -2,6 +2,7 @@ import { expect } from "chai";
 import { CloudEvent } from "../";
 import { CloudEventV03Attributes } from "../lib/v03";
 import { CloudEventV1Attributes } from "../lib/v1";
+import Extensions from "../lib/extensions";
 
 const { SPEC_V1, SPEC_V03 } = require("../lib/bindings/http/constants");
 
@@ -117,6 +118,17 @@ describe("A 1.0 CloudEvent", () => {
     const ce = new CloudEvent(fixture);
     expect(ce.extensions).to.be.an('object')
     expect(Object.keys(ce.extensions).length).to.equal(0);
+  });
+
+  it("can be constructed with extensions", () => {
+    const extensions: Extensions = {
+      "extension-key": "extension-value"
+    };
+    const ce = new CloudEvent({
+      extensions, ...fixture
+    });
+    expect(Object.keys(ce.extensions).length).to.equal(1);
+    expect(ce.extensions["extension-key"]).to.equal(extensions["extension-key"]);
   });
 
   it("throws ValidationError if the CloudEvent does not conform to the schema");

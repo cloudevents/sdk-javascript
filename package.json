@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "watch": "tsc --project tsconfig.json --watch",
-    "build": "tsc --project tsconfig.json",
+    "build": "tsc --project tsconfig.json && tsc --project tsconfig.browser.json && webpack",
     "prelint": "npm run build",
     "lint": "standardx src examples",
     "fix": "standardx --fix",
@@ -119,7 +119,9 @@
     "standardx": "^5.0.0",
     "ts-node": "^8.10.2",
     "typedoc": "^0.17.7",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   },
   "publishConfig": {
     "access": "public"

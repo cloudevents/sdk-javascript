@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "allowJs": true,                          /* Allow javascript files to be compiled. */
+    "checkJs": false,                          /* Report errors in .js files. */
+    "strict": true,                           /* Enable all strict type-checking options. */
+    "baseUrl": ".",
+    "outDir": "./browser",
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "lib": ["es2016", "dom", "es5"]
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
+}

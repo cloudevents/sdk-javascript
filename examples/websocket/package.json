@@ -1,0 +1,22 @@
+{
+  "name": "websocket-cloudevents",
+  "version": "0.0.1",
+  "description": "An example application that sends and receives CloudEvents over a websocket",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "cloudevents",
+    "example",
+    "websocket"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cloudevents-sdk": "^2.0.2",
+    "got": "^11.3.0",
+    "ws": "^7.3.0"
+  }
+}

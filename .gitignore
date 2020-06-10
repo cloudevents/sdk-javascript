@@ -10,7 +10,7 @@ yarn-error.log*
 index.js
 /lib
 /browser
-/_bundles
+/bundles
 
 # Runtime data
 pids

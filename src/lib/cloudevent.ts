@@ -298,7 +298,7 @@ export class CloudEvent {
    * @param {*} value the value of the extension attribute
    * @returns {void}
    */
-  addExtension(key: string, value: any) {
+  addExtension(key: string, value: any): void {
     this.spec.addExtension(key, value);
     this.extensions = { [key]: value, ...this.extensions };
   }
@@ -308,7 +308,7 @@ export class CloudEvent {
    * @see https://github.com/cloudevents/spec/blob/master/spec.md#extension-context-attributes
    * @returns {Object} the extensions attributes - if none exist will will be {}
    */
-  getExtensions() {
+  getExtensions(): object {
     return this.extensions;
   }
 }

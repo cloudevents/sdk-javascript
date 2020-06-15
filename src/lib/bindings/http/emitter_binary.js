@@ -53,7 +53,7 @@ class BinaryHTTPEmitter {
    * @returns {Promise} Promise with an eventual response from the receiver
    */
   async emit(options, cloudevent) {
-    const config = { ...options, ...defaults };
+    const config = { ...defaults, ...options };
     const headers = config[HEADERS];
 
     this.headerParserMap.forEach((parser, getterName) => {

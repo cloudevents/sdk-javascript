@@ -36,33 +36,32 @@ binary and structured events in either the 1.0 or 0.3 protocol formats.
 ```js
 const {
   CloudEvent,
-  HTTPReceiver
+  Receiver
 } = require("cloudevents-sdk");
 
 // Create a receiver to accept events over HTTP
-const receiver = new HTTPReceiver();
+const receiver = new Receiver();
 
 // body and headers come from an incoming HTTP request, e.g. express.js
 const receivedEvent = receiver.accept(req.headers, req.body);
-console.log(receivedEvent.format());
+console.log(receivedEvent);
 ```
 
 #### Emitting Events
 
-To emit events, you'll need to decide whether the event should be sent in
-binary or structured format, and determine what version of the CloudEvents
-specification you want to send the event as.
+You can send events over HTTP in either binary or structured format.
 
-By default, the `HTTPEmitter` will emit events over HTTP POST using the
-latest supported specification version, in binary mode. You can emit version specific events by providing
-the specication version in the constructor to `HTTPEmitter`. To send
-structured events, add that string as a parameter to `emitter.send()`.
+By default, the `Emitter` will emit events over HTTP POST using the
+binary transport protocol. The `Emitter` will examine the `specversion`
+of the event being sent, and use the appropriate protocol version. To send
+structured events, add `Protocol.HTTPStructured` as a parameter to
+`emitter.send()`.
 
 ```js
-const { CloudEvent, HTTPEmitter } = require("cloudevents-sdk");
+const { CloudEvent, Emitter, Protocol } = require("cloudevents-sdk");
 
 // With only an endpoint URL, this creates a v1 emitter
-const v1Emitter = new HTTPEmitter({
+const emitter = new Emitter({
   url: "https://cloudevents.io/example"
 });
 const event = new CloudEvent({
@@ -70,38 +69,36 @@ const event = new CloudEvent({
 });
 
 // By default, the emitter will send binary events
-v1Emitter.send(event).then((response) => {
+emitter.send(event).then((response) => {
     // handle the response
   }).catch(console.error);
 
 // To send a structured event, just add that as an option
-v1Emitter.send(event, { mode: "structured" })
+emitter.send(event, { protocol: Protocol.HTTPStructured })
   .then((response) => {
     // handle the response
   }).catch(console.error);
 
 // To send an event to an alternate URL, add that as an option
-v1Emitter.send(event, { url: "https://alternate.com/api" })
+emitter.send(event, { url: "https://alternate.com/api" })
   .then((response) => {
     // handle the response
   }).catch(console.error);
 
-// Sending a v0.3 event works the same, just let the emitter know when
-// you create it that you are working with the 0.3 spec
-const v03Emitter = new HTTPEmitter({
-  url: "https://cloudevents.io/example",
-  version: "0.3"
-});
-
-// Again, the default is to send binary events
-// To send a structured event or to an alternate URL, provide those
-// as parameters in a options object as above
-v3Emitter.send(event)
+// Sending a v0.3 event works the same, If your event has a
+// specversion property of Version.V03, then it will be sent
+// using the 0.3 transport protocol
+emitter.send(new CloudEvent({ specversion: Version.V03, source, type }))
   .then((response) => {
     // handle the response
   }).catch(console.error);
-
 ```
+
+### Example Applications
+
+There are a few trivial example applications in
+[the examples folder](https://github.com/cloudevents/sdk-javascript/tree/master/examples).
+There you will find Express.js, TypeScript and Websocket examples.
 
 ## Supported specification features
 

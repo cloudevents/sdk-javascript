@@ -7,7 +7,7 @@ const { CloudEvent } = require("cloudevents-sdk");
 
 const rl = readline.createInterface({
   input: process.stdin,
-  output: process.stdout
+  output: process.stdout,
 });
 
 rl.on("close", (_) => console.log("\n\nConnection closed! Press CTL-C to exit."));
@@ -25,16 +25,16 @@ ws.on("message", function incoming(message) {
 function ask() {
   rl.question("Would you like to see the current weather? Provide a zip code: ", function (zip) {
     console.log("Fetching weather data from server...");
-    ws.send(new CloudEvent({
+    const event = new CloudEvent({
       type: "weather.query",
       source: "/weather.client",
-      data: zip
-    }).toString());
+      data: { zip },
+    });
+    ws.send(event.toString());
   });
 }
 
 function print(data) {
-  data = JSON.parse(data);
   console.log(`
 Current weather for ${data.name}: ${data.weather[0].main}
 ------------------------------------------

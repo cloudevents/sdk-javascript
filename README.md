@@ -43,7 +43,7 @@ const {
 const receiver = new HTTPReceiver();
 
 // body and headers come from an incoming HTTP request, e.g. express.js
-const receivedEvent = receiver.accept(req.body, req.headers);
+const receivedEvent = receiver.accept(req.headers, req.body);
 console.log(receivedEvent.format());
 ```
 

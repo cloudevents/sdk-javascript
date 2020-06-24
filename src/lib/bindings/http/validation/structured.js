@@ -26,7 +26,7 @@ function parse(payload, headers, receiver) {
   const sanityHeaders = sanityAndClone(headers);
   const contentType = sanityHeaders[HEADER_CONTENT_TYPE];
   const parser = receiver.parserByMime[contentType];
-  const incoming = parser.parse(payload);
+  const incoming = { ...parser.parse(payload) };
   const event = {
     type: undefined,
     source: undefined

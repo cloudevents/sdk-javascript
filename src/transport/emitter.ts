@@ -4,6 +4,12 @@ import { Protocol } from ".";
 import { AxiosResponse } from "axios";
 import { Agent } from "http";
 
+/**
+ * Options supplied to the Emitter when sending an event.
+ * In addition to url and protocol, TransportOptions may
+ * also accept custom options that will be passed to the
+ * Node.js http functions.
+ */
 export interface TransportOptions {
   /**
    * The endpoint that will receieve the event.

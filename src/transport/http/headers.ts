@@ -5,6 +5,9 @@ import { Version } from "../../event";
 import { MappedParser } from "../../parsers";
 import CONSTANTS from "../../constants";
 
+/**
+ * An interface representing HTTP headers as key/value string pairs
+ */
 export interface Headers {
   [key: string]: string;
 }

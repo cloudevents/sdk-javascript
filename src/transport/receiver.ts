@@ -7,6 +7,9 @@ import { CloudEventV1 } from "../event/v1";
 import { Protocol } from "./protocols";
 import CONSTANTS from "../constants";
 
+/**
+ * An enum representing the two HTTP transport modes, binary and structured
+ */
 export enum Mode {
   BINARY = "binary",
   STRUCTURED = "structured",

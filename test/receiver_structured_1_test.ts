@@ -1,7 +1,8 @@
 import "mocha";
 import { expect } from "chai";
 
-import { CloudEvent, ValidationError, Version, asBase64 } from "../src";
+import { CloudEvent, ValidationError, Version } from "../src";
+import { asBase64 } from "../src/event/validation";
 import { StructuredHTTPReceiver } from "../src/transport/http/structured_receiver";
 
 const receiver = new StructuredHTTPReceiver(Version.V1);

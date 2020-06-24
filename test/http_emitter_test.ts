@@ -5,7 +5,7 @@ import CONSTANTS from "../src/constants";
 
 const DEFAULT_CE_CONTENT_TYPE = CONSTANTS.DEFAULT_CE_CONTENT_TYPE;
 
-import { CloudEvent, Version, Emitter, Protocol, http } from "../src";
+import { CloudEvent, Version, Emitter, Protocol, headersFor } from "../src";
 import { AxiosResponse } from "axios";
 
 const receiver = "https://cloudevents.io/";
@@ -64,7 +64,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
     });
 
     it("Provides the HTTP headers for a binary event", () => {
-      const headers = http.headersFor(event);
+      const headers = headersFor(event);
       expect(headers[CONSTANTS.CE_HEADERS.TYPE]).to.equal(event.type);
       expect(headers[CONSTANTS.CE_HEADERS.SPEC_VERSION]).to.equal(event.specversion);
       expect(headers[CONSTANTS.CE_HEADERS.SOURCE]).to.equal(event.source);
@@ -161,7 +161,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
     });
 
     it("Provides the HTTP headers for a binary event", () => {
-      const headers = http.headersFor(event);
+      const headers = headersFor(event);
       expect(headers[CONSTANTS.CE_HEADERS.TYPE]).to.equal(event.type);
       expect(headers[CONSTANTS.CE_HEADERS.SPEC_VERSION]).to.equal(event.specversion);
       expect(headers[CONSTANTS.CE_HEADERS.SOURCE]).to.equal(event.source);

@@ -1,7 +1,8 @@
 import "mocha";
 import { expect } from "chai";
 
-import { CloudEvent, ValidationError, Version, asBase64 } from "../src";
+import { CloudEvent, ValidationError, Version } from "../src";
+import { asBase64 } from "../src/event/validation";
 import { BinaryHTTPReceiver } from "../src/transport/http/binary_receiver";
 import CONSTANTS from "../src/constants";
 

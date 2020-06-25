@@ -83,12 +83,12 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0", () =
   describe("Parse", () => {
     it("Throw error when the event does not follow the spec", () => {
       // setup
-      const payload = new CloudEvent({
+      const payload = {
         type,
         source,
         time,
         data,
-      }).toString();
+      };
 
       const headers = {
         "Content-Type": "application/cloudevents+xml",
@@ -101,7 +101,7 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0", () =
     it("Should accept event that follows the spec", () => {
       // setup
       const id = "id-x0dk";
-      const payload = new CloudEvent({
+      const payload = {
         id,
         type,
         source,
@@ -109,7 +109,7 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0", () =
         data,
         dataschema,
         dataContentType: ceContentType,
-      });
+      };
       const headers = {
         "content-type": "application/cloudevents+json",
       };
@@ -125,15 +125,15 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0", () =
     it("Should accept 'extension1'", () => {
       // setup
       const extension1 = "mycustom-ext1";
-      const event = new CloudEvent({
+      const event = {
         type,
         source,
         time,
         data,
         dataschema,
         dataContentType: ceContentType,
-      });
-      event["extension1"] = extension1;
+        extension1,
+      };
 
       const headers = {
         "content-type": "application/cloudevents+json",
@@ -146,14 +146,14 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0", () =
 
     it("Should parse 'data' stringified json to json object", () => {
       // setup
-      const payload = new CloudEvent({
+      const payload = {
         type,
         source,
         time,
         dataschema,
         data: data,
         dataContentType: ceContentType,
-      });
+      };
 
       const headers = {
         "content-type": "application/cloudevents+json",

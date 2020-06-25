@@ -58,7 +58,7 @@ structured events, add `Protocol.HTTPStructured` as a parameter to
 `emitter.send()`.
 
 ```js
-const { CloudEvent, Emitter, Protocol } = require("cloudevents-sdk");
+const { CloudEvent, Emitter, Protocol, Version } = require("cloudevents-sdk");
 
 // With only an endpoint URL, this creates a v1 emitter
 const emitter = new Emitter({

@@ -39,8 +39,8 @@ export class BinaryHTTPReceiver {
 
     if (
       headers[CONSTANTS.CE_HEADERS.SPEC_VERSION] &&
-      headers[CONSTANTS.CE_HEADERS.SPEC_VERSION] != Version.V03 &&
-      headers[CONSTANTS.CE_HEADERS.SPEC_VERSION] != Version.V1
+      headers[CONSTANTS.CE_HEADERS.SPEC_VERSION] !== Version.V03 &&
+      headers[CONSTANTS.CE_HEADERS.SPEC_VERSION] !== Version.V1
     ) {
       throw new ValidationError(`invalid spec version ${headers[CONSTANTS.CE_HEADERS.SPEC_VERSION]}`);
     }
@@ -51,14 +51,15 @@ export class BinaryHTTPReceiver {
     const sanitizedHeaders = validate(headers);
 
     const eventObj: { [key: string]: unknown | string | Record<string, unknown> } = {};
-    const parserMap = this.version === Version.V1 ? v1Parsers : v03Parsers;
+    const parserMap: Record<string, MappedParser> = this.version === Version.V1 ? v1Parsers : v03Parsers;
 
-    parserMap.forEach((mappedParser: MappedParser, header: string) => {
+    for (const header in parserMap) {
       if (sanitizedHeaders[header]) {
+        const mappedParser: MappedParser = parserMap[header];
         eventObj[mappedParser.name] = mappedParser.parser.parse(sanitizedHeaders[header]);
         delete sanitizedHeaders[header];
       }
-    });
+    }
 
     const parser = parserByContentType[eventObj.datacontenttype as string];
     const parsedPayload = parser.parse(payload);

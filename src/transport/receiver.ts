@@ -74,6 +74,12 @@ export class Receiver {
   }
 }
 
+/**
+ * Determines the HTTP transport mode (binary or structured) based
+ * on the incoming HTTP headers.
+ * @param {Headers} headers the incoming HTTP headers
+ * @returns {Mode} the transport mode
+ */
 function getMode(headers: Headers): Mode {
   const contentType = headers[CONSTANTS.HEADER_CONTENT_TYPE];
   if (contentType && contentType.startsWith(CONSTANTS.MIME_CE)) {
@@ -85,6 +91,14 @@ function getMode(headers: Headers): Mode {
   throw new ValidationError("no cloud event detected");
 }
 
+/**
+ * Determines the version of an incoming CloudEvent based on the
+ * HTTP headers or HTTP body, depending on transport mode.
+ * @param {Mode} mode the HTTP transport mode
+ * @param {Headers} headers the incoming HTTP headers
+ * @param {Record<string, unknown>} body the HTTP request body
+ * @returns {Version} the CloudEvent specification version
+ */
 function getVersion(
   mode: Mode,
   headers: Headers,

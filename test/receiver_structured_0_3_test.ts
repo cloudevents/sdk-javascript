@@ -66,7 +66,7 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
 
     it("Throw error data content encoding is base64, but 'data' is not", () => {
       // setup
-      const event = new CloudEvent({
+      const event = {
         specversion: Version.V03,
         type,
         source,
@@ -75,7 +75,7 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
         datacontentencoding: "base64",
         schemaurl,
         data: "No base 64 value",
-      });
+      };
 
       const attributes = {
         "Content-Type": "application/cloudevents+json",
@@ -182,7 +182,7 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
     });
 
     it("Should parse 'data' stringfied json to json object", () => {
-      const payload = new CloudEvent({
+      const payload = {
         specversion: Version.V03,
         type,
         source,
@@ -190,7 +190,7 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
         schemaurl,
         datacontenttype: ceContentType,
         data: JSON.stringify(data),
-      });
+      };
       const headers = {
         "content-type": "application/cloudevents+json",
       };

@@ -1,6 +1,6 @@
 import { CloudEvent, Version } from "../..";
 import { Headers, sanitize } from "./headers";
-import { Parser, JSONParser } from "../../parsers";
+import { Parser, JSONParser, MappedParser } from "../../parsers";
 import { parserByContentType } from "../../parsers";
 import { structuredParsers as v1Parsers } from "./v1/parsers";
 import { structuredParsers as v03Parsers } from "./v03/parsers";
@@ -52,17 +52,23 @@ export class StructuredHTTPReceiver {
     const contentType = sanitizedHeaders[CONSTANTS.HEADER_CONTENT_TYPE];
     const parser: Parser = contentType ? parserByContentType[contentType] : new JSONParser();
     if (!parser) throw new ValidationError(`invalid content type ${sanitizedHeaders[CONSTANTS.HEADER_CONTENT_TYPE]}`);
-    const incoming = parser.parse(payload) as Record<string, unknown>;
+    const incoming = { ...(parser.parse(payload) as Record<string, unknown>) };
+    // eslint-disable-next-line no-console
+    console.log(incoming);
 
     const eventObj: { [key: string]: unknown } = {};
-    const parserMap = this.version === Version.V1 ? v1Parsers : v03Parsers;
+    const parserMap: Record<string, MappedParser> = this.version === Version.V1 ? v1Parsers : v03Parsers;
 
-    parserMap.forEach((value, key) => {
-      if (incoming[key]) {
-        eventObj[value.name] = value.parser.parse(incoming[key] as string);
-        delete incoming[key];
+    for (const key in parserMap) {
+      const property = incoming[key];
+      if (property) {
+        const parser: MappedParser = parserMap[key];
+        eventObj[parser.name] = parser.parser.parse(property as string);
       }
-    });
+      delete incoming[key];
+    }
+
+    // extensions are what we have left after processing all other properties
     for (const key in incoming) {
       eventObj[key] = incoming[key];
     }

@@ -29,7 +29,7 @@ export function validateV03(event: CloudEventV03): boolean {
 function checkDataContentEncoding(event: CloudEventV03): boolean {
   if (event.datacontentencoding) {
     // we only support base64
-    const encoding = event.datacontentencoding.toLocaleLowerCase("en-US");
+    const encoding = event.datacontentencoding.toLocaleLowerCase();
     if (encoding !== CONSTANTS.ENCODING_BASE64) {
       throw new ValidationError("invalid payload", [`Unsupported content encoding: ${encoding}`]);
     } else {

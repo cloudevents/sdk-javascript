@@ -53,8 +53,6 @@ export class StructuredHTTPReceiver {
     const parser: Parser = contentType ? parserByContentType[contentType] : new JSONParser();
     if (!parser) throw new ValidationError(`invalid content type ${sanitizedHeaders[CONSTANTS.HEADER_CONTENT_TYPE]}`);
     const incoming = { ...(parser.parse(payload) as Record<string, unknown>) };
-    // eslint-disable-next-line no-console
-    console.log(incoming);
 
     const eventObj: { [key: string]: unknown } = {};
     const parserMap: Record<string, MappedParser> = this.version === Version.V1 ? v1Parsers : v03Parsers;

@@ -13,24 +13,29 @@ console.log("WebSocket server started. Waiting for events.");
 wss.on("connection", function connection(ws) {
   console.log("Connection received");
   ws.on("message", function incoming(message) {
+    console.log(`Message received: ${message}`);
     const event = new CloudEvent(JSON.parse(message));
-    console.log(`Message received: ${event.toString()}`);
-    fetch(event.data)
+    fetch(event.data.zip)
       .then((weather) => {
-        ws.send(new CloudEvent({
+        const response = new CloudEvent({
           dataContentType: "application/json",
           type: "current.weather",
           source: "/weather.server",
-          data: weather
-        }).toString());
+          data: weather,
+        });
+        ws.send(JSON.stringify(response));
       })
       .catch((err) => {
         console.error(err);
-        ws.send(new CloudEvent({
-          type: "weather.error",
-          source: "/weather.server",
-          data: err.toString()
-        }).toString());
+        ws.send(
+          JSON.stringify(
+            new CloudEvent({
+              type: "weather.error",
+              source: "/weather.server",
+              data: err.toString(),
+            }),
+          ),
+        );
       });
   });
 });
@@ -39,7 +44,7 @@ function fetch(zip) {
   const query = `${api}?zip=${zip}&appid=${key}&units=imperial`;
   return new Promise((resolve, reject) => {
     got(query)
-      .then((response) => resolve(response.body))
+      .then((response) => resolve(JSON.parse(response.body)))
       .catch((err) => reject(err.message));
   });
 }

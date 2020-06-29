@@ -2,13 +2,14 @@
 <html>
   <head>
     <title>CloudEvent Example</title>
-    <script src="../../bundles/cloudevents-sdk.js"></script>
+    <script src="../../_bundles/cloudevents-sdk.js"></script>
     <script>
       const CloudEvent = window['cloudevents-sdk'].CloudEvent;
+      const Version = window['cloudevents-sdk'].Version;
       const socket = new WebSocket("ws://localhost:8080");
 
       function print(weather) {
-        const data = JSON.parse(weather);
+        const data = weather;
         const summary = `
 <h2>Current weather for ${data.name}: ${data.weather[0].main}</h2>
 <hr/>
@@ -23,7 +24,7 @@ and the wind is blowing at ${Math.round(data.wind.speed)}mph.
 
       function initialize() {
         socket.onmessage = function(message) {
-          console.log(message.data)
+          console.log(message.data);
           const event = new CloudEvent(JSON.parse(message.data));
           if (event.type === "weather.error") {
             console.error(`Error: ${event.data}`);
@@ -37,11 +38,13 @@ and the wind is blowing at ${Math.round(data.wind.speed)}mph.
         input.addEventListener("keyup", function(event) {
           if (event.keyCode === 13) {
             event.preventDefault();
-            socket.send(new CloudEvent({
+            const ce = new CloudEvent({
               type: "weather.query",
               source: "/weather.client",
-              data: input.value
-            }).toString());
+              data: { zip: input.value }
+            });
+            console.log(ce);
+            socket.send(JSON.stringify(ce));
           }
         });
 

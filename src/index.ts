@@ -1,11 +1,31 @@
-import { CloudEvent } from "./lib/cloudevent";
-import { HTTPReceiver } from "./lib/bindings/http/http_receiver";
-import { HTTPEmitter } from "./lib/bindings/http/http_emitter";
-const Constants = require("./lib/bindings/http/constants");
-
-export = {
+import {
   CloudEvent,
-  HTTPReceiver,
-  HTTPEmitter,
-  Constants
+  CloudEventV03,
+  CloudEventV03Attributes,
+  CloudEventV1,
+  CloudEventV1Attributes,
+  ValidationError,
+  Version,
+} from "./event";
+
+import { Emitter, Receiver, Mode, Protocol, TransportOptions } from "./transport";
+import { Headers, headersFor } from "./transport/http/headers";
+
+export {
+  // From event
+  CloudEvent,
+  CloudEventV03,
+  CloudEventV03Attributes,
+  CloudEventV1,
+  CloudEventV1Attributes,
+  Version,
+  ValidationError,
+  // From transport
+  Emitter,
+  Receiver,
+  Mode,
+  Protocol,
+  TransportOptions,
+  Headers,
+  headersFor,
 };

@@ -2,26 +2,23 @@
   "name": "cloudevents-sdk",
   "version": "2.0.2",
   "description": "CloudEvents SDK for JavaScript",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "watch": "tsc --project tsconfig.json --watch",
     "build": "tsc --project tsconfig.json && tsc --project tsconfig.browser.json && webpack",
-    "prelint": "npm run build",
-    "lint": "standardx src examples",
-    "fix": "standardx --fix",
-    "pretest": "npm run lint && npm run test:ts",
-    "test": "mocha test/**/*.js",
-    "test:ts": "mocha --require ts-node/register ./test-ts/**/*.ts",
+    "lint": "eslint 'src/**/*.{js,ts}' 'test/**/*.{js,ts}'",
+    "lint:fix": "eslint 'src/**/*.{js,ts}' 'test/**/*.{js,ts}' --fix",
+    "pretest": "npm run lint",
+    "test": "mocha --require ts-node/register ./test/**/*.ts",
     "coverage": "nyc --reporter=lcov --reporter=text npm run test",
     "coverage-publish": "wget -qO - https://coverage.codacy.com/get.sh | bash -s report -l JavaScript -r coverage/lcov.info",
     "generate-docs": "typedoc --excludeNotDocumented --out docs src",
     "release": "standard-version",
-    "prepublish": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "files": [
-    "index.js",
-    "index.d.ts",
-    "lib"
+    "dist",
+    "bundles"
   ],
   "standard-version": {
     "types": [
@@ -108,15 +105,21 @@
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.13.9",
+    "@types/uuid": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^3.4.0",
+    "@typescript-eslint/parser": "^3.4.0",
     "chai": "~4.2.0",
+    "eslint": "^7.3.0",
+    "eslint-config-prettier": "^6.11.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
     "mocha": "~7.1.1",
     "nock": "~12.0.3",
     "nyc": "~15.0.0",
+    "prettier": "^2.0.5",
     "standard-version": "^7.1.0",
-    "standardx": "^5.0.0",
     "ts-node": "^8.10.2",
     "typedoc": "^0.17.7",
     "typescript": "^3.8.3",
@@ -126,5 +129,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "types": "index.d.ts"
+  "types": "./dist/index.d.ts"
 }

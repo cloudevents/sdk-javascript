@@ -25,7 +25,7 @@ const ext1Value = "foobar";
 const ext2Name = "extension2";
 const ext2Value = "acme";
 
-const cloudevent = new CloudEvent({
+let cloudevent = new CloudEvent({
   specversion: Version.V1,
   type,
   source,
@@ -35,8 +35,7 @@ const cloudevent = new CloudEvent({
   dataschema,
   data,
 });
-cloudevent[ext1Name] = ext1Value;
-cloudevent[ext2Name] = ext2Value;
+cloudevent = cloudevent.cloneWith({ [ext1Name]: ext1Value, [ext2Name]: ext2Value });
 
 const dataString = ")(*~^my data for ce#@#$%";
 
@@ -81,9 +80,9 @@ describe("HTTP Transport Binding - Version 1.0", () => {
             source,
             datacontenttype: "text/plain",
             data: bindata,
+            [ext1Name]: ext1Value,
+            [ext2Name]: ext2Value,
           });
-          binevent[ext1Name] = ext1Value;
-          binevent[ext2Name] = ext2Value;
 
           return emitStructured(binevent, httpcfg).then((response: AxiosResponse) => {
             expect(JSON.parse(response.config.data).data_base64).to.equal(expected);
@@ -96,9 +95,9 @@ describe("HTTP Transport Binding - Version 1.0", () => {
             source,
             datacontenttype: "text/plain",
             data: Uint32Array.from(dataString as string, (c) => c.codePointAt(0) as number),
+            [ext1Name]: ext1Value,
+            [ext2Name]: ext2Value,
           });
-          binevent[ext1Name] = ext1Value;
-          binevent[ext2Name] = ext2Value;
 
           return emitStructured(binevent, httpcfg).then((response: AxiosResponse) => {
             expect(JSON.parse(response.config.data)).to.have.property("data_base64");

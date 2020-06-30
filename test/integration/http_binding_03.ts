@@ -38,9 +38,9 @@ const cloudevent = new CloudEvent({
   dataschema: "",
   datacontentencoding: "",
   data_base64: "",
+  [ext1Name]: ext1Value,
+  [ext2Name]: ext2Value,
 });
-cloudevent[ext1Name] = ext1Value;
-cloudevent[ext2Name] = ext2Value;
 
 const cebase64 = new CloudEvent({
   specversion: Version.V03,
@@ -51,9 +51,9 @@ const cebase64 = new CloudEvent({
   time,
   schemaurl,
   data: dataBase64,
+  [ext1Name]: ext1Value,
+  [ext2Name]: ext2Value,
 });
-cebase64[ext1Name] = ext1Value;
-cebase64[ext2Name] = ext2Value;
 
 const webhook = "https://cloudevents.io/webhook";
 const httpcfg = {

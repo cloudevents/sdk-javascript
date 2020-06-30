@@ -139,7 +139,7 @@ describe("A 0.3 CloudEvent", () => {
   });
 
   it("can be constructed with a datacontentencoding", () => {
-    const ce = new CloudEvent({ datacontentencoding: "Base64", ...v03fixture });
+    const ce = new CloudEvent({ datacontentencoding: "Base64", ...v03fixture, data: "SSB3YXMgZnVubnkg8J+Ygg==" });
     expect(ce.datacontentencoding).to.equal("Base64");
   });
 

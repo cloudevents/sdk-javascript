@@ -1,6 +1,6 @@
 import "mocha";
 import { expect } from "chai";
-import { CloudEvent, Receiver, Emitter, Version } from "../src";
+import { CloudEvent, Receiver, Emitter, Version } from "../../src";
 
 const fixture = {
   type: "org.cloudevents.test",

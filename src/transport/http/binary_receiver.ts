@@ -62,12 +62,15 @@ export class BinaryHTTPReceiver {
     }
 
     const parser = parserByContentType[eventObj.datacontenttype as string];
+    if (!parser) {
+      throw new ValidationError(`no parser found for content type ${eventObj.datacontenttype}`);
+    }
     const parsedPayload = parser.parse(payload);
 
     // Every unprocessed header can be an extension
     for (const header in sanitizedHeaders) {
       if (header.startsWith(CONSTANTS.EXTENSIONS_PREFIX)) {
-        eventObj[header.substring(CONSTANTS.EXTENSIONS_PREFIX.length)] = sanitizedHeaders[header];
+        eventObj[header.substring(CONSTANTS.EXTENSIONS_PREFIX.length)] = headers[header];
       }
     }
 

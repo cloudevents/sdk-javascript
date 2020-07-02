@@ -1,18 +1,17 @@
 import "mocha";
 import { expect } from "chai";
 
-import { CloudEvent, ValidationError, Version } from "../src";
-import { asBase64 } from "../src/event/validation";
-import { BinaryHTTPReceiver } from "../src/transport/http/binary_receiver";
-import CONSTANTS from "../src/constants";
+import { CloudEvent, ValidationError, Version } from "../../src";
+import { BinaryHTTPReceiver } from "../../src/transport/http/binary_receiver";
+import CONSTANTS from "../../src/constants";
 
-const receiver = new BinaryHTTPReceiver(Version.V1);
+const receiver = new BinaryHTTPReceiver(Version.V03);
 
-describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
+describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
   describe("Check", () => {
     it("Throw error when payload arg is null or undefined", () => {
       // setup
-      const payload = null;
+      const payload = undefined;
       const attributes = {};
 
       // act and assert
@@ -49,7 +48,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       // setup
       const payload = {};
       const attributes = {
-        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V03,
         [CONSTANTS.CE_HEADERS.SOURCE]: "source",
         [CONSTANTS.CE_HEADERS.ID]: "id",
         [CONSTANTS.HEADER_CONTENT_TYPE]: "application/json",
@@ -84,7 +83,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       const payload = {};
       const attributes = {
         [CONSTANTS.CE_HEADERS.TYPE]: "type",
-        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V03,
         [CONSTANTS.CE_HEADERS.ID]: "id",
         [CONSTANTS.HEADER_CONTENT_TYPE]: "application/json",
       };
@@ -101,7 +100,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       const payload = {};
       const attributes = {
         [CONSTANTS.CE_HEADERS.TYPE]: "type",
-        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V03,
         [CONSTANTS.CE_HEADERS.SOURCE]: "source",
         [CONSTANTS.HEADER_CONTENT_TYPE]: "application/json",
       };
@@ -110,7 +109,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       expect(receiver.parse.bind(receiver, payload, attributes)).to.throw(ValidationError, "header 'ce-id' not found");
     });
 
-    it("Throw error when spec is not 1.0", () => {
+    it("Throw error when spec is not 0.3", () => {
       // setup
       const payload = {};
       const attributes = {
@@ -130,7 +129,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       const payload = {};
       const attributes = {
         [CONSTANTS.CE_HEADERS.TYPE]: "type",
-        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V03,
         [CONSTANTS.CE_HEADERS.SOURCE]: "source",
         [CONSTANTS.CE_HEADERS.ID]: "id",
         [CONSTANTS.HEADER_CONTENT_TYPE]: "text/html",
@@ -140,28 +139,28 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       expect(receiver.parse.bind(receiver, payload, attributes)).to.throw(ValidationError, "invalid content type");
     });
 
-    it("No error when content-type is unspecified", () => {
+    it("No error when all required headers are in place", () => {
+      // setup
       const payload = {};
       const attributes = {
         [CONSTANTS.CE_HEADERS.TYPE]: "type",
-        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V03,
         [CONSTANTS.CE_HEADERS.SOURCE]: "source",
         [CONSTANTS.CE_HEADERS.ID]: "id",
+        [CONSTANTS.HEADER_CONTENT_TYPE]: "application/json",
       };
 
       // act and assert
       expect(receiver.parse.bind(receiver, payload, attributes)).to.not.throw();
     });
 
-    it("No error when all required headers are in place", () => {
-      // setup
+    it("No error when content-type is unspecified", () => {
       const payload = {};
       const attributes = {
         [CONSTANTS.CE_HEADERS.TYPE]: "type",
-        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V03,
         [CONSTANTS.CE_HEADERS.SOURCE]: "source",
         [CONSTANTS.CE_HEADERS.ID]: "id",
-        [CONSTANTS.HEADER_CONTENT_TYPE]: "application/json",
       };
 
       // act and assert
@@ -177,11 +176,11 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
       const attributes = {
         [CONSTANTS.CE_HEADERS.TYPE]: "type",
-        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V03,
         [CONSTANTS.CE_HEADERS.SOURCE]: "source",
         [CONSTANTS.CE_HEADERS.ID]: "id",
         [CONSTANTS.CE_HEADERS.TIME]: "2019-06-16T11:42:00Z",
-        [CONSTANTS.BINARY_HEADERS_1.DATA_SCHEMA]: "http://schema.registry/v1",
+        [CONSTANTS.BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
         [CONSTANTS.HEADER_CONTENT_TYPE]: "application/json",
       };
 
@@ -199,11 +198,11 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
       const attributes = {
         [CONSTANTS.CE_HEADERS.TYPE]: "type",
-        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V03,
         [CONSTANTS.CE_HEADERS.SOURCE]: "source",
         [CONSTANTS.CE_HEADERS.ID]: "id",
         [CONSTANTS.CE_HEADERS.TIME]: "2019-06-16T11:42:00Z",
-        [CONSTANTS.BINARY_HEADERS_1.DATA_SCHEMA]: "http://schema.registry/v1",
+        [CONSTANTS.BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
         [CONSTANTS.HEADER_CONTENT_TYPE]: "application/json",
       };
 
@@ -211,7 +210,7 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       const actual = receiver.parse(payload, attributes);
 
       // assert
-      expect(actual.specversion).to.equal(Version.V1);
+      expect(actual.specversion).to.equal(Version.V03);
     });
 
     it("CloudEvent contains 'source'", () => {
@@ -221,11 +220,11 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
       const attributes = {
         [CONSTANTS.CE_HEADERS.TYPE]: "type",
-        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V03,
         [CONSTANTS.CE_HEADERS.SOURCE]: "/source",
         [CONSTANTS.CE_HEADERS.ID]: "id",
         [CONSTANTS.CE_HEADERS.TIME]: "2019-06-16T11:42:00Z",
-        [CONSTANTS.BINARY_HEADERS_1.DATA_SCHEMA]: "http://schema.registry/v1",
+        [CONSTANTS.BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
         [CONSTANTS.HEADER_CONTENT_TYPE]: "application/json",
       };
 
@@ -243,11 +242,11 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
       const attributes = {
         [CONSTANTS.CE_HEADERS.TYPE]: "type",
-        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V03,
         [CONSTANTS.CE_HEADERS.SOURCE]: "/source",
         [CONSTANTS.CE_HEADERS.ID]: "id",
         [CONSTANTS.CE_HEADERS.TIME]: "2019-06-16T11:42:00Z",
-        [CONSTANTS.BINARY_HEADERS_1.DATA_SCHEMA]: "http://schema.registry/v1",
+        [CONSTANTS.BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
         [CONSTANTS.HEADER_CONTENT_TYPE]: "application/json",
       };
 
@@ -265,11 +264,11 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
       const attributes = {
         [CONSTANTS.CE_HEADERS.TYPE]: "type",
-        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V03,
         [CONSTANTS.CE_HEADERS.SOURCE]: "/source",
         [CONSTANTS.CE_HEADERS.ID]: "id",
         [CONSTANTS.CE_HEADERS.TIME]: "2019-06-16T11:42:00Z",
-        [CONSTANTS.BINARY_HEADERS_1.DATA_SCHEMA]: "http://schema.registry/v1",
+        [CONSTANTS.BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
         [CONSTANTS.HEADER_CONTENT_TYPE]: "application/json",
       };
 
@@ -280,18 +279,18 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       expect(actual.time).to.equal("2019-06-16T11:42:00.000Z");
     });
 
-    it("CloudEvent contains 'dataschema'", () => {
+    it("CloudEvent contains 'schemaurl'", () => {
       // setup
       const payload = {
         data: "dataString",
       };
       const attributes = {
         [CONSTANTS.CE_HEADERS.TYPE]: "type",
-        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V03,
         [CONSTANTS.CE_HEADERS.SOURCE]: "/source",
         [CONSTANTS.CE_HEADERS.ID]: "id",
         [CONSTANTS.CE_HEADERS.TIME]: "2019-06-16T11:42:00Z",
-        [CONSTANTS.BINARY_HEADERS_1.DATA_SCHEMA]: "http://schema.registry/v1",
+        [CONSTANTS.BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
         [CONSTANTS.HEADER_CONTENT_TYPE]: "application/json",
       };
 
@@ -299,21 +298,21 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       const actual = receiver.parse(payload, attributes);
 
       // assert
-      expect(actual.dataschema).to.equal("http://schema.registry/v1");
+      expect(actual.schemaurl).to.equal("http://schema.registry/v1");
     });
 
-    it("CloudEvent contains 'contenttype' (application/json)", () => {
+    it("CloudEvent contains 'datacontenttype' (application/json)", () => {
       // setup
       const payload = {
         data: "dataString",
       };
       const attributes = {
         [CONSTANTS.CE_HEADERS.TYPE]: "type",
-        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V03,
         [CONSTANTS.CE_HEADERS.SOURCE]: "/source",
         [CONSTANTS.CE_HEADERS.ID]: "id",
         [CONSTANTS.CE_HEADERS.TIME]: "2019-06-16T11:42:00Z",
-        [CONSTANTS.BINARY_HEADERS_1.DATA_SCHEMA]: "http://schema.registry/v1",
+        [CONSTANTS.BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
         [CONSTANTS.HEADER_CONTENT_TYPE]: "application/json",
       };
 
@@ -324,16 +323,16 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       expect(actual.datacontenttype).to.equal("application/json");
     });
 
-    it("CloudEvent contains 'contenttype' (application/octet-stream)", () => {
+    it("CloudEvent contains 'datacontenttype' (application/octet-stream)", () => {
       // setup
       const payload = "The payload is binary data";
       const attributes = {
         [CONSTANTS.CE_HEADERS.TYPE]: "type",
-        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V03,
         [CONSTANTS.CE_HEADERS.SOURCE]: "/source",
         [CONSTANTS.CE_HEADERS.ID]: "id",
         [CONSTANTS.CE_HEADERS.TIME]: "2019-06-16T11:42:00Z",
-        [CONSTANTS.BINARY_HEADERS_1.DATA_SCHEMA]: "http://schema.registry/v1",
+        [CONSTANTS.BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
         [CONSTANTS.HEADER_CONTENT_TYPE]: "application/octet-stream",
       };
 
@@ -351,11 +350,11 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
       const attributes = {
         [CONSTANTS.CE_HEADERS.TYPE]: "type",
-        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V03,
         [CONSTANTS.CE_HEADERS.SOURCE]: "/source",
         [CONSTANTS.CE_HEADERS.ID]: "id",
         [CONSTANTS.CE_HEADERS.TIME]: "2019-06-16T11:42:00Z",
-        [CONSTANTS.BINARY_HEADERS_1.DATA_SCHEMA]: "http://schema.registry/v1",
+        [CONSTANTS.BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
         [CONSTANTS.HEADER_CONTENT_TYPE]: "application/json",
       };
 
@@ -371,11 +370,11 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       const payload = "The payload is binary data";
       const attributes = {
         [CONSTANTS.CE_HEADERS.TYPE]: "type",
-        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V03,
         [CONSTANTS.CE_HEADERS.SOURCE]: "/source",
         [CONSTANTS.CE_HEADERS.ID]: "id",
         [CONSTANTS.CE_HEADERS.TIME]: "2019-06-16T11:42:00Z",
-        [CONSTANTS.BINARY_HEADERS_1.DATA_SCHEMA]: "http://schema.registry/v1",
+        [CONSTANTS.BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
         [CONSTANTS.HEADER_CONTENT_TYPE]: "application/octet-stream",
       };
 
@@ -386,31 +385,6 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       expect(actual.data).to.deep.equal(payload);
     });
 
-    it("The content of 'data' is base64 for binary", () => {
-      // setup
-      const expected = {
-        data: "dataString",
-      };
-      const bindata = Uint32Array.from(JSON.stringify(expected) as string, (c) => c.codePointAt(0) as number);
-      const payload = asBase64(bindata);
-
-      const attributes = {
-        [CONSTANTS.CE_HEADERS.TYPE]: "type",
-        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
-        [CONSTANTS.CE_HEADERS.SOURCE]: "/source",
-        [CONSTANTS.CE_HEADERS.ID]: "id",
-        [CONSTANTS.CE_HEADERS.TIME]: "2019-06-16T11:42:00Z",
-        [CONSTANTS.BINARY_HEADERS_1.DATA_SCHEMA]: "http://schema.registry/v1",
-        [CONSTANTS.HEADER_CONTENT_TYPE]: "application/json",
-      };
-
-      // act
-      const actual = receiver.parse(payload, attributes);
-
-      // assert
-      expect(actual.data).to.deep.equal(expected);
-    });
-
     it("No error when all attributes are in place", () => {
       // setup
       const payload = {
@@ -418,11 +392,11 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
       };
       const attributes = {
         [CONSTANTS.CE_HEADERS.TYPE]: "type",
-        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V03,
         [CONSTANTS.CE_HEADERS.SOURCE]: "source",
         [CONSTANTS.CE_HEADERS.ID]: "id",
         [CONSTANTS.CE_HEADERS.TIME]: "2019-06-16T11:42:00Z",
-        [CONSTANTS.BINARY_HEADERS_1.DATA_SCHEMA]: "http://schema.registry/v1",
+        [CONSTANTS.BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
         [CONSTANTS.HEADER_CONTENT_TYPE]: "application/json",
       };
 
@@ -435,17 +409,17 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v1.0", () => {
 
     it("Should accept 'extension1'", () => {
       // setup
-      const extension1 = "mycustom-ext1";
+      const extension1 = "mycuston-ext1";
       const payload = {
         data: "dataString",
       };
       const attributes = {
         [CONSTANTS.CE_HEADERS.TYPE]: "type",
-        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V03,
         [CONSTANTS.CE_HEADERS.SOURCE]: "source",
         [CONSTANTS.CE_HEADERS.ID]: "id",
         [CONSTANTS.CE_HEADERS.TIME]: "2019-06-16T11:42:00Z",
-        [CONSTANTS.BINARY_HEADERS_1.DATA_SCHEMA]: "http://schema.registry/v1",
+        [CONSTANTS.BINARY_HEADERS_03.SCHEMA_URL]: "http://schema.registry/v1",
         [CONSTANTS.HEADER_CONTENT_TYPE]: "application/json",
         [`${[CONSTANTS.EXTENSIONS_PREFIX]}extension1`]: extension1,
       };

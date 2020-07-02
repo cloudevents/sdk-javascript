@@ -1,24 +1,24 @@
+import * as https from "https";
 import "mocha";
 import { expect } from "chai";
 import nock from "nock";
 
-import { emitBinary, emitStructured } from "../src/transport/http";
-import { CloudEvent, Version } from "../src";
+import { CloudEvent, Version } from "../../src";
+import { emitBinary, emitStructured } from "../../src/transport/http";
+import { asBase64 } from "../../src/event/validation/is";
 import { AxiosResponse } from "axios";
 
 const type = "com.github.pull.create";
-const source = "urn:event:from:myapi/resourse/123";
-const contentEncoding = "base64";
+const source = "urn:event:from:myapi/resource/123";
 const contentType = "application/cloudevents+json; charset=utf-8";
 const time = new Date();
-const schemaurl = "http://cloudevents.io/schema.json";
-
-const ceContentType = "application/json";
+const subject = "subject.ext";
+const dataschema = "http://cloudevents.io/schema.json";
+const datacontenttype = "application/json";
 
 const data = {
   foo: "bar",
 };
-const dataBase64 = "Y2xvdWRldmVudHMK";
 
 const ext1Name = "extension1";
 const ext1Value = "foobar";
@@ -26,48 +26,41 @@ const ext2Name = "extension2";
 const ext2Value = "acme";
 
 const cloudevent = new CloudEvent({
-  specversion: Version.V03,
+  specversion: Version.V1,
   type,
   source,
-  datacontenttype: ceContentType,
-  subject: "subject.ext",
+  datacontenttype,
+  subject,
   time,
-  schemaurl,
+  dataschema,
   data,
-  // set these so that deepEqual works
-  dataschema: "",
-  datacontentencoding: "",
-  data_base64: "",
 });
 cloudevent[ext1Name] = ext1Value;
 cloudevent[ext2Name] = ext2Value;
 
-const cebase64 = new CloudEvent({
-  specversion: Version.V03,
-  type,
-  source,
-  datacontenttype: ceContentType,
-  datacontentencoding: contentEncoding,
-  time,
-  schemaurl,
-  data: dataBase64,
-});
-cebase64[ext1Name] = ext1Value;
-cebase64[ext2Name] = ext2Value;
+const dataString = ")(*~^my data for ce#@#$%";
 
-const webhook = "https://cloudevents.io/webhook";
-const httpcfg = {
-  method: "POST",
-  url: `${webhook}/json`,
-};
+const webhook = "https://cloudevents.io/webhook/v1";
+const httpcfg = { url: `${webhook}/json` };
 
-describe("HTTP Transport Binding - Version 0.3", () => {
+describe("HTTP Transport Binding - Version 1.0", () => {
   beforeEach(() => {
     // Mocking the webhook
     nock(webhook).post("/json").reply(201, { status: "accepted" });
   });
 
   describe("Structured", () => {
+    it("works with mTLS authentication", () => {
+      const httpsAgent = new https.Agent({
+        cert: "some value",
+        key: "other value",
+      });
+
+      return emitStructured(cloudevent, { ...httpcfg, httpsAgent }).then((response: AxiosResponse) => {
+        expect(response.config.headers["Content-Type"]).to.equal(contentType);
+      });
+    });
+
     describe("JSON Format", () => {
       it(`requires '${contentType}' Content-Type in the header`, () =>
         emitStructured(cloudevent, httpcfg).then((response: AxiosResponse) => {
@@ -79,18 +72,56 @@ describe("HTTP Transport Binding - Version 0.3", () => {
           expect(response.config.data).to.deep.equal(JSON.stringify(cloudevent));
         }));
 
-      describe("'data' attribute with 'base64' encoding", () => {
-        it("the request payload should be correct", () =>
-          emitStructured(cebase64, httpcfg).then((response: AxiosResponse) => {
-            expect(JSON.parse(response.config.data).data).to.equal(cebase64.data);
-          }));
+      describe("Binary event data", () => {
+        it("the request payload should be correct when data is binary", () => {
+          const bindata = Uint32Array.from(dataString as string, (c) => c.codePointAt(0) as number);
+          const expected = asBase64(bindata);
+          const binevent = new CloudEvent({
+            type,
+            source,
+            datacontenttype: "text/plain",
+            data: bindata,
+          });
+          binevent[ext1Name] = ext1Value;
+          binevent[ext2Name] = ext2Value;
+
+          return emitStructured(binevent, httpcfg).then((response: AxiosResponse) => {
+            expect(JSON.parse(response.config.data).data_base64).to.equal(expected);
+          });
+        });
+
+        it("the payload must have 'data_base64' when data is binary", () => {
+          const binevent = new CloudEvent({
+            type,
+            source,
+            datacontenttype: "text/plain",
+            data: Uint32Array.from(dataString as string, (c) => c.codePointAt(0) as number),
+          });
+          binevent[ext1Name] = ext1Value;
+          binevent[ext2Name] = ext2Value;
+
+          return emitStructured(binevent, httpcfg).then((response: AxiosResponse) => {
+            expect(JSON.parse(response.config.data)).to.have.property("data_base64");
+          });
+        });
       });
     });
   });
 
   describe("Binary", () => {
+    it("works with mTLS authentication", () =>
+      emitBinary(cloudevent, {
+        url: `${webhook}/json`,
+        httpsAgent: new https.Agent({
+          cert: "some value",
+          key: "other value",
+        }),
+      }).then((response: AxiosResponse) => {
+        expect(response.config.headers["Content-Type"]).to.equal(cloudevent.datacontenttype);
+      }));
+
     describe("JSON Format", () => {
-      it(`requires ${cloudevent.datacontenttype} in the header`, () =>
+      it(`requires '${cloudevent.datacontenttype}' in the header`, () =>
         emitBinary(cloudevent, httpcfg).then((response: AxiosResponse) => {
           expect(response.config.headers["Content-Type"]).to.equal(cloudevent.datacontenttype);
         }));
@@ -99,6 +130,21 @@ describe("HTTP Transport Binding - Version 0.3", () => {
         emitBinary(cloudevent, httpcfg).then((response: AxiosResponse) => {
           expect(JSON.parse(response.config.data)).to.deep.equal(cloudevent.data);
         }));
+
+      it("the request payload should be correct when event data is binary", () => {
+        const bindata = Uint32Array.from(dataString as string, (c) => c.codePointAt(0) as number);
+        const expected = asBase64(bindata);
+        const binevent = new CloudEvent({
+          type,
+          source,
+          datacontenttype: "text/plain",
+          data: bindata,
+        });
+
+        return emitBinary(binevent, httpcfg).then((response: AxiosResponse) => {
+          expect(response.config.data).to.equal(expected);
+        });
+      });
 
       it("HTTP Header contains 'ce-type'", () =>
         emitBinary(cloudevent, httpcfg).then((response: AxiosResponse) => {
@@ -125,9 +171,9 @@ describe("HTTP Transport Binding - Version 0.3", () => {
           expect(response.config.headers).to.have.property("ce-time");
         }));
 
-      it("HTTP Header contains 'ce-schemaurl'", () =>
+      it("HTTP Header contains 'ce-dataschema'", () =>
         emitBinary(cloudevent, httpcfg).then((response: AxiosResponse) => {
-          expect(response.config.headers).to.have.property("ce-schemaurl");
+          expect(response.config.headers).to.have.property("ce-dataschema");
         }));
 
       it(`HTTP Header contains 'ce-${ext1Name}'`, () =>
@@ -170,9 +216,9 @@ describe("HTTP Transport Binding - Version 0.3", () => {
           expect(cloudevent.time).to.equal(response.config.headers["ce-time"]);
         }));
 
-      it("should 'ce-schemaurl' have the right value", () =>
+      it("should 'ce-dataschema' have the right value", () =>
         emitBinary(cloudevent, httpcfg).then((response: AxiosResponse) => {
-          expect(cloudevent.schemaurl).to.equal(response.config.headers["ce-schemaurl"]);
+          expect(cloudevent.dataschema).to.equal(response.config.headers["ce-dataschema"]);
         }));
 
       it(`should 'ce-${ext1Name}' have the right value`, () =>
@@ -189,18 +235,6 @@ describe("HTTP Transport Binding - Version 0.3", () => {
         emitBinary(cloudevent, httpcfg).then((response: AxiosResponse) => {
           expect(cloudevent.subject).to.equal(response.config.headers["ce-subject"]);
         }));
-
-      describe("'data' attribute with 'base64' encoding", () => {
-        it("HTTP Header contains 'ce-datacontentencoding'", () =>
-          emitBinary(cebase64, httpcfg).then((response: AxiosResponse) => {
-            expect(response.config.headers).to.have.property("ce-datacontentencoding");
-          }));
-
-        it("should 'ce-datacontentencoding' have the right value", () =>
-          emitBinary(cebase64, httpcfg).then((response: AxiosResponse) => {
-            expect(cebase64.datacontentencoding).to.equal(response.config.headers["ce-datacontentencoding"]);
-          }));
-      });
     });
   });
 });

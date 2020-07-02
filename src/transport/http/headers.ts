@@ -12,7 +12,7 @@ export interface Headers {
   [key: string]: string;
 }
 
-export const allowedContentTypes = [CONSTANTS.MIME_JSON, CONSTANTS.MIME_OCTET_STREAM];
+export const allowedContentTypes = [CONSTANTS.DEFAULT_CONTENT_TYPE, CONSTANTS.MIME_JSON, CONSTANTS.MIME_OCTET_STREAM];
 export const requiredHeaders = [
   CONSTANTS.CE_HEADERS.ID,
   CONSTANTS.CE_HEADERS.SOURCE,
@@ -97,16 +97,5 @@ export function sanitize(headers: Headers): Headers {
     .filter((header) => Object.hasOwnProperty.call(headers, header))
     .forEach((header) => (sanitized[header.toLowerCase()] = headers[header]));
 
-  sanitized[CONSTANTS.HEADER_CONTENT_TYPE] = sanitizeContentType(sanitized[CONSTANTS.HEADER_CONTENT_TYPE]) as string;
   return sanitized;
-}
-
-function sanitizeContentType(contentType: string): string | undefined {
-  if (contentType) {
-    return Array.of(contentType)
-      .map((c) => c.split(";"))
-      .map((c) => c.shift())
-      .shift();
-  }
-  return contentType;
 }

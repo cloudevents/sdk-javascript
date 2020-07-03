@@ -1,4 +1,4 @@
-import { Headers } from "./http/headers";
+import { Headers, sanitize } from "./http/headers";
 import { CloudEvent, Version, ValidationError } from "..";
 import { BinaryHTTPReceiver as BinaryReceiver } from "./http/binary_receiver";
 import { StructuredHTTPReceiver as StructuredReceiver } from "./http/structured_receiver";
@@ -60,16 +60,17 @@ export class Receiver {
    * @return {CloudEvent} A new {CloudEvent} instance
    */
   accept(headers: Headers, body: string | Record<string, unknown> | CloudEventV1 | CloudEventV03): CloudEvent {
-    const mode: Mode = getMode(headers);
-    const version = getVersion(mode, headers, body);
+    const cleanHeaders: Headers = sanitize(headers);
+    const mode: Mode = getMode(cleanHeaders);
+    const version = getVersion(mode, cleanHeaders, body);
     switch (version) {
       case Version.V1:
-        return this.receivers.v1[mode].parse(body, headers);
+        return this.receivers.v1[mode].parse(body, cleanHeaders);
       case Version.V03:
-        return this.receivers.v03[mode].parse(body, headers);
+        return this.receivers.v03[mode].parse(body, cleanHeaders);
       default:
         console.error(`Unknown spec version ${version}. Default to ${Version.V1}`);
-        return this.receivers.v1[mode].parse(body, headers);
+        return this.receivers.v1[mode].parse(body, cleanHeaders);
     }
   }
 }

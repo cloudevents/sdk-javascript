@@ -65,12 +65,12 @@ export class Receiver {
     const version = getVersion(mode, cleanHeaders, body);
     switch (version) {
       case Version.V1:
-        return this.receivers.v1[mode].parse(body, cleanHeaders);
+        return this.receivers.v1[mode].parse(body, headers);
       case Version.V03:
-        return this.receivers.v03[mode].parse(body, cleanHeaders);
+        return this.receivers.v03[mode].parse(body, headers);
       default:
         console.error(`Unknown spec version ${version}. Default to ${Version.V1}`);
-        return this.receivers.v1[mode].parse(body, cleanHeaders);
+        return this.receivers.v1[mode].parse(body, headers);
     }
   }
 }

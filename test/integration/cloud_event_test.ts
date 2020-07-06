@@ -25,6 +25,18 @@ describe("A CloudEvent", () => {
     const ce = new CloudEvent(fixture);
     expect(ce.toString()).to.deep.equal(JSON.stringify(ce));
   });
+
+  it("Throw a validation error for invalid extension names", () => {
+    expect(() => {
+      new CloudEvent({ "ext-1": "extension1", ...fixture });
+    }).throw("invalid extension name");
+  });
+
+  it("Throw a validation error for invalid extension names, more than 20 chars", () => {
+    expect(() => {
+      new CloudEvent({ "123456789012345678901": "extension1", ...fixture });
+    }).throw("invalid extension name");
+  });
 });
 
 describe("A 1.0 CloudEvent", () => {
@@ -92,13 +104,13 @@ describe("A 1.0 CloudEvent", () => {
 
   it("can be constructed with extensions", () => {
     const extensions = {
-      "extension-key": "extension-value",
+      extensionkey: "extension-value",
     };
     const ce = new CloudEvent({
       ...extensions,
       ...fixture,
     });
-    expect(ce["extension-key"]).to.equal(extensions["extension-key"]);
+    expect(ce["extensionkey"]).to.equal(extensions["extensionkey"]);
   });
 
   it("throws ValidationError if the CloudEvent does not conform to the schema");

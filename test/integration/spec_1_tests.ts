@@ -65,26 +65,26 @@ describe("CloudEvents Spec v1.0", () => {
 
   describe("Extensions Constraints", () => {
     it("should be ok when type is 'boolean'", () => {
-      expect(cloudevent.cloneWith({ "ext-boolean": true }).validate()).to.equal(true);
+      expect(cloudevent.cloneWith({ extboolean: true }).validate()).to.equal(true);
     });
 
     it("should be ok when type is 'integer'", () => {
-      expect(cloudevent.cloneWith({ "ext-integer": 2019 }).validate()).to.equal(true);
+      expect(cloudevent.cloneWith({ extinteger: 2019 }).validate()).to.equal(true);
     });
 
     it("should be ok when type is 'string'", () => {
-      expect(cloudevent.cloneWith({ "ext-string": "an-string" }).validate()).to.equal(true);
+      expect(cloudevent.cloneWith({ extstring: "an-string" }).validate()).to.equal(true);
     });
 
     it("should be ok when type is 'Uint32Array' for 'Binary'", () => {
       const myBinary = new Uint32Array(2019);
-      expect(cloudevent.cloneWith({ "ext-binary": myBinary }).validate()).to.equal(true);
+      expect(cloudevent.cloneWith({ extbinary: myBinary }).validate()).to.equal(true);
     });
 
     // URI
     it("should be ok when type is 'Date' for 'Timestamp'", () => {
       const myDate = new Date();
-      expect(cloudevent.cloneWith({ "ext-date": myDate }).validate()).to.equal(true);
+      expect(cloudevent.cloneWith({ extdate: myDate }).validate()).to.equal(true);
     });
 
     // even though the spec doesn't allow object types for
@@ -92,7 +92,7 @@ describe("CloudEvents Spec v1.0", () => {
     // is transmitted across the wire, this value will be
     // converted to JSON
     it("should be ok when the type is an object", () => {
-      expect(cloudevent.cloneWith({ "object-extension": { some: "object" } }).validate()).to.equal(true);
+      expect(cloudevent.cloneWith({ objectextension: { some: "object" } }).validate()).to.equal(true);
     });
   });
 

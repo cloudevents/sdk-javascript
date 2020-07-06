@@ -96,6 +96,11 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
 
     // finally process any remaining properties - these are extensions
     for (const [key, value] of Object.entries(properties)) {
+      // Extension names should only allow lowercase a-z and 0-9 in the name
+      // names should not exceed 20 characters in length
+      if (!key.match(/^[a-z0-9]{1,20}$/)) {
+        throw new ValidationError("invalid extension name");
+      }
       this[key] = value;
     }
 

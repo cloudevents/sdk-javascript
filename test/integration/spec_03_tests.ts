@@ -13,7 +13,7 @@ const data = {
 };
 const subject = "subject-x0";
 
-const cloudevent = new CloudEvent({
+let cloudevent = new CloudEvent({
   specversion: Version.V03,
   id,
   source,
@@ -46,8 +46,13 @@ describe("CloudEvents Spec v0.3", () => {
 
   describe("OPTIONAL Attributes", () => {
     it("Should have 'datacontentencoding'", () => {
-      cloudevent.datacontentencoding = Constants.ENCODING_BASE64;
+      cloudevent = cloudevent.cloneWith({
+        datacontentencoding: Constants.ENCODING_BASE64,
+        data: "SSB3YXMgZnVubnkg8J+Ygg==",
+      });
       expect(cloudevent.datacontentencoding).to.equal(Constants.ENCODING_BASE64);
+
+      cloudevent = cloudevent.cloneWith({ datacontentencoding: undefined, data: data });
     });
 
     it("Should have 'datacontenttype'", () => {
@@ -71,101 +76,101 @@ describe("CloudEvents Spec v0.3", () => {
     });
 
     it("Should have the 'extension1'", () => {
-      cloudevent.extension1 = "value1";
+      cloudevent = cloudevent.cloneWith({ extension1: "value1" });
       expect(cloudevent.extension1).to.equal("value1");
     });
   });
 
   describe("The Constraints check", () => {
     describe("'id'", () => {
-      it("should throw an error when is absent", () => {
-        delete cloudevent.id;
-        expect(cloudevent.validate.bind(cloudevent)).to.throw(ValidationError, "invalid payload");
-        cloudevent.id = id;
+      it("should throw an error when trying to remove", () => {
+        expect(() => {
+          delete cloudevent.id;
+        }).to.throw(TypeError);
       });
 
-      it("should throw an error when is empty", () => {
-        cloudevent.id = "";
-        expect(cloudevent.validate.bind(cloudevent)).to.throw(ValidationError, "invalid payload");
-        cloudevent.id = id;
+      it("defaut ID create when an empty string", () => {
+        cloudevent = cloudevent.cloneWith({ id: "" });
+        expect(cloudevent.id.length).to.be.greaterThan(0);
       });
     });
 
     describe("'source'", () => {
-      it("should throw an error when is absent", () => {
-        delete cloudevent.source;
-        expect(cloudevent.validate.bind(cloudevent)).to.throw(ValidationError, "invalid payload");
-        cloudevent.source = source;
+      it("should throw an error when trying to remove", () => {
+        expect(() => {
+          delete cloudevent.source;
+        }).to.throw(TypeError);
       });
     });
 
     describe("'specversion'", () => {
-      it("should throw an error when is absent", () => {
-        delete cloudevent.specversion;
-        expect(cloudevent.validate.bind(cloudevent)).to.throw(ValidationError, "invalid payload");
-        cloudevent.specversion = Version.V03;
+      it("should throw an error when trying to remove", () => {
+        expect(() => {
+          delete cloudevent.specversion;
+        }).to.throw(TypeError);
       });
     });
 
     describe("'type'", () => {
-      it("should throw an error when is absent", () => {
-        delete cloudevent.type;
-        expect(cloudevent.validate.bind(cloudevent)).to.throw(ValidationError, "invalid payload");
-        cloudevent.type = type;
+      it("should throw an error when trying to remove", () => {
+        expect(() => {
+          delete cloudevent.type;
+        }).to.throw(TypeError);
       });
 
       it("should throw an error when is an empty string", () => {
-        cloudevent.type = "";
-        expect(cloudevent.validate.bind(cloudevent)).to.throw(ValidationError, "invalid payload");
-        cloudevent.type = type;
+        expect(() => {
+          cloudevent.cloneWith({ type: "" });
+        }).to.throw(ValidationError, "invalid payload");
       });
 
       it("must be a non-empty string", () => {
-        cloudevent.type = type;
+        cloudevent.cloneWith({ type: type });
         expect(cloudevent.type).to.equal(type);
       });
     });
 
     describe("'datacontentencoding'", () => {
       it("should throw an error when is a unsupported encoding", () => {
-        cloudevent.data = "Y2xvdWRldmVudHMK";
-        cloudevent.datacontentencoding = Mode.BINARY;
-        expect(cloudevent.validate.bind(cloudevent)).to.throw(ValidationError, "invalid payload");
-        delete cloudevent.datacontentencoding;
-        cloudevent.data = data;
+        expect(() => {
+          cloudevent.cloneWith({ data: "Y2xvdWRldmVudHMK", datacontentencoding: Mode.BINARY });
+        }).to.throw(ValidationError, "invalid payload");
+
+        cloudevent.cloneWith({ data: data, datacontentencoding: undefined });
       });
 
       it("should throw an error when 'data' does not carry base64", () => {
-        cloudevent.data = "no base 64 value";
-        cloudevent.datacontentencoding = Constants.ENCODING_BASE64;
-        cloudevent.datacontenttype = "text/plain";
+        expect(() => {
+          cloudevent.cloneWith({
+            data: "no base 64 value",
+            datacontentencoding: Constants.ENCODING_BASE64,
+            datacontenttype: "text/plain",
+          });
+        }).to.throw(ValidationError, "invalid payload");
 
-        expect(cloudevent.validate.bind(cloudevent)).to.throw(ValidationError, "invalid payload");
-
-        delete cloudevent.datacontentencoding;
-        cloudevent.data = data;
+        cloudevent.cloneWith({
+          data: data,
+          datacontentencoding: undefined,
+        });
       });
 
       it("should accept when 'data' is a string", () => {
-        cloudevent.data = "Y2xvdWRldmVudHMK";
-        cloudevent.datacontentencoding = Constants.ENCODING_BASE64;
+        cloudevent.cloneWith({ data: "Y2xvdWRldmVudHMK", datacontentencoding: Constants.ENCODING_BASE64 });
         expect(cloudevent.validate()).to.be.true;
-        delete cloudevent.datacontentencoding;
-        cloudevent.data = data;
+        cloudevent.cloneWith({ data: data, datacontentencoding: undefined });
       });
     });
 
     describe("'data'", () => {
       it("should maintain the type of data when no data content type", () => {
-        delete cloudevent.datacontenttype;
+        cloudevent = cloudevent.cloneWith({ datacontenttype: undefined });
         cloudevent.data = JSON.stringify(data);
 
         expect(typeof cloudevent.data).to.equal("string");
-        cloudevent.datacontenttype = Constants.MIME_JSON;
       });
 
       it("should convert data with stringified json to a json object", () => {
-        cloudevent.datacontenttype = Constants.MIME_JSON;
+        cloudevent = cloudevent.cloneWith({ datacontenttype: Constants.MIME_JSON });
         cloudevent.data = JSON.stringify(data);
         expect(cloudevent.data).to.deep.equal(data);
       });
@@ -173,14 +178,15 @@ describe("CloudEvents Spec v0.3", () => {
 
     describe("'subject'", () => {
       it("should throw an error when is an empty string", () => {
-        cloudevent.subject = "";
-        expect(cloudevent.validate.bind(cloudevent)).to.throw(ValidationError, "invalid payload");
-        cloudevent.subject = subject;
+        expect(() => {
+          cloudevent.cloneWith({ subject: "" });
+        }).to.throw(ValidationError);
       });
     });
 
     describe("'time'", () => {
       it("must adhere to the format specified in RFC 3339", () => {
+        cloudevent = cloudevent.cloneWith({ time: time });
         expect(cloudevent.time).to.equal(time.toISOString());
       });
     });

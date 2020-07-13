@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 
-import { CloudEventV1, validateV1, CloudEventV1Attributes } from "./v1";
-import { CloudEventV03, validateV03, CloudEventV03Attributes } from "./v03";
+import { CloudEventV1, validateV1, CloudEventV1Attributes, CloudEventV1OptionalAttributes } from "./v1";
+import { CloudEventV03, validateV03, CloudEventV03Attributes, CloudEventV03OptionalAttributes } from "./v03";
 import { ValidationError, isBinary, asBase64 } from "./validation";
 import CONSTANTS from "../constants";
 import { isString } from "util";
@@ -98,6 +98,10 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
     for (const [key, value] of Object.entries(properties)) {
       this[key] = value;
     }
+
+    this.validate();
+
+    Object.freeze(this);
   }
 
   get time(): string | Date {
@@ -164,5 +168,23 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
         throw new ValidationError("invalid payload", e);
       }
     }
+  }
+
+  /**
+   * Clone a CloudEvent with new/update attributes
+   * @param {object} options attributes to augment the CloudEvent with
+   * @throws if the CloudEvent does not conform to the schema
+   * @return {CloudEvent} returns a new CloudEvent
+   */
+  public cloneWith(
+    options:
+      | CloudEventV1
+      | CloudEventV1Attributes
+      | CloudEventV1OptionalAttributes
+      | CloudEventV03
+      | CloudEventV03Attributes
+      | CloudEventV03OptionalAttributes,
+  ): CloudEvent {
+    return new CloudEvent(Object.assign({}, this.toJSON(), options) as CloudEvent);
   }
 }

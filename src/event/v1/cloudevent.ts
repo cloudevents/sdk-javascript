@@ -25,7 +25,7 @@ export interface CloudEventV1 extends CloudEventV1Attributes {
   specversion: string;
 }
 
-export interface CloudEventV1Attributes {
+export interface CloudEventV1Attributes extends CloudEventV1OptionalAttributes {
   /**
    * [REQUIRED] Identifies the context in which an event happened. Often this
    * will include information such as the type of the event source, the
@@ -58,7 +58,9 @@ export interface CloudEventV1Attributes {
    * @example com.example.object.delete.v2
    */
   type: string;
+}
 
+export interface CloudEventV1OptionalAttributes {
   /**
    * The following fields are optional.
    */

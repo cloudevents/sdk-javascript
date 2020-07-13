@@ -1,14 +1,15 @@
 import "mocha";
 import { expect } from "chai";
 
-import { CloudEvent, ValidationError, Version } from "../src";
-import { StructuredHTTPReceiver } from "../src/transport/http/structured_receiver";
+import { CloudEvent, ValidationError, Version } from "../../src";
+import { asBase64 } from "../../src/event/validation";
+import { StructuredHTTPReceiver } from "../../src/transport/http/structured_receiver";
 
-const receiver = new StructuredHTTPReceiver(Version.V03);
+const receiver = new StructuredHTTPReceiver(Version.V1);
 const type = "com.github.pull.create";
 const source = "urn:event:from:myapi/resourse/123";
 const time = new Date();
-const schemaurl = "http://cloudevents.io/schema.json";
+const dataschema = "http://cloudevents.io/schema.json";
 
 const ceContentType = "application/json";
 
@@ -16,7 +17,7 @@ const data = {
   foo: "bar",
 };
 
-describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
+describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0", () => {
   describe("Check", () => {
     it("Throw error when payload arg is null or undefined", () => {
       // setup
@@ -64,31 +65,9 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
       expect(receiver.parse.bind(receiver, payload, attributes)).to.throw(ValidationError, "invalid content type");
     });
 
-    it("Throw error data content encoding is base64, but 'data' is not", () => {
-      // setup
-      const event = {
-        specversion: Version.V03,
-        type,
-        source,
-        time,
-        datacontenttype: "text/plain",
-        datacontentencoding: "base64",
-        schemaurl,
-        data: "No base 64 value",
-      };
-
-      const attributes = {
-        "Content-Type": "application/cloudevents+json",
-      };
-
-      // act and assert
-      expect(receiver.parse.bind(receiver, event, attributes)).to.throw(ValidationError, "invalid payload");
-    });
-
     it("No error when all required stuff are in place", () => {
       // setup
       const payload = {
-        specversion: Version.V03,
         source,
         type,
       };
@@ -104,23 +83,10 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
   describe("Parse", () => {
     it("Throw error when the event does not follow the spec", () => {
       // setup
-      const payload = {};
-      const attributes = {
-        "Content-Type": "application/cloudevents+json",
-      };
-
-      // act and assert
-      expect(receiver.parse.bind(receiver, payload, attributes)).to.throw();
-    });
-  });
-
-  describe("Parse", () => {
-    it("Throw error when the event does not follow the spec", () => {
       const payload = {
         type,
         source,
         time,
-        schemaurl,
         data,
       };
 
@@ -136,14 +102,13 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
       // setup
       const id = "id-x0dk";
       const payload = {
-        specversion: Version.V03,
         id,
         type,
         source,
         time,
-        schemaurl,
-        datacontenttype: ceContentType,
         data,
+        dataschema,
+        dataContentType: ceContentType,
       };
       const headers = {
         "content-type": "application/cloudevents+json",
@@ -159,38 +124,37 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
 
     it("Should accept 'extension1'", () => {
       // setup
-      const extension1 = "mycuston-ext1";
-      const payload = {
-        specversion: Version.V03,
+      const extension1 = "mycustom-ext1";
+      const event = {
         type,
         source,
         time,
-        schemaurl,
         data,
-        datacontenttype: ceContentType,
-        extension1: extension1,
+        dataschema,
+        dataContentType: ceContentType,
+        extension1,
       };
+
       const headers = {
         "content-type": "application/cloudevents+json",
       };
 
       // act
-      const actual = receiver.parse(payload, headers);
-
-      // assert
+      const actual = receiver.parse(event, headers);
       expect(actual.extension1).to.equal(extension1);
     });
 
-    it("Should parse 'data' stringfied json to json object", () => {
+    it("Should parse 'data' stringified json to json object", () => {
+      // setup
       const payload = {
-        specversion: Version.V03,
         type,
         source,
         time,
-        schemaurl,
-        datacontenttype: ceContentType,
-        data: JSON.stringify(data),
+        dataschema,
+        data: data,
+        dataContentType: ceContentType,
       };
+
       const headers = {
         "content-type": "application/cloudevents+json",
       };
@@ -200,6 +164,25 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
 
       // assert
       expect(actual.data).to.deep.equal(data);
+    });
+
+    it("Should maps 'data_base64' to 'data' attribute", () => {
+      const bindata = Uint32Array.from(JSON.stringify(data), (c) => c.codePointAt(0) as number);
+      const expected = asBase64(bindata);
+      const payload = {
+        type,
+        source,
+        data: bindata,
+        dataContentType: ceContentType,
+      };
+
+      const headers = {
+        "content-type": "application/cloudevents+json",
+      };
+
+      // act
+      const actual = receiver.parse(payload, headers);
+      expect(actual.data_base64).to.equal(expected);
     });
   });
 });

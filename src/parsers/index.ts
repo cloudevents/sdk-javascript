@@ -11,10 +11,15 @@ export * from "./date";
 export * from "./mapped";
 export * from "./pass_through";
 
+const jsonParser = new JSONParser();
+const passThroughParser = new PassThroughParser();
+
 export const parserByContentType: { [key: string]: Parser } = {
-  [CONSTANTS.MIME_JSON]: new JSONParser(),
-  [CONSTANTS.MIME_CE_JSON]: new JSONParser(),
-  [CONSTANTS.MIME_OCTET_STREAM]: new PassThroughParser(),
+  [CONSTANTS.MIME_JSON]: jsonParser,
+  [CONSTANTS.MIME_CE_JSON]: jsonParser,
+  [CONSTANTS.DEFAULT_CONTENT_TYPE]: jsonParser,
+  [CONSTANTS.DEFAULT_CE_CONTENT_TYPE]: jsonParser,
+  [CONSTANTS.MIME_OCTET_STREAM]: passThroughParser,
 };
 
 export const parserByEncoding: { [key: string]: { [key: string]: Parser } } = {

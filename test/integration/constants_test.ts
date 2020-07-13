@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import CONSTANTS from "../src/constants";
+import CONSTANTS from "../../src/constants";
 
 describe("Constants exposed by top level exports", () => {
   it("Exports an ENCODING_BASE64 constant", () => {

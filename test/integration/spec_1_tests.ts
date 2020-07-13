@@ -1,8 +1,8 @@
 import "mocha";
 import { expect } from "chai";
-import { CloudEvent, Version, ValidationError } from "../src";
-import { asBase64 } from "../src/event/validation";
-import Constants from "../src/constants";
+import { CloudEvent, Version, ValidationError } from "../../src";
+import { asBase64 } from "../../src/event/validation";
+import Constants from "../../src/constants";
 
 const id = "97699ec2-a8d9-47c1-bfa0-ff7aa526f838";
 const type = "com.github.pull.create";

@@ -1,11 +1,11 @@
 import "mocha";
 import { expect } from "chai";
 import nock from "nock";
-import CONSTANTS from "../src/constants";
+import CONSTANTS from "../../src/constants";
 
 const DEFAULT_CE_CONTENT_TYPE = CONSTANTS.DEFAULT_CE_CONTENT_TYPE;
 
-import { CloudEvent, Version, Emitter, Protocol, headersFor } from "../src";
+import { CloudEvent, Version, Emitter, Protocol, headersFor } from "../../src";
 import { AxiosResponse } from "axios";
 
 const receiver = "https://cloudevents.io/";

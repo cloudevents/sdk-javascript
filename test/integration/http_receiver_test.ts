@@ -1,7 +1,7 @@
 import "mocha";
 import { expect } from "chai";
-import { CloudEvent, Receiver, ValidationError } from "../src";
-import { CloudEventV1 } from "../src/event/v1";
+import { CloudEvent, Receiver, ValidationError } from "../../src";
+import { CloudEventV1 } from "../../src/event/v1";
 
 const receiver = new Receiver();
 const id = "1234";

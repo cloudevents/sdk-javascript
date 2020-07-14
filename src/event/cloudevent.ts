@@ -9,7 +9,7 @@ import {
   CloudEventV1OptionalAttributes,
 } from "./interfaces";
 import { validateV1, validateV03 } from "./spec";
-import { ValidationError, isBinary, asBase64 } from "./validation";
+import { ValidationError, isBinary, asBase64, isValidType } from "./validation";
 import CONSTANTS from "../constants";
 import { isString } from "util";
 
@@ -108,6 +108,13 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
       if (!key.match(/^[a-z0-9]{1,20}$/)) {
         throw new ValidationError("invalid extension name");
       }
+
+      // Value should be spec complient
+      // https://github.com/cloudevents/spec/blob/master/spec.md#type-system
+      if (!isValidType(value)) {
+        throw new ValidationError("invalid extension value");
+      }
+
       this[key] = value;
     }
 

@@ -94,6 +94,23 @@ emitter.send(new CloudEvent({ specversion: Version.V03, source, type }))
   }).catch(console.error);
 ```
 
+#### Cloud Events
+
+All created `CloudEvent` objects are read-only.  If you need to update a property or add a new extension to an existing cloud event object, you can use the `cloneWith` method.  This will return a new `CloudEvent` with any update or new properties.  For example:
+
+```js
+const {
+  CloudEvent,
+} = require("cloudevents-sdk");
+
+// Create a new CloudEvent
+const ce = new CloudEvent({.....});
+
+// Add a new extension to an existing CloudEvent
+ce = ce.cloneWith({extension: "Value"});
+
+```
+
 ### Example Applications
 
 There are a few trivial example applications in

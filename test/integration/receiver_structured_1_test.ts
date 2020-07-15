@@ -11,8 +11,6 @@ const source = "urn:event:from:myapi/resourse/123";
 const time = new Date();
 const dataschema = "http://cloudevents.io/schema.json";
 
-const ceContentType = "application/json";
-
 const data = {
   foo: "bar",
 };
@@ -108,7 +106,6 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0", () =
         time,
         data,
         dataschema,
-        dataContentType: ceContentType,
       };
       const headers = {
         "content-type": "application/cloudevents+json",
@@ -124,14 +121,13 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0", () =
 
     it("Should accept 'extension1'", () => {
       // setup
-      const extension1 = "mycustom-ext1";
+      const extension1 = "mycustomext1";
       const event = {
         type,
         source,
         time,
         data,
         dataschema,
-        dataContentType: ceContentType,
         extension1,
       };
 
@@ -152,7 +148,6 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0", () =
         time,
         dataschema,
         data: data,
-        dataContentType: ceContentType,
       };
 
       const headers = {
@@ -173,7 +168,6 @@ describe("HTTP Transport Binding Structured Receiver for CloudEvents v1.0", () =
         type,
         source,
         data: bindata,
-        dataContentType: ceContentType,
       };
 
       const headers = {

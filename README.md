@@ -118,16 +118,24 @@ There you will find Express.js, TypeScript and Websocket examples.
 
 ## Supported specification features
 
-|                               |  [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/tree/v1.0) |
+| Core Specification |  [v0.3](v03spec) | [v1.0](v1spec) |
 | ----------------------------- | --- | --- |
 | CloudEvents Core              | :heavy_check_mark: | :heavy_check_mark: |
-| AMQP Protocol Binding         | :x: | :x: |
+---
+
+| Event Formats |  [v0.3](v03spec) | [v1.0](v1spec) |
+| ----------------------------- | --- | --- |
 | AVRO Event Format             | :x: | :x: |
-| HTTP Protocol Binding         | :heavy_check_mark: | :heavy_check_mark: |
 | JSON Event Format             | :heavy_check_mark: | :heavy_check_mark: |
+---
+
+| Transport Protocols |  [v0.3](v03spec) | [v1.0](v1spec) |
+| ----------------------------- | --- | --- |
+| AMQP Protocol Binding         | :x: | :x: |
+| HTTP Protocol Binding         | :heavy_check_mark: | :heavy_check_mark: |
 | Kafka Protocol Binding        | :x: | :x: |
+| MQTT Protocol Binding         | :x: | :x: |
 | NATS Protocol Binding         | :x: | :x: |
-| STAN Protocol Binding         | :x: | :x: |
 
 ## Community
 
@@ -147,3 +155,6 @@ There you will find Express.js, TypeScript and Websocket examples.
 We love contributions from the community! Please check the
 [Contributor's Guide](https://github.com/cloudevents/sdk-javascript/blob/master/CONTRIBUTING.md)
 for information on how to get involved.
+
+[v1spec]: https://github.com/cloudevents/spec/tree/v1.0
+[v103pec]: https://github.com/cloudevents/spec/tree/v0.3

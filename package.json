@@ -95,7 +95,7 @@
   },
   "homepage": "https://github.com/cloudevents/sdk-javascript#readme",
   "dependencies": {
-    "ajv": "~6.12.0",
+    "ajv": "~6.12.3",
     "axios": "~0.19.2",
     "typedoc-clarity-theme": "^1.1.0",
     "uuid": "~8.2.0"

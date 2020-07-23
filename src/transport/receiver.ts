@@ -2,8 +2,7 @@ import { Headers, sanitize } from "./http/headers";
 import { CloudEvent, Version, ValidationError } from "..";
 import { BinaryHTTPReceiver as BinaryReceiver } from "./http/binary_receiver";
 import { StructuredHTTPReceiver as StructuredReceiver } from "./http/structured_receiver";
-import { CloudEventV03 } from "../event/v03";
-import { CloudEventV1 } from "../event/v1";
+import { CloudEventV1, CloudEventV03 } from "../event/interfaces";
 import { Protocol } from "./protocols";
 import CONSTANTS from "../constants";
 

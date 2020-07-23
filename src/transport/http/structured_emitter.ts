@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { CloudEvent } from "../../event";
+import { CloudEvent } from "../../event/cloudevent";
 import { TransportOptions } from "../emitter";
 import CONSTANTS from "../../constants";
 

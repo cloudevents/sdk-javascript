@@ -1,7 +1,7 @@
 import { ValidationError, CloudEvent } from "../..";
 import { headerMap as v1Map } from "./v1";
 import { headerMap as v03Map } from "./v03";
-import { Version } from "../../event";
+import { Version } from "../../event/cloudevent";
 import { MappedParser } from "../../parsers";
 import CONSTANTS from "../../constants";
 

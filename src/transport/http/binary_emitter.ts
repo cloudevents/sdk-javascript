@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
-import { CloudEvent, Version } from "../../event";
+import { CloudEvent, Version } from "../../event/cloudevent";
 import { TransportOptions } from "../emitter";
 import { Headers, headersFor } from "./headers";
 import { asData } from "../../event/validation";

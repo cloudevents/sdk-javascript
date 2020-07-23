@@ -1,6 +1,6 @@
 import "mocha";
 import { expect } from "chai";
-import { isStringOrThrow, equalsOrThrow, isBase64, asData } from "../../src/event/validation/is";
+import { isStringOrThrow, equalsOrThrow, isBase64, asData } from "../../src/event/validation";
 
 describe("Utilities", () => {
   describe("isStringOrThrow", () => {

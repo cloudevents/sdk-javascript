@@ -59,7 +59,10 @@ export class Receiver {
    * @param {Object|JSON} body The body of the HTTP request
    * @return {CloudEvent} A new {CloudEvent} instance
    */
-  accept(headers: Headers, body: string | Record<string, unknown> | CloudEventV1 | CloudEventV03): CloudEvent {
+  accept(
+    headers: Headers,
+    body: string | Record<string, unknown> | CloudEventV1 | CloudEventV03 | undefined | null,
+  ): CloudEvent {
     const cleanHeaders: Headers = sanitize(headers);
     const mode: Mode = getMode(cleanHeaders);
     const version = getVersion(mode, cleanHeaders, body);
@@ -103,7 +106,7 @@ function getMode(headers: Headers): Mode {
 function getVersion(
   mode: Mode,
   headers: Headers,
-  body: string | Record<string, unknown> | CloudEventV03 | CloudEventV1,
+  body: string | Record<string, unknown> | CloudEventV03 | CloudEventV1 | undefined | null,
 ) {
   if (mode === Mode.BINARY) {
     // Check the headers for the version
@@ -113,7 +116,7 @@ function getVersion(
     }
   } else {
     // structured mode - the version is in the body
-    return typeof body === "string" ? JSON.parse(body).specversion : body.specversion;
+    return typeof body === "string" ? JSON.parse(body).specversion : (body as CloudEvent).specversion;
   }
   return Version.V1;
 }

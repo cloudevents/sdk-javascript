@@ -31,7 +31,7 @@ export class StructuredHTTPReceiver {
    * @returns {CloudEvent} a new CloudEvent instance for the provided headers and payload
    * @throws {ValidationError} if the payload and header combination do not conform to the spec
    */
-  parse(payload: Record<string, unknown> | string, headers: Headers): CloudEvent {
+  parse(payload: Record<string, unknown> | string | undefined | null, headers: Headers): CloudEvent {
     if (!payload) throw new ValidationError("payload is null or undefined");
     if (!headers) throw new ValidationError("headers is null or undefined");
     isStringOrObjectOrThrow(payload, new ValidationError("payload must be an object or a string"));

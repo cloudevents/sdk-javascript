@@ -39,6 +39,30 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
       expect((event.data as Record<string, string>).lunch).to.equal("sushi");
     });
 
+    it("Accepts binary events when the data property is undefined", () => {
+      const binaryHeaders = {
+        "content-type": "application/json; charset=utf-8",
+        "ce-specversion": specversion,
+        "ce-id": id,
+        "ce-type": type,
+        "ce-source": source,
+      };
+      const event = receiver.accept(binaryHeaders, undefined);
+      expect(event.data).to.be.undefined;
+    });
+
+    it("Accepts binary events when the data property is null", () => {
+      const binaryHeaders = {
+        "content-type": "application/json; charset=utf-8",
+        "ce-specversion": specversion,
+        "ce-id": id,
+        "ce-type": type,
+        "ce-source": source,
+      };
+      const event = receiver.accept(binaryHeaders, null);
+      expect(event.data).to.be.undefined;
+    });
+
     it("Converts the JSON body of a structured event to an Object", () => {
       const payload = {
         id,

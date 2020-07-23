@@ -32,10 +32,11 @@ export class BinaryHTTPReceiver {
    * @returns {CloudEvent} an instance of CloudEvent representing the incoming request
    * @throws {ValidationError} of the event does not conform to the spec
    */
-  parse(payload: string | Record<string, unknown>, headers: Headers): CloudEvent {
-    if (!payload) throw new ValidationError("payload is null or undefined");
+  parse(payload: string | Record<string, unknown> | undefined | null, headers: Headers): CloudEvent {
     if (!headers) throw new ValidationError("headers is null or undefined");
-    isStringOrObjectOrThrow(payload, new ValidationError("payload must be an object or a string"));
+    if (payload) {
+      isStringOrObjectOrThrow(payload, new ValidationError("payload must be an object or a string"));
+    }
 
     if (
       headers[CONSTANTS.CE_HEADERS.SPEC_VERSION] &&
@@ -61,11 +62,15 @@ export class BinaryHTTPReceiver {
       }
     }
 
-    const parser = parserByContentType[eventObj.datacontenttype as string];
-    if (!parser) {
-      throw new ValidationError(`no parser found for content type ${eventObj.datacontenttype}`);
+    let parsedPayload;
+
+    if (payload) {
+      const parser = parserByContentType[eventObj.datacontenttype as string];
+      if (!parser) {
+        throw new ValidationError(`no parser found for content type ${eventObj.datacontenttype}`);
+      }
+      parsedPayload = parser.parse(payload);
     }
-    const parsedPayload = parser.parse(payload);
 
     // Every unprocessed header can be an extension
     for (const header in sanitizedHeaders) {

@@ -9,18 +9,6 @@ const receiver = new BinaryHTTPReceiver(Version.V03);
 
 describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
   describe("Check", () => {
-    it("Throw error when payload arg is null or undefined", () => {
-      // setup
-      const payload = undefined;
-      const attributes = {};
-
-      // act and assert
-      expect(receiver.parse.bind(receiver, (payload as unknown) as string, attributes)).to.throw(
-        ValidationError,
-        "payload is null or undefined",
-      );
-    });
-
     it("Throw error when attributes arg is null or undefined", () => {
       // setup
       const payload = {};

@@ -1,0 +1,37 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "build",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: build",
+			"detail": "tsc --project tsconfig.json && tsc --project tsconfig.browser.json && webpack"
+		},
+		{
+			"type": "npm",
+			"script": "watch",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: watch",
+			"detail": "tsc --project tsconfig.json --watch"
+		},
+		{
+			"type": "npm",
+			"script": "lint",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "npm: lint",
+			"detail": "eslint 'src/**/*.{js,ts}' 'test/**/*.{js,ts}'"
+		},
+		{
+			"type": "npm",
+			"script": "test",
+			"group": "test",
+			"problemMatcher": [],
+			"label": "npm: test",
+			"detail": "mocha --require ts-node/register ./test/integration/**/*.ts"
+		},
+	]
+}

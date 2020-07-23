@@ -28,7 +28,7 @@ This CloudEvents SDK requires nodejs 6.11+
 ### Nodejs
 
 ```sh
-npm install cloudevents-sdk
+npm install cloudevents
 ```
 ## Specification Support
 
@@ -57,7 +57,7 @@ These are the supported specifications by this version.
 ### Usage
 
 ```js
-const v1 = require("cloudevents-sdk/v1");
+const v1 = require("cloudevents/v1");
 
 /*
  * Creating an event
@@ -70,7 +70,7 @@ let myevent = v1.event()
 #### Formatting
 
 ```js
-const v1 = require("cloudevents-sdk/v1");
+const v1 = require("cloudevents/v1");
 
 /*
  * Creating an event
@@ -88,7 +88,7 @@ let formatted = myevent.format();
 #### Emitting
 
 ```js
-const v1 = require("cloudevents-sdk/v1");
+const v1 = require("cloudevents/v1");
 
 /*
  * Creating an event
@@ -129,7 +129,7 @@ HTTP Headers, extracting the CloudEvents.
 ```js
 // some parts were removed //
 
-const v1 = require("cloudevents-sdk/v1");
+const v1 = require("cloudevents/v1");
 
 const receiver = new v1.StructuredHTTPReceiver();
 

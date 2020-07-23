@@ -5,6 +5,14 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Generated files
+*.d.ts
+index.js
+/lib
+/browser
+/bundles
+/dist
+
 # Runtime data
 pids
 *.pid

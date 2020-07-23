@@ -11,20 +11,21 @@
   "license": "Apache-2.0",
   "keywords": [],
   "scripts": {
-    "start": "node build/src/index.js",
+    "start": "node build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "check": "gts check",
     "clean": "gts clean",
     "compile": "tsc -p .",
+    "watch": "tsc -p . --watch",
     "fix": "gts fix",
     "prepare": "npm run compile",
     "pretest": "npm run compile",
     "posttest": "npm run check"
   },
   "devDependencies": {
-    "gts": "^1.1.0",
-    "typescript": "~3.5.0",
     "@types/node": "^8.9.0",
-    "cloudevents-sdk": "1.0.0"
+    "cloudevents-sdk": "~2.0.2",
+    "gts": "^1.1.0",
+    "typescript": "~3.9.5"
   }
 }

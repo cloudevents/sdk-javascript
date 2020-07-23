@@ -1,5 +1,14 @@
 {
-  "extends": "eslint:recommended",
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2015,
+    "sourceType": "module"
+  },
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "prettier/@typescript-eslint",
+    "plugin:prettier/recommended"
+  ],
   "env": {
     "es6": true,
     "node": true,
@@ -7,20 +16,19 @@
   },
   "rules": {
     "no-var": "error",
-    "space-before-function-paren": ["error", "never"],
     "standard/no-callback-literal": "off",
     "arrow-spacing": "error",
     "arrow-parens": ["error", "always"],
     "arrow-body-style": ["error", "as-needed"],
     "prefer-template": "error",
-    "max-len": ["warn", { "code": 80 }],
+    "max-len": ["warn", { "code": 120 }],
     "no-unused-vars": ["warn", {
       "argsIgnorePattern": "^_$|^e$|^reject$|^resolve$"
     }],
     "no-console": ["error", {
       "allow": ["warn", "error"]
     }],
-    "valid-jsdoc": "error",
+    "valid-jsdoc": "warn",
     "semi": ["error", "always"],
     "quotes": ["error", "double", { "allowTemplateLiterals": true }]
   }

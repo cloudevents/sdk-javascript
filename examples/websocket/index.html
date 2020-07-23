@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CloudEvent Example</title>
+    <script src="../../_bundles/cloudevents-sdk.js"></script>
+    <script>
+      const CloudEvent = window['cloudevents-sdk'].CloudEvent;
+      const Version = window['cloudevents-sdk'].Version;
+      const socket = new WebSocket("ws://localhost:8080");
+
+      function print(weather) {
+        const data = weather;
+        const summary = `
+<h2>Current weather for ${data.name}: ${data.weather[0].main}</h2>
+<hr/>
+<p>
+With ${data.weather[0].description}, the temperature is ${Math.round(data.main.temp)}F
+and the wind is blowing at ${Math.round(data.wind.speed)}mph.
+</p>`;
+        console.log(summary);
+        const node = document.getElementById("summary");
+        node.innerHTML = summary;
+      }
+
+      function initialize() {
+        socket.onmessage = function(message) {
+          console.log(message.data);
+          const event = new CloudEvent(JSON.parse(message.data));
+          if (event.type === "weather.error") {
+            console.error(`Error: ${event.data}`);
+            alert(`Error: ${event.data}`);
+          } else {
+            print(event.data);
+          }
+        }
+
+        const input = document.getElementById("zip");
+        input.addEventListener("keyup", function(event) {
+          if (event.keyCode === 13) {
+            event.preventDefault();
+            const ce = new CloudEvent({
+              type: "weather.query",
+              source: "/weather.client",
+              data: { zip: input.value }
+            });
+            console.log(ce);
+            socket.send(JSON.stringify(ce));
+          }
+        });
+
+      }
+    </script>
+  </head>
+  <body style="font-size: larger; margin: 1em;" onload="initialize()">
+    <h1>Weather By Zip Code</h1>
+    <p>Please provide a zip code
+      <input type="text" id="zip"/>
+    </p>
+    <p style="font-family: Arial, Helvetica, sans-serif;" id="summary">
+    </p>
+  </body>
+</html>

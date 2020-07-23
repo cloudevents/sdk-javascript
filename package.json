@@ -1,18 +1,26 @@
 {
   "name": "cloudevents-sdk",
-  "version": "1.0.0",
+  "version": "2.0.2",
   "description": "CloudEvents SDK for JavaScript",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "lint": "standardx",
-    "fix": "standardx --fix",
-    "pretest": "npm run lint",
-    "test": "mocha test/**/*.js",
+    "watch": "tsc --project tsconfig.json --watch",
+    "build": "tsc --project tsconfig.json && tsc --project tsconfig.browser.json && webpack",
+    "lint": "eslint 'src/**/*.{js,ts}' 'test/**/*.{js,ts}'",
+    "lint:fix": "eslint 'src/**/*.{js,ts}' 'test/**/*.{js,ts}' --fix",
+    "pretest": "npm run lint && npm run conformance",
+    "test": "mocha --require ts-node/register ./test/integration/**/*.ts",
+    "conformance": "npx downtotemp https://raw.githubusercontent.com/cloudevents/conformance/master/features/http-protocol-binding.feature && cucumber-js /tmp/http-protocol-binding.feature -p default",
     "coverage": "nyc --reporter=lcov --reporter=text npm run test",
-    "precoverage-publish": "npm run coverage",
     "coverage-publish": "wget -qO - https://coverage.codacy.com/get.sh | bash -s report -l JavaScript -r coverage/lcov.info",
-    "release": "standard-version"
+    "generate-docs": "typedoc --excludeNotDocumented --out docs src",
+    "release": "standard-version",
+    "prepublishOnly": "npm run build"
   },
+  "files": [
+    "dist",
+    "bundles"
+  ],
   "standard-version": {
     "types": [
       {
@@ -87,22 +95,46 @@
   },
   "homepage": "https://github.com/cloudevents/sdk-javascript#readme",
   "dependencies": {
-    "ajv": "~6.12.0",
+    "ajv": "~6.12.3",
     "axios": "~0.19.2",
-    "uuid": "~8.0.0"
+    "typedoc-clarity-theme": "^1.1.0",
+    "uuid": "~8.2.0"
   },
   "devDependencies": {
+    "@types/ajv": "^1.0.0",
+    "@types/axios": "^0.14.0",
+    "@types/chai": "^4.2.11",
+    "@types/cucumber": "^6.0.1",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^13.13.9",
+    "@types/uuid": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^3.4.0",
+    "@typescript-eslint/parser": "^3.4.0",
     "chai": "~4.2.0",
-    "mocha": "~7.1.1",
-    "nock": "~12.0.3",
-    "nyc": "~15.0.0",
+    "cucumber": "^6.0.5",
+    "cucumber-pretty": "^6.0.0",
+    "cucumber-tsflow": "^3.2.0",
+    "downtotemp": "^0.1.2",
+    "eslint": "^7.3.0",
+    "eslint-config-prettier": "^6.11.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
-    "standardx": "^5.0.0",
-    "standard-version": "^7.1.0"
+    "eslint-plugin-prettier": "^3.1.4",
+    "http-parser-js": "^0.5.2",
+    "mocha": "~7.1.1",
+    "nock": "~12.0.3",
+    "nyc": "~15.0.0",
+    "prettier": "^2.0.5",
+    "standard-version": "^8.0.1",
+    "ts-node": "^8.10.2",
+    "typedoc": "^0.17.7",
+    "typescript": "^3.8.3",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "types": "./dist/index.d.ts"
 }

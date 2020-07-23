@@ -2,282 +2,140 @@
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bd66e7c52002481993cd6d610534b0f7)](https://www.codacy.com/app/fabiojose/sdk-javascript?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cloudevents/sdk-javascript&amp;utm_campaign=Badge_Grade)
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/bd66e7c52002481993cd6d610534b0f7)](https://www.codacy.com/app/fabiojose/sdk-javascript?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cloudevents/sdk-javascript&amp;utm_campaign=Badge_Coverage)
-[![Build Status](https://travis-ci.org/cloudevents/sdk-javascript.svg?branch=master)](https://travis-ci.org/cloudevents/sdk-javascript)
-[![downloads](https://img.shields.io/npm/dy/cloudevents-sdk.svg)](https://www.npmjs.com/package/cloudevents-sdk)
+![Node.js CI](https://github.com/cloudevents/sdk-javascript/workflows/Node.js%20CI/badge.svg)
 [![npm version](https://img.shields.io/npm/v/cloudevents-sdk.svg)](https://www.npmjs.com/package/cloudevents-sdk)
 [![vulnerabilities](https://snyk.io/test/github/cloudevents/sdk-javascript/badge.svg)](https://snyk.io/test/github/cloudevents/sdk-javascript)
-[![licence](https://img.shields.io/github/license/cloudevents/sdk-javascript)](http://www.apache.org/licenses/LICENSE-2.0)
-
 
 The CloudEvents SDK for JavaScript.
 
-## Status
+## Features
 
-This SDK is still considered a work in progress.
+* Represent CloudEvents in memory
+* Serialize and deserialize CloudEvents in different [event formats](https://github.com/cloudevents/spec/blob/v1.0/spec.md#event-format).
+* Send and recieve CloudEvents with via different [protocol bindings](https://github.com/cloudevents/spec/blob/v1.0/spec.md#protocol-binding).
 
-This SDK current supports the following versions of CloudEvents:
-
-- v1.0
-
-**Checkout the [changelog](CHANGELOG.md) to see what's going on!**
+_Note:_ Supports CloudEvent versions 0.3, 1.0
 
 ## Installation
 
-This CloudEvents SDK requires nodejs 6.11+
+The CloudEvents SDK requires a current LTS version of Node.js. At the moment
+those are Node.js 10.x and Node.js 12.x. To install in your Node.js project:
 
-### Nodejs
-
-```sh
+```console
 npm install cloudevents-sdk
 ```
-## Specification Support
 
-These are the supported specifications by this version.
-
-| **Specifications**                    | v0.3 | **v1.0** |
-|---------------------------------------|------|----------|
-| CloudEvents                           | yes  |   yes    |
-| HTTP Transport Binding  - Structured  | yes  |   yes    |
-| HTTP Transport Binding  - Binary      | yes  |   yes    |
-| JSON Event Format                     | yes  |   yes    |
-
-### What we can do
-
-| **What**                            | v0.3 | **v1.0** |
-|-------------------------------------|------|----------|
-| Create events                       | yes  |   yes    |
-| Emit Structured events over HTTP    | yes  |   yes    |
-| Emit Binary events over HTTP        | yes  |   yes    |
-| JSON Event Format                   | yes  |   yes    |
-| Receive Structured events over HTTP | yes  |   yes    |
-| Receive Binary events over HTTP     | yes  |   yes    |
-
-## How to use
-
-### Usage
-
-```js
-const v1 = require("cloudevents-sdk/v1");
-
-/*
- * Creating an event
- */
-let myevent = v1.event()
-  .type("com.github.pull.create")
-  .source("urn:event:from:myapi/resource/123");
-```
-
-#### Formatting
-
-```js
-const v1 = require("cloudevents-sdk/v1");
-
-/*
- * Creating an event
- */
-let myevent = v1.event()
-  .type("com.github.pull.create")
-  .source("urn:event:from:myapi/resource/123");
-
-/*
- * Format the payload and return it
- */
-let formatted = myevent.format();
-```
-
-#### Emitting
-
-```js
-const v1 = require("cloudevents-sdk/v1");
-
-/*
- * Creating an event
- */
-let myevent = v1.event()
-  .type("com.github.pull.create")
-  .source("urn:event:from:myapi/resource/123");
-
-// The binding configuration using POST
-let config = {
-  method: "POST",
-  url   : "https://myserver.com"
-};
-
-// The binding instance
-let binding = new v1.StructuredHTTPEmitter(config);
-
-// Emit the event using Promise
-binding.emit(myevent)
-  .then(response => {
-    // Treat the response
-    console.log(response.data);
-
-  }).catch(err => {
-    // Deal with errors
-    console.error(err);
-  });
-```
+### Receiving and Emitting Events
 
 #### Receiving Events
 
-You can choose any framework for port binding. But, use the
-StructuredHTTPReceiver or BinaryHTTPReceiver to process the HTTP Payload and
-HTTP Headers, extracting the CloudEvents.
-
-:smiley: **Checkout the full working example: [here](./examples/express-ex).**
+You can choose almost any popular web framework for port binding. Use an
+`HTTPReceiver` to process the incoming HTTP request. The receiver accepts
+binary and structured events in either the 1.0 or 0.3 protocol formats.
 
 ```js
-// some parts were removed //
+const {
+  CloudEvent,
+  Receiver
+} = require("cloudevents-sdk");
 
-const v1 = require("cloudevents-sdk/v1");
+// Create a receiver to accept events over HTTP
+const receiver = new Receiver();
 
-const receiver = new v1.StructuredHTTPReceiver();
+// body and headers come from an incoming HTTP request, e.g. express.js
+const receivedEvent = receiver.accept(req.headers, req.body);
+console.log(receivedEvent);
+```
 
-// some parts were removed //
+#### Emitting Events
 
-app.post("/", (req, res) => {
-  try {
-    let myevent = receiver.parse(req.body, req.headers);
+You can send events over HTTP in either binary or structured format.
 
-    // TODO use the event
+By default, the `Emitter` will emit events over HTTP POST using the
+binary transport protocol. The `Emitter` will examine the `specversion`
+of the event being sent, and use the appropriate protocol version. To send
+structured events, add `Protocol.HTTPStructured` as a parameter to
+`emitter.send()`.
 
-    res.status(201).send("Event Accepted");
+```js
+const { CloudEvent, Emitter, Protocol, Version } = require("cloudevents-sdk");
 
-  } catch(err) {
-    // TODO deal with errors
-    console.error(err);
-    res.status(415)
-          .header("Content-Type", "application/json")
-          .send(JSON.stringify(err));
-  }
+// With only an endpoint URL, this creates a v1 emitter
+const emitter = new Emitter({
+  url: "https://cloudevents.io/example"
 });
+const event = new CloudEvent({
+  type, source, data
+});
+
+// By default, the emitter will send binary events
+emitter.send(event).then((response) => {
+    // handle the response
+  }).catch(console.error);
+
+// To send a structured event, just add that as an option
+emitter.send(event, { protocol: Protocol.HTTPStructured })
+  .then((response) => {
+    // handle the response
+  }).catch(console.error);
+
+// To send an event to an alternate URL, add that as an option
+emitter.send(event, { url: "https://alternate.com/api" })
+  .then((response) => {
+    // handle the response
+  }).catch(console.error);
+
+// Sending a v0.3 event works the same, If your event has a
+// specversion property of Version.V03, then it will be sent
+// using the 0.3 transport protocol
+emitter.send(new CloudEvent({ specversion: Version.V03, source, type }))
+  .then((response) => {
+    // handle the response
+  }).catch(console.error);
 ```
 
-## Unit Testing
+## CloudEvent Objects
 
-The unit test checks the result of formatted payload and the constraints.
-
-```bash
-npm test
-```
-
-## The API
-
-### `CloudEvent` class
+All created `CloudEvent` objects are read-only.  If you need to update a property or add a new extension to an existing cloud event object, you can use the `cloneWith` method.  This will return a new `CloudEvent` with any update or new properties.  For example:
 
 ```js
-/*
- * Format the payload and return an Object.
- */
-Object CloudEvent.format()
+const {
+  CloudEvent,
+} = require("cloudevents-sdk");
 
-/*
- * Format the payload as String.
- */
-String CloudEvent.toString()
+// Create a new CloudEvent
+const ce = new CloudEvent({...});
+
+// Add a new extension to an existing CloudEvent
+const ce2 = ce.cloneWith({extension: "Value"});
 ```
 
-### `Formatter` classes
+### Example Applications
 
-Every formatter class must implement these methods to work properly.
+There are a few trivial example applications in
+[the examples folder](https://github.com/cloudevents/sdk-javascript/tree/master/examples).
+There you will find Express.js, TypeScript and Websocket examples.
 
-```js
-/*
- * Format the CloudEvent payload argument and return an Object.
- */
-Object Formatter.format(Object)
+## Supported specification features
 
-/*
- * Format the CloudEvent payload as String.
- */
-String Formatter.toString(Object)
-```
+| Core Specification |  [v0.3](v03spec) | [v1.0](v1spec) |
+| ----------------------------- | --- | --- |
+| CloudEvents Core              | :heavy_check_mark: | :heavy_check_mark: |
+---
 
-### `Parser` classes
+| Event Formats |  [v0.3](v03spec) | [v1.0](v1spec) |
+| ----------------------------- | --- | --- |
+| AVRO Event Format             | :x: | :x: |
+| JSON Event Format             | :heavy_check_mark: | :heavy_check_mark: |
+---
 
-Every Parser class must implement these methods to work properly.
-
-```js
-/*
- * The default constructor with Parser as decorator
- */
-Parser(Parser)
-
-/*
- * Try to parse the payload to some event format
- */
-Object Parser.parse(payload)
-```
-
-### `Spec` classes
-
-Every Spec class must implement these methods to work properly.
-
-```js
-/*
- * The constructor must receives the CloudEvent type.
- */
-Spec(CloudEvent)
-
-/*
- * Checks the spec constraints, throwing an error if do not pass.
- * @throws Error when it is an invalid event
- */
-Spec.check()
-
-/*
- * Checks if the argument pass through the spec constraints
- * @throws Error when it is an invalid event
- */
-Spec.check(Object)
-```
-
-### `Binding` classes
-
-Every Binding class must implement these methods to work properly.
-
-#### Emitter Binding
-
-Following we have the signature for the binding to emit CloudEvents.
-
-```js
-/*
- * The constructor must receives the map of configurations.
- */
-Binding(config)
-
-/*
- * Emits the event using an instance of CloudEvent.
- */
-Binding.emit(cloudEvent)
-```
-
-#### Receiver Binding
-
-Following we have the signature for the binding to receive CloudEvents.
-
-```js
-/*
- * The constructor must receives the map of configurations.
- */
-Receiver(config)
-
-/*
- * Checks if some Object and a Map of headers
- * follows the binding definition, throwing an error if did not follow
- */
-Receiver.check(Object, Map)
-
-/*
- * Checks and parse as CloudEvent
- */
-CloudEvent Receiver.parse(Object, Map)
-```
-
-## Versioning
-
-- `x.M.p`: where `x` relates to spec version, `M` relates to minor and `p` relates
-to fixes. See [semver](https://semver.org/)
+| Transport Protocols |  [v0.3](v03spec) | [v1.0](v1spec) |
+| ----------------------------- | --- | --- |
+| AMQP Protocol Binding         | :x: | :x: |
+| HTTP Protocol Binding         | :heavy_check_mark: | :heavy_check_mark: |
+| Kafka Protocol Binding        | :x: | :x: |
+| MQTT Protocol Binding         | :x: | :x: |
+| NATS Protocol Binding         | :x: | :x: |
 
 ## Community
 
@@ -291,3 +149,12 @@ to fixes. See [semver](https://semver.org/)
   [CNCF's Slack workspace](https://slack.cncf.io/).
 - Email: https://lists.cncf.io/g/cncf-cloudevents-sdk
 - Contact for additional information: Fabio José (`@fabiojose` on slack).
+
+## Contributing
+
+We love contributions from the community! Please check the
+[Contributor's Guide](https://github.com/cloudevents/sdk-javascript/blob/master/CONTRIBUTING.md)
+for information on how to get involved.
+
+[v1spec]: https://github.com/cloudevents/spec/tree/v1.0
+[v103pec]: https://github.com/cloudevents/spec/tree/v0.3

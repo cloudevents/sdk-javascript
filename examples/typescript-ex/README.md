@@ -15,5 +15,3 @@ Then, start
 ```bash
 npm start
 ```
-
-See your event payload [here, at requestbin](https://requestbin.com/r/enu90y24i64jp)

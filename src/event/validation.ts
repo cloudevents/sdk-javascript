@@ -82,4 +82,4 @@ export const asData = (data: unknown, contentType: string): string => {
 };
 
 export const isValidType = (v: boolean | number | string | Date | Uint32Array | unknown): boolean =>
-  isBoolean(v) || isInteger(v) || isString(v) || isDate(v) || isBinary(v);
+  isBoolean(v) || isInteger(v) || isString(v) || isDate(v) || isBinary(v) || isObject(v);

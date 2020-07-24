@@ -87,10 +87,8 @@ describe("CloudEvents Spec v1.0", () => {
       expect(cloudevent.cloneWith({ extdate: myDate }).validate()).to.equal(true);
     });
 
-    it("should fail when the type is an object", () => {
-      expect(() => {
-        cloudevent.cloneWith({ objectextension: { some: "object" } });
-      }).to.throw(ValidationError, "invalid extension value");
+    it("should be ok when the type is an object", () => {
+      expect(cloudevent.cloneWith({ objectextension: { some: "object" } }).validate()).to.equal(true);
     });
 
     it("should be ok when the type is an string converted from an object", () => {

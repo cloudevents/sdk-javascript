@@ -109,7 +109,7 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
         throw new ValidationError("invalid extension name");
       }
 
-      // Value should be spec complient
+      // Value should be spec compliant
       // https://github.com/cloudevents/spec/blob/master/spec.md#type-system
       if (!isValidType(value)) {
         throw new ValidationError("invalid extension value");

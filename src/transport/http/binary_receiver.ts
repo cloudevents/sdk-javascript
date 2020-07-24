@@ -2,8 +2,7 @@ import { CloudEvent, Version } from "../..";
 import { CloudEventV1, CloudEventV03 } from "../../event/interfaces";
 import { validateV1, validateV03 } from "../../event/spec";
 import { Headers, validate } from "./headers";
-import { binaryParsers as v1Parsers } from "./v1";
-import { binaryParsers as v03Parsers } from "./v03";
+import { v03binaryParsers, v1binaryParsers } from "./versions";
 import { parserByContentType, MappedParser } from "../../parsers";
 import { isString, isBase64, ValidationError, isStringOrObjectOrThrow } from "../../event/validation";
 import CONSTANTS from "../../constants";
@@ -52,7 +51,7 @@ export class BinaryHTTPReceiver {
     const sanitizedHeaders = validate(headers);
 
     const eventObj: { [key: string]: unknown | string | Record<string, unknown> } = {};
-    const parserMap: Record<string, MappedParser> = this.version === Version.V1 ? v1Parsers : v03Parsers;
+    const parserMap: Record<string, MappedParser> = this.version === Version.V1 ? v1binaryParsers : v03binaryParsers;
 
     for (const header in parserMap) {
       if (sanitizedHeaders[header]) {

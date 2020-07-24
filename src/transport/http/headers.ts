@@ -1,6 +1,5 @@
 import { ValidationError, CloudEvent } from "../..";
-import { headerMap as v1Map } from "./v1";
-import { headerMap as v03Map } from "./v03";
+import { v03headerMap, v1headerMap } from "./versions";
 import { Version } from "../../event/cloudevent";
 import { MappedParser } from "../../parsers";
 import CONSTANTS from "../../constants";
@@ -60,9 +59,9 @@ export function headersFor(event: CloudEvent): Headers {
   const headers: Headers = {};
   let headerMap: Readonly<{ [key: string]: MappedParser }>;
   if (event.specversion === Version.V1) {
-    headerMap = v1Map;
+    headerMap = v1headerMap;
   } else {
-    headerMap = v03Map;
+    headerMap = v03headerMap;
   }
 
   // iterate over the event properties - generate a header for each

@@ -1,7 +1,7 @@
 import "mocha";
 import { expect } from "chai";
 
-import { JSONParser as Parser } from "../../src/parsers/";
+import { JSONParser as Parser } from "../../src/parsers";
 import { ValidationError } from "../../src/";
 
 describe("JSON Event Format Parser", () => {

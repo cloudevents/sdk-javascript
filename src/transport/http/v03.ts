@@ -1,12 +1,27 @@
-import { MappedParser, DateParser, PassThroughParser } from "../../../parsers";
-import CONSTANTS from "../../../constants";
+import { MappedParser, DateParser, PassThroughParser } from "../../parsers";
+import CONSTANTS from "../../constants";
 
-const passThrough = new PassThroughParser();
-function parser(name: string, parser = passThrough): MappedParser {
-  return { name: name, parser: parser };
+function parser(header: string, parser = new PassThroughParser()): MappedParser {
+  return { name: header, parser };
 }
 
-const binaryParsers: Record<string, MappedParser> = Object.freeze({
+/**
+ * A utility Map used to retrieve the header names for a CloudEvent
+ * using the CloudEvent getter function.
+ */
+export const headerMap: Readonly<{ [key: string]: MappedParser }> = Object.freeze({
+  [CONSTANTS.CE_ATTRIBUTES.CONTENT_TYPE]: parser(CONSTANTS.HEADER_CONTENT_TYPE),
+  [CONSTANTS.CE_ATTRIBUTES.SUBJECT]: parser(CONSTANTS.CE_HEADERS.SUBJECT),
+  [CONSTANTS.CE_ATTRIBUTES.TYPE]: parser(CONSTANTS.CE_HEADERS.TYPE),
+  [CONSTANTS.CE_ATTRIBUTES.SPEC_VERSION]: parser(CONSTANTS.CE_HEADERS.SPEC_VERSION),
+  [CONSTANTS.CE_ATTRIBUTES.SOURCE]: parser(CONSTANTS.CE_HEADERS.SOURCE),
+  [CONSTANTS.CE_ATTRIBUTES.ID]: parser(CONSTANTS.CE_HEADERS.ID),
+  [CONSTANTS.CE_ATTRIBUTES.TIME]: parser(CONSTANTS.CE_HEADERS.TIME),
+  [CONSTANTS.STRUCTURED_ATTRS_03.CONTENT_ENCODING]: parser(CONSTANTS.BINARY_HEADERS_03.CONTENT_ENCODING),
+  [CONSTANTS.STRUCTURED_ATTRS_03.SCHEMA_URL]: parser(CONSTANTS.BINARY_HEADERS_03.SCHEMA_URL),
+});
+
+export const binaryParsers: Record<string, MappedParser> = Object.freeze({
   [CONSTANTS.CE_HEADERS.TYPE]: parser(CONSTANTS.CE_ATTRIBUTES.TYPE),
   [CONSTANTS.CE_HEADERS.SPEC_VERSION]: parser(CONSTANTS.CE_ATTRIBUTES.SPEC_VERSION),
   [CONSTANTS.CE_HEADERS.SOURCE]: parser(CONSTANTS.CE_ATTRIBUTES.SOURCE),
@@ -18,7 +33,7 @@ const binaryParsers: Record<string, MappedParser> = Object.freeze({
   [CONSTANTS.HEADER_CONTENT_TYPE]: parser(CONSTANTS.CE_ATTRIBUTES.CONTENT_TYPE),
 });
 
-const structuredParsers: Record<string, MappedParser> = Object.freeze({
+export const structuredParsers: Record<string, MappedParser> = Object.freeze({
   [CONSTANTS.CE_ATTRIBUTES.TYPE]: parser(CONSTANTS.CE_ATTRIBUTES.TYPE),
   [CONSTANTS.CE_ATTRIBUTES.SPEC_VERSION]: parser(CONSTANTS.CE_ATTRIBUTES.SPEC_VERSION),
   [CONSTANTS.CE_ATTRIBUTES.SOURCE]: parser(CONSTANTS.CE_ATTRIBUTES.SOURCE),
@@ -30,5 +45,3 @@ const structuredParsers: Record<string, MappedParser> = Object.freeze({
   [CONSTANTS.CE_ATTRIBUTES.SUBJECT]: parser(CONSTANTS.CE_ATTRIBUTES.SUBJECT),
   [CONSTANTS.CE_ATTRIBUTES.DATA]: parser(CONSTANTS.CE_ATTRIBUTES.DATA),
 });
-
-export { binaryParsers, structuredParsers };

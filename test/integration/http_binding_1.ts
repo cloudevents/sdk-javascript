@@ -5,7 +5,7 @@ import nock from "nock";
 
 import { CloudEvent, Version } from "../../src";
 import { emitBinary, emitStructured } from "../../src/transport/http";
-import { asBase64 } from "../../src/event/validation/is";
+import { asBase64 } from "../../src/event/validation";
 import { AxiosResponse } from "axios";
 
 const type = "com.github.pull.create";

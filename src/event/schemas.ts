@@ -1,4 +1,4 @@
-const schemaV1 = {
+export const schemaV1 = {
   $ref: "#/definitions/event",
   definitions: {
     specversion: {
@@ -79,4 +79,75 @@ const schemaV1 = {
   type: "object",
 };
 
-export { schemaV1 };
+export const schemaV03 = {
+  $ref: "#/definitions/event",
+  definitions: {
+    specversion: {
+      const: "0.3",
+    },
+    datacontenttype: {
+      type: "string",
+    },
+    data: {
+      type: ["object", "string"],
+    },
+    event: {
+      properties: {
+        specversion: {
+          $ref: "#/definitions/specversion",
+        },
+        datacontenttype: {
+          $ref: "#/definitions/datacontenttype",
+        },
+        data: {
+          $ref: "#/definitions/data",
+        },
+        id: {
+          $ref: "#/definitions/id",
+        },
+        time: {
+          $ref: "#/definitions/time",
+        },
+        schemaurl: {
+          $ref: "#/definitions/schemaurl",
+        },
+        subject: {
+          $ref: "#/definitions/subject",
+        },
+        type: {
+          $ref: "#/definitions/type",
+        },
+        source: {
+          $ref: "#/definitions/source",
+        },
+      },
+      required: ["specversion", "id", "type", "source"],
+      type: "object",
+    },
+    id: {
+      type: "string",
+      minLength: 1,
+    },
+    time: {
+      format: "date-time",
+      type: "string",
+    },
+    schemaurl: {
+      type: "string",
+      format: "uri-reference",
+    },
+    subject: {
+      type: "string",
+      minLength: 1,
+    },
+    type: {
+      type: "string",
+      minLength: 1,
+    },
+    source: {
+      format: "uri-reference",
+      type: "string",
+    },
+  },
+  type: "object",
+};

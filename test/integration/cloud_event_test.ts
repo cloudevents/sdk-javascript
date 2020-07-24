@@ -1,7 +1,6 @@
 import { expect } from "chai";
 import { CloudEvent, Version } from "../../src";
-import { CloudEventV03 } from "../../src/event/v03";
-import { CloudEventV1 } from "../../src/event/v1";
+import { CloudEventV03, CloudEventV1 } from "../../src/event/interfaces";
 
 const type = "org.cncf.cloudevents.example";
 const source = "http://unit.test";

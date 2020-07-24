@@ -22,7 +22,7 @@ The CloudEvents SDK requires a current LTS version of Node.js. At the moment
 those are Node.js 10.x and Node.js 12.x. To install in your Node.js project:
 
 ```console
-npm install cloudevents-sdk
+npm install cloudevents
 ```
 
 ### Receiving and Emitting Events
@@ -37,7 +37,7 @@ binary and structured events in either the 1.0 or 0.3 protocol formats.
 const {
   CloudEvent,
   Receiver
-} = require("cloudevents-sdk");
+} = require("cloudevents");
 
 // Create a receiver to accept events over HTTP
 const receiver = new Receiver();
@@ -58,7 +58,7 @@ structured events, add `Protocol.HTTPStructured` as a parameter to
 `emitter.send()`.
 
 ```js
-const { CloudEvent, Emitter, Protocol, Version } = require("cloudevents-sdk");
+const { CloudEvent, Emitter, Protocol, Version } = require("cloudevents");
 
 // With only an endpoint URL, this creates a v1 emitter
 const emitter = new Emitter({
@@ -101,7 +101,7 @@ All created `CloudEvent` objects are read-only.  If you need to update a propert
 ```js
 const {
   CloudEvent,
-} = require("cloudevents-sdk");
+} = require("cloudevents");
 
 // Create a new CloudEvent
 const ce = new CloudEvent({...});

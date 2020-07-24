@@ -1,9 +1,8 @@
 import "mocha";
 import { expect } from "chai";
 import { CloudEvent, Receiver, ValidationError } from "../../src";
-import { CloudEventV1 } from "../../src/event/v1";
+import { CloudEventV1 } from "../../src/event/interfaces";
 
-const receiver = new Receiver();
 const id = "1234";
 const type = "org.cncf.cloudevents.test";
 const source = "urn:event:from:myapi/resourse/123";
@@ -22,7 +21,7 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
         specversion,
       };
 
-      expect(receiver.accept.bind(receiver, {}, payload)).to.throw(ValidationError, "no cloud event detected");
+      expect(Receiver.accept.bind(Receiver, {}, payload)).to.throw(ValidationError, "no cloud event detected");
     });
 
     it("Converts the JSON body of a binary event to an Object", () => {
@@ -34,7 +33,7 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
         "ce-source": source,
       };
 
-      const event: CloudEvent = receiver.accept(binaryHeaders, data);
+      const event: CloudEvent = Receiver.accept(binaryHeaders, data);
       expect(typeof event.data).to.equal("object");
       expect((event.data as Record<string, string>).lunch).to.equal("sushi");
     });
@@ -47,7 +46,7 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
         "ce-type": type,
         "ce-source": source,
       };
-      const event = receiver.accept(binaryHeaders, undefined);
+      const event = Receiver.accept(binaryHeaders, undefined);
       expect(event.data).to.be.undefined;
     });
 
@@ -59,7 +58,7 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
         "ce-type": type,
         "ce-source": source,
       };
-      const event = receiver.accept(binaryHeaders, null);
+      const event = Receiver.accept(binaryHeaders, null);
       expect(event.data).to.be.undefined;
     });
 
@@ -72,7 +71,7 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
         specversion,
       };
 
-      const event = receiver.accept(structuredHeaders, payload);
+      const event = Receiver.accept(structuredHeaders, payload);
       expect(typeof event.data).to.equal("object");
       expect((event.data as Record<string, string>).lunch).to.equal("sushi");
     });
@@ -86,7 +85,7 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
         "ce-source": source,
       };
 
-      const event: CloudEvent = receiver.accept(binaryHeaders, data);
+      const event: CloudEvent = Receiver.accept(binaryHeaders, data);
       expect(event.validate()).to.be.true;
       expect((event.data as Record<string, string>).lunch).to.equal("sushi");
     });
@@ -101,7 +100,7 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
         specversion,
       };
 
-      const event: CloudEvent = receiver.accept(structuredHeaders, payload);
+      const event: CloudEvent = Receiver.accept(structuredHeaders, payload);
       expect(event.validate()).to.be.true;
       expect((event.data as Record<string, string>).lunch).to.equal("sushi");
     });
@@ -119,7 +118,7 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
         specversion,
       };
 
-      const event = receiver.accept(structuredHeaders, payload);
+      const event = Receiver.accept(structuredHeaders, payload);
       validateEvent(event, specversion);
     });
 
@@ -132,7 +131,7 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
         "ce-source": source,
       };
 
-      const event = receiver.accept(binaryHeaders, data);
+      const event = Receiver.accept(binaryHeaders, data);
       validateEvent(event, specversion);
     });
   });
@@ -149,7 +148,7 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
         specversion,
       };
 
-      const event = receiver.accept(structuredHeaders, payload);
+      const event = Receiver.accept(structuredHeaders, payload);
       validateEvent(event, specversion);
     });
 
@@ -162,7 +161,7 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
         "ce-source": source,
       };
 
-      const event = receiver.accept(binaryHeaders, data);
+      const event = Receiver.accept(binaryHeaders, data);
       validateEvent(event, specversion);
     });
   });
@@ -192,7 +191,7 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
         "x-forwarded-proto": "http",
         "x-request-id": "d3649c1b-a968-40bf-a9da-3e853abc0c8b",
       };
-      const event = receiver.accept(headers, data);
+      const event = Receiver.accept(headers, data);
       expect(event instanceof CloudEvent).to.equal(true);
       expect(event.id).to.equal(id);
       expect(event.type).to.equal(type);

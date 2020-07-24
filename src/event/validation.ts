@@ -81,5 +81,5 @@ export const asData = (data: unknown, contentType: string): string => {
   return isBinary(maybeJson) ? asBase64(maybeJson) : maybeJson;
 };
 
-export const isValidType = (v: boolean | number | string | Date | Uint32Array): boolean =>
+export const isValidType = (v: boolean | number | string | Date | Uint32Array | unknown): boolean =>
   isBoolean(v) || isInteger(v) || isString(v) || isDate(v) || isBinary(v);

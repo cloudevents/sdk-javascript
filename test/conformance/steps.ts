@@ -8,7 +8,6 @@ import { Receiver } from "../../src";
 const { HTTPParser } = require("http-parser-js");
 
 const parser = new HTTPParser(HTTPParser.REQUEST);
-const receiver = new Receiver();
 
 Given("HTTP Protocol Binding is supported", function (this: World) {
   return true;
@@ -28,7 +27,7 @@ Given("an HTTP request", function (request: string) {
 });
 
 When("parsed as HTTP request", function () {
-  this.cloudevent = receiver.accept(this.headers, this.body);
+  this.cloudevent = Receiver.accept(this.headers, this.body);
   return true;
 });
 

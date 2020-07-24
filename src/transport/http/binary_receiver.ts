@@ -1,6 +1,6 @@
 import { CloudEvent, Version } from "../..";
-import { CloudEventV1, validateV1 } from "../../event/v1";
-import { CloudEventV03, validateV03 } from "../../event/v03";
+import { CloudEventV1, CloudEventV03 } from "../../event/interfaces";
+import { validateV1, validateV03 } from "../../event/spec";
 import { Headers, validate } from "./headers";
 import { binaryParsers as v1Parsers } from "./v1";
 import { binaryParsers as v03Parsers } from "./v03";

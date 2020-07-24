@@ -1,7 +1,14 @@
 import { v4 as uuidv4 } from "uuid";
 
-import { CloudEventV1, validateV1, CloudEventV1Attributes, CloudEventV1OptionalAttributes } from "./v1";
-import { CloudEventV03, validateV03, CloudEventV03Attributes, CloudEventV03OptionalAttributes } from "./v03";
+import {
+  CloudEventV03,
+  CloudEventV03Attributes,
+  CloudEventV03OptionalAttributes,
+  CloudEventV1,
+  CloudEventV1Attributes,
+  CloudEventV1OptionalAttributes,
+} from "./interfaces";
+import { validateV1, validateV03 } from "./spec";
 import { ValidationError, isBinary, asBase64 } from "./validation";
 import CONSTANTS from "../constants";
 import { isString } from "util";

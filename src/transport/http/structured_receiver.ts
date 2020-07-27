@@ -2,8 +2,7 @@ import { CloudEvent, Version } from "../..";
 import { Headers, sanitize } from "./headers";
 import { Parser, JSONParser, MappedParser } from "../../parsers";
 import { parserByContentType } from "../../parsers";
-import { structuredParsers as v1Parsers } from "./v1";
-import { structuredParsers as v03Parsers } from "./v03";
+import { v1structuredParsers, v03structuredParsers } from "./versions";
 import { isString, isBase64, ValidationError, isStringOrObjectOrThrow } from "../../event/validation";
 import { CloudEventV1, CloudEventV03 } from "../../event/interfaces";
 import { validateV1, validateV03 } from "../../event/spec";
@@ -55,7 +54,8 @@ export class StructuredHTTPReceiver {
     const incoming = { ...(parser.parse(payload) as Record<string, unknown>) };
 
     const eventObj: { [key: string]: unknown } = {};
-    const parserMap: Record<string, MappedParser> = this.version === Version.V1 ? v1Parsers : v03Parsers;
+    const parserMap: Record<string, MappedParser> =
+      this.version === Version.V1 ? v1structuredParsers : v03structuredParsers;
 
     for (const key in parserMap) {
       const property = incoming[key];

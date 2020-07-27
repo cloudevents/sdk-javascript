@@ -15,6 +15,8 @@ const ext1Name = "lunch";
 const ext1Value = "tacos";
 const ext2Name = "supper";
 const ext2Value = "sushi";
+const ext3Name = "snack";
+const ext3Value = { value: "chips" };
 
 const data = {
   lunchBreak: "noon",
@@ -45,6 +47,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
       data,
       [ext1Name]: ext1Value,
       [ext2Name]: ext2Value,
+      [ext3Name]: ext3Value,
     });
 
     it("Sends a binary 1.0 CloudEvent by default", () => {
@@ -59,6 +62,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
           // Ensure extensions are handled properly
           expect(response.data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext1Name}`]).to.equal(ext1Value);
           expect(response.data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext2Name}`]).to.equal(ext2Value);
+          expect(response.data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext3Name}`].value).to.equal(ext3Value.value);
         })
         .catch(expect.fail);
     });
@@ -142,6 +146,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
       data,
       [ext1Name]: ext1Value,
       [ext2Name]: ext2Value,
+      [ext3Name]: ext3Value,
     });
 
     it("Sends a binary 0.3 CloudEvent", () => {
@@ -156,6 +161,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
           // Ensure extensions are handled properly
           expect(response.data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext1Name}`]).to.equal(ext1Value);
           expect(response.data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext2Name}`]).to.equal(ext2Value);
+          expect(response.data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext3Name}`].value).to.equal(ext3Value.value);
         })
         .catch(expect.fail);
     });

@@ -117,6 +117,22 @@ describe("A 1.0 CloudEvent", () => {
     expect(ce.data).to.equal(100);
   });
 
+  it("can be constructed with null data", () => {
+    const ce = new CloudEvent({
+      ...fixture,
+      data: null,
+    });
+    expect(ce.data).to.equal(null);
+  });
+
+  it("can be constructed with data as a boolean", () => {
+    const ce = new CloudEvent({
+      ...fixture,
+      data: true,
+    });
+    expect(ce.data).to.be.true;
+  });
+
   it("can be constructed with extensions", () => {
     const extensions = {
       extensionkey: "extension-value",

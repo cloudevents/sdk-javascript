@@ -10,7 +10,7 @@ export const schemaV1 = {
       type: "string",
     },
     data: {
-      type: ["object", "string"],
+      type: ["object", "string", "array", "number", "boolean", "null"],
     },
     data_base64: {
       type: "string",
@@ -89,7 +89,7 @@ export const schemaV03 = {
       type: "string",
     },
     data: {
-      type: ["object", "string"],
+      type: ["object", "string", "array", "number", "boolean", "null"],
     },
     event: {
       properties: {

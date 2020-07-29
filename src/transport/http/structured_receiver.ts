@@ -1,6 +1,6 @@
 import { CloudEvent, Version } from "../..";
 import { Headers, sanitize } from "./headers";
-import { Parser, JSONParser, MappedParser } from "../../parsers";
+import { Parser, JSONParser, MappedParser, Base64Parser } from "../../parsers";
 import { parserByContentType } from "../../parsers";
 import { v1structuredParsers, v03structuredParsers } from "./versions";
 import { isString, isBase64, ValidationError, isStringOrObjectOrThrow } from "../../event/validation";
@@ -75,6 +75,10 @@ export class StructuredHTTPReceiver {
     if (eventObj.data && eventObj.datacontentencoding) {
       if (eventObj.datacontentencoding === CONSTANTS.ENCODING_BASE64 && !isBase64(eventObj.data)) {
         throw new ValidationError("invalid payload");
+      } else if (eventObj.datacontentencoding === CONSTANTS.ENCODING_BASE64) {
+        const dataParser = new Base64Parser();
+        eventObj.data = JSON.parse(dataParser.parse(eventObj.data as string));
+        delete eventObj.datacontentencoding;
       }
     }
 

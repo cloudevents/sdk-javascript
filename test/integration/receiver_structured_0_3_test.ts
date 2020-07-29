@@ -3,6 +3,8 @@ import { expect } from "chai";
 
 import { CloudEvent, ValidationError, Version } from "../../src";
 import { StructuredHTTPReceiver } from "../../src/transport/http/structured_receiver";
+import { asBase64 } from "../../src/event/validation";
+import CONSTANTS from "../../src/constants";
 
 const receiver = new StructuredHTTPReceiver(Version.V03);
 const type = "com.github.pull.create";
@@ -83,6 +85,26 @@ describe("HTTP Transport Binding Structured Receiver CloudEvents v0.3", () => {
 
       // act and assert
       expect(receiver.parse.bind(receiver, event, attributes)).to.throw(ValidationError, "invalid payload");
+    });
+
+    it("Succeeds when content-type is application/cloudevents+json and datacontentencoding is base64", () => {
+      const expected = {
+        whose: "ours",
+      };
+      const bindata = Uint32Array.from(JSON.stringify(expected) as string, (c) => c.codePointAt(0) as number);
+      const payload = {
+        data: asBase64(bindata),
+        specversion: Version.V03,
+        source,
+        type,
+        datacontentencoding: CONSTANTS.ENCODING_BASE64,
+      };
+      const attributes = {
+        "Content-Type": "application/cloudevents+json",
+      };
+
+      const event = receiver.parse(payload, attributes);
+      expect(event.data).to.deep.equal(expected);
     });
 
     it("No error when all required stuff are in place", () => {

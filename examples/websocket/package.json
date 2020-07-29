@@ -15,7 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cloudevents-sdk": "^2.0.2",
+    "cloudevents": "~3.0.1",
     "got": "^11.3.0",
     "ws": "^7.3.0"
   }

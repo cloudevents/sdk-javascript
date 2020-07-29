@@ -3,7 +3,7 @@ const readline = require("readline");
 const WebSocket = require("ws");
 const ws = new WebSocket("ws://localhost:8080");
 
-const { CloudEvent } = require("cloudevents-sdk");
+const { CloudEvent } = require("cloudevents");
 
 const rl = readline.createInterface({
   input: process.stdin,

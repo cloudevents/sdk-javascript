@@ -87,12 +87,12 @@ describe("CloudEvents Spec v1.0", () => {
       expect(cloudevent.cloneWith({ extdate: myDate }).validate()).to.equal(true);
     });
 
-    // even though the spec doesn't allow object types for
-    // extensions, it could be JSON. And before a JS CE
-    // is transmitted across the wire, this value will be
-    // converted to JSON
     it("should be ok when the type is an object", () => {
       expect(cloudevent.cloneWith({ objectextension: { some: "object" } }).validate()).to.equal(true);
+    });
+
+    it("should be ok when the type is an string converted from an object", () => {
+      expect(cloudevent.cloneWith({ objectextension: JSON.stringify({ some: "object" }) }).validate()).to.equal(true);
     });
   });
 

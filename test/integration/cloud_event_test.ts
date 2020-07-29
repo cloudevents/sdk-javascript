@@ -101,6 +101,38 @@ describe("A 1.0 CloudEvent", () => {
     expect(ce.data).to.deep.equal({ lunch: "tacos" });
   });
 
+  it("can be constructed with data as an Array", () => {
+    const ce = new CloudEvent({
+      ...fixture,
+      data: [{ lunch: "tacos" }, { supper: "sushi" }],
+    });
+    expect(ce.data).to.deep.equal([{ lunch: "tacos" }, { supper: "sushi" }]);
+  });
+
+  it("can be constructed with data as a number", () => {
+    const ce = new CloudEvent({
+      ...fixture,
+      data: 100,
+    });
+    expect(ce.data).to.equal(100);
+  });
+
+  it("can be constructed with null data", () => {
+    const ce = new CloudEvent({
+      ...fixture,
+      data: null,
+    });
+    expect(ce.data).to.equal(null);
+  });
+
+  it("can be constructed with data as a boolean", () => {
+    const ce = new CloudEvent({
+      ...fixture,
+      data: true,
+    });
+    expect(ce.data).to.be.true;
+  });
+
   it("can be constructed with extensions", () => {
     const extensions = {
       extensionkey: "extension-value",

@@ -39,11 +39,8 @@ const {
   Receiver
 } = require("cloudevents");
 
-// Create a receiver to accept events over HTTP
-const receiver = new Receiver();
-
 // body and headers come from an incoming HTTP request, e.g. express.js
-const receivedEvent = receiver.accept(req.headers, req.body);
+const receivedEvent = Receiver.accept(req.headers, req.body);
 console.log(receivedEvent);
 ```
 

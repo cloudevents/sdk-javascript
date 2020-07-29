@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.1](https://github.com/cloudevents/sdk-javascript/compare/v3.0.0...v3.0.1) (2020-07-29)
+
+
+### Bug Fixes
+
+* ensure that event data can be an array, number, boolean or null ([#281](https://github.com/cloudevents/sdk-javascript/issues/281)) ([b99f728](https://github.com/cloudevents/sdk-javascript/commit/b99f7281904b41d9058fec8f51019c5937821dc9))
+
+
+### Miscellaneous
+
+* move typedoc them to a dev dependency. ([#279](https://github.com/cloudevents/sdk-javascript/issues/279)) ([c76dda6](https://github.com/cloudevents/sdk-javascript/commit/c76dda6d1052964b772533306f58ef46c8c9b642)), closes [#278](https://github.com/cloudevents/sdk-javascript/issues/278)
+
 ## [3.0.0](https://github.com/cloudevents/sdk-javascript/compare/v2.0.2...v3.0.0) (2020-07-27)
 
 

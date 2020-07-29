@@ -24,8 +24,10 @@
   },
   "devDependencies": {
     "@types/node": "^8.9.0",
-    "cloudevents-sdk": "~2.0.2",
     "gts": "^1.1.0",
     "typescript": "~3.9.5"
+  },
+  "dependencies": {
+    "cloudevents": "~3.0.1"
   }
 }

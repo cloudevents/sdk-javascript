@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 const express = require("express");
-const { Receiver } = require("cloudevents-sdk");
+const { Receiver } = require("cloudevents");
 
 const app = express();
 const receiver = new Receiver();
@@ -25,7 +25,7 @@ app.post("/", function (req, res) {
   console.log("BODY", req.body);
 
   try {
-    const event = receiver.accept(req.headers, req.body);
+    const event = Receiver.accept(req.headers, req.body);
     console.log(`Accepted event: ${event}`);
     res.status(201).json(event);
   } catch (err) {

@@ -7,7 +7,7 @@
   "datacontenttype":"application/json",
   "datacontentencoding":"base64",
   "data":"eyJtdWNoIjoid293In0=",
-  "my-extension" : {
+  "myextension" : {
     "some" : "thing"
   }
 }

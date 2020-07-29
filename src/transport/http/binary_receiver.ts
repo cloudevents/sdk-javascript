@@ -84,9 +84,6 @@ export class BinaryHTTPReceiver {
       eventObj.datacontenttype === CONSTANTS.MIME_JSON &&
       eventObj.datacontentencoding === CONSTANTS.ENCODING_BASE64
     ) {
-      process.stdout.write(JSON.stringify(eventObj));
-      process.stdout.write(JSON.stringify(parsedPayload));
-
       delete eventObj.datacontentencoding;
     }
 

@@ -22,7 +22,8 @@
   "files": [
     "index.js",
     "index.d.ts",
-    "lib"
+    "lib",
+    "postinstall"
   ],
   "standard-version": {
     "types": [

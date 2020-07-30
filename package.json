@@ -16,7 +16,8 @@
     "coverage-publish": "wget -qO - https://coverage.codacy.com/get.sh | bash -s report -l JavaScript -r coverage/lcov.info",
     "generate-docs": "typedoc --tsconfig ./tsconfig.json --plugin typedoc-plugin-markdown src",
     "release": "standard-version",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "postinstall": "node ./postinstall/message.js"
   },
   "files": [
     "index.js",

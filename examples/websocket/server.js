@@ -1,12 +1,12 @@
 /* eslint-disable no-console */
 const got = require("got");
 
-const { CloudEvent } = require("cloudevents-sdk");
+const { CloudEvent } = require("cloudevents");
 const WebSocket = require("ws");
 const wss = new WebSocket.Server({ port: 8080 });
 
 const api = "https://api.openweathermap.org/data/2.5/weather";
-const key = "REPLACE WITH API KEY";
+const key = process.env.OPEN_WEATHER_API_KEY || "REPLACE WITH API KEY";
 
 console.log("WebSocket server started. Waiting for events.");
 
@@ -18,7 +18,7 @@ wss.on("connection", function connection(ws) {
     fetch(event.data.zip)
       .then((weather) => {
         const response = new CloudEvent({
-          dataContentType: "application/json",
+          datacontenttype: "application/json",
           type: "current.weather",
           source: "/weather.server",
           data: weather,

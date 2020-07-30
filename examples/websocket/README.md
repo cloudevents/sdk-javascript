@@ -24,7 +24,7 @@ responds with a CloudEvent containing the body of the Weather API response as th
 event data.
 
 You will need to change one line in the `server.js` file and provide your Open
-Weather API key.
+Weather API key.  You can also create a environment variable `OPEN_WEATHER_API_KEY` and store your key there.
 
 To start the server, run `node server.js`.
 

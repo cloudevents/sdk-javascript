@@ -1,8 +1,6 @@
-import { CloudEvent, CloudEventV1, Receiver } from "cloudevents-sdk";
+import { CloudEvent, CloudEventV1, Receiver } from "cloudevents";
 
-export function doSomeStuff() {
-  const receiver = new Receiver();
-
+export function doSomeStuff(): void {
   const myevent: CloudEventV1 = new CloudEvent({
     source: "/source",
     type: "type",
@@ -10,8 +8,8 @@ export function doSomeStuff() {
     dataschema: "https://d.schema.com/my.json",
     subject: "cha.json",
     data: "my-data",
+    extension1: "some extension data"
   });
-  myevent.extension1 = "some extension data";
 
   console.log("My structured event:", myevent);
 
@@ -23,7 +21,7 @@ export function doSomeStuff() {
 
   // Typically used with an incoming HTTP request where myevent.format() is the actual
   // body of the HTTP
-  console.log("Received structured event:", receiver.accept(headers, myevent));
+  console.log("Received structured event:", Receiver.accept(headers, myevent));
 
   // ------ receiver binary
   const data = {
@@ -40,10 +38,9 @@ export function doSomeStuff() {
     "ce-extension1": "extension1",
   };
 
-  console.log("My binary event:", receiver.accept(attributes, data));
-  console.log("My binary event extensions:", receiver.accept(attributes, data));
+  console.log("My binary event:", Receiver.accept(attributes, data));
+  console.log("My binary event extensions:", Receiver.accept(attributes, data));
 
-  return true;
 }
 
 doSomeStuff();

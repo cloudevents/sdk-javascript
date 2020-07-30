@@ -4,6 +4,7 @@ import { expect } from "chai";
 import { CloudEvent, ValidationError, Version } from "../../src";
 import { BinaryHTTPReceiver } from "../../src/transport/http/binary_receiver";
 import CONSTANTS from "../../src/constants";
+import { asBase64 } from "../../src/event/validation";
 
 const receiver = new BinaryHTTPReceiver(Version.V03);
 
@@ -153,6 +154,26 @@ describe("HTTP Transport Binding Binary Receiver for CloudEvents v0.3", () => {
 
       // act and assert
       expect(receiver.parse.bind(receiver, payload, attributes)).to.not.throw();
+    });
+
+    it("Succeeds when content-type is application/json and datacontentencoding is base64", () => {
+      const expected = {
+        whose: "ours",
+      };
+      const bindata = Uint32Array.from(JSON.stringify(expected) as string, (c) => c.codePointAt(0) as number);
+      const payload = asBase64(bindata);
+
+      const attributes = {
+        [CONSTANTS.CE_HEADERS.TYPE]: "test",
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V03,
+        [CONSTANTS.CE_HEADERS.SOURCE]: "/test-source",
+        [CONSTANTS.CE_HEADERS.ID]: "123456",
+        [CONSTANTS.CE_HEADERS.TIME]: "2019-06-16T11:42:00Z",
+        [CONSTANTS.HEADER_CONTENT_TYPE]: "application/json",
+        [CONSTANTS.BINARY_HEADERS_03.CONTENT_ENCODING]: "base64",
+      };
+      const event = receiver.parse(payload, attributes);
+      expect(event.data).to.deep.equal(expected);
     });
   });
 

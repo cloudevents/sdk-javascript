@@ -77,6 +77,15 @@ export class BinaryHTTPReceiver {
         eventObj[header.substring(CONSTANTS.EXTENSIONS_PREFIX.length)] = headers[header];
       }
     }
+    // At this point, if the datacontenttype is application/json and the datacontentencoding is base64
+    // then the data has already been decoded as a string, then parsed as JSON. We don't need to have
+    // the datacontentencoding property set - in fact, it's incorrect to do so.
+    if (
+      eventObj.datacontenttype === CONSTANTS.MIME_JSON &&
+      eventObj.datacontentencoding === CONSTANTS.ENCODING_BASE64
+    ) {
+      delete eventObj.datacontentencoding;
+    }
 
     const cloudevent = new CloudEvent({ ...eventObj, data: parsedPayload } as CloudEventV1 | CloudEventV03);
     this.version === Version.V1 ? validateV1(cloudevent) : validateV03(cloudevent);

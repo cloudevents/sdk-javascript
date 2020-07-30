@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.3](https://github.com/cloudevents/sdk-javascript/compare/v2.0.2...v2.0.3) (2020-07-30)
+
+
+### Miscellaneous
+
+* **release:** add postinstall script to warn users of name change ([#293](https://github.com/cloudevents/sdk-javascript/issues/293)) ([c74ee6c](https://github.com/cloudevents/sdk-javascript/commit/c74ee6c7209a01d750afb79f44d500512d222a28))
+
 ### [2.0.2](https://github.com/cloudevents/sdk-javascript/compare/v2.0.1...v2.0.2) (2020-06-08)
 
 

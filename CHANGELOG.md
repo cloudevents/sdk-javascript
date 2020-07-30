@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.4](https://github.com/cloudevents/sdk-javascript/compare/v2.0.3...v2.0.4) (2020-07-30)
+
+
+### Miscellaneous
+
+* **release:** add postinstall dir to packaged files ([dd0467b](https://github.com/cloudevents/sdk-javascript/commit/dd0467b62daab462f241a5c90942b9c0a678755a))
+
 ### [2.0.3](https://github.com/cloudevents/sdk-javascript/compare/v2.0.2...v2.0.3) (2020-07-30)
 
 

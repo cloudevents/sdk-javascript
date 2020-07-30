@@ -2,10 +2,10 @@
 <html>
   <head>
     <title>CloudEvent Example</title>
-    <script src="../../bundles/cloudevents-sdk.js"></script>
+    <script src="../../bundles/cloudevents.js"></script>
     <script>
-      const CloudEvent = window['cloudevents-sdk'].CloudEvent;
-      const Version = window['cloudevents-sdk'].Version;
+      const CloudEvent = window.cloudevents.CloudEvent;
+      const Version = window.cloudevents.Version;
       const socket = new WebSocket("ws://localhost:8080");
 
       function print(weather) {

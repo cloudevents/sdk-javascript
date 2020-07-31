@@ -3,7 +3,9 @@ import { ValidationError } from "./event/validation";
 // import {Version} from './event/'
 import { CloudEventV03, CloudEventV03Attributes, CloudEventV1, CloudEventV1Attributes } from "./event/interfaces";
 
-import { Emitter, Receiver, Mode, Protocol, TransportOptions } from "./transport";
+import { Emitter, TransportOptions } from "./transport/emitter";
+import { Receiver, Mode } from "./transport/receiver";
+import { Protocol } from "./transport/protocols";
 import { Headers, headersFor } from "./transport/http/headers";
 
 export {

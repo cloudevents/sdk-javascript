@@ -8,6 +8,8 @@ import { Receiver, Mode } from "./transport/receiver";
 import { Protocol } from "./transport/protocols";
 import { Headers, headersFor } from "./transport/http/headers";
 
+import CONSTANTS from "./constants";
+
 export {
   // From event
   CloudEvent,
@@ -25,4 +27,6 @@ export {
   TransportOptions,
   Headers,
   headersFor,
+  // From Constants
+  CONSTANTS,
 };

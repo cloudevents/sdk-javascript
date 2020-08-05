@@ -52,7 +52,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
     });
 
     it("Sends a binary 1.0 CloudEvent by default", () => {
-      emitter
+      return emitter
         .send(event)
         .then((response: AxiosResponse) => {
           // A binary message will have a ce-id header
@@ -79,7 +79,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
     });
 
     it("Sends a binary CloudEvent with Custom Headers", () => {
-      emitter
+      return emitter
         .send(event, { headers: { customheader: "value" } })
         .then((response: { data: { [k: string]: string } }) => {
           // A binary message will have a ce-id header
@@ -94,7 +94,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
     });
 
     it("Sends a structured 1.0 CloudEvent if specified", () => {
-      emitter
+      return emitter
         .send(event, { protocol: Protocol.HTTPStructured })
         .then((response: { data: { [k: string]: string | Record<string, string>; data: { lunchBreak: string } } }) => {
           // A structured message will have a cloud event content type
@@ -124,7 +124,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
           return [201, returnBody];
         });
 
-      emitter
+      return emitter
         .send(event, { protocol: Protocol.HTTPStructured, url: `${receiver}alternate` })
         .then((response: AxiosResponse) => {
           // A structured message will have a cloud event content type
@@ -153,7 +153,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
     });
 
     it("Sends a binary 0.3 CloudEvent", () => {
-      emitter
+      return emitter
         .send(event)
         .then((response: AxiosResponse) => {
           // A binary message will have a ce-id header
@@ -179,7 +179,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
     });
 
     it("Sends a structured 0.3 CloudEvent if specified", () => {
-      emitter
+      return emitter
         .send(event, { protocol: Protocol.HTTPStructured })
         .then(
           (response: {
@@ -213,7 +213,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
           return [201, returnBody];
         });
 
-      emitter
+      return emitter
         .send(event, { protocol: Protocol.HTTPStructured, url: `${receiver}alternate` })
         .then(
           (response: {

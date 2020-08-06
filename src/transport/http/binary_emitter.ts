@@ -20,7 +20,7 @@ export async function emitBinary(event: CloudEvent, options: TransportOptions): 
 }
 
 async function emit(event: CloudEvent, options: TransportOptions, headers: Headers): Promise<AxiosResponse> {
-  const contentType: Headers = { [CONSTANTS.HEADER_CONTENT_TYPE]: CONSTANTS.DEFAULT_CE_CONTENT_TYPE };
+  const contentType: Headers = { [CONSTANTS.HEADER_CONTENT_TYPE]: CONSTANTS.DEFAULT_CONTENT_TYPE };
   const config = {
     ...options,
     method: "POST",

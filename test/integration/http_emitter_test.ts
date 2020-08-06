@@ -56,7 +56,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
         .send(event)
         .then((response: AxiosResponse) => {
           // A binary message will have a ce-id header
-          expect(response.data["content-type"]).to.equal(DEFAULT_CE_CONTENT_TYPE);
+          expect(response.data["content-type"]).to.equal(DEFAULT_CONTENT_TYPE);
           expect(response.data[CONSTANTS.CE_HEADERS.ID]).to.equal(event.id);
           expect(response.data[CONSTANTS.CE_HEADERS.SPEC_VERSION]).to.equal(Version.V1);
           // A binary message will have a request body for the data

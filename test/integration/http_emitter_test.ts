@@ -51,8 +51,8 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
       [ext3Name]: ext3Value,
     });
 
-    it("Sends a binary 1.0 CloudEvent by default", () => {
-      return emitter
+    it("Sends a binary 1.0 CloudEvent by default", () =>
+      emitter
         .send(event)
         .then((response: AxiosResponse) => {
           // A binary message will have a ce-id header
@@ -66,8 +66,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
           expect(response.data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext2Name}`]).to.equal(ext2Value);
           expect(response.data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext3Name}`].value).to.equal(ext3Value.value);
         })
-        .catch(expect.fail);
-    });
+        .catch(expect.fail));
 
     it("Provides the HTTP headers for a binary event", () => {
       const headers = headersFor(event);
@@ -78,8 +77,8 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
       expect(headers[CONSTANTS.CE_HEADERS.TIME]).to.equal(event.time);
     });
 
-    it("Sends a binary CloudEvent with Custom Headers", () => {
-      return emitter
+    it("Sends a binary CloudEvent with Custom Headers", () =>
+      emitter
         .send(event, { headers: { customheader: "value" } })
         .then((response: { data: { [k: string]: string } }) => {
           // A binary message will have a ce-id header
@@ -90,11 +89,10 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
           // A binary message will have a request body for the data
           expect(response.data.lunchBreak).to.equal(data.lunchBreak);
         })
-        .catch(expect.fail);
-    });
+        .catch(expect.fail));
 
-    it("Sends a structured 1.0 CloudEvent if specified", () => {
-      return emitter
+    it("Sends a structured 1.0 CloudEvent if specified", () =>
+      emitter
         .send(event, { protocol: Protocol.HTTPStructured })
         .then((response: { data: { [k: string]: string | Record<string, string>; data: { lunchBreak: string } } }) => {
           // A structured message will have a cloud event content type
@@ -108,8 +106,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
           expect(response.data[ext1Name]).to.equal(ext1Value);
           expect(response.data[ext2Name]).to.equal(ext2Value);
         })
-        .catch(expect.fail);
-    });
+        .catch(expect.fail));
 
     it("Sends to an alternate URL if specified", () => {
       nock(receiver)
@@ -152,8 +149,8 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
       [ext3Name]: ext3Value,
     });
 
-    it("Sends a binary 0.3 CloudEvent", () => {
-      return emitter
+    it("Sends a binary 0.3 CloudEvent", () =>
+      emitter
         .send(event)
         .then((response: AxiosResponse) => {
           // A binary message will have a ce-id header
@@ -166,8 +163,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
           expect(response.data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext2Name}`]).to.equal(ext2Value);
           expect(response.data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext3Name}`].value).to.equal(ext3Value.value);
         })
-        .catch(expect.fail);
-    });
+        .catch(expect.fail));
 
     it("Provides the HTTP headers for a binary event", () => {
       const headers = headersFor(event);
@@ -178,8 +174,8 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
       expect(headers[CONSTANTS.CE_HEADERS.TIME]).to.equal(event.time);
     });
 
-    it("Sends a structured 0.3 CloudEvent if specified", () => {
-      return emitter
+    it("Sends a structured 0.3 CloudEvent if specified", () =>
+      emitter
         .send(event, { protocol: Protocol.HTTPStructured })
         .then(
           (response: {
@@ -197,8 +193,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
             expect(response.data[ext2Name]).to.equal(ext2Value);
           },
         )
-        .catch(expect.fail);
-    });
+        .catch(expect.fail));
 
     it("Sends to an alternate URL if specified", () => {
       nock(receiver)

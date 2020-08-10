@@ -1,10 +1,9 @@
 /* eslint-disable no-console */
 
 const express = require("express");
-const { Receiver } = require("cloudevents");
+const {Receiver} = require("cloudevents");
 
 const app = express();
-const receiver = new Receiver();
 
 app.use((req, res, next) => {
   let data = "";
@@ -20,7 +19,7 @@ app.use((req, res, next) => {
   });
 });
 
-app.post("/", function (req, res) {
+app.post("/", (req, res) => {
   console.log("HEADERS", req.headers);
   console.log("BODY", req.body);
 
@@ -34,6 +33,6 @@ app.post("/", function (req, res) {
   }
 });
 
-app.listen(3000, function () {
+app.listen(3000, () => {
   console.log("Example app listening on port 3000!");
 });

@@ -34,14 +34,14 @@ You can choose almost any popular web framework for port binding. Use an
 binary and structured events in either the 1.0 or 0.3 protocol formats.
 
 ```js
-const {
-  CloudEvent,
-  Receiver
-} = require("cloudevents");
+const app = require("express")();
+const {Receiver} = require("cloudevents");
 
-// body and headers come from an incoming HTTP request, e.g. express.js
-const receivedEvent = Receiver.accept(req.headers, req.body);
-console.log(receivedEvent);
+app.post("/", (req, res) => {
+  // body and headers come from an incoming HTTP request, e.g. express.js
+  const receivedEvent = Receiver.accept(req.headers, req.body);
+  console.log(receivedEvent);
+});
 ```
 
 #### Emitting Events

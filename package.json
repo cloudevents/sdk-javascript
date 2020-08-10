@@ -22,6 +22,9 @@
     "bundles"
   ],
   "standard-version": {
+    "scripts": {
+      "postcommit": "git commit --amend --signoff --no-edit"
+    },
     "types": [
       {
         "type": "feat",

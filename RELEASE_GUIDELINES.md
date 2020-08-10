@@ -22,9 +22,6 @@ This output should be pasted into the issue as normal text.  This will allow Git
 
 Before a release can be finalized, other maintainers should give a +1 or a thumbs up or some other identifying mark that they are good with the changes.
 
-// TODO: should we wait a specified time after the +1's before we create
-
-
 ## Create and Publish the release
 
 Once consensus has been reached on the proposal it is time to create the release and publish it to npm.
@@ -42,6 +39,15 @@ This will update the CHANGELOG.md and create a new tag based on the version.  Th
 ```
 git push upstream master --follow-tags
 ```
+
+### Create the release on GitHub
+
+Once the release tag has been created and pushed up to Github, we should draft a new release using the Github UI, which is [located here](https://github.com/cloudevents/sdk-javascript/releases/new)
+
+* Tag Version should be the tag that was just created
+* The release title should be something like "VERSION Release"
+* And the Changelog entries for the current release should be copied/pasted into the comments
+
 
 ### Publish to npm
 

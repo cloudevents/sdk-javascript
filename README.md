@@ -153,7 +153,7 @@ We love contributions from the community! Please check the
 [Contributor's Guide](https://github.com/cloudevents/sdk-javascript/blob/master/CONTRIBUTING.md)
 for information on how to get involved.
 
-Each SDK may ave its own unique processes, tooling and guidelines, common
+Each SDK may have its own unique processes, tooling and guidelines, common
 governance related material can be found in the
 [CloudEvents `community`](https://github.com/cloudevents/spec/tree/master/community)
 directory. In particular, in there you will find information concerning

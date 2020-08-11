@@ -1,6 +1,6 @@
 import { CloudEvent, Version } from "../..";
 import { CloudEventV1, CloudEventV03 } from "../../event/interfaces";
-import { validateV1, validateV03 } from "../../event/spec";
+import { validateCloudEvent } from "../../event/spec";
 import { Headers, validate } from "./headers";
 import { v03binaryParsers, v1binaryParsers } from "./versions";
 import { parserByContentType, MappedParser } from "../../parsers";
@@ -88,7 +88,7 @@ export class BinaryHTTPReceiver {
     }
 
     const cloudevent = new CloudEvent({ ...eventObj, data: parsedPayload } as CloudEventV1 | CloudEventV03);
-    this.version === Version.V1 ? validateV1(cloudevent) : validateV03(cloudevent);
+    validateCloudEvent(cloudevent);
     return cloudevent;
   }
 }

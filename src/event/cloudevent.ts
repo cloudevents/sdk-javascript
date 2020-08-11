@@ -8,7 +8,7 @@ import {
   CloudEventV1Attributes,
   CloudEventV1OptionalAttributes,
 } from "./interfaces";
-import { validateV1, validateV03 } from "./spec";
+import { validateCloudEvent } from "./spec";
 import { ValidationError, isBinary, asBase64, isValidType } from "./validation";
 import CONSTANTS from "../constants";
 import { isString } from "util";
@@ -174,12 +174,7 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
    */
   public validate(): boolean {
     try {
-      if (this.specversion === Version.V1) {
-        return validateV1(this);
-      } else if (this.specversion === Version.V03) {
-        return validateV03(this);
-      }
-      throw new ValidationError("invalid payload");
+      return validateCloudEvent(this);
     } catch (e) {
       if (e instanceof ValidationError) {
         throw e;

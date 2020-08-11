@@ -5,7 +5,7 @@ import { parserByContentType } from "../../parsers";
 import { v1structuredParsers, v03structuredParsers } from "./versions";
 import { isString, isBase64, ValidationError, isStringOrObjectOrThrow } from "../../event/validation";
 import { CloudEventV1, CloudEventV03 } from "../../event/interfaces";
-import { validateV1, validateV03 } from "../../event/spec";
+import { validateCloudEvent } from "../../event/spec";
 import CONSTANTS from "../../constants";
 
 /**
@@ -85,7 +85,7 @@ export class StructuredHTTPReceiver {
     const cloudevent = new CloudEvent(eventObj as CloudEventV1 | CloudEventV03);
 
     // Validates the event
-    this.version === Version.V1 ? validateV1(cloudevent) : validateV03(cloudevent);
+    validateCloudEvent(cloudevent);
     return cloudevent;
   }
 }

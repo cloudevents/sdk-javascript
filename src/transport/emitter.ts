@@ -1,5 +1,5 @@
 import { CloudEvent } from "../event/cloudevent";
-import { emitBinary, emitStructured } from "./http";
+import { emitBinary, emitStructured } from "./http/emitter";
 import { Protocol } from "./protocols";
 import { AxiosResponse } from "axios";
 import { Agent } from "http";

@@ -4,7 +4,7 @@ import { expect } from "chai";
 import nock from "nock";
 
 import { CloudEvent, Version } from "../../src";
-import { emitBinary, emitStructured } from "../../src/transport/http";
+import { emitBinary, emitStructured } from "../../src/transport/http/emitter";
 import { asBase64 } from "../../src/event/validation";
 import { AxiosResponse } from "axios";
 

@@ -2,7 +2,7 @@ import "mocha";
 import { expect } from "chai";
 import nock from "nock";
 
-import { emitBinary, emitStructured } from "../../src/transport/http";
+import { emitBinary, emitStructured } from "../../src/transport/http/emitter";
 import { CloudEvent, Version } from "../../src";
 import { AxiosResponse } from "axios";
 

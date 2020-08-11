@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/cloudevents/sdk-javascript/compare/v3.0.1...v3.1.0) (2020-08-11)
+
+
+### Bug Fixes
+
+* Add Correct Headers to emitted Binary Event ([#302](https://github.com/cloudevents/sdk-javascript/issues/302)) ([ad0c434](https://github.com/cloudevents/sdk-javascript/commit/ad0c4340b2b3cf8a6204f7fb9e1df140092e23c9)), closes [#301](https://github.com/cloudevents/sdk-javascript/issues/301)
+* ensure that data encoded as base64 is parsed as an object ([#285](https://github.com/cloudevents/sdk-javascript/issues/285)) ([ed9ea95](https://github.com/cloudevents/sdk-javascript/commit/ed9ea956d73491cc890751bf1baf4f0be828a9cb))
+* update browser name to cloudevents. ([#292](https://github.com/cloudevents/sdk-javascript/issues/292)) ([48d182b](https://github.com/cloudevents/sdk-javascript/commit/48d182bc5f3c6f7feb6dec9ce5bb68ff5ad14e66)), closes [#286](https://github.com/cloudevents/sdk-javascript/issues/286)
+
+
+### Miscellaneous
+
+*  fix promise tests to break the build when they fail ([#305](https://github.com/cloudevents/sdk-javascript/issues/305)) ([a5249de](https://github.com/cloudevents/sdk-javascript/commit/a5249de487da4a17b082c4bc59d362a62566ccaf)), closes [#303](https://github.com/cloudevents/sdk-javascript/issues/303)
+* no import star ([#297](https://github.com/cloudevents/sdk-javascript/issues/297)) ([31c2005](https://github.com/cloudevents/sdk-javascript/commit/31c200592fb819a38d17c661ce6a76b8ed0ff157))
+* Update examples to use latest sdk changes ([#282](https://github.com/cloudevents/sdk-javascript/issues/282)) ([763838c](https://github.com/cloudevents/sdk-javascript/commit/763838c89cc704397bf75c9cbde79ae0f5c731c1))
+* Update readme with correct Receiver usage ([#287](https://github.com/cloudevents/sdk-javascript/issues/287)) ([e219a30](https://github.com/cloudevents/sdk-javascript/commit/e219a30708f061ef5fdb576d18d2e087f4ba5a25))
+* update the release script to signoff the commit ([#307](https://github.com/cloudevents/sdk-javascript/issues/307)) ([f3cc2b4](https://github.com/cloudevents/sdk-javascript/commit/f3cc2b429baa9d055ac480c433efee1438968ccc))
+
+
+### Documentation
+
+* improve readme receiver example ([#309](https://github.com/cloudevents/sdk-javascript/issues/309)) ([d590e3a](https://github.com/cloudevents/sdk-javascript/commit/d590e3a0079e749a9e108b445911eaf544271ec4))
+* Release Guidelines ([#306](https://github.com/cloudevents/sdk-javascript/issues/306)) ([08bf15d](https://github.com/cloudevents/sdk-javascript/commit/08bf15d161d5781b712f6065f78d31d59f8ba549))
+* update badge name ([#289](https://github.com/cloudevents/sdk-javascript/issues/289)) ([3fab5f2](https://github.com/cloudevents/sdk-javascript/commit/3fab5f2c92859b22363b33024f8000dc3ceac1c3))
+
 ### [3.0.1](https://github.com/cloudevents/sdk-javascript/compare/v3.0.0...v3.0.1) (2020-07-29)
 
 

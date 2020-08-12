@@ -38,4 +38,4 @@ check your code style for linting errors without running tests, you can just
 run `npm run lint`. If there are errors, you can usually fix them automatically
 by running `npm run fix`.
 
-Linting rules are declared in [.eslintrc](https://github.com/cloudevents/sdk-javascript/blob/master/.eslintrc).
+Linting rules are declared in [.eslintrc](https://github.com/cloudevents/sdk-javascript/blob/main/.eslintrc).

@@ -110,7 +110,7 @@ const ce2 = ce.cloneWith({extension: "Value"});
 ### Example Applications
 
 There are a few trivial example applications in
-[the examples folder](https://github.com/cloudevents/sdk-javascript/tree/master/examples).
+[the examples folder](https://github.com/cloudevents/sdk-javascript/tree/main/examples).
 There you will find Express.js, TypeScript and Websocket examples.
 
 ## Supported specification features
@@ -150,7 +150,7 @@ There you will find Express.js, TypeScript and Websocket examples.
 ## Contributing
 
 We love contributions from the community! Please check the
-[Contributor's Guide](https://github.com/cloudevents/sdk-javascript/blob/master/CONTRIBUTING.md)
+[Contributor's Guide](https://github.com/cloudevents/sdk-javascript/blob/main/CONTRIBUTING.md)
 for information on how to get involved.
 
 Each SDK may have its own unique processes, tooling and guidelines, common

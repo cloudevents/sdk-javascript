@@ -6,15 +6,15 @@ To prepare for a new release, create a [new issue](https://github.com/cloudevent
 
 For example: "Proposal for 3.2.0 release", or something similar.  If you are not sure which version is the next version to be released, you can run `npm run release -- --dry-run` to find out what the next version will be.
 
-The body of the issue should be the commits that will be part of the release.  This can be easily accomplished by running a git log command with a defined **range**.  This range should start at the most recent version tag and end at the latest commit in the master branch.
+The body of the issue should be the commits that will be part of the release.  This can be easily accomplished by running a git log command with a defined **range**.  This range should start at the most recent version tag and end at the latest commit in the main branch.
 
 For example:
 
 ```
-git log v3.0.1..upstream/master --oneline
+git log v3.0.1..upstream/main --oneline
 ```
 
-This will output all the commits from the 3.0.1 tag to the latest commits in the remote upstream/master branch.
+This will output all the commits from the 3.0.1 tag to the latest commits in the remote upstream/main branch.
 
 This output should be pasted into the issue as normal text.  This will allow Github to magically turn all commit hashes and PR/Issues numbers to links.
 
@@ -37,7 +37,7 @@ npm run release
 This will update the CHANGELOG.md and create a new tag based on the version.  This can then be pushed upstream by doing:
 
 ```
-git push upstream master --follow-tags
+git push upstream main --follow-tags
 ```
 
 ### Create the release on GitHub

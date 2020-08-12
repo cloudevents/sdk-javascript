@@ -1,12 +1,12 @@
 <!-- General PR guidelines:
 
-Most PRs should be opened against the master branch.
+Most PRs should be opened against the main branch.
 
  -->
 
 ## Proposed Changes
 
-- 
+-
 -
 -
 

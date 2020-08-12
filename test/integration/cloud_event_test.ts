@@ -144,9 +144,26 @@ describe("A 1.0 CloudEvent", () => {
     expect(ce["extensionkey"]).to.equal(extensions["extensionkey"]);
   });
 
-  it("throws ValidationError if the CloudEvent does not conform to the schema");
-  it("returns a JSON string even if format is invalid");
-  it("correctly formats a CloudEvent as JSON");
+  it("throws TypeError if the CloudEvent does not conform to the schema", () => {
+    try {
+      new CloudEvent({
+        ...fixture,
+        source: (null as unknown) as string,
+      });
+    } catch (err) {
+      expect(err).to.be.instanceOf(TypeError);
+      expect(err.message).to.equal("invalid payload");
+    }
+  });
+
+  it("correctly formats a CloudEvent as JSON", () => {
+    const ce = new CloudEvent({ ...fixture });
+    const json = ce.toString();
+    const obj = JSON.parse((json as unknown) as string);
+    expect(obj.type).to.equal(type);
+    expect(obj.source).to.equal(source);
+    expect(obj.specversion).to.equal(Version.V1);
+  });
 });
 
 describe("A 0.3 CloudEvent", () => {
@@ -211,7 +228,24 @@ describe("A 0.3 CloudEvent", () => {
     expect(ce.data).to.deep.equal({ lunch: "tacos" });
   });
 
-  it("throws ValidationError if the CloudEvent does not conform to the schema");
-  it("returns a JSON string even if format is invalid");
-  it("correctly formats a CloudEvent as JSON");
+  it("throws TypeError if the CloudEvent does not conform to the schema", () => {
+    try {
+      new CloudEvent({
+        ...v03fixture,
+        source: (null as unknown) as string,
+      });
+    } catch (err) {
+      expect(err).to.be.instanceOf(TypeError);
+      expect(err.message).to.equal("invalid payload");
+    }
+  });
+
+  it("correctly formats a CloudEvent as JSON", () => {
+    const ce = new CloudEvent({ ...v03fixture });
+    const json = ce.toString();
+    const obj = JSON.parse((json as unknown) as string);
+    expect(obj.type).to.equal(type);
+    expect(obj.source).to.equal(source);
+    expect(obj.specversion).to.equal(Version.V03);
+  });
 });

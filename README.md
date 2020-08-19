@@ -29,8 +29,8 @@ npm install cloudevents
 
 #### Receiving Events
 
-You can choose almost any popular web framework for port binding. Use an
-`HTTPReceiver` to process the incoming HTTP request. The receiver accepts
+You can choose almost any popular web framework for port binding. Use a
+`Receiver` to process the incoming HTTP request. The receiver accepts
 binary and structured events in either the 1.0 or 0.3 protocol formats.
 
 ```js

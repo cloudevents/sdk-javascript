@@ -115,7 +115,7 @@ There you will find Express.js, TypeScript and Websocket examples.
 
 ## Supported specification features
 
-| Core Specification |  [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/tree/v1.0) |
+| Core Specification |  [v0.3](https://github.com/cloudevents/spec/blob/v0.3/spec.md) | [v1.0](https://github.com/cloudevents/spec/blob/v1.0/spec.md) |
 | ----------------------------- | --- | --- |
 | CloudEvents Core              | :heavy_check_mark: | :heavy_check_mark: |
 ---

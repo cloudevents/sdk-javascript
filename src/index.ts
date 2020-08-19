@@ -1,6 +1,5 @@
 import { CloudEvent, Version } from "./event/cloudevent";
 import { ValidationError } from "./event/validation";
-// import {Version} from './event/'
 import { CloudEventV03, CloudEventV03Attributes, CloudEventV1, CloudEventV1Attributes } from "./event/interfaces";
 
 import { Emitter, TransportOptions } from "./transport/emitter";

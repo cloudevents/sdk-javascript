@@ -115,18 +115,18 @@ There you will find Express.js, TypeScript and Websocket examples.
 
 ## Supported specification features
 
-| Core Specification |  [v0.3](v03spec) | [v1.0](v1spec) |
+| Core Specification |  [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/tree/v1.0) |
 | ----------------------------- | --- | --- |
 | CloudEvents Core              | :heavy_check_mark: | :heavy_check_mark: |
 ---
 
-| Event Formats |  [v0.3](v03spec) | [v1.0](v1spec) |
+| Event Formats |  [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/tree/v1.0) |
 | ----------------------------- | --- | --- |
 | AVRO Event Format             | :x: | :x: |
 | JSON Event Format             | :heavy_check_mark: | :heavy_check_mark: |
 ---
 
-| Transport Protocols |  [v0.3](v03spec) | [v1.0](v1spec) |
+| Transport Protocols |  [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/tree/v1.0) |
 | ----------------------------- | --- | --- |
 | AMQP Protocol Binding         | :x: | :x: |
 | HTTP Protocol Binding         | :heavy_check_mark: | :heavy_check_mark: |

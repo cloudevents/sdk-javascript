@@ -29,8 +29,8 @@ npm install cloudevents
 
 #### Receiving Events
 
-You can choose almost any popular web framework for port binding. Use an
-`HTTPReceiver` to process the incoming HTTP request. The receiver accepts
+You can choose almost any popular web framework for port binding. Use a
+`Receiver` to process the incoming HTTP request. The receiver accepts
 binary and structured events in either the 1.0 or 0.3 protocol formats.
 
 ```js
@@ -115,18 +115,18 @@ There you will find Express.js, TypeScript and Websocket examples.
 
 ## Supported specification features
 
-| Core Specification |  [v0.3](v03spec) | [v1.0](v1spec) |
+| Core Specification |  [v0.3](https://github.com/cloudevents/spec/blob/v0.3/spec.md) | [v1.0](https://github.com/cloudevents/spec/blob/v1.0/spec.md) |
 | ----------------------------- | --- | --- |
 | CloudEvents Core              | :heavy_check_mark: | :heavy_check_mark: |
 ---
 
-| Event Formats |  [v0.3](v03spec) | [v1.0](v1spec) |
+| Event Formats |  [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/tree/v1.0) |
 | ----------------------------- | --- | --- |
 | AVRO Event Format             | :x: | :x: |
 | JSON Event Format             | :heavy_check_mark: | :heavy_check_mark: |
 ---
 
-| Transport Protocols |  [v0.3](v03spec) | [v1.0](v1spec) |
+| Transport Protocols |  [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/tree/v1.0) |
 | ----------------------------- | --- | --- |
 | AMQP Protocol Binding         | :x: | :x: |
 | HTTP Protocol Binding         | :heavy_check_mark: | :heavy_check_mark: |

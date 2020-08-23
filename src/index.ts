@@ -5,7 +5,7 @@ import { CloudEventV03, CloudEventV03Attributes, CloudEventV1, CloudEventV1Attri
 import { Emitter, TransportOptions } from "./transport/emitter";
 import { Receiver } from "./transport/receiver";
 import { Protocol } from "./transport/protocols";
-import { Headers, Mode, Binding, HTTP, Message, Serializer, Deserializer } from "./messages";
+import { Headers, Mode, Binding, HTTP, Message, Serializer, Deserializer } from "./message";
 
 import CONSTANTS from "./constants";
 
@@ -18,7 +18,7 @@ export {
   CloudEventV1Attributes,
   Version,
   ValidationError,
-  // From messages
+  // From message
   Headers,
   Mode,
   Binding,

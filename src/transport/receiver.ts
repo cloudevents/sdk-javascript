@@ -1,5 +1,5 @@
-import { Headers, Message, HTTP } from "../messages";
-import { sanitize } from "../messages/http/headers";
+import { Headers, Message, HTTP } from "../message";
+import { sanitize } from "../message/http/headers";
 import { CloudEvent } from "..";
 
 /**

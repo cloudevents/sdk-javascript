@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { CloudEvent, CONSTANTS, Version } from "../../src";
-import { Message, HTTP } from "../../src/messages";
+import { Message, HTTP } from "../../src/message";
 
 const type = "org.cncf.cloudevents.example";
 const source = "urn:event:from:myapi/resource/123";

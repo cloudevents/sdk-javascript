@@ -7,7 +7,7 @@ const DEFAULT_CE_CONTENT_TYPE = CONSTANTS.DEFAULT_CE_CONTENT_TYPE;
 const DEFAULT_CONTENT_TYPE = CONSTANTS.DEFAULT_CONTENT_TYPE;
 
 import { CloudEvent, Version, Emitter, Protocol } from "../../src";
-import { headersFor } from "../../src/messages/http/headers";
+import { headersFor } from "../../src/message/http/headers";
 import { AxiosResponse } from "axios";
 
 const receiver = "https://cloudevents.io/";

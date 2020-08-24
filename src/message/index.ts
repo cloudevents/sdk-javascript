@@ -1,5 +1,5 @@
 import { CloudEvent } from "..";
-import { binary, deserialize, structured } from "./http";
+import { binary, deserialize, structured, isEvent } from "./http";
 import { headersFor } from "./http/headers";
 
 /**
@@ -11,6 +11,7 @@ export interface Binding {
   binary: Serializer;
   structured: Serializer;
   toEvent: Deserializer;
+  isEvent: Detector;
 }
 
 /**
@@ -54,11 +55,20 @@ export interface Deserializer {
   (message: Message): CloudEvent;
 }
 
+/**
+ * Detector is a function interface that detects whether
+ * a message contains a valid CloudEvent
+ */
+export interface Detector {
+  (message: Message): boolean;
+}
+
 // HTTP Message capabilities
 export const HTTP: Binding = {
   binary: binary as Serializer,
   structured: structured as Serializer,
   toEvent: deserialize as Deserializer,
+  isEvent: isEvent as Detector,
 };
 
 // TODO: Deprecated. Remove this for 4.0

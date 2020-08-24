@@ -28,6 +28,26 @@ const dataBinary = Uint32Array.from(JSON.stringify(data), (c) => c.codePointAt(0
 const data_base64 = asBase64(dataBinary);
 
 describe("HTTP transport messages", () => {
+  it("can detect CloudEvent Messages", () => {
+    // Create a message that is not an actual event
+    let message: Message = {
+      body: "Hello world!",
+      headers: {
+        "Content-type": "text/plain",
+      },
+    };
+    expect(HTTP.isEvent(message)).to.be.false;
+
+    // Now create a message that is an event
+    message = HTTP.binary(
+      new CloudEvent({
+        source: "/message-test",
+        type: "example",
+      }),
+    );
+    expect(HTTP.isEvent(message)).to.be.true;
+  });
+
   describe("Specification version V1", () => {
     const fixture: CloudEvent = new CloudEvent({
       specversion: Version.V1,

@@ -26,6 +26,17 @@ export function structured(event: CloudEvent): Message {
   };
 }
 
+// implements Detector
+// TODO: this could probably be optimized
+export function isEvent(message: Message): boolean {
+  try {
+    deserialize(message);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
 /**
  * Converts a Message to a CloudEvent
  *

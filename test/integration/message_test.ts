@@ -162,23 +162,21 @@ describe("HTTP transport messages", () => {
       const event = HTTP.toEvent(message);
       expect(event).to.deep.equal(fixture);
     });
+
+    it("Supports Base-64 encoded data in structured messages", () => {
+      const event = fixture.cloneWith({ data: dataBinary });
+      expect(event.data_base64).to.equal(data_base64);
+      const message = HTTP.structured(event);
+      const eventDeserialized = HTTP.toEvent(message);
+      expect(eventDeserialized.data).to.deep.equal({ foo: "bar" });
+    });
+
+    it("Supports Base-64 encoded data in binary messages", () => {
+      const event = fixture.cloneWith({ data: dataBinary });
+      expect(event.data_base64).to.equal(data_base64);
+      const message = HTTP.binary(event);
+      const eventDeserialized = HTTP.toEvent(message);
+      expect(eventDeserialized.data).to.deep.equal({ foo: "bar" });
+    });
   });
 });
-
-// function base64Message(event: CloudEvent, protocol: Protocol): Message {
-//   let message: Message;
-//   if (protocol === Protocol.HTTPBinary) {
-//     message = HTTP.binary(event);
-//     message.body = data_base64;
-//   } else {
-//     // construct a Message where we can add data as base64
-//     const message = HTTP.structured(event);
-//     // parse the message body where the event has been stringified
-//     const attributes = JSON.parse(message.body);
-//     // set a data_base64 attribute and delete the original data
-//     attributes.data_base64 = data_base64;
-//     delete attributes.data;
-//     message.body = JSON.stringify(attributes);
-//   }
-//   return message;
-// }

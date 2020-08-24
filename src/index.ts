@@ -5,7 +5,7 @@ import { CloudEventV03, CloudEventV03Attributes, CloudEventV1, CloudEventV1Attri
 import { Emitter, TransportOptions } from "./transport/emitter";
 import { Receiver } from "./transport/receiver";
 import { Protocol } from "./transport/protocols";
-import { Headers, Mode, Binding, HTTP, Message, Serializer, Deserializer } from "./message";
+import { Headers, Mode, Binding, HTTP, Message, Serializer, Deserializer, headersFor } from "./message";
 
 import CONSTANTS from "./constants";
 
@@ -25,12 +25,13 @@ export {
   Message,
   Deserializer,
   Serializer,
+  headersFor, // TODO: Deprecated. Remove for 4.0
   HTTP,
   // From transport
-  Emitter,
-  Receiver,
-  Protocol,
-  TransportOptions,
+  Emitter, // TODO: Deprecated. Remove for 4.0
+  Receiver, // TODO: Deprecated. Remove for 4.0
+  Protocol, // TODO: Deprecated. Remove for 4.0
+  TransportOptions, // TODO: Deprecated. Remove for 4.0
   // From Constants
   CONSTANTS,
 };

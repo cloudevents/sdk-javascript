@@ -168,7 +168,7 @@ function parseBinary(message: Message, version: Version): CloudEvent {
  * @throws {ValidationError} if the payload and header combination do not conform to the spec
  */
 function parseStructured(message: Message, version: Version): CloudEvent {
-  let payload = message.body;
+  const payload = message.body;
   const headers = message.headers;
 
   if (!payload) throw new ValidationError("payload is null or undefined");
@@ -182,8 +182,6 @@ function parseStructured(message: Message, version: Version): CloudEvent {
   ) {
     throw new ValidationError(`invalid spec version ${headers[CONSTANTS.CE_HEADERS.SPEC_VERSION]}`);
   }
-
-  payload = isString(payload) && isBase64(payload) ? Buffer.from(payload as string, "base64").toString() : payload;
 
   // Clone and low case all headers names
   const sanitizedHeaders = sanitize(headers);
@@ -210,17 +208,12 @@ function parseStructured(message: Message, version: Version): CloudEvent {
     eventObj[key] = incoming[key];
   }
 
-  // ensure data content is correctly encoded
-  if (eventObj.data && eventObj.datacontentencoding) {
-    if (eventObj.datacontentencoding === CONSTANTS.ENCODING_BASE64 && !isBase64(eventObj.data)) {
-      throw new ValidationError("invalid payload");
-    } else if (eventObj.datacontentencoding === CONSTANTS.ENCODING_BASE64) {
-      const dataParser = new Base64Parser();
-      eventObj.data = JSON.parse(dataParser.parse(eventObj.data as string));
-      delete eventObj.datacontentencoding;
-    }
+  // ensure data content is correctly decoded
+  if (eventObj.data_base64) {
+    const parser = new Base64Parser();
+    eventObj.data = JSON.parse(parser.parse(eventObj.data_base64 as string));
+    delete eventObj.data_base64;
   }
-
   const cloudevent = new CloudEvent(eventObj as CloudEventV1 | CloudEventV03);
 
   // Validates the event

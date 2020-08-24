@@ -1,8 +1,8 @@
-/* eslint-disable no-console */
+/* eslint-disable */
 
 const express = require("express");
-const {Receiver} = require("cloudevents");
-
+const { Message, CloudEvent, HTTP } = require("cloudevents");
+const { response } = require("express");
 const app = express();
 
 app.use((req, res, next) => {
@@ -23,10 +23,23 @@ app.post("/", (req, res) => {
   console.log("HEADERS", req.headers);
   console.log("BODY", req.body);
 
+  const message = {
+    headers: req.headers,
+    body: req.body
+  };
+
   try {
-    const event = Receiver.accept(req.headers, req.body);
-    console.log(`Accepted event: ${event}`);
-    res.status(201).json(event);
+    const event = HTTP.toEvent(message);
+    // respond as an event
+    const responseEventMessage = new CloudEvent({
+      source: '/',
+      type: 'event:response',
+      ...event
+    });
+    responseEventMessage.data = {
+      hello: 'world'
+    };
+    res.status(201).json(responseEventMessage);
   } catch (err) {
     console.error(err);
     res.status(415).header("Content-Type", "application/json").send(JSON.stringify(err));

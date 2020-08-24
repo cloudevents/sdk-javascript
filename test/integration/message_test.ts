@@ -13,67 +13,133 @@ const data = {
   foo: "bar",
 };
 
+// Attributes for v03 events
+const schemaurl = "https://cloudevents.io/schema.json";
+const datacontentencoding = "base64";
+
 const ext1Name = "extension1";
 const ext1Value = "foobar";
 const ext2Name = "extension2";
 const ext2Value = "acme";
 
-const fixture: CloudEvent = new CloudEvent({
-  specversion: Version.V1,
-  id,
-  type,
-  source,
-  datacontenttype,
-  subject,
-  time,
-  dataschema,
-  data,
-  [ext1Name]: ext1Value,
-  [ext2Name]: ext2Value,
-});
-
 describe("HTTP transport messages", () => {
-  it("V1 binary Messages can be created from a CloudEvent", () => {
-    const message: Message = HTTP.binary(fixture);
-    expect(message.body).to.equal(data);
-    // validate all headers
-    expect(message.headers[CONSTANTS.HEADER_CONTENT_TYPE]).to.equal(datacontenttype);
-    expect(message.headers[CONSTANTS.CE_HEADERS.SPEC_VERSION]).to.equal(Version.V1);
-    expect(message.headers[CONSTANTS.CE_HEADERS.ID]).to.equal(id);
-    expect(message.headers[CONSTANTS.CE_HEADERS.TYPE]).to.equal(type);
-    expect(message.headers[CONSTANTS.CE_HEADERS.SOURCE]).to.equal(source);
-    expect(message.headers[CONSTANTS.CE_HEADERS.SUBJECT]).to.equal(subject);
-    expect(message.headers[CONSTANTS.CE_HEADERS.TIME]).to.equal(fixture.time);
-    expect(message.headers[CONSTANTS.BINARY_HEADERS_1.DATA_SCHEMA]).to.equal(dataschema);
-    expect(message.headers[`ce-${ext1Name}`]).to.equal(ext1Value);
-    expect(message.headers[`ce-${ext2Name}`]).to.equal(ext2Value);
+  describe("Specification version V1", () => {
+    const fixture: CloudEvent = new CloudEvent({
+      specversion: Version.V1,
+      id,
+      type,
+      source,
+      datacontenttype,
+      subject,
+      time,
+      dataschema,
+      data,
+      [ext1Name]: ext1Value,
+      [ext2Name]: ext2Value,
+    });
+
+    it("Binary Messages can be created from a CloudEvent", () => {
+      const message: Message = HTTP.binary(fixture);
+      expect(message.body).to.equal(data);
+      // validate all headers
+      expect(message.headers[CONSTANTS.HEADER_CONTENT_TYPE]).to.equal(datacontenttype);
+      expect(message.headers[CONSTANTS.CE_HEADERS.SPEC_VERSION]).to.equal(Version.V1);
+      expect(message.headers[CONSTANTS.CE_HEADERS.ID]).to.equal(id);
+      expect(message.headers[CONSTANTS.CE_HEADERS.TYPE]).to.equal(type);
+      expect(message.headers[CONSTANTS.CE_HEADERS.SOURCE]).to.equal(source);
+      expect(message.headers[CONSTANTS.CE_HEADERS.SUBJECT]).to.equal(subject);
+      expect(message.headers[CONSTANTS.CE_HEADERS.TIME]).to.equal(fixture.time);
+      expect(message.headers[CONSTANTS.BINARY_HEADERS_1.DATA_SCHEMA]).to.equal(dataschema);
+      expect(message.headers[`ce-${ext1Name}`]).to.equal(ext1Value);
+      expect(message.headers[`ce-${ext2Name}`]).to.equal(ext2Value);
+    });
+
+    it("Structured Messages can be created from a CloudEvent", () => {
+      const message: Message = HTTP.structured(fixture);
+      expect(message.headers[CONSTANTS.HEADER_CONTENT_TYPE]).to.equal(CONSTANTS.DEFAULT_CE_CONTENT_TYPE);
+      // Parse the message body as JSON, then validate the attributes
+      const body = JSON.parse(message.body);
+      expect(body[CONSTANTS.CE_ATTRIBUTES.SPEC_VERSION]).to.equal(Version.V1);
+      expect(body[CONSTANTS.CE_ATTRIBUTES.ID]).to.equal(id);
+      expect(body[CONSTANTS.CE_ATTRIBUTES.TYPE]).to.equal(type);
+      expect(body[CONSTANTS.CE_ATTRIBUTES.SOURCE]).to.equal(source);
+      expect(body[CONSTANTS.CE_ATTRIBUTES.SUBJECT]).to.equal(subject);
+      expect(body[CONSTANTS.CE_ATTRIBUTES.TIME]).to.equal(fixture.time);
+      expect(body[CONSTANTS.STRUCTURED_ATTRS_1.DATA_SCHEMA]).to.equal(dataschema);
+      expect(body[ext1Name]).to.equal(ext1Value);
+      expect(body[ext2Name]).to.equal(ext2Value);
+    });
+
+    it("A CloudEvent can be converted from a binary Message", () => {
+      const message = HTTP.binary(fixture);
+      const event = HTTP.toEvent(message);
+      expect(event).to.deep.equal(fixture);
+    });
+
+    it("A CloudEvent can be converted from a structured Message", () => {
+      const message = HTTP.structured(fixture);
+      const event = HTTP.toEvent(message);
+      expect(event).to.deep.equal(fixture);
+    });
   });
 
-  it("V1 structured Messages can be created from a CloudEvent", () => {
-    const message: Message = HTTP.structured(fixture);
-    expect(message.headers[CONSTANTS.HEADER_CONTENT_TYPE]).to.equal(CONSTANTS.DEFAULT_CE_CONTENT_TYPE);
-    // Parse the message body as JSON, then validate the attributes
-    const body = JSON.parse(message.body);
-    expect(body[CONSTANTS.CE_ATTRIBUTES.SPEC_VERSION]).to.equal(Version.V1);
-    expect(body[CONSTANTS.CE_ATTRIBUTES.ID]).to.equal(id);
-    expect(body[CONSTANTS.CE_ATTRIBUTES.TYPE]).to.equal(type);
-    expect(body[CONSTANTS.CE_ATTRIBUTES.SOURCE]).to.equal(source);
-    expect(body[CONSTANTS.CE_ATTRIBUTES.SUBJECT]).to.equal(subject);
-    expect(body[CONSTANTS.CE_ATTRIBUTES.TIME]).to.equal(fixture.time);
-    expect(body[CONSTANTS.STRUCTURED_ATTRS_1.DATA_SCHEMA]).to.equal(dataschema);
-    expect(body[ext1Name]).to.equal(ext1Value);
-    expect(body[ext2Name]).to.equal(ext2Value);
-  });
+  describe("Specification version V03", () => {
+    const fixture: CloudEvent = new CloudEvent({
+      specversion: Version.V03,
+      id,
+      type,
+      source,
+      datacontenttype,
+      subject,
+      time,
+      schemaurl,
+      data,
+      [ext1Name]: ext1Value,
+      [ext2Name]: ext2Value,
+    });
 
-  it("V1 CloudEvent can be converted from a binary Message", () => {
-    const message = HTTP.binary(fixture);
-    const event = HTTP.toEvent(message);
-    expect(event).to.deep.equal(fixture);
-  });
+    it("Binary Messages can be created from a CloudEvent", () => {
+      const message: Message = HTTP.binary(fixture);
+      expect(message.body).to.equal(data);
+      // validate all headers
+      expect(message.headers[CONSTANTS.HEADER_CONTENT_TYPE]).to.equal(datacontenttype);
+      expect(message.headers[CONSTANTS.CE_HEADERS.SPEC_VERSION]).to.equal(Version.V03);
+      expect(message.headers[CONSTANTS.CE_HEADERS.ID]).to.equal(id);
+      expect(message.headers[CONSTANTS.CE_HEADERS.TYPE]).to.equal(type);
+      expect(message.headers[CONSTANTS.CE_HEADERS.SOURCE]).to.equal(source);
+      expect(message.headers[CONSTANTS.CE_HEADERS.SUBJECT]).to.equal(subject);
+      expect(message.headers[CONSTANTS.CE_HEADERS.TIME]).to.equal(fixture.time);
+      expect(message.headers[CONSTANTS.BINARY_HEADERS_03.SCHEMA_URL]).to.equal(schemaurl);
+      expect(message.headers[`ce-${ext1Name}`]).to.equal(ext1Value);
+      expect(message.headers[`ce-${ext2Name}`]).to.equal(ext2Value);
+    });
 
-  it("V1 CloudEvent can be converted from a structured Message", () => {
-    const message = HTTP.structured(fixture);
-    const event = HTTP.toEvent(message);
-    expect(event).to.deep.equal(fixture);
+    it("Structured Messages can be created from a CloudEvent", () => {
+      const message: Message = HTTP.structured(fixture);
+      expect(message.headers[CONSTANTS.HEADER_CONTENT_TYPE]).to.equal(CONSTANTS.DEFAULT_CE_CONTENT_TYPE);
+      // Parse the message body as JSON, then validate the attributes
+      const body = JSON.parse(message.body);
+      expect(body[CONSTANTS.CE_ATTRIBUTES.SPEC_VERSION]).to.equal(Version.V03);
+      expect(body[CONSTANTS.CE_ATTRIBUTES.ID]).to.equal(id);
+      expect(body[CONSTANTS.CE_ATTRIBUTES.TYPE]).to.equal(type);
+      expect(body[CONSTANTS.CE_ATTRIBUTES.SOURCE]).to.equal(source);
+      expect(body[CONSTANTS.CE_ATTRIBUTES.SUBJECT]).to.equal(subject);
+      expect(body[CONSTANTS.CE_ATTRIBUTES.TIME]).to.equal(fixture.time);
+      expect(body[CONSTANTS.STRUCTURED_ATTRS_03.SCHEMA_URL]).to.equal(schemaurl);
+      expect(body[ext1Name]).to.equal(ext1Value);
+      expect(body[ext2Name]).to.equal(ext2Value);
+    });
+
+    it("A CloudEvent can be converted from a binary Message", () => {
+      const message = HTTP.binary(fixture);
+      const event = HTTP.toEvent(message);
+      expect(event).to.deep.equal(fixture);
+    });
+
+    it("V1 CloudEvent can be converted from a structured Message", () => {
+      const message = HTTP.structured(fixture);
+      const event = HTTP.toEvent(message);
+      expect(event).to.deep.equal(fixture);
+    });
   });
 });

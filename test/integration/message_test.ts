@@ -1,5 +1,6 @@
 import { expect } from "chai";
-import { CloudEvent, CONSTANTS, Version } from "../../src";
+import { CloudEvent, CONSTANTS, Protocol, Version } from "../../src";
+import { asBase64 } from "../../src/event/validation";
 import { Message, HTTP } from "../../src/message";
 
 const type = "org.cncf.cloudevents.example";
@@ -21,6 +22,10 @@ const ext1Name = "extension1";
 const ext1Value = "foobar";
 const ext2Name = "extension2";
 const ext2Value = "acme";
+
+// Binary data as base64
+const dataBinary = Uint32Array.from(JSON.stringify(data), (c) => c.codePointAt(0) as number);
+const data_base64 = asBase64(dataBinary);
 
 describe("HTTP transport messages", () => {
   describe("Specification version V1", () => {
@@ -81,6 +86,22 @@ describe("HTTP transport messages", () => {
       const event = HTTP.toEvent(message);
       expect(event).to.deep.equal(fixture);
     });
+
+    it("Supports Base-64 encoded data in structured messages", () => {
+      const event = fixture.cloneWith({ data: dataBinary });
+      expect(event.data_base64).to.equal(data_base64);
+      const message = HTTP.structured(event);
+      const eventDeserialized = HTTP.toEvent(message);
+      expect(eventDeserialized.data).to.deep.equal({ foo: "bar" });
+    });
+
+    it("Supports Base-64 encoded data in binary messages", () => {
+      const event = fixture.cloneWith({ data: dataBinary });
+      expect(event.data_base64).to.equal(data_base64);
+      const message = HTTP.binary(event);
+      const eventDeserialized = HTTP.toEvent(message);
+      expect(eventDeserialized.data).to.deep.equal({ foo: "bar" });
+    });
   });
 
   describe("Specification version V03", () => {
@@ -136,10 +157,28 @@ describe("HTTP transport messages", () => {
       expect(event).to.deep.equal(fixture);
     });
 
-    it("V1 CloudEvent can be converted from a structured Message", () => {
+    it("A CloudEvent can be converted from a structured Message", () => {
       const message = HTTP.structured(fixture);
       const event = HTTP.toEvent(message);
       expect(event).to.deep.equal(fixture);
     });
   });
 });
+
+// function base64Message(event: CloudEvent, protocol: Protocol): Message {
+//   let message: Message;
+//   if (protocol === Protocol.HTTPBinary) {
+//     message = HTTP.binary(event);
+//     message.body = data_base64;
+//   } else {
+//     // construct a Message where we can add data as base64
+//     const message = HTTP.structured(event);
+//     // parse the message body where the event has been stringified
+//     const attributes = JSON.parse(message.body);
+//     // set a data_base64 attribute and delete the original data
+//     attributes.data_base64 = data_base64;
+//     delete attributes.data;
+//     message.body = JSON.stringify(attributes);
+//   }
+//   return message;
+// }

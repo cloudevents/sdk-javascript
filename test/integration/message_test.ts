@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { CloudEvent, CONSTANTS, Protocol, Version } from "../../src";
+import { CloudEvent, CONSTANTS, Version } from "../../src";
 import { asBase64 } from "../../src/event/validation";
 import { Message, HTTP } from "../../src/message";
 
@@ -164,7 +164,7 @@ describe("HTTP transport messages", () => {
     });
 
     it("Supports Base-64 encoded data in structured messages", () => {
-      const event = fixture.cloneWith({ data: dataBinary });
+      const event = fixture.cloneWith({ data: dataBinary, datacontentencoding });
       expect(event.data_base64).to.equal(data_base64);
       const message = HTTP.structured(event);
       const eventDeserialized = HTTP.toEvent(message);
@@ -172,7 +172,7 @@ describe("HTTP transport messages", () => {
     });
 
     it("Supports Base-64 encoded data in binary messages", () => {
-      const event = fixture.cloneWith({ data: dataBinary });
+      const event = fixture.cloneWith({ data: dataBinary, datacontentencoding });
       expect(event.data_base64).to.equal(data_base64);
       const message = HTTP.binary(event);
       const eventDeserialized = HTTP.toEvent(message);

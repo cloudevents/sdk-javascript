@@ -213,6 +213,7 @@ function parseStructured(message: Message, version: Version): CloudEvent {
     const parser = new Base64Parser();
     eventObj.data = JSON.parse(parser.parse(eventObj.data_base64 as string));
     delete eventObj.data_base64;
+    delete eventObj.datacontentencoding;
   }
   const cloudevent = new CloudEvent(eventObj as CloudEventV1 | CloudEventV03);
 

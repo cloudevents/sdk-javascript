@@ -1,8 +1,7 @@
 /* eslint-disable */
 
 const express = require("express");
-const { Message, CloudEvent, HTTP } = require("cloudevents");
-const { response } = require("express");
+const { Receiver } = require("cloudevents");
 const app = express();
 
 app.use((req, res, next) => {
@@ -23,13 +22,8 @@ app.post("/", (req, res) => {
   console.log("HEADERS", req.headers);
   console.log("BODY", req.body);
 
-  const message = {
-    headers: req.headers,
-    body: req.body
-  };
-
   try {
-    const event = HTTP.toEvent(message);
+    const event = Receiver.accept(req.headers, req.body);
     // respond as an event
     const responseEventMessage = new CloudEvent({
       source: '/',

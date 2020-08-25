@@ -13,6 +13,7 @@ export const Receiver = {
    * @param {Object} headers HTTP headers keyed by header name ("Content-Type")
    * @param {Object|JSON} body The body of the HTTP request
    * @return {CloudEvent} A new {CloudEvent} instance
+   * @deprecated Consider using the Message interface with HTTP.toEvent(message)
    */
   accept(headers: Headers, body: string | Record<string, unknown> | undefined | null): CloudEvent {
     const cleanHeaders: Headers = sanitize(headers);

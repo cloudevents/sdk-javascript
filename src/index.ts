@@ -3,9 +3,9 @@ import { ValidationError } from "./event/validation";
 import { CloudEventV03, CloudEventV03Attributes, CloudEventV1, CloudEventV1Attributes } from "./event/interfaces";
 
 import { Emitter, TransportOptions } from "./transport/emitter";
-import { Receiver, Mode } from "./transport/receiver";
+import { Receiver } from "./transport/receiver";
 import { Protocol } from "./transport/protocols";
-import { Headers, headersFor } from "./transport/http/headers";
+import { Headers, Mode, Binding, HTTP, Message, Serializer, Deserializer, headersFor } from "./message";
 
 import CONSTANTS from "./constants";
 
@@ -18,14 +18,20 @@ export {
   CloudEventV1Attributes,
   Version,
   ValidationError,
-  // From transport
-  Emitter,
-  Receiver,
-  Mode,
-  Protocol,
-  TransportOptions,
+  // From message
   Headers,
-  headersFor,
+  Mode,
+  Binding,
+  Message,
+  Deserializer,
+  Serializer,
+  headersFor, // TODO: Deprecated. Remove for 4.0
+  HTTP,
+  // From transport
+  Emitter, // TODO: Deprecated. Remove for 4.0
+  Receiver, // TODO: Deprecated. Remove for 4.0
+  Protocol, // TODO: Deprecated. Remove for 4.0
+  TransportOptions, // TODO: Deprecated. Remove for 4.0
   // From Constants
   CONSTANTS,
 };

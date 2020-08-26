@@ -1,8 +1,7 @@
-/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { assert } from "chai";
 import { Given, When, Then, World } from "cucumber";
-import { Receiver } from "../../src";
+import { Message, Headers, HTTP } from "../../src";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { HTTPParser } = require("http-parser-js");
@@ -14,20 +13,24 @@ Given("HTTP Protocol Binding is supported", function (this: World) {
 });
 
 Given("an HTTP request", function (request: string) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const world = this;
+  // Create a Message from the incoming HTTP request
+  const message: Message = {
+    headers: {},
+    body: "",
+  };
   parser.onHeadersComplete = function (record: Record<string, []>) {
-    world.headers = arrayToObject(record.headers);
+    message.headers = extractHeaders(record.headers);
   };
   parser.onBody = function (body: Buffer, offset: number) {
-    world.body = body.slice(offset).toString();
+    message.body = body.slice(offset).toString();
   };
+  this.message = message;
   parser.execute(Buffer.from(request), 0, request.length);
   return true;
 });
 
 When("parsed as HTTP request", function () {
-  this.cloudevent = Receiver.accept(this.headers, this.body);
+  this.cloudevent = HTTP.toEvent(this.message);
   return true;
 });
 
@@ -47,8 +50,8 @@ Then("the data is equal to the following JSON:", function (json: string) {
   return true;
 });
 
-function arrayToObject(arr: []): Record<string, string> {
-  const obj: Record<string, string> = {};
+function extractHeaders(arr: []): Headers {
+  const obj: Headers = {};
   // @ts-ignore
   return arr.reduce(({}, keyOrValue, index, arr) => {
     if (index % 2 === 0) {

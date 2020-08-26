@@ -63,6 +63,7 @@ export class Emitter {
    * In that case, it will be used as the recipient endpoint. The endpoint can
    * be overridden by providing a URL here.
    * @returns {Promise} Promise with an eventual response from the receiver
+   * @deprecated Will be removed in 4.0.0. Consider using the Message interface with HTTP.[binary|structured](event)
    */
   send(event: CloudEvent, options?: TransportOptions): Promise<AxiosResponse> {
     options = options || {};

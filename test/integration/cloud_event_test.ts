@@ -1,3 +1,4 @@
+import { ValidationError } from "ajv";
 import { expect } from "chai";
 import { CloudEvent, Version } from "../../src";
 import { CloudEventV03, CloudEventV1 } from "../../src/event/interfaces";
@@ -18,6 +19,22 @@ describe("A CloudEvent", () => {
     const ce = new CloudEvent(fixture);
     expect(ce.type).to.equal(type);
     expect(ce.source).to.equal(source);
+  });
+
+  it("Can be constructed with loose validation", () => {
+    const ce = new CloudEvent({} as CloudEventV1, false);
+    expect(ce).to.be.instanceOf(CloudEvent);
+  });
+
+  it("Loosely validated events can be cloned", () => {
+    const ce = new CloudEvent({} as CloudEventV1, false);
+    expect(ce.cloneWith({}, false)).to.be.instanceOf(CloudEvent);
+    console.error(ce);
+  });
+
+  it("Loosely validated events throw when validated", () => {
+    const ce = new CloudEvent({} as CloudEventV1, false);
+    expect(ce.validate).to.throw(TypeError, "invalid payload");
   });
 
   it("serializes as JSON with toString()", () => {

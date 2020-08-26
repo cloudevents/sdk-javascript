@@ -156,6 +156,12 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
     this.#_data = value;
   }
 
+  /**
+   * Used by JSON.stringify(). The name is confusing, but this method is called by
+   * JSON.stringify() when converting this object to JSON.
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
+   * @return {object} this event as a plain object
+   */
   toJSON(): Record<string, unknown> {
     const event = { ...this };
     event.time = this.time;

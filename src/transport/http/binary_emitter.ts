@@ -2,7 +2,8 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
 import { CloudEvent, Version } from "../../event/cloudevent";
 import { TransportOptions } from "../emitter";
-import { Headers, headersFor } from "./headers";
+import { Headers } from "../../message";
+import { headersFor } from "../../message/http/headers";
 import { asData } from "../../event/validation";
 import CONSTANTS from "../../constants";
 

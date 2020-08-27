@@ -8,7 +8,18 @@ export class ValidationError extends TypeError {
   errors?: string[] | ErrorObject[] | null;
 
   constructor(message: string, errors?: string[] | ErrorObject[] | null) {
-    super(message);
+    const messageString =
+      errors instanceof Array
+        ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          errors?.reduce(
+            (accum: string, err: Record<string, string>) =>
+              (accum as string).concat(`
+  ${err instanceof Object ? JSON.stringify(err) : err}`),
+            message,
+          )
+        : message;
+    super(messageString);
     this.errors = errors ? errors : [];
   }
 }

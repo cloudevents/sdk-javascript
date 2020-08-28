@@ -45,7 +45,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
     const event = new CloudEvent({
       type,
       source,
-      time: new Date(),
+      time: new Date().toISOString(),
       data,
       [ext1Name]: ext1Value,
       [ext2Name]: ext2Value,
@@ -143,7 +143,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
       specversion: Version.V03,
       type,
       source,
-      time: new Date(),
+      time: new Date().toISOString(),
       data,
       [ext1Name]: ext1Value,
       [ext2Name]: ext2Value,

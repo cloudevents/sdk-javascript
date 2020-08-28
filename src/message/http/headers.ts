@@ -71,7 +71,7 @@ export function headersFor(event: CloudEvent): Headers {
   });
   // Treat time specially, since it's handled with getters and setters in CloudEvent
   if (event.time) {
-    headers[CONSTANTS.CE_HEADERS.TIME] = event.time as string;
+    headers[CONSTANTS.CE_HEADERS.TIME] = new Date(event.time).toISOString();
   }
   return headers;
 }

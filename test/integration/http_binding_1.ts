@@ -11,7 +11,7 @@ import { AxiosResponse } from "axios";
 const type = "com.github.pull.create";
 const source = "urn:event:from:myapi/resource/123";
 const contentType = "application/cloudevents+json; charset=utf-8";
-const time = new Date();
+const time = new Date().toISOString();
 const subject = "subject.ext";
 const dataschema = "http://cloudevents.io/schema.json";
 const datacontenttype = "application/json";

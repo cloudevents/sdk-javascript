@@ -66,8 +66,12 @@ export interface MappedParser {
 }
 
 export class DateParser extends Parser {
-  parse(payload: string): Date {
-    return new Date(Date.parse(payload));
+  parse(payload: string): string {
+    let date = new Date(Date.parse(payload));
+    if (date.toString() === "Invalid Date") {
+      date = new Date();
+    }
+    return date.toISOString();
   }
 }
 

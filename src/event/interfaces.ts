@@ -114,7 +114,7 @@ export interface CloudEventV1OptionalAttributes {
    * the same algorithm to determine the value used.
    * @example "2020-08-08T14:48:09.769Z"
    */
-  time?: Date | string;
+  time?: string;
   /**
    * [OPTIONAL] The event payload. This specification does not place any restriction
    * on the type of this information. It is encoded into a media format which is
@@ -258,7 +258,7 @@ export interface CloudEventV03OptionalAttributes {
    * the same algorithm to determine the value used.
    * @example "2020-08-08T14:48:09.769Z"
    */
-  time?: Date | string;
+  time?: string;
   /**
    * [OPTIONAL] The event payload. This specification does not place any restriction
    * on the type of this information. It is encoded into a media format which is

@@ -6,7 +6,7 @@ import Constants from "../../src/constants";
 const id = "97699ec2-a8d9-47c1-bfa0-ff7aa526f838";
 const type = "com.github.pull.create";
 const source = "urn:event:from:myapi/resourse/123";
-const time = new Date();
+const time = new Date().toISOString();
 const schemaurl = "http://example.com/registry/myschema.json";
 const data = {
   much: "wow",
@@ -68,7 +68,7 @@ describe("CloudEvents Spec v0.3", () => {
     });
 
     it("Should have 'time'", () => {
-      expect(cloudevent.time).to.equal(time.toISOString());
+      expect(cloudevent.time).to.equal(time);
     });
 
     it("Should have 'data'", () => {
@@ -186,8 +186,12 @@ describe("CloudEvents Spec v0.3", () => {
 
     describe("'time'", () => {
       it("must adhere to the format specified in RFC 3339", () => {
-        cloudevent = cloudevent.cloneWith({ time: time });
-        expect(cloudevent.time).to.equal(time.toISOString());
+        const d = new Date();
+        cloudevent = cloudevent.cloneWith({ time: d.toString() });
+        // ensure that we always get back the same thing we passed in
+        expect(cloudevent.time).to.equal(d.toString());
+        // ensure that when stringified, the timestamp is in RFC3339 format
+        expect(JSON.parse(JSON.stringify(cloudevent)).time).to.equal(new Date(d.toString()).toISOString());
       });
     });
   });

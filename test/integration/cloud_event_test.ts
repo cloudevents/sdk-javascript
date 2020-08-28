@@ -21,8 +21,10 @@ describe("A CloudEvent", () => {
   });
 
   it("serializes as JSON with toString()", () => {
-    const ce = new CloudEvent(fixture);
+    const ce = new CloudEvent({ ...fixture, data: { lunch: "tacos" } });
     expect(ce.toString()).to.deep.equal(JSON.stringify(ce));
+    expect(new CloudEvent(JSON.parse(ce.toString()))).to.deep.equal(ce);
+    expect(new CloudEvent(JSON.parse(JSON.stringify(ce)))).to.deep.equal(ce);
   });
 
   it("Throw a validation error for invalid extension names", () => {
@@ -188,9 +190,9 @@ describe("A 0.3 CloudEvent", () => {
   });
 
   it("can be constructed with a timestamp", () => {
-    const time = new Date();
+    const time = new Date().toISOString();
     const ce = new CloudEvent({ time, ...v03fixture });
-    expect(ce.time).to.equal(time.toISOString());
+    expect(ce.time).to.equal(time);
   });
 
   it("can be constructed with a datacontenttype", () => {

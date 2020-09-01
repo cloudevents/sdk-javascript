@@ -7,6 +7,14 @@ import { Version } from "./cloudevent";
 import CONSTANTS from "../constants";
 
 const ajv = new Ajv({ extendRefs: true });
+
+// handle date-time format specially because a user could pass
+// Date().toString(), which is not spec compliant date-time format
+ajv.addFormat("js-date-time", function (dateTimeString) {
+  const date = new Date(Date.parse(dateTimeString));
+  return date.toString() !== "Invalid Date";
+});
+
 const isValidAgainstSchemaV1 = ajv.compile(schemaV1);
 const isValidAgainstSchemaV03 = ajv.compile(schemaV03);
 

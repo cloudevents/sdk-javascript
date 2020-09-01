@@ -5,7 +5,7 @@ import { Message, HTTP } from "../../src/message";
 
 const type = "org.cncf.cloudevents.example";
 const source = "urn:event:from:myapi/resource/123";
-const time = new Date();
+const time = new Date().toISOString();
 const subject = "subject.ext";
 const dataschema = "http://cloudevents.io/schema.json";
 const datacontenttype = "application/json";

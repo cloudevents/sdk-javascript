@@ -56,7 +56,7 @@ export const schemaV1 = {
       minLength: 1,
     },
     time: {
-      format: "date-time",
+      format: "js-date-time",
       type: "string",
     },
     dataschema: {
@@ -129,7 +129,7 @@ export const schemaV03 = {
       minLength: 1,
     },
     time: {
-      format: "date-time",
+      format: "js-date-time",
       type: "string",
     },
     schemaurl: {

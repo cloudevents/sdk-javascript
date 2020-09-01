@@ -34,7 +34,7 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
   datacontenttype?: string;
   dataschema?: string;
   subject?: string;
-  #_time?: string | Date;
+  time?: string;
   #_data?: Record<string, unknown | string | number | boolean> | string | number | boolean | null | unknown;
   data_base64?: string;
 
@@ -54,6 +54,9 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
     this.id = (properties.id as string) || uuidv4();
     delete properties.id;
 
+    this.time = properties.time || new Date().toISOString();
+    delete properties.time;
+
     this.type = properties.type;
     delete properties.type;
 
@@ -69,9 +72,6 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
     this.subject = properties.subject;
     delete properties.subject;
 
-    this.#_time = properties.time;
-    delete properties.time;
-
     this.datacontentencoding = properties.datacontentencoding as string;
     delete properties.datacontentencoding;
 
@@ -86,13 +86,6 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
 
     this._setData(properties.data);
     delete properties.data;
-
-    // Make sure time has a default value and whatever is provided is formatted
-    if (!this.#_time) {
-      this.#_time = new Date().toISOString();
-    } else if (this.#_time instanceof Date) {
-      this.#_time = this.#_time.toISOString();
-    }
 
     // sanity checking
     if (this.specversion === Version.V1 && this.schemaurl) {
@@ -121,14 +114,6 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
     this.validate();
 
     Object.freeze(this);
-  }
-
-  get time(): string | Date {
-    return this.#_time as string | Date;
-  }
-
-  set time(val: string | Date) {
-    this.#_time = new Date(val).toISOString();
   }
 
   get data(): unknown {
@@ -164,7 +149,7 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
    */
   toJSON(): Record<string, unknown> {
     const event = { ...this };
-    event.time = this.time;
+    event.time = new Date(this.time as string).toISOString();
     event.data = this.data;
     return event;
   }
@@ -182,6 +167,7 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
     try {
       return validateCloudEvent(this);
     } catch (e) {
+      console.error(e.errors);
       if (e instanceof ValidationError) {
         throw e;
       } else {

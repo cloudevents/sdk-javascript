@@ -10,7 +10,7 @@ const type = "com.github.pull.create";
 const source = "urn:event:from:myapi/resourse/123";
 const contentEncoding = "base64";
 const contentType = "application/cloudevents+json; charset=utf-8";
-const time = new Date();
+const time = new Date().toISOString();
 const schemaurl = "http://cloudevents.io/schema.json";
 
 const ceContentType = "application/json";

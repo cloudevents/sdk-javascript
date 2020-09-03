@@ -28,6 +28,6 @@
     "typescript": "~3.9.5"
   },
   "dependencies": {
-    "cloudevents": "~3.0.1"
+    "cloudevents": "~3.1.0"
   }
 }

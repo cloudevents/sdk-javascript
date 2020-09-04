@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@types/node": "^8.9.0",
-    "gts": "^1.1.0",
+    "gts": "^2.0.0",
     "typescript": "~3.9.5"
   },
   "dependencies": {

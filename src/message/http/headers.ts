@@ -1,5 +1,5 @@
 import { PassThroughParser, DateParser, MappedParser } from "../../parsers";
-import { ValidationError, CloudEvent } from "../..";
+import { CloudEvent } from "../..";
 import { Headers } from "../";
 import { Version } from "../../event/cloudevent";
 import CONSTANTS from "../../constants";
@@ -11,35 +11,6 @@ export const requiredHeaders = [
   CONSTANTS.CE_HEADERS.TYPE,
   CONSTANTS.CE_HEADERS.SPEC_VERSION,
 ];
-
-/**
- * Validates cloud event headers and their values
- * @param {Headers} headers event transport headers for validation
- * @throws {ValidationError} if the headers are invalid
- * @return {boolean} true if headers are valid
- */
-export function validate(headers: Headers): Headers {
-  const sanitizedHeaders = sanitize(headers);
-
-  // if content-type exists, be sure it's an allowed type
-  const contentTypeHeader = sanitizedHeaders[CONSTANTS.HEADER_CONTENT_TYPE];
-  const noContentType = !allowedContentTypes.includes(contentTypeHeader);
-  if (contentTypeHeader && noContentType) {
-    throw new ValidationError("invalid content type", [sanitizedHeaders[CONSTANTS.HEADER_CONTENT_TYPE]]);
-  }
-
-  requiredHeaders
-    .filter((required: string) => !sanitizedHeaders[required])
-    .forEach((required: string) => {
-      throw new ValidationError(`header '${required}' not found`);
-    });
-
-  if (!sanitizedHeaders[CONSTANTS.HEADER_CONTENT_TYPE]) {
-    sanitizedHeaders[CONSTANTS.HEADER_CONTENT_TYPE] = CONSTANTS.MIME_JSON;
-  }
-
-  return sanitizedHeaders;
-}
 
 /**
  * Returns the HTTP headers that will be sent for this event when the HTTP transmission
@@ -88,6 +59,11 @@ export function sanitize(headers: Headers): Headers {
   Array.from(Object.keys(headers))
     .filter((header) => Object.hasOwnProperty.call(headers, header))
     .forEach((header) => (sanitized[header.toLowerCase()] = headers[header]));
+
+  // If no content-type header is sent, assume application/json
+  if (!sanitized[CONSTANTS.HEADER_CONTENT_TYPE]) {
+    sanitized[CONSTANTS.HEADER_CONTENT_TYPE] = CONSTANTS.MIME_JSON;
+  }
 
   return sanitized;
 }

@@ -46,7 +46,15 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
   schemaurl?: string;
   datacontentencoding?: string;
 
-  constructor(event: CloudEventV1 | CloudEventV1Attributes | CloudEventV03 | CloudEventV03Attributes) {
+  /**
+   * Creates a new CloudEvent object with the provided properties. If there is a chance that the event
+   * properties will not conform to the CloudEvent specification, you may pass a boolean `false` as a
+   * second parameter to bypass event validation.
+   *
+   * @param {object} event the event properties
+   * @param {boolean?} strict whether to perform event validation when creating the object - default: true
+   */
+  constructor(event: CloudEventV1 | CloudEventV1Attributes | CloudEventV03 | CloudEventV03Attributes, strict = true) {
     // copy the incoming event so that we can delete properties as we go
     // everything left after we have deleted know properties becomes an extension
     const properties = { ...event };
@@ -105,20 +113,20 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
     for (const [key, value] of Object.entries(properties)) {
       // Extension names should only allow lowercase a-z and 0-9 in the name
       // names should not exceed 20 characters in length
-      if (!key.match(/^[a-z0-9]{1,20}$/)) {
+      if (!key.match(/^[a-z0-9]{1,20}$/) && strict) {
         throw new ValidationError("invalid extension name");
       }
 
       // Value should be spec compliant
       // https://github.com/cloudevents/spec/blob/master/spec.md#type-system
-      if (!isValidType(value)) {
+      if (!isValidType(value) && strict) {
         throw new ValidationError("invalid extension value");
       }
 
       this[key] = value;
     }
 
-    this.validate();
+    strict ? this.validate() : undefined;
 
     Object.freeze(this);
   }
@@ -193,6 +201,7 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
   /**
    * Clone a CloudEvent with new/update attributes
    * @param {object} options attributes to augment the CloudEvent with
+   * @param {boolean} strict whether or not to use strict validation when cloning (default: true)
    * @throws if the CloudEvent does not conform to the schema
    * @return {CloudEvent} returns a new CloudEvent
    */
@@ -204,7 +213,8 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
       | CloudEventV03
       | CloudEventV03Attributes
       | CloudEventV03OptionalAttributes,
+    strict = true,
   ): CloudEvent {
-    return new CloudEvent(Object.assign({}, this.toJSON(), options) as CloudEvent);
+    return new CloudEvent(Object.assign({}, this.toJSON(), options) as CloudEvent, strict);
   }
 }

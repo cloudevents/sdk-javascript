@@ -1,9 +1,8 @@
 import { CloudEvent, CloudEventV03, CloudEventV1, CONSTANTS, Mode, Version } from "../..";
 import { Message, Headers } from "..";
 
-import { headersFor, sanitize, v03structuredParsers, v1binaryParsers, v1structuredParsers, validate } from "./headers";
+import { headersFor, sanitize, v03structuredParsers, v1binaryParsers, v1structuredParsers } from "./headers";
 import { asData, isBase64, isString, isStringOrObjectOrThrow, ValidationError } from "../../event/validation";
-import { validateCloudEvent } from "../../event/spec";
 import { Base64Parser, JSONParser, MappedParser, Parser, parserByContentType } from "../../parsers";
 
 // implements Serializer
@@ -129,7 +128,7 @@ function parseBinary(message: Message, version: Version): CloudEvent {
   body = isString(body) && isBase64(body) ? Buffer.from(body as string, "base64").toString() : body;
 
   // Clone and low case all headers names
-  const sanitizedHeaders = validate(headers);
+  const sanitizedHeaders = sanitize(headers);
 
   const eventObj: { [key: string]: unknown | string | Record<string, unknown> } = {};
   const parserMap: Record<string, MappedParser> = version === Version.V1 ? v1binaryParsers : v1binaryParsers;
@@ -165,9 +164,7 @@ function parseBinary(message: Message, version: Version): CloudEvent {
     delete eventObj.datacontentencoding;
   }
 
-  const cloudevent = new CloudEvent({ ...eventObj, data: parsedPayload } as CloudEventV1 | CloudEventV03);
-  validateCloudEvent(cloudevent);
-  return cloudevent;
+  return new CloudEvent({ ...eventObj, data: parsedPayload } as CloudEventV1 | CloudEventV03, false);
 }
 
 /**
@@ -226,9 +223,5 @@ function parseStructured(message: Message, version: Version): CloudEvent {
     delete eventObj.data_base64;
     delete eventObj.datacontentencoding;
   }
-  const cloudevent = new CloudEvent(eventObj as CloudEventV1 | CloudEventV03);
-
-  // Validates the event
-  validateCloudEvent(cloudevent);
-  return cloudevent;
+  return new CloudEvent(eventObj as CloudEventV1 | CloudEventV03, false);
 }

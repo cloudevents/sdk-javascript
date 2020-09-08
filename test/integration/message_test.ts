@@ -27,25 +27,62 @@ const ext2Value = "acme";
 const dataBinary = Uint32Array.from(JSON.stringify(data), (c) => c.codePointAt(0) as number);
 const data_base64 = asBase64(dataBinary);
 
-describe("HTTP transport messages", () => {
-  it("can detect CloudEvent Messages", () => {
+describe("HTTP transport", () => {
+  it("Can detect invalid CloudEvent Messages", () => {
     // Create a message that is not an actual event
-    let message: Message = {
+    const message: Message = {
       body: "Hello world!",
       headers: {
         "Content-type": "text/plain",
       },
     };
     expect(HTTP.isEvent(message)).to.be.false;
+  });
 
+  it("Can detect valid CloudEvent Messages", () => {
     // Now create a message that is an event
-    message = HTTP.binary(
+    const message = HTTP.binary(
       new CloudEvent({
         source: "/message-test",
         type: "example",
       }),
     );
     expect(HTTP.isEvent(message)).to.be.true;
+  });
+
+  // Allow for external systems to send bad events - do what we can
+  // to accept them
+  it("Does not throw an exception when converting an invalid Message to a CloudEvent", () => {
+    const message: Message = {
+      body: `"hello world"`,
+      headers: {
+        "content-type": "application/json",
+        "ce-id": "1234",
+        "ce-type": "example.bad.event",
+        "ce-specversion": "1.0",
+        // no required ce-source header, thus an invalid event
+      },
+    };
+    const event = HTTP.toEvent(message);
+    expect(event).to.be.instanceOf(CloudEvent);
+    // ensure that we actually now have an invalid event
+    expect(event.validate).to.throw;
+  });
+
+  it("Does not allow an invalid CloudEvent to be converted to a Message", () => {
+    const badEvent = new CloudEvent(
+      {
+        source: "/example.source",
+        type: "", // type is required, empty string will throw with strict validation
+      },
+      false, // turn off strict validation
+    );
+    expect(() => {
+      HTTP.binary(badEvent);
+    }).to.throw;
+    expect(() => {
+      HTTP.structured(badEvent);
+    }).to.throw;
   });
 
   describe("Specification version V1", () => {

@@ -145,10 +145,9 @@ There you will find Express.js, TypeScript and Websocket examples.
 - Slack: #cloudeventssdk channel under
   [CNCF's Slack workspace](https://slack.cncf.io/).
 - Maintainers typically available on Slack
-  - Fabio José
-  - Grant Timmerman
   - Lance Ball
   - Lucas Holmquist
+  - Grant Timmerman
 - Email: https://lists.cncf.io/g/cncf-cloudevents-sdk
 
 ## Contributing

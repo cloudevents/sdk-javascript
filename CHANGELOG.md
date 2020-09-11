@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://github.com/cloudevents/sdk-javascript/compare/v3.1.0...v3.2.0) (2020-09-11)
+
+
+### Features
+
+* add a constructor parameter for loose validation ([#328](https://github.com/cloudevents/sdk-javascript/issues/328)) ([a0e7281](https://github.com/cloudevents/sdk-javascript/commit/a0e72814d381b366ff8efe8ca0e7523d458d7159))
+* introduce Message, Serializer, Deserializer and Binding interfaces ([#324](https://github.com/cloudevents/sdk-javascript/issues/324)) ([e2eb476](https://github.com/cloudevents/sdk-javascript/commit/e2eb4766d355c767fd3d09fcdedb258b71647135))
+
+
+### Bug Fixes
+
+* upgrade cloudevents from 3.0.1 to 3.1.0 ([#335](https://github.com/cloudevents/sdk-javascript/issues/335)) ([6732194](https://github.com/cloudevents/sdk-javascript/commit/673219483a153e7a65fa17b3db85b9c6aa5d9dd7))
+* upgrade uuid from 8.2.0 to 8.3.0 ([#317](https://github.com/cloudevents/sdk-javascript/issues/317)) ([e433f9a](https://github.com/cloudevents/sdk-javascript/commit/e433f9a898f57bf26bed9422bd598e509c63d4c0))
+
+
+### Documentation
+
+* add ref to CoC and other things ([#244](https://github.com/cloudevents/sdk-javascript/issues/244)) ([1d7886c](https://github.com/cloudevents/sdk-javascript/commit/1d7886c50aa2c4546e116ae4f8e354ac7425ccd9))
+
+
+### Tests
+
+* implement pending tests leftover from TS rewrite ([#315](https://github.com/cloudevents/sdk-javascript/issues/315)) ([fcd869e](https://github.com/cloudevents/sdk-javascript/commit/fcd869e93a11fb996f0450a0796826f136759143))
+
+
+### Miscellaneous
+
+* **example:** Replaced body parser with express JSON parser ([#334](https://github.com/cloudevents/sdk-javascript/issues/334)) ([e6204af](https://github.com/cloudevents/sdk-javascript/commit/e6204af8d146f213d687e011e44e1120edaffa44))
+* add cucumber.js to list of files to lint and /docs to .gitignore ([#327](https://github.com/cloudevents/sdk-javascript/issues/327)) ([ef05f27](https://github.com/cloudevents/sdk-javascript/commit/ef05f27cf1c87858a0d69a57afc40e106816fde7))
+* Remove commented version import. ([#319](https://github.com/cloudevents/sdk-javascript/issues/319)) ([ffb1a13](https://github.com/cloudevents/sdk-javascript/commit/ffb1a137a8c47e639cce552478b015977afb8ce0))
+* typo ([#313](https://github.com/cloudevents/sdk-javascript/issues/313)) ([d78d101](https://github.com/cloudevents/sdk-javascript/commit/d78d101349c1137ee17f92245b2e250628e7cb18))
+* Update README with correct links for the support specification versions ([#321](https://github.com/cloudevents/sdk-javascript/issues/321)) ([198abb6](https://github.com/cloudevents/sdk-javascript/commit/198abb6c3f83ef17851f2c79ff3c1a91887c8ff8)), closes [#320](https://github.com/cloudevents/sdk-javascript/issues/320)
+* Update references of master to main ([#316](https://github.com/cloudevents/sdk-javascript/issues/316)) ([9b44dfa](https://github.com/cloudevents/sdk-javascript/commit/9b44dfac58dacc07bd3687f7995b4a99bed5b852))
+* validate cloudevent version agnostic ([#311](https://github.com/cloudevents/sdk-javascript/issues/311)) ([3d2f01a](https://github.com/cloudevents/sdk-javascript/commit/3d2f01a7e387c6519fce6e74d98c004e36f83e3d))
+
 ## [3.1.0](https://github.com/cloudevents/sdk-javascript/compare/v3.0.1...v3.1.0) (2020-08-11)
 
 

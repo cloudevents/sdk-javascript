@@ -1,14 +1,15 @@
 import { CloudEvent } from "../event/cloudevent";
-import { emitBinary, emitStructured } from "./http";
+import { axiosEmitter } from "./http";
 import { Protocol } from "./protocols";
-import { AxiosResponse } from "axios";
 import { Agent } from "http";
+import { Binding, HTTP, Message, Mode } from "../message";
 
 /**
  * Options supplied to the Emitter when sending an event.
  * In addition to url and protocol, TransportOptions may
  * also accept custom options that will be passed to the
  * Node.js http functions.
+ * @deprecated will be removed in 4.0.0
  */
 export interface TransportOptions {
   /**
@@ -26,8 +27,60 @@ export interface TransportOptions {
   [key: string]: string | Record<string, unknown> | Protocol | Agent | undefined;
 }
 
-interface EmitterFunction {
-  (event: CloudEvent, options: TransportOptions): Promise<AxiosResponse>;
+/**
+ * Options is an additional, optional dictionary of options that may
+ * be passed to an EmitterFunction and TransportFunction
+ */
+export interface Options {
+  [key: string]: string | Record<string, unknown> | unknown;
+}
+
+/**
+ * EmitterFunction is an invokable interface returned by the emitterFactory
+ * function. Invoke an EmitterFunction with a CloudEvent and optional transport
+ * options to send the event as a Message across supported transports.
+ */
+export interface EmitterFunction {
+  (event: CloudEvent, options?: Options): Promise<unknown>;
+}
+
+/**
+ * TransportFunction is an invokable interface provided to the emitterFactory.
+ * A TransportFunction's responsiblity is to send a JSON encoded event Message
+ * across the wire.
+ */
+export interface TransportFunction {
+  (message: Message, options?: Options): Promise<unknown>;
+}
+
+/**
+ * emitterFactory creates and returns an EmitterFunction using the supplied
+ * TransportFunction. The returned EmitterFunction will invoke the Binding's
+ * `binary` or `structured` function to convert a CloudEvent into a JSON
+ * Message based on the Mode provided, and invoke the TransportFunction with
+ * the Message and any supplied options.
+ *
+ * @param {Binding} binding a transport binding, e.g. HTTP
+ * @param {Mode} mode the encoding mode (Mode.BINARY or Mode.STRUCTURED)
+ * @param {TransportFunction} fn a TransportFunction that can accept an event Message
+ * @returns {EmitterFunction} an EmitterFunction to send events with
+ */
+export function emitterFactory(binding: Binding, mode: Mode, fn: TransportFunction): EmitterFunction {
+  if (!binding || !mode || !fn) {
+    throw new TypeError("Emitter binding, mode and function are all required");
+  }
+  return function emit(event: CloudEvent, options?: Options): Promise<unknown> {
+    options = options || {};
+
+    switch (mode) {
+      case Mode.BINARY:
+        return fn(binding.binary(event), options);
+      case Mode.STRUCTURED:
+        return fn(binding.structured(event), options);
+      default:
+        throw new TypeError(`Unexpected transport mode: ${mode}`);
+    }
+  };
 }
 
 /**
@@ -36,19 +89,21 @@ interface EmitterFunction {
  *
  * @see https://github.com/cloudevents/spec/blob/v1.0/http-protocol-binding.md
  * @see https://github.com/cloudevents/spec/blob/v1.0/http-protocol-binding.md#13-content-modes
+ * @deprecated Will be removed in 4.0.0. Consider using the emitterFactory
+ *
  */
 export class Emitter {
   url?: string;
   protocol: Protocol;
-  emitter: EmitterFunction;
+  binaryEmitter: EmitterFunction;
+  structuredEmitter: EmitterFunction;
 
   constructor(options: TransportOptions = { protocol: Protocol.HTTPBinary }) {
     this.protocol = options.protocol as Protocol;
     this.url = options.url;
-    this.emitter = emitBinary;
-    if (this.protocol === Protocol.HTTPStructured) {
-      this.emitter = emitStructured;
-    }
+
+    this.binaryEmitter = emitterFactory(HTTP, Mode.BINARY, axiosEmitter(this.url as string));
+    this.structuredEmitter = emitterFactory(HTTP, Mode.STRUCTURED, axiosEmitter(this.url as string));
   }
 
   /**
@@ -63,15 +118,15 @@ export class Emitter {
    * In that case, it will be used as the recipient endpoint. The endpoint can
    * be overridden by providing a URL here.
    * @returns {Promise} Promise with an eventual response from the receiver
-   * @deprecated Will be removed in 4.0.0. Consider using the Message interface with HTTP.[binary|structured](event)
+   * @deprecated Will be removed in 4.0.0. Consider using the emitterFactory
    */
-  send(event: CloudEvent, options?: TransportOptions): Promise<AxiosResponse> {
+  send(event: CloudEvent, options?: TransportOptions): Promise<unknown> {
     options = options || {};
     options.url = options.url || this.url;
     if (options.protocol != this.protocol) {
-      if (this.protocol === Protocol.HTTPBinary) return emitBinary(event, options);
-      return emitStructured(event, options);
+      if (this.protocol === Protocol.HTTPBinary) return this.binaryEmitter(event, options);
+      return this.structuredEmitter(event, options);
     }
-    return this.emitter(event, options);
+    return this.binaryEmitter(event, options);
   }
 }

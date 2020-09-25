@@ -8,10 +8,14 @@ import { Base64Parser, JSONParser, MappedParser, Parser, parserByContentType } f
 // implements Serializer
 export function binary(event: CloudEvent): Message {
   const contentType: Headers = { [CONSTANTS.HEADER_CONTENT_TYPE]: CONSTANTS.DEFAULT_CONTENT_TYPE };
-  const headers: Headers = headersFor(event);
+  const headers: Headers = { ...contentType, ...headersFor(event) };
+  let body = asData(event.data, event.datacontenttype as string);
+  if (typeof body === "object") {
+    body = JSON.stringify(body);
+  }
   return {
-    headers: { ...contentType, ...headers },
-    body: asData(event.data, event.datacontenttype as string),
+    headers,
+    body,
   };
 }
 

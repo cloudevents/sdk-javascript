@@ -102,7 +102,7 @@ describe("HTTP transport", () => {
 
     it("Binary Messages can be created from a CloudEvent", () => {
       const message: Message = HTTP.binary(fixture);
-      expect(message.body).to.equal(data);
+      expect(JSON.parse(message.body)).to.deep.equal(data);
       // validate all headers
       expect(message.headers[CONSTANTS.HEADER_CONTENT_TYPE]).to.equal(datacontenttype);
       expect(message.headers[CONSTANTS.CE_HEADERS.SPEC_VERSION]).to.equal(Version.V1);
@@ -178,7 +178,7 @@ describe("HTTP transport", () => {
 
     it("Binary Messages can be created from a CloudEvent", () => {
       const message: Message = HTTP.binary(fixture);
-      expect(message.body).to.equal(data);
+      expect(message.body).to.equal(JSON.stringify(data));
       // validate all headers
       expect(message.headers[CONSTANTS.HEADER_CONTENT_TYPE]).to.equal(datacontenttype);
       expect(message.headers[CONSTANTS.CE_HEADERS.SPEC_VERSION]).to.equal(Version.V03);

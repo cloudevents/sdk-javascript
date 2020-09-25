@@ -8,7 +8,6 @@ const DEFAULT_CONTENT_TYPE = CONSTANTS.DEFAULT_CONTENT_TYPE;
 
 import { CloudEvent, Version, Emitter, Protocol } from "../../src";
 import { headersFor } from "../../src/message/http/headers";
-import { AxiosResponse } from "axios";
 
 const receiver = "https://cloudevents.io/";
 const type = "com.example.test";
@@ -20,7 +19,7 @@ const ext2Value = "sushi";
 const ext3Name = "snack";
 const ext3Value = { value: "chips" };
 
-const data = {
+const eventData = {
   lunchBreak: "noon",
 };
 
@@ -46,7 +45,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
       type,
       source,
       time: new Date().toISOString(),
-      data,
+      data: eventData,
       [ext1Name]: ext1Value,
       [ext2Name]: ext2Value,
       [ext3Name]: ext3Value,
@@ -55,17 +54,24 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
     it("Sends a binary 1.0 CloudEvent by default", () =>
       emitter
         .send(event)
-        .then((response: AxiosResponse) => {
+        .then((value: unknown) => {
+          const data = (value as Record<
+            string,
+            Record<string, Record<string, string | Record<string, string | Record<string, string>>>>
+          >).data;
+
           // A binary message will have a ce-id header
-          expect(response.data["content-type"]).to.equal(DEFAULT_CONTENT_TYPE);
-          expect(response.data[CONSTANTS.CE_HEADERS.ID]).to.equal(event.id);
-          expect(response.data[CONSTANTS.CE_HEADERS.SPEC_VERSION]).to.equal(Version.V1);
+          expect(data["content-type"]).to.equal(DEFAULT_CONTENT_TYPE);
+          expect(data[CONSTANTS.CE_HEADERS.ID]).to.equal(event.id);
+          expect(data[CONSTANTS.CE_HEADERS.SPEC_VERSION]).to.equal(Version.V1);
           // A binary message will have a request body for the data
-          expect(response.data.lunchBreak).to.equal(data.lunchBreak);
+          expect(data.lunchBreak).to.equal(data.lunchBreak);
           // Ensure extensions are handled properly
-          expect(response.data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext1Name}`]).to.equal(ext1Value);
-          expect(response.data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext2Name}`]).to.equal(ext2Value);
-          expect(response.data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext3Name}`].value).to.equal(ext3Value.value);
+          expect(data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext1Name}`]).to.equal(ext1Value);
+          expect(data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext2Name}`]).to.equal(ext2Value);
+          expect((data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext3Name}`] as Record<string, string>).value).to.equal(
+            ext3Value.value,
+          );
         })
         .catch(expect.fail));
 
@@ -81,31 +87,41 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
     it("Sends a binary CloudEvent with Custom Headers", () =>
       emitter
         .send(event, { headers: { customheader: "value" } })
-        .then((response: { data: { [k: string]: string } }) => {
+        .then((value: unknown) => {
+          const data = (value as Record<
+            string,
+            Record<string, Record<string, string | Record<string, string | Record<string, string>>>>
+          >).data;
+
           // A binary message will have a ce-id header
-          expect(response.data.customheader).to.equal("value");
-          expect(response.data["content-type"]).to.equal(DEFAULT_CONTENT_TYPE);
-          expect(response.data[CONSTANTS.CE_HEADERS.ID]).to.equal(event.id);
-          expect(response.data[CONSTANTS.CE_HEADERS.SPEC_VERSION]).to.equal(Version.V1);
+          expect(data.customheader).to.equal("value");
+          expect(data["content-type"]).to.equal(DEFAULT_CONTENT_TYPE);
+          expect(data[CONSTANTS.CE_HEADERS.ID]).to.equal(event.id);
+          expect(data[CONSTANTS.CE_HEADERS.SPEC_VERSION]).to.equal(Version.V1);
           // A binary message will have a request body for the data
-          expect(response.data.lunchBreak).to.equal(data.lunchBreak);
+          expect(data.lunchBreak).to.equal(data.lunchBreak);
         })
         .catch(expect.fail));
 
     it("Sends a structured 1.0 CloudEvent if specified", () =>
       emitter
         .send(event, { protocol: Protocol.HTTPStructured })
-        .then((response: { data: { [k: string]: string | Record<string, string>; data: { lunchBreak: string } } }) => {
+        .then((value: unknown) => {
+          const data = (value as Record<string, Record<string, unknown>>).data as Record<
+            string,
+            string | Record<string, string>
+          >;
+
           // A structured message will have a cloud event content type
-          expect(response.data["content-type"]).to.equal(DEFAULT_CE_CONTENT_TYPE);
+          expect(data["content-type"]).to.equal(DEFAULT_CE_CONTENT_TYPE);
           // Ensure other CE headers don't exist - just testing for ID
-          expect(response.data[CONSTANTS.CE_HEADERS.ID]).to.equal(undefined);
+          expect(data[CONSTANTS.CE_HEADERS.ID]).to.equal(undefined);
           // The spec version would have been specified in the body
-          expect(response.data.specversion).to.equal(Version.V1);
-          expect(response.data.data.lunchBreak).to.equal(data.lunchBreak);
+          expect(data.specversion).to.equal(Version.V1);
+          expect((data as Record<string, Record<string, string>>).data.lunchBreak).to.equal(eventData.lunchBreak);
           // Ensure extensions are handled properly
-          expect(response.data[ext1Name]).to.equal(ext1Value);
-          expect(response.data[ext2Name]).to.equal(ext2Value);
+          expect(data[ext1Name]).to.equal(ext1Value);
+          expect(data[ext2Name]).to.equal(ext2Value);
         })
         .catch(expect.fail));
 
@@ -124,14 +140,19 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
 
       return emitter
         .send(event, { protocol: Protocol.HTTPStructured, url: `${receiver}alternate` })
-        .then((response: AxiosResponse) => {
+        .then((value: unknown) => {
+          const data = (value as Record<string, Record<string, unknown>>).data as Record<
+            string,
+            string | Record<string, string>
+          >;
+
           // A structured message will have a cloud event content type
-          expect(response.data["content-type"]).to.equal(DEFAULT_CE_CONTENT_TYPE);
+          expect(data["content-type"]).to.equal(DEFAULT_CE_CONTENT_TYPE);
           // Ensure other CE headers don't exist - just testing for ID
-          expect(response.data[CONSTANTS.CE_HEADERS.ID]).to.equal(undefined);
+          expect(data[CONSTANTS.CE_HEADERS.ID]).to.equal(undefined);
           // The spec version would have been specified in the body
-          expect(response.data.specversion).to.equal(Version.V1);
-          expect(response.data.data.lunchBreak).to.equal(data.lunchBreak);
+          expect(data.specversion).to.equal(Version.V1);
+          expect((data as Record<string, Record<string, string>>).data.lunchBreak).to.equal(eventData.lunchBreak);
         })
         .catch(expect.fail);
     });
@@ -144,7 +165,7 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
       type,
       source,
       time: new Date().toISOString(),
-      data,
+      data: eventData,
       [ext1Name]: ext1Value,
       [ext2Name]: ext2Value,
       [ext3Name]: ext3Value,
@@ -153,16 +174,23 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
     it("Sends a binary 0.3 CloudEvent", () =>
       emitter
         .send(event)
-        .then((response: AxiosResponse) => {
+        .then((value: unknown) => {
+          const data = (value as Record<string, Record<string, unknown>>).data as Record<
+            string,
+            string | Record<string, string>
+          >;
+
           // A binary message will have a ce-id header
-          expect(response.data[CONSTANTS.CE_HEADERS.ID]).to.equal(event.id);
-          expect(response.data[CONSTANTS.CE_HEADERS.SPEC_VERSION]).to.equal(Version.V03);
+          expect(data[CONSTANTS.CE_HEADERS.ID]).to.equal(event.id);
+          expect(data[CONSTANTS.CE_HEADERS.SPEC_VERSION]).to.equal(Version.V03);
           // A binary message will have a request body for the data
-          expect(response.data.lunchBreak).to.equal(data.lunchBreak);
+          expect(data.lunchBreak).to.equal(data.lunchBreak);
           // Ensure extensions are handled properly
-          expect(response.data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext1Name}`]).to.equal(ext1Value);
-          expect(response.data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext2Name}`]).to.equal(ext2Value);
-          expect(response.data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext3Name}`].value).to.equal(ext3Value.value);
+          expect(data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext1Name}`]).to.equal(ext1Value);
+          expect(data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext2Name}`]).to.equal(ext2Value);
+          expect((data[`${CONSTANTS.EXTENSIONS_PREFIX}${ext3Name}`] as Record<string, string>).value).to.equal(
+            ext3Value.value,
+          );
         })
         .catch(expect.fail));
 
@@ -178,22 +206,23 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
     it("Sends a structured 0.3 CloudEvent if specified", () =>
       emitter
         .send(event, { protocol: Protocol.HTTPStructured })
-        .then(
-          (response: {
-            data: { [k: string]: string | Record<string, string>; specversion: string; data: { lunchBreak: string } };
-          }) => {
-            // A structured message will have a cloud event content type
-            expect(response.data["content-type"]).to.equal(DEFAULT_CE_CONTENT_TYPE);
-            // Ensure other CE headers don't exist - just testing for ID
-            expect(response.data[CONSTANTS.CE_HEADERS.ID]).to.equal(undefined);
-            // The spec version would have been specified in the body
-            expect(response.data.specversion).to.equal(Version.V03);
-            expect(response.data.data.lunchBreak).to.equal(data.lunchBreak);
-            // Ensure extensions are handled properly
-            expect(response.data[ext1Name]).to.equal(ext1Value);
-            expect(response.data[ext2Name]).to.equal(ext2Value);
-          },
-        )
+        .then((value: unknown) => {
+          const data = (value as Record<string, Record<string, unknown>>).data as Record<
+            string,
+            string | Record<string, string>
+          >;
+
+          // A structured message will have a cloud event content type
+          expect(data["content-type"]).to.equal(DEFAULT_CE_CONTENT_TYPE);
+          // Ensure other CE headers don't exist - just testing for ID
+          expect(data[CONSTANTS.CE_HEADERS.ID]).to.equal(undefined);
+          // The spec version would have been specified in the body
+          expect(data.specversion).to.equal(Version.V03);
+          expect((data as Record<string, Record<string, string>>).data.lunchBreak).to.equal(eventData.lunchBreak);
+          // Ensure extensions are handled properly
+          expect(data[ext1Name]).to.equal(ext1Value);
+          expect(data[ext2Name]).to.equal(ext2Value);
+        })
         .catch(expect.fail));
 
     it("Sends to an alternate URL if specified", () => {
@@ -211,19 +240,20 @@ describe("HTTP Transport Binding Emitter for CloudEvents", () => {
 
       return emitter
         .send(event, { protocol: Protocol.HTTPStructured, url: `${receiver}alternate` })
-        .then(
-          (response: {
-            data: { specversion: string; data: { lunchBreak: string }; [k: string]: string | Record<string, string> };
-          }) => {
-            // A structured message will have a cloud event content type
-            expect(response.data["content-type"]).to.equal(DEFAULT_CE_CONTENT_TYPE);
-            // Ensure other CE headers don't exist - just testing for ID
-            expect(response.data[CONSTANTS.CE_HEADERS.ID]).to.equal(undefined);
-            // The spec version would have been specified in the body
-            expect(response.data.specversion).to.equal(Version.V03);
-            expect(response.data.data.lunchBreak).to.equal(data.lunchBreak);
-          },
-        )
+        .then((value: unknown) => {
+          const data = (value as Record<string, Record<string, unknown>>).data as Record<
+            string,
+            string | Record<string, string>
+          >;
+
+          // A structured message will have a cloud event content type
+          expect(data["content-type"]).to.equal(DEFAULT_CE_CONTENT_TYPE);
+          // Ensure other CE headers don't exist - just testing for ID
+          expect(data[CONSTANTS.CE_HEADERS.ID]).to.equal(undefined);
+          // The spec version would have been specified in the body
+          expect(data.specversion).to.equal(Version.V03);
+          expect((data as Record<string, Record<string, string>>).data.lunchBreak).to.equal(eventData.lunchBreak);
+        })
         .catch(expect.fail);
     });
   });

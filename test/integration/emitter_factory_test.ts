@@ -6,7 +6,7 @@ import request from "superagent";
 import got from "got";
 
 import CONSTANTS from "../../src/constants";
-import { CloudEvent, emitterFactory, HTTP, Mode, Message, Options, TransportFunction } from "../../src";
+import { CloudEvent, emitterFor, HTTP, Mode, Message, Options, TransportFunction } from "../../src";
 
 const DEFAULT_CE_CONTENT_TYPE = CONSTANTS.DEFAULT_CE_CONTENT_TYPE;
 const sink = "https://cloudevents.io/";
@@ -87,7 +87,7 @@ describe("HTTP Transport Binding for emitterFactory", () => {
 
 function testEmitter(fn: TransportFunction, bodyAttr: string) {
   it("Works as a binary event emitter", async () => {
-    const emitter = emitterFactory(HTTP, Mode.BINARY, fn);
+    const emitter = emitterFor(fn);
     const response = (await emitter(fixture)) as Record<string, Record<string, string>>;
     let body = response[bodyAttr];
     if (typeof body === "string") {
@@ -97,7 +97,7 @@ function testEmitter(fn: TransportFunction, bodyAttr: string) {
   });
 
   it("Works as a structured event emitter", async () => {
-    const emitter = emitterFactory(HTTP, Mode.STRUCTURED, fn);
+    const emitter = emitterFor(fn, { binding: HTTP, mode: Mode.STRUCTURED });
     const response = (await emitter(fixture)) as Record<string, Record<string, Record<string, string>>>;
     let body = response[bodyAttr];
     if (typeof body === "string") {

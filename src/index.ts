@@ -8,7 +8,7 @@ import {
   Options,
   TransportFunction,
   EmitterFunction,
-  emitterFactory,
+  emitterFor,
 } from "./transport/emitter";
 import { Receiver } from "./transport/receiver";
 import { Protocol } from "./transport/protocols";
@@ -41,7 +41,7 @@ export {
   TransportOptions, // TODO: Deprecated. Remove for 4.0
   TransportFunction,
   EmitterFunction,
-  emitterFactory,
+  emitterFor,
   Options,
   // From Constants
   CONSTANTS,

@@ -2,7 +2,7 @@ import { CloudEvent } from "../event/cloudevent";
 import { axiosEmitter } from "./http";
 import { Protocol } from "./protocols";
 import { Agent } from "http";
-import { Binding, HTTP, Message, Mode } from "../message";
+import { HTTP, Message, Mode } from "../message";
 
 /**
  * Options supplied to the Emitter when sending an event.
@@ -60,15 +60,17 @@ export interface TransportFunction {
  * Message based on the Mode provided, and invoke the TransportFunction with
  * the Message and any supplied options.
  *
- * @param {Binding} binding a transport binding, e.g. HTTP
- * @param {Mode} mode the encoding mode (Mode.BINARY or Mode.STRUCTURED)
  * @param {TransportFunction} fn a TransportFunction that can accept an event Message
+ * @param { {Binding, Mode} } options network binding and message serialization options
+ * @param {Binding} options.binding a transport binding, e.g. HTTP
+ * @param {Mode} options.mode the encoding mode (Mode.BINARY or Mode.STRUCTURED)
  * @returns {EmitterFunction} an EmitterFunction to send events with
  */
-export function emitterFactory(binding: Binding, mode: Mode, fn: TransportFunction): EmitterFunction {
-  if (!binding || !mode || !fn) {
-    throw new TypeError("Emitter binding, mode and function are all required");
+export function emitterFor(fn: TransportFunction, options = { binding: HTTP, mode: Mode.BINARY }): EmitterFunction {
+  if (!fn) {
+    throw new TypeError("A TransportFunction is required");
   }
+  const { binding, mode } = options;
   return function emit(event: CloudEvent, options?: Options): Promise<unknown> {
     options = options || {};
 
@@ -102,8 +104,8 @@ export class Emitter {
     this.protocol = options.protocol as Protocol;
     this.url = options.url;
 
-    this.binaryEmitter = emitterFactory(HTTP, Mode.BINARY, axiosEmitter(this.url as string));
-    this.structuredEmitter = emitterFactory(HTTP, Mode.STRUCTURED, axiosEmitter(this.url as string));
+    this.binaryEmitter = emitterFor(axiosEmitter(this.url as string));
+    this.structuredEmitter = emitterFor(axiosEmitter(this.url as string), { binding: HTTP, mode: Mode.STRUCTURED });
   }
 
   /**

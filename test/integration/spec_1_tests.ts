@@ -168,11 +168,6 @@ describe("CloudEvents Spec v1.0", () => {
       cloudevent = cloudevent.cloneWith({ datacontenttype: dct });
     });
 
-    it("should convert data with stringified json to a json object", () => {
-      cloudevent = cloudevent.cloneWith({ datacontenttype: Constants.MIME_JSON, data: JSON.stringify(data) });
-      expect(cloudevent.data).to.deep.equal(data);
-    });
-
     it("should be ok when type is 'Uint32Array' for 'Binary'", () => {
       const dataString = ")(*~^my data for ce#@#$%";
 

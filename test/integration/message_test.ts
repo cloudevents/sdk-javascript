@@ -102,7 +102,7 @@ describe("HTTP transport", () => {
 
     it("Binary Messages can be created from a CloudEvent", () => {
       const message: Message = HTTP.binary(fixture);
-      expect(JSON.parse(message.body)).to.deep.equal(data);
+      expect(message.body).to.equal(JSON.stringify(data));
       // validate all headers
       expect(message.headers[CONSTANTS.HEADER_CONTENT_TYPE]).to.equal(datacontenttype);
       expect(message.headers[CONSTANTS.CE_HEADERS.SPEC_VERSION]).to.equal(Version.V1);
@@ -120,7 +120,7 @@ describe("HTTP transport", () => {
       const message: Message = HTTP.structured(fixture);
       expect(message.headers[CONSTANTS.HEADER_CONTENT_TYPE]).to.equal(CONSTANTS.DEFAULT_CE_CONTENT_TYPE);
       // Parse the message body as JSON, then validate the attributes
-      const body = JSON.parse(message.body);
+      const body = JSON.parse(message.body as string);
       expect(body[CONSTANTS.CE_ATTRIBUTES.SPEC_VERSION]).to.equal(Version.V1);
       expect(body[CONSTANTS.CE_ATTRIBUTES.ID]).to.equal(id);
       expect(body[CONSTANTS.CE_ATTRIBUTES.TYPE]).to.equal(type);
@@ -147,6 +147,7 @@ describe("HTTP transport", () => {
     it("Supports Base-64 encoded data in structured messages", () => {
       const event = fixture.cloneWith({ data: dataBinary });
       expect(event.data_base64).to.equal(data_base64);
+      expect(event.data).to.equal(dataBinary);
       const message = HTTP.structured(event);
       const eventDeserialized = HTTP.toEvent(message);
       expect(eventDeserialized.data).to.deep.equal({ foo: "bar" });
@@ -155,9 +156,11 @@ describe("HTTP transport", () => {
     it("Supports Base-64 encoded data in binary messages", () => {
       const event = fixture.cloneWith({ data: dataBinary });
       expect(event.data_base64).to.equal(data_base64);
+      expect(event.data).to.equal(dataBinary);
       const message = HTTP.binary(event);
+      expect(message.body).to.equal(dataBinary);
       const eventDeserialized = HTTP.toEvent(message);
-      expect(eventDeserialized.data).to.deep.equal({ foo: "bar" });
+      expect(eventDeserialized.data).to.equal(dataBinary);
     });
   });
 
@@ -196,7 +199,7 @@ describe("HTTP transport", () => {
       const message: Message = HTTP.structured(fixture);
       expect(message.headers[CONSTANTS.HEADER_CONTENT_TYPE]).to.equal(CONSTANTS.DEFAULT_CE_CONTENT_TYPE);
       // Parse the message body as JSON, then validate the attributes
-      const body = JSON.parse(message.body);
+      const body = JSON.parse(message.body as string);
       expect(body[CONSTANTS.CE_ATTRIBUTES.SPEC_VERSION]).to.equal(Version.V03);
       expect(body[CONSTANTS.CE_ATTRIBUTES.ID]).to.equal(id);
       expect(body[CONSTANTS.CE_ATTRIBUTES.TYPE]).to.equal(type);
@@ -221,19 +224,27 @@ describe("HTTP transport", () => {
     });
 
     it("Supports Base-64 encoded data in structured messages", () => {
-      const event = fixture.cloneWith({ data: dataBinary, datacontentencoding });
-      expect(event.data_base64).to.equal(data_base64);
+      const event = fixture.cloneWith({ data: data_base64, datacontentencoding });
       const message = HTTP.structured(event);
+      expect(JSON.parse(message.body as string).data).to.equal(data_base64);
+      // An incoming event with datacontentencoding set to base64,
+      // and encoded data, should decode the data before setting
+      // the .data property on the event
       const eventDeserialized = HTTP.toEvent(message);
       expect(eventDeserialized.data).to.deep.equal({ foo: "bar" });
+      expect(eventDeserialized.datacontentencoding).to.be.undefined;
     });
 
     it("Supports Base-64 encoded data in binary messages", () => {
-      const event = fixture.cloneWith({ data: dataBinary, datacontentencoding });
-      expect(event.data_base64).to.equal(data_base64);
+      const event = fixture.cloneWith({ data: data_base64, datacontentencoding });
       const message = HTTP.binary(event);
+      expect(message.body).to.equal(data_base64);
+      // An incoming event with datacontentencoding set to base64,
+      // and encoded data, should decode the data before setting
+      // the .data property on the event
       const eventDeserialized = HTTP.toEvent(message);
       expect(eventDeserialized.data).to.deep.equal({ foo: "bar" });
+      expect(eventDeserialized.datacontentencoding).to.be.undefined;
     });
   });
 });

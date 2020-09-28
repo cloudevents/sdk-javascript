@@ -10,8 +10,6 @@ import {
 } from "./interfaces";
 import { validateCloudEvent } from "./spec";
 import { ValidationError, isBinary, asBase64, isValidType } from "./validation";
-import CONSTANTS from "../constants";
-import { isString } from "util";
 
 /**
  * An enum representing the CloudEvent specification version
@@ -92,7 +90,7 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
     this.schemaurl = properties.schemaurl as string;
     delete properties.schemaurl;
 
-    this._setData(properties.data);
+    this.data = properties.data;
     delete properties.data;
 
     // sanity checking
@@ -125,25 +123,11 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
   }
 
   get data(): unknown {
-    if (
-      this.datacontenttype === CONSTANTS.MIME_JSON &&
-      !(this.datacontentencoding === CONSTANTS.ENCODING_BASE64) &&
-      isString(this.#_data)
-    ) {
-      return JSON.parse(this.#_data as string);
-    } else if (isBinary(this.#_data)) {
-      return asBase64(this.#_data as Uint32Array);
-    }
     return this.#_data;
   }
 
   set data(value: unknown) {
-    this._setData(value);
-  }
-
-  private _setData(value: unknown): void {
     if (isBinary(value)) {
-      this.#_data = value;
       this.data_base64 = asBase64(value as Uint32Array);
     }
     this.#_data = value;
@@ -158,7 +142,7 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
   toJSON(): Record<string, unknown> {
     const event = { ...this };
     event.time = new Date(this.time as string).toISOString();
-    event.data = this.data;
+    event.data = !isBinary(this.data) ? this.data : undefined;
     return event;
   }
 

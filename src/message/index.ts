@@ -28,7 +28,7 @@ export interface Headers {
  */
 export interface Message {
   headers: Headers;
-  body: string;
+  body: string | unknown;
 }
 
 /**

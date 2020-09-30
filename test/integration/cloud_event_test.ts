@@ -1,6 +1,10 @@
+import path from "path";
+import fs from "fs";
+
 import { expect } from "chai";
 import { CloudEvent, ValidationError, Version } from "../../src";
 import { CloudEventV03, CloudEventV1 } from "../../src/event/interfaces";
+import { asBase64 } from "../../src/event/validation";
 
 const type = "org.cncf.cloudevents.example";
 const source = "http://unit.test";
@@ -13,6 +17,9 @@ const fixture: CloudEventV1 = {
   type,
   data: `"some data"`,
 };
+
+const imageData = new Uint32Array(fs.readFileSync(path.join(process.cwd(), "test", "integration", "ce.png")));
+const image_base64 = asBase64(imageData);
 
 describe("A CloudEvent", () => {
   it("Can be constructed with a typed Message", () => {
@@ -149,6 +156,15 @@ describe("A 1.0 CloudEvent", () => {
       data: true,
     });
     expect(ce.data).to.be.true;
+  });
+
+  it("can be constructed with binary data", () => {
+    const ce = new CloudEvent({
+      ...fixture,
+      data: imageData,
+    });
+    expect(ce.data).to.equal(imageData);
+    expect(ce.data_base64).to.equal(image_base64);
   });
 
   it("can be constructed with extensions", () => {

@@ -2,8 +2,8 @@ import { CloudEvent, CloudEventV03, CloudEventV1, CONSTANTS, Mode, Version } fro
 import { Message, Headers } from "..";
 
 import { headersFor, sanitize, v03structuredParsers, v1binaryParsers, v1structuredParsers } from "./headers";
-import { isBase64, isString, isStringOrObjectOrThrow, ValidationError } from "../../event/validation";
-import { Base64Parser, JSONParser, MappedParser, Parser, parserByContentType } from "../../parsers";
+import { isBinary, isStringOrObjectOrThrow, ValidationError } from "../../event/validation";
+import { JSONParser, MappedParser, Parser, parserByContentType } from "../../parsers";
 
 // implements Serializer
 export function binary(event: CloudEvent): Message {
@@ -22,6 +22,10 @@ export function binary(event: CloudEvent): Message {
 
 // implements Serializer
 export function structured(event: CloudEvent): Message {
+  if (event.data_base64) {
+    // The event's data is binary - delete it
+    event = event.cloneWith({ data: undefined });
+  }
   return {
     headers: {
       [CONSTANTS.HEADER_CONTENT_TYPE]: CONSTANTS.DEFAULT_CE_CONTENT_TYPE,
@@ -130,8 +134,6 @@ function parseBinary(message: Message, version: Version): CloudEvent {
     throw new ValidationError(`invalid spec version ${headers[CONSTANTS.CE_HEADERS.SPEC_VERSION]}`);
   }
 
-  body = isString(body) && isBase64(body) ? Buffer.from(body as string, "base64").toString() : body;
-
   // Clone and low case all headers names
   const sanitizedHeaders = sanitize(headers);
 
@@ -146,24 +148,26 @@ function parseBinary(message: Message, version: Version): CloudEvent {
     }
   }
 
-  let parsedPayload;
-
-  if (body) {
-    const parser = parserByContentType[eventObj.datacontenttype as string];
-    if (parser) {
-      parsedPayload = parser.parse(body as string);
-    } else {
-      // Just use the raw body
-      parsedPayload = body;
-    }
-  }
-
   // Every unprocessed header can be an extension
   for (const header in sanitizedHeaders) {
     if (header.startsWith(CONSTANTS.EXTENSIONS_PREFIX)) {
       eventObj[header.substring(CONSTANTS.EXTENSIONS_PREFIX.length)] = headers[header];
     }
   }
+
+  if (isBinary(body)) {
+    if (eventObj.datacontenttype === CONSTANTS.MIME_JSON) {
+      // even though the body is binary, it's just JSON - convert to string
+      body = Buffer.from(body as string, "base64").toString();
+    }
+  }
+
+  // If the body is base64 that means we are dealing with binary data
+  const parser = parserByContentType[eventObj.datacontenttype as string];
+  if (parser && body) {
+    body = parser.parse(body as string);
+  }
+
   // At this point, if the datacontenttype is application/json and the datacontentencoding is base64
   // then the data has already been decoded as a string, then parsed as JSON. We don't need to have
   // the datacontentencoding property set - in fact, it's incorrect to do so.
@@ -171,7 +175,7 @@ function parseBinary(message: Message, version: Version): CloudEvent {
     delete eventObj.datacontentencoding;
   }
 
-  return new CloudEvent({ ...eventObj, data: parsedPayload } as CloudEventV1 | CloudEventV03, false);
+  return new CloudEvent({ ...eventObj, data: body } as CloudEventV1 | CloudEventV03, false);
 }
 
 /**
@@ -223,13 +227,19 @@ function parseStructured(message: Message, version: Version): CloudEvent {
     eventObj[key] = incoming[key];
   }
 
-  // ensure data content is correctly decoded
+  // data_base64 is a property that only exists on V1 events. For V03 events,
+  // there will be a .datacontentencoding property, and the .data property
+  // itself will be encoded as base64
   if (eventObj.data_base64 || eventObj.datacontentencoding === CONSTANTS.ENCODING_BASE64) {
-    const parser = new Base64Parser();
-    // data_base64 is a property that only exists on V1 events. For V03 events,
-    // there will be a .datacontentencoding property, and the .data property
-    // itself will be encoded as base64
-    eventObj.data = JSON.parse(parser.parse((eventObj.data_base64 as string) || (eventObj.data as string)));
+    const data = eventObj.data_base64 || eventObj.data;
+
+    // we can choose to decode the binary data as JSON, if datacontentype is application/json
+    if (eventObj.datacontenttype === CONSTANTS.MIME_JSON) {
+      eventObj.data = JSON.parse(Buffer.from(data as string, "base64").toString());
+    } else {
+      eventObj.data = new Uint32Array(Buffer.from(data as string, "base64"));
+    }
+
     delete eventObj.data_base64;
     delete eventObj.datacontentencoding;
   }

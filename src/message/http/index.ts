@@ -162,7 +162,6 @@ function parseBinary(message: Message, version: Version): CloudEvent {
     }
   }
 
-  // If the body is base64 that means we are dealing with binary data
   const parser = parserByContentType[eventObj.datacontenttype as string];
   if (parser && body) {
     body = parser.parse(body as string);

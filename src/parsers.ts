@@ -2,7 +2,7 @@ import CONSTANTS from "./constants";
 import { isString, isDefinedOrThrow, isStringOrObjectOrThrow, ValidationError } from "./event/validation";
 
 export abstract class Parser {
-  abstract parse(payload: Record<string, unknown> | string): unknown;
+  abstract parse(payload: Record<string, unknown> | string | string[] | undefined): unknown;
 }
 
 export class JSONParser implements Parser {

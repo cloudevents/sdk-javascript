@@ -48,7 +48,7 @@ function superagentEmitter(message: Message, options?: Options): Promise<unknown
   }
   // set headers
   for (const key of Object.getOwnPropertyNames(message.headers)) {
-    post.set(key, message.headers[key]);
+    post.set(key, message.headers[key] as string);
   }
   return post.send(message.body);
 }

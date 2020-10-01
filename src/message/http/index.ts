@@ -71,7 +71,7 @@ export function deserialize(message: Message): CloudEvent {
  * @returns {Mode} the transport mode
  */
 function getMode(headers: Headers): Mode {
-  const contentType = headers[CONSTANTS.HEADER_CONTENT_TYPE];
+  const contentType = headers[CONSTANTS.HEADER_CONTENT_TYPE] as string;
   if (contentType && contentType.startsWith(CONSTANTS.MIME_CE)) {
     return Mode.STRUCTURED;
   }
@@ -198,7 +198,7 @@ function parseStructured(message: Message, version: Version): CloudEvent {
   // Clone and low case all headers names
   const sanitizedHeaders = sanitize(headers);
 
-  const contentType = sanitizedHeaders[CONSTANTS.HEADER_CONTENT_TYPE];
+  const contentType = sanitizedHeaders[CONSTANTS.HEADER_CONTENT_TYPE] as string;
   const parser: Parser = contentType ? parserByContentType[contentType] : new JSONParser();
   if (!parser) throw new ValidationError(`invalid content type ${sanitizedHeaders[CONSTANTS.HEADER_CONTENT_TYPE]}`);
   const incoming = { ...(parser.parse(payload) as Record<string, unknown>) };

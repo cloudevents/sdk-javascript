@@ -29,66 +29,63 @@ npm install cloudevents
 
 #### Receiving Events
 
-You can choose almost any popular web framework for port binding. Use a
-`Receiver` to process the incoming HTTP request. The receiver accepts
-binary and structured events in either the 1.0 or 0.3 protocol formats.
+You can choose any popular web framework for port binding. A `CloudEvent`
+object can be created by simply providing the `HTTP` protocol binding
+the incoming headers and request body.
 
 ```js
 const app = require("express")();
-const {Receiver} = require("cloudevents");
+const { HTTP } = require("cloudevents");
 
 app.post("/", (req, res) => {
   // body and headers come from an incoming HTTP request, e.g. express.js
-  const receivedEvent = Receiver.accept(req.headers, req.body);
+  const receivedEvent = HTTP.toEvent({ headers: req.headers, body: req.body });
   console.log(receivedEvent);
 });
 ```
 
 #### Emitting Events
 
-You can send events over HTTP in either binary or structured format.
-
-By default, the `Emitter` will emit events over HTTP POST using the
-binary transport protocol. The `Emitter` will examine the `specversion`
-of the event being sent, and use the appropriate protocol version. To send
-structured events, add `Protocol.HTTPStructured` as a parameter to
-`emitter.send()`.
+You can send events over HTTP in either binary or structured format
+using the `HTTP` binding to create a `Message` which has properties
+for `headers` and `body`.
 
 ```js
-const { CloudEvent, Emitter, Protocol, Version } = require("cloudevents");
+const axios = require('axios').default;
+const { HTTP } = require("cloudevents");
 
-// With only an endpoint URL, this creates a v1 emitter
-const emitter = new Emitter({
-  url: "https://cloudevents.io/example"
+
+const ce = new CloudEvent({ type, source, data })
+const message = HTTP.binary(ce); // Or HTTP.structured(ce)
+
+axios({
+  method: 'post',
+  url: '...',
+  data: message.body,
+  headers: message.headers,
 });
-const event = new CloudEvent({
-  type, source, data
-});
+```
 
-// By default, the emitter will send binary events
-emitter.send(event).then((response) => {
-    // handle the response
-  }).catch(console.error);
+You may also use the `emitterFor()` function as a convenience.
 
-// To send a structured event, just add that as an option
-emitter.send(event, { protocol: Protocol.HTTPStructured })
-  .then((response) => {
-    // handle the response
-  }).catch(console.error);
+```js
+const axios = require('axios').default;
+const { emitterFor, Mode } = require("cloudevents");
 
-// To send an event to an alternate URL, add that as an option
-emitter.send(event, { url: "https://alternate.com/api" })
-  .then((response) => {
-    // handle the response
-  }).catch(console.error);
+function sendWithAxios(message) {
+  // Do what you need with the message headers
+  // and body in this function, then send the
+  // event
+  axios({
+    method: 'post',
+    url: '...',
+    data: message.body,
+    headers: message.headers,
+  });
+}
 
-// Sending a v0.3 event works the same, If your event has a
-// specversion property of Version.V03, then it will be sent
-// using the 0.3 transport protocol
-emitter.send(new CloudEvent({ specversion: Version.V03, source, type }))
-  .then((response) => {
-    // handle the response
-  }).catch(console.error);
+const emit = emitterFor(sendWithAxios, { mode: Mode.BINARY });
+emit(new CloudEvent({ type, source, data }));
 ```
 
 ## CloudEvent Objects

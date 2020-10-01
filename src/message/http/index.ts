@@ -2,7 +2,7 @@ import { CloudEvent, CloudEventV03, CloudEventV1, CONSTANTS, Mode, Version } fro
 import { Message, Headers } from "..";
 
 import { headersFor, sanitize, v03structuredParsers, v1binaryParsers, v1structuredParsers } from "./headers";
-import { isBinary, isStringOrObjectOrThrow, ValidationError } from "../../event/validation";
+import { isStringOrObjectOrThrow, ValidationError } from "../../event/validation";
 import { JSONParser, MappedParser, Parser, parserByContentType } from "../../parsers";
 
 // implements Serializer
@@ -155,13 +155,6 @@ function parseBinary(message: Message, version: Version): CloudEvent {
     }
   }
 
-  if (isBinary(body)) {
-    if (eventObj.datacontenttype === CONSTANTS.MIME_JSON) {
-      // even though the body is binary, it's just JSON - convert to string
-      body = Buffer.from(body as string, "base64").toString();
-    }
-  }
-
   const parser = parserByContentType[eventObj.datacontenttype as string];
   if (parser && body) {
     body = parser.parse(body as string);
@@ -231,14 +224,7 @@ function parseStructured(message: Message, version: Version): CloudEvent {
   // itself will be encoded as base64
   if (eventObj.data_base64 || eventObj.datacontentencoding === CONSTANTS.ENCODING_BASE64) {
     const data = eventObj.data_base64 || eventObj.data;
-
-    // we can choose to decode the binary data as JSON, if datacontentype is application/json
-    if (eventObj.datacontenttype === CONSTANTS.MIME_JSON) {
-      eventObj.data = JSON.parse(Buffer.from(data as string, "base64").toString());
-    } else {
-      eventObj.data = new Uint32Array(Buffer.from(data as string, "base64"));
-    }
-
+    eventObj.data = new Uint32Array(Buffer.from(data as string, "base64"));
     delete eventObj.data_base64;
     delete eventObj.datacontentencoding;
   }

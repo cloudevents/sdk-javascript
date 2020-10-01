@@ -27,6 +27,7 @@ const ext2Value = "acme";
 
 // Binary data as base64
 const dataBinary = Uint32Array.from(JSON.stringify(data), (c) => c.codePointAt(0) as number);
+const data_base64 = asBase64(dataBinary);
 
 // Since the above is a special case (string as binary), let's test
 // with a real binary file one is likely to encounter in the wild
@@ -166,11 +167,11 @@ describe("HTTP transport", () => {
       expect(eventDeserialized.data_base64).to.equal(image_base64);
     });
 
-    it("Parses binary data from structured messages with content type application/json", () => {
+    it("Does not parse binary data from structured messages with content type application/json", () => {
       const message = HTTP.structured(fixture.cloneWith({ data: dataBinary }));
       const eventDeserialized = HTTP.toEvent(message);
-      expect(eventDeserialized.data).to.deep.equal({ foo: "bar" });
-      expect(eventDeserialized.data_base64).to.be.undefined;
+      expect(eventDeserialized.data).to.deep.equal(dataBinary);
+      expect(eventDeserialized.data_base64).to.equal(data_base64);
     });
 
     it("Converts base64 encoded data to binary when deserializing binary messages", () => {
@@ -187,11 +188,11 @@ describe("HTTP transport", () => {
       expect(message.body).to.equal(dataBinary);
     });
 
-    it("Parses binary data from binary messages with content type application/json", () => {
+    it("Does not parse binary data from binary messages with content type application/json", () => {
       const message = HTTP.binary(fixture.cloneWith({ data: dataBinary }));
       const eventDeserialized = HTTP.toEvent(message);
-      expect(eventDeserialized.data).to.deep.equal({ foo: "bar" });
-      expect(eventDeserialized.data_base64).to.be.undefined;
+      expect(eventDeserialized.data).to.deep.equal(dataBinary);
+      expect(eventDeserialized.data_base64).to.equal(data_base64);
     });
   });
 

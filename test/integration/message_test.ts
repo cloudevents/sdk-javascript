@@ -1,3 +1,6 @@
+import path from "path";
+import fs from "fs";
+
 import { expect } from "chai";
 import { CloudEvent, CONSTANTS, Version } from "../../src";
 import { asBase64 } from "../../src/event/validation";
@@ -16,7 +19,6 @@ const data = {
 
 // Attributes for v03 events
 const schemaurl = "https://cloudevents.io/schema.json";
-const datacontentencoding = "base64";
 
 const ext1Name = "extension1";
 const ext1Value = "foobar";
@@ -26,6 +28,11 @@ const ext2Value = "acme";
 // Binary data as base64
 const dataBinary = Uint32Array.from(JSON.stringify(data), (c) => c.codePointAt(0) as number);
 const data_base64 = asBase64(dataBinary);
+
+// Since the above is a special case (string as binary), let's test
+// with a real binary file one is likely to encounter in the wild
+const imageData = new Uint32Array(fs.readFileSync(path.join(process.cwd(), "test", "integration", "ce.png")));
+const image_base64 = asBase64(imageData);
 
 describe("HTTP transport", () => {
   it("Can detect invalid CloudEvent Messages", () => {
@@ -45,6 +52,7 @@ describe("HTTP transport", () => {
       new CloudEvent({
         source: "/message-test",
         type: "example",
+        data,
       }),
     );
     expect(HTTP.isEvent(message)).to.be.true;
@@ -102,7 +110,7 @@ describe("HTTP transport", () => {
 
     it("Binary Messages can be created from a CloudEvent", () => {
       const message: Message = HTTP.binary(fixture);
-      expect(JSON.parse(message.body)).to.deep.equal(data);
+      expect(message.body).to.equal(JSON.stringify(data));
       // validate all headers
       expect(message.headers[CONSTANTS.HEADER_CONTENT_TYPE]).to.equal(datacontenttype);
       expect(message.headers[CONSTANTS.CE_HEADERS.SPEC_VERSION]).to.equal(Version.V1);
@@ -120,7 +128,7 @@ describe("HTTP transport", () => {
       const message: Message = HTTP.structured(fixture);
       expect(message.headers[CONSTANTS.HEADER_CONTENT_TYPE]).to.equal(CONSTANTS.DEFAULT_CE_CONTENT_TYPE);
       // Parse the message body as JSON, then validate the attributes
-      const body = JSON.parse(message.body);
+      const body = JSON.parse(message.body as string);
       expect(body[CONSTANTS.CE_ATTRIBUTES.SPEC_VERSION]).to.equal(Version.V1);
       expect(body[CONSTANTS.CE_ATTRIBUTES.ID]).to.equal(id);
       expect(body[CONSTANTS.CE_ATTRIBUTES.TYPE]).to.equal(type);
@@ -144,20 +152,47 @@ describe("HTTP transport", () => {
       expect(event).to.deep.equal(fixture);
     });
 
-    it("Supports Base-64 encoded data in structured messages", () => {
-      const event = fixture.cloneWith({ data: dataBinary });
-      expect(event.data_base64).to.equal(data_base64);
+    it("Converts binary data to base64 when serializing structured messages", () => {
+      const event = fixture.cloneWith({ data: imageData, datacontenttype: "image/png" });
+      expect(event.data).to.equal(imageData);
       const message = HTTP.structured(event);
-      const eventDeserialized = HTTP.toEvent(message);
-      expect(eventDeserialized.data).to.deep.equal({ foo: "bar" });
+      const messageBody = JSON.parse(message.body as string);
+      expect(messageBody.data_base64).to.equal(image_base64);
     });
 
-    it("Supports Base-64 encoded data in binary messages", () => {
-      const event = fixture.cloneWith({ data: dataBinary });
-      expect(event.data_base64).to.equal(data_base64);
-      const message = HTTP.binary(event);
+    it("Converts base64 encoded data to binary when deserializing structured messages", () => {
+      const message = HTTP.structured(fixture.cloneWith({ data: imageData, datacontenttype: "image/png" }));
       const eventDeserialized = HTTP.toEvent(message);
-      expect(eventDeserialized.data).to.deep.equal({ foo: "bar" });
+      expect(eventDeserialized.data).to.deep.equal(imageData);
+      expect(eventDeserialized.data_base64).to.equal(image_base64);
+    });
+
+    it("Does not parse binary data from structured messages with content type application/json", () => {
+      const message = HTTP.structured(fixture.cloneWith({ data: dataBinary }));
+      const eventDeserialized = HTTP.toEvent(message);
+      expect(eventDeserialized.data).to.deep.equal(dataBinary);
+      expect(eventDeserialized.data_base64).to.equal(data_base64);
+    });
+
+    it("Converts base64 encoded data to binary when deserializing binary messages", () => {
+      const message = HTTP.binary(fixture.cloneWith({ data: imageData, datacontenttype: "image/png" }));
+      const eventDeserialized = HTTP.toEvent(message);
+      expect(eventDeserialized.data).to.deep.equal(imageData);
+      expect(eventDeserialized.data_base64).to.equal(image_base64);
+    });
+
+    it("Keeps binary data binary when serializing binary messages", () => {
+      const event = fixture.cloneWith({ data: dataBinary });
+      expect(event.data).to.equal(dataBinary);
+      const message = HTTP.binary(event);
+      expect(message.body).to.equal(dataBinary);
+    });
+
+    it("Does not parse binary data from binary messages with content type application/json", () => {
+      const message = HTTP.binary(fixture.cloneWith({ data: dataBinary }));
+      const eventDeserialized = HTTP.toEvent(message);
+      expect(eventDeserialized.data).to.deep.equal(dataBinary);
+      expect(eventDeserialized.data_base64).to.equal(data_base64);
     });
   });
 
@@ -196,7 +231,7 @@ describe("HTTP transport", () => {
       const message: Message = HTTP.structured(fixture);
       expect(message.headers[CONSTANTS.HEADER_CONTENT_TYPE]).to.equal(CONSTANTS.DEFAULT_CE_CONTENT_TYPE);
       // Parse the message body as JSON, then validate the attributes
-      const body = JSON.parse(message.body);
+      const body = JSON.parse(message.body as string);
       expect(body[CONSTANTS.CE_ATTRIBUTES.SPEC_VERSION]).to.equal(Version.V03);
       expect(body[CONSTANTS.CE_ATTRIBUTES.ID]).to.equal(id);
       expect(body[CONSTANTS.CE_ATTRIBUTES.TYPE]).to.equal(type);
@@ -220,20 +255,35 @@ describe("HTTP transport", () => {
       expect(event).to.deep.equal(fixture);
     });
 
-    it("Supports Base-64 encoded data in structured messages", () => {
-      const event = fixture.cloneWith({ data: dataBinary, datacontentencoding });
-      expect(event.data_base64).to.equal(data_base64);
+    it("Converts binary data to base64 when serializing structured messages", () => {
+      const event = fixture.cloneWith({ data: imageData, datacontenttype: "image/png" });
+      expect(event.data).to.equal(imageData);
       const message = HTTP.structured(event);
-      const eventDeserialized = HTTP.toEvent(message);
-      expect(eventDeserialized.data).to.deep.equal({ foo: "bar" });
+      const messageBody = JSON.parse(message.body as string);
+      expect(messageBody.data_base64).to.equal(image_base64);
     });
 
-    it("Supports Base-64 encoded data in binary messages", () => {
-      const event = fixture.cloneWith({ data: dataBinary, datacontentencoding });
-      expect(event.data_base64).to.equal(data_base64);
-      const message = HTTP.binary(event);
+    it("Converts base64 encoded data to binary when deserializing structured messages", () => {
+      // Creating an event with binary data automatically produces base64 encoded data
+      // which is then set as the 'data' attribute on the message body
+      const message = HTTP.structured(fixture.cloneWith({ data: imageData, datacontenttype: "image/png" }));
       const eventDeserialized = HTTP.toEvent(message);
-      expect(eventDeserialized.data).to.deep.equal({ foo: "bar" });
+      expect(eventDeserialized.data).to.deep.equal(imageData);
+      expect(eventDeserialized.data_base64).to.equal(image_base64);
+    });
+
+    it("Converts base64 encoded data to binary when deserializing binary messages", () => {
+      const message = HTTP.binary(fixture.cloneWith({ data: imageData, datacontenttype: "image/png" }));
+      const eventDeserialized = HTTP.toEvent(message);
+      expect(eventDeserialized.data).to.deep.equal(imageData);
+      expect(eventDeserialized.data_base64).to.equal(image_base64);
+    });
+
+    it("Keeps binary data binary when serializing binary messages", () => {
+      const event = fixture.cloneWith({ data: dataBinary });
+      expect(event.data).to.equal(dataBinary);
+      const message = HTTP.binary(event);
+      expect(message.body).to.equal(dataBinary);
     });
   });
 });

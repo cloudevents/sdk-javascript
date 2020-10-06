@@ -50,12 +50,12 @@ function superagentEmitter(message: Message, options?: Options): Promise<unknown
   for (const key of Object.getOwnPropertyNames(message.headers)) {
     post.set(key, message.headers[key]);
   }
-  return post.send(message.body);
+  return post.send(message.body as string);
 }
 
 function gotEmitter(message: Message, options?: Options): Promise<unknown> {
   return Promise.resolve(
-    got.post(sink, { headers: message.headers, body: message.body, ...((options as unknown) as Options) }),
+    got.post(sink, { headers: message.headers, body: message.body as string, ...((options as unknown) as Options) }),
   );
 }
 

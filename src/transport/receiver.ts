@@ -17,7 +17,7 @@ export const Receiver = {
    */
   accept(headers: Headers, body: string | Record<string, unknown> | undefined | null): CloudEvent {
     const cleanHeaders: Headers = sanitize(headers);
-    const cleanBody = body ? (typeof body === "object" ? JSON.stringify(body) : body) : "";
+    const cleanBody = body ? (typeof body === "object" ? JSON.stringify(body) : body) : undefined;
     const message: Message = {
       headers: cleanHeaders,
       body: cleanBody,

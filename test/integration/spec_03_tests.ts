@@ -168,12 +168,6 @@ describe("CloudEvents Spec v0.3", () => {
 
         expect(typeof cloudevent.data).to.equal("string");
       });
-
-      it("should convert data with stringified json to a json object", () => {
-        cloudevent = cloudevent.cloneWith({ datacontenttype: Constants.MIME_JSON });
-        cloudevent.data = JSON.stringify(data);
-        expect(cloudevent.data).to.deep.equal(data);
-      });
     });
 
     describe("'subject'", () => {

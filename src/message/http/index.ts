@@ -2,16 +2,17 @@ import { CloudEvent, CloudEventV03, CloudEventV1, CONSTANTS, Mode, Version } fro
 import { Message, Headers } from "..";
 
 import { headersFor, sanitize, v03structuredParsers, v1binaryParsers, v1structuredParsers } from "./headers";
-import { asData, isBase64, isString, isStringOrObjectOrThrow, ValidationError } from "../../event/validation";
-import { Base64Parser, JSONParser, MappedParser, Parser, parserByContentType } from "../../parsers";
+import { isStringOrObjectOrThrow, ValidationError } from "../../event/validation";
+import { JSONParser, MappedParser, Parser, parserByContentType } from "../../parsers";
 
 // implements Serializer
 export function binary(event: CloudEvent): Message {
   const contentType: Headers = { [CONSTANTS.HEADER_CONTENT_TYPE]: CONSTANTS.DEFAULT_CONTENT_TYPE };
   const headers: Headers = { ...contentType, ...headersFor(event) };
-  let body = asData(event.data, event.datacontenttype as string);
-  if (typeof body === "object") {
-    body = JSON.stringify(body);
+  let body = event.data;
+  if (typeof event.data === "object" && !(event.data instanceof Uint32Array)) {
+    // we'll stringify objects, but not binary data
+    body = JSON.stringify(event.data);
   }
   return {
     headers,
@@ -21,6 +22,10 @@ export function binary(event: CloudEvent): Message {
 
 // implements Serializer
 export function structured(event: CloudEvent): Message {
+  if (event.data_base64) {
+    // The event's data is binary - delete it
+    event = event.cloneWith({ data: undefined });
+  }
   return {
     headers: {
       [CONSTANTS.HEADER_CONTENT_TYPE]: CONSTANTS.DEFAULT_CE_CONTENT_TYPE,
@@ -89,7 +94,7 @@ function getMode(headers: Headers): Mode {
  * @param {Record<string, unknown>} body the HTTP request body
  * @returns {Version} the CloudEvent specification version
  */
-function getVersion(mode: Mode, headers: Headers, body: string | Record<string, string>) {
+function getVersion(mode: Mode, headers: Headers, body: string | Record<string, string> | unknown) {
   if (mode === Mode.BINARY) {
     // Check the headers for the version
     const versionHeader = headers[CONSTANTS.CE_HEADERS.SPEC_VERSION];
@@ -129,8 +134,6 @@ function parseBinary(message: Message, version: Version): CloudEvent {
     throw new ValidationError(`invalid spec version ${headers[CONSTANTS.CE_HEADERS.SPEC_VERSION]}`);
   }
 
-  body = isString(body) && isBase64(body) ? Buffer.from(body as string, "base64").toString() : body;
-
   // Clone and low case all headers names
   const sanitizedHeaders = sanitize(headers);
 
@@ -145,22 +148,18 @@ function parseBinary(message: Message, version: Version): CloudEvent {
     }
   }
 
-  let parsedPayload;
-
-  if (body) {
-    const parser = parserByContentType[eventObj.datacontenttype as string];
-    if (!parser) {
-      throw new ValidationError(`no parser found for content type ${eventObj.datacontenttype}`);
-    }
-    parsedPayload = parser.parse(body);
-  }
-
   // Every unprocessed header can be an extension
   for (const header in sanitizedHeaders) {
     if (header.startsWith(CONSTANTS.EXTENSIONS_PREFIX)) {
       eventObj[header.substring(CONSTANTS.EXTENSIONS_PREFIX.length)] = headers[header];
     }
   }
+
+  const parser = parserByContentType[eventObj.datacontenttype as string];
+  if (parser && body) {
+    body = parser.parse(body as string);
+  }
+
   // At this point, if the datacontenttype is application/json and the datacontentencoding is base64
   // then the data has already been decoded as a string, then parsed as JSON. We don't need to have
   // the datacontentencoding property set - in fact, it's incorrect to do so.
@@ -168,7 +167,7 @@ function parseBinary(message: Message, version: Version): CloudEvent {
     delete eventObj.datacontentencoding;
   }
 
-  return new CloudEvent({ ...eventObj, data: parsedPayload } as CloudEventV1 | CloudEventV03, false);
+  return new CloudEvent({ ...eventObj, data: body } as CloudEventV1 | CloudEventV03, false);
 }
 
 /**
@@ -201,7 +200,7 @@ function parseStructured(message: Message, version: Version): CloudEvent {
   const contentType = sanitizedHeaders[CONSTANTS.HEADER_CONTENT_TYPE];
   const parser: Parser = contentType ? parserByContentType[contentType] : new JSONParser();
   if (!parser) throw new ValidationError(`invalid content type ${sanitizedHeaders[CONSTANTS.HEADER_CONTENT_TYPE]}`);
-  const incoming = { ...(parser.parse(payload) as Record<string, unknown>) };
+  const incoming = { ...(parser.parse(payload as string) as Record<string, unknown>) };
 
   const eventObj: { [key: string]: unknown } = {};
   const parserMap: Record<string, MappedParser> = version === Version.V1 ? v1structuredParsers : v03structuredParsers;
@@ -220,10 +219,12 @@ function parseStructured(message: Message, version: Version): CloudEvent {
     eventObj[key] = incoming[key];
   }
 
-  // ensure data content is correctly decoded
-  if (eventObj.data_base64) {
-    const parser = new Base64Parser();
-    eventObj.data = JSON.parse(parser.parse(eventObj.data_base64 as string));
+  // data_base64 is a property that only exists on V1 events. For V03 events,
+  // there will be a .datacontentencoding property, and the .data property
+  // itself will be encoded as base64
+  if (eventObj.data_base64 || eventObj.datacontentencoding === CONSTANTS.ENCODING_BASE64) {
+    const data = eventObj.data_base64 || eventObj.data;
+    eventObj.data = new Uint32Array(Buffer.from(data as string, "base64"));
     delete eventObj.data_base64;
     delete eventObj.datacontentencoding;
   }

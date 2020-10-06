@@ -175,7 +175,6 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
     try {
       return validateCloudEvent(this);
     } catch (e) {
-      console.error(e.errors);
       if (e instanceof ValidationError) {
         throw e;
       } else {

@@ -1,3 +1,4 @@
+import { IncomingHttpHeaders } from "http";
 import { CloudEvent } from "..";
 import { binary, deserialize, structured, isEvent } from "./http";
 import { headersFor } from "./http/headers";
@@ -18,8 +19,8 @@ export interface Binding {
  * Headers is an interface representing transport-agnostic headers as
  * key/value string pairs
  */
-export interface Headers {
-  [key: string]: string;
+export interface Headers extends IncomingHttpHeaders {
+  [key: string]: string | string[] | undefined;
 }
 
 /**

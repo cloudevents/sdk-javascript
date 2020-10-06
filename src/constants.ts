@@ -48,6 +48,6 @@ const CONSTANTS = Object.freeze({
     DATA_SCHEMA: "dataschema",
     DATA_BASE64: "data_base64",
   },
-});
+} as const);
 
 export default CONSTANTS;

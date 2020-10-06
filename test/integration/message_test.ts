@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs";
 
 import { expect } from "chai";
+import { IncomingHttpHeaders } from "http";
 import { CloudEvent, CONSTANTS, Version } from "../../src";
 import { asBase64 } from "../../src/event/validation";
 import { Message, HTTP } from "../../src/message";
@@ -91,6 +92,25 @@ describe("HTTP transport", () => {
     expect(() => {
       HTTP.structured(badEvent);
     }).to.throw;
+  });
+
+  it("Can be created with Node's IncomingHttpHeaders", () => {
+    const headers: IncomingHttpHeaders = {
+      "content-type": CONSTANTS.DEFAULT_CE_CONTENT_TYPE,
+    };
+    const body = JSON.stringify({
+      id,
+      type,
+      source,
+      specversion: Version.V1,
+      data: { lunch: "tacos" },
+    });
+    const message: Message = {
+      headers,
+      body,
+    };
+    const event = HTTP.toEvent(message);
+    expect(event.data).to.deep.equal({ lunch: "tacos" });
   });
 
   describe("Specification version V1", () => {

@@ -24,6 +24,32 @@ describe("HTTP Transport Binding Receiver for CloudEvents", () => {
       expect(Receiver.accept.bind(Receiver, {}, payload)).to.throw(ValidationError, "no cloud event detected");
     });
 
+    it("Throws when the event does not have a valid spec version - Structured", () => {
+      const payload = {
+        id,
+        type,
+        source,
+        data,
+      };
+
+      expect(() => {
+        Receiver.accept(structuredHeaders, payload);
+      }).throw(ValidationError, "Unknown spec version: undefined");
+    });
+
+    it("Throws when the event does not have a valid spec version - Binary", () => {
+      const binaryHeaders = {
+        "content-type": "application/json; charset=utf-8",
+        "ce-id": id,
+        "ce-type": type,
+        "ce-source": source,
+      };
+
+      expect(() => {
+        Receiver.accept(binaryHeaders, data);
+      }).throw(ValidationError, "Unknown spec version: undefined");
+    });
+
     it("Converts the JSON body of a binary event to an Object", () => {
       const binaryHeaders = {
         "content-type": "application/json; charset=utf-8",

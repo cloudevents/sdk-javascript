@@ -54,10 +54,9 @@ export function isEvent(message: Message): boolean {
 export function deserialize(message: Message): CloudEvent {
   const cleanHeaders: Headers = sanitize(message.headers);
   const mode: Mode = getMode(cleanHeaders);
-  let version = getVersion(mode, cleanHeaders, message.body);
+  const version = getVersion(mode, cleanHeaders, message.body);
   if (version !== Version.V03 && version !== Version.V1) {
-    console.error(`Unknown spec version ${version}. Default to ${Version.V1}`);
-    version = Version.V1;
+    throw new ValidationError(`Unknown spec version: ${version}`);
   }
   switch (mode) {
     case Mode.BINARY:
@@ -105,7 +104,7 @@ function getVersion(mode: Mode, headers: Headers, body: string | Record<string, 
     // structured mode - the version is in the body
     return typeof body === "string" ? JSON.parse(body).specversion : (body as CloudEvent).specversion;
   }
-  return Version.V1;
+  // return Version.V1;
 }
 
 /**

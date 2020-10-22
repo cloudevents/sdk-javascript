@@ -1,5 +1,16 @@
 import { CloudEventV1Service } from "../";
 
+interface RequestHandler {
+  (
+    req: { query: { matching: string }; url: string },
+    res: {
+      end: () => void;
+      status: (
+        code: number,
+      ) => { json: (obj: Record<string, unknown> | CloudEventV1Service[]) => string; end: () => void };
+    },
+  ): void;
+}
 /**
  * DiscoveryService to implement the discovery spec:
  *

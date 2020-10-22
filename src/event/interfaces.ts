@@ -289,7 +289,9 @@ export interface CloudEventV1Service {
   url: string;
 
   /**
-   * [REQUIRED] A unique identifier for this Service. This value MUST be unique within the scope of this Discovery Endpoint.
+   * [REQUIRED] A unique identifier for this Service. This value MUST be unique within the scope of this
+   * Discovery Endpoint.
+   *
    * @required MUST be a valid `fsegment` per RFC1738.
    * @example storage
    * @example github
@@ -433,7 +435,7 @@ export interface CloudEventV1Type {
   dataschemacontent?: string;
   /**
    * An array or CloudEvents
-   * [Extension Context Attributes](https://github.com/cloudevents/spec/blob/master/spec.md#extension-context-attributes)
+   * [Extension Context Attributes](http://github.com/cloudevents/spec/blob/master/spec.md#extension-context-attributes)
    * that are used for this event `type`.
    */
   extensions?: CloudEventV1TypeExtension[];

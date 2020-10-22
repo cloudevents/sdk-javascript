@@ -1,6 +1,7 @@
 import { CloudEvent, Version } from "./event/cloudevent";
 import { ValidationError } from "./event/validation";
 export * from "./event/interfaces";
+export * from "./discovery";
 
 import {
   Emitter,

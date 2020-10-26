@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.2.1](https://www.github.com/cloudevents/sdk-javascript/compare/v3.2.0...v3.2.1) (2020-10-26)
+
+
+### Miscellaneous
+
+* **package:** Upgrade mocha from 7.1.2 to 8.2.0 ([#354](https://www.github.com/cloudevents/sdk-javascript/issues/354)) ([8205bc9](https://www.github.com/cloudevents/sdk-javascript/commit/8205bc96ae401099e0207bf387164fd955be7b33))
+
 ## [3.1.0](https://github.com/cloudevents/sdk-javascript/compare/v3.0.1...v3.1.0) (2020-08-11)
 
 

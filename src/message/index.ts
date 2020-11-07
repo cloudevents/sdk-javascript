@@ -1,7 +1,6 @@
 import { IncomingHttpHeaders } from "http";
 import { CloudEvent } from "..";
 import { binary, deserialize, structured, isEvent } from "./http";
-import { headersFor } from "./http/headers";
 
 /**
  * Binding is an interface for transport protocols to implement,
@@ -71,6 +70,3 @@ export const HTTP: Binding = {
   toEvent: deserialize as Deserializer,
   isEvent: isEvent as Detector,
 };
-
-// TODO: Deprecated. Remove this for 4.0
-export { headersFor };

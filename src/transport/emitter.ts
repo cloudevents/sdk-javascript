@@ -1,31 +1,5 @@
 import { CloudEvent } from "../event/cloudevent";
-import { axiosEmitter } from "./http";
-import { Protocol } from "./protocols";
-import { Agent } from "http";
 import { HTTP, Message, Mode } from "../message";
-
-/**
- * Options supplied to the Emitter when sending an event.
- * In addition to url and protocol, TransportOptions may
- * also accept custom options that will be passed to the
- * Node.js http functions.
- * @deprecated will be removed in 4.0.0
- */
-export interface TransportOptions {
-  /**
-   * The endpoint that will receieve the event.
-   * @example http://cncf.example.com/receiver
-   */
-  url?: string;
-  /**
-   * The network protocol over which the event will be sent.
-   * @example HTTPStructured
-   * @example HTTPBinary
-   */
-  protocol?: Protocol;
-
-  [key: string]: string | Record<string, unknown> | Protocol | Agent | undefined;
-}
 
 /**
  * Options is an additional, optional dictionary of options that may
@@ -83,52 +57,4 @@ export function emitterFor(fn: TransportFunction, options = { binding: HTTP, mod
         throw new TypeError(`Unexpected transport mode: ${mode}`);
     }
   };
-}
-
-/**
- * A class to send binary and structured CloudEvents to a remote endpoint.
- * Currently, supported protocols are HTTPBinary and HTTPStructured.
- *
- * @see https://github.com/cloudevents/spec/blob/v1.0/http-protocol-binding.md
- * @see https://github.com/cloudevents/spec/blob/v1.0/http-protocol-binding.md#13-content-modes
- * @deprecated Will be removed in 4.0.0. Consider using the emitterFactory
- *
- */
-export class Emitter {
-  url?: string;
-  protocol: Protocol;
-  binaryEmitter: EmitterFunction;
-  structuredEmitter: EmitterFunction;
-
-  constructor(options: TransportOptions = { protocol: Protocol.HTTPBinary }) {
-    this.protocol = options.protocol as Protocol;
-    this.url = options.url;
-
-    this.binaryEmitter = emitterFor(axiosEmitter(this.url as string));
-    this.structuredEmitter = emitterFor(axiosEmitter(this.url as string), { binding: HTTP, mode: Mode.STRUCTURED });
-  }
-
-  /**
-   * Sends the {CloudEvent} to an event receiver over HTTP POST
-   *
-   * @param {CloudEvent} event the CloudEvent to be sent
-   * @param {Object} [options] The configuration options for this event. Options
-   * provided will be passed along to Node.js `http.request()`.
-   * https://nodejs.org/api/http.html#http_http_request_options_callback
-   * @param {string} [options.url] The HTTP/S url that should receive this event.
-   * The URL is optional if one was provided when this emitter was constructed.
-   * In that case, it will be used as the recipient endpoint. The endpoint can
-   * be overridden by providing a URL here.
-   * @returns {Promise} Promise with an eventual response from the receiver
-   * @deprecated Will be removed in 4.0.0. Consider using the emitterFactory
-   */
-  send(event: CloudEvent, options?: TransportOptions): Promise<unknown> {
-    options = options || {};
-    options.url = options.url || this.url;
-    if (options.protocol != this.protocol) {
-      if (this.protocol === Protocol.HTTPBinary) return this.binaryEmitter(event, options);
-      return this.structuredEmitter(event, options);
-    }
-    return this.binaryEmitter(event, options);
-  }
 }

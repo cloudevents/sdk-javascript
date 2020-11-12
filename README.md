@@ -1,7 +1,7 @@
 # JavaScript SDK for CloudEvents
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/bd66e7c52002481993cd6d610534b0f7)](https://www.codacy.com/app/fabiojose/sdk-javascript?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cloudevents/sdk-javascript&amp;utm_campaign=Badge_Grade)
-[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/bd66e7c52002481993cd6d610534b0f7)](https://www.codacy.com/app/fabiojose/sdk-javascript?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=cloudevents/sdk-javascript&amp;utm_campaign=Badge_Coverage)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/bd66e7c52002481993cd6d610534b0f7)](https://www.codacy.com/app/fabiojose/sdk-javascript?utm_source=github.com&utm_medium=referral&utm_content=cloudevents/sdk-javascript&utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/bd66e7c52002481993cd6d610534b0f7)](https://www.codacy.com/app/fabiojose/sdk-javascript?utm_source=github.com&utm_medium=referral&utm_content=cloudevents/sdk-javascript&utm_campaign=Badge_Coverage)
 ![Node.js CI](https://github.com/cloudevents/sdk-javascript/workflows/Node.js%20CI/badge.svg)
 [![npm version](https://img.shields.io/npm/v/cloudevents.svg)](https://www.npmjs.com/package/cloudevents)
 [![vulnerabilities](https://snyk.io/test/github/cloudevents/sdk-javascript/badge.svg)](https://snyk.io/test/github/cloudevents/sdk-javascript)
@@ -10,9 +10,9 @@ The CloudEvents SDK for JavaScript.
 
 ## Features
 
-* Represent CloudEvents in memory
-* Serialize and deserialize CloudEvents in different [event formats](https://github.com/cloudevents/spec/blob/v1.0/spec.md#event-format).
-* Send and recieve CloudEvents with via different [protocol bindings](https://github.com/cloudevents/spec/blob/v1.0/spec.md#protocol-binding).
+- Represent CloudEvents in memory
+- Serialize and deserialize CloudEvents in different [event formats](https://github.com/cloudevents/spec/blob/v1.0/spec.md#event-format).
+- Send and recieve CloudEvents with via different [protocol bindings](https://github.com/cloudevents/spec/blob/v1.0/spec.md#protocol-binding).
 
 _Note:_ Supports CloudEvent versions 0.3, 1.0
 
@@ -51,16 +51,15 @@ using the `HTTP` binding to create a `Message` which has properties
 for `headers` and `body`.
 
 ```js
-const axios = require('axios').default;
+const axios = require("axios").default;
 const { HTTP } = require("cloudevents");
 
-
-const ce = new CloudEvent({ type, source, data })
+const ce = new CloudEvent({ type, source, data });
 const message = HTTP.binary(ce); // Or HTTP.structured(ce)
 
 axios({
-  method: 'post',
-  url: '...',
+  method: "post",
+  url: "...",
   data: message.body,
   headers: message.headers,
 });
@@ -69,7 +68,7 @@ axios({
 You may also use the `emitterFor()` function as a convenience.
 
 ```js
-const axios = require('axios').default;
+const axios = require("axios").default;
 const { emitterFor, Mode } = require("cloudevents");
 
 function sendWithAxios(message) {
@@ -77,8 +76,8 @@ function sendWithAxios(message) {
   // and body in this function, then send the
   // event
   axios({
-    method: 'post',
-    url: '...',
+    method: "post",
+    url: "...",
     data: message.body,
     headers: message.headers,
   });
@@ -88,9 +87,38 @@ const emit = emitterFor(sendWithAxios, { mode: Mode.BINARY });
 emit(new CloudEvent({ type, source, data }));
 ```
 
+You may also use the `Emitter` singleton
+
+```js
+const axios = require("axios").default;
+const { emitterFor, Mode, CloudEvent, Emitter } = require("cloudevents");
+
+function sendWithAxios(message) {
+  // Do what you need with the message headers
+  // and body in this function, then send the
+  // event
+  axios({
+    method: "post",
+    url: "...",
+    data: message.body,
+    headers: message.headers,
+  });
+}
+
+const emit = emitterFor(sendWithAxios, { mode: Mode.BINARY });
+// Set the emit
+Emitter.getSingleton().on("event", emit);
+
+...
+// In any part of the code will send the event
+new CloudEvent({ type, source, data }).emit();
+
+// You can also have several listener to send the event to several endpoint
+```
+
 ## CloudEvent Objects
 
-All created `CloudEvent` objects are read-only.  If you need to update a property or add a new extension to an existing cloud event object, you can use the `cloneWith` method.  This will return a new `CloudEvent` with any update or new properties.  For example:
+All created `CloudEvent` objects are read-only. If you need to update a property or add a new extension to an existing cloud event object, you can use the `cloneWith` method. This will return a new `CloudEvent` with any update or new properties. For example:
 
 ```js
 const {
@@ -112,24 +140,26 @@ There you will find Express.js, TypeScript and Websocket examples.
 
 ## Supported specification features
 
-| Core Specification |  [v0.3](https://github.com/cloudevents/spec/blob/v0.3/spec.md) | [v1.0](https://github.com/cloudevents/spec/blob/v1.0/spec.md) |
-| ----------------------------- | --- | --- |
-| CloudEvents Core              | :heavy_check_mark: | :heavy_check_mark: |
+| Core Specification | [v0.3](https://github.com/cloudevents/spec/blob/v0.3/spec.md) | [v1.0](https://github.com/cloudevents/spec/blob/v1.0/spec.md) |
+| ------------------ | ------------------------------------------------------------- | ------------------------------------------------------------- |
+| CloudEvents Core   | :heavy_check_mark:                                            | :heavy_check_mark:                                            |
+
 ---
 
-| Event Formats |  [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/tree/v1.0) |
-| ----------------------------- | --- | --- |
-| AVRO Event Format             | :x: | :x: |
-| JSON Event Format             | :heavy_check_mark: | :heavy_check_mark: |
+| Event Formats     | [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/tree/v1.0) |
+| ----------------- | ----------------------------------------------------- | ----------------------------------------------------- |
+| AVRO Event Format | :x:                                                   | :x:                                                   |
+| JSON Event Format | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
+
 ---
 
-| Transport Protocols |  [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/tree/v1.0) |
-| ----------------------------- | --- | --- |
-| AMQP Protocol Binding         | :x: | :x: |
-| HTTP Protocol Binding         | :heavy_check_mark: | :heavy_check_mark: |
-| Kafka Protocol Binding        | :x: | :x: |
-| MQTT Protocol Binding         | :x: | :x: |
-| NATS Protocol Binding         | :x: | :x: |
+| Transport Protocols    | [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/tree/v1.0) |
+| ---------------------- | ----------------------------------------------------- | ----------------------------------------------------- |
+| AMQP Protocol Binding  | :x:                                                   | :x:                                                   |
+| HTTP Protocol Binding  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
+| Kafka Protocol Binding | :x:                                                   | :x:                                                   |
+| MQTT Protocol Binding  | :x:                                                   | :x:                                                   |
+| NATS Protocol Binding  | :x:                                                   | :x:                                                   |
 
 ## Community
 

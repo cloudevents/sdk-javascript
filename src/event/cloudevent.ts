@@ -171,10 +171,11 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
   /**
    * Emit this CloudEvent through the application
    *
-   * @return {CloudEvent} current CloudEvent object
+   * @param {boolean} ensureDelivery fail the promise if one listener fail
+   * @return {Promise<CloudEvent>} this
    */
-  public emit(): this {
-    Emitter.emitEvent(this);
+  public async emit(ensureDelivery = true): Promise<this> {
+    await Emitter.emitEvent(this, ensureDelivery);
     return this;
   }
 

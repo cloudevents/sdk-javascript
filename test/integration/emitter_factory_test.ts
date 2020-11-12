@@ -23,7 +23,7 @@ const data = {
   lunchBreak: "noon",
 };
 
-const fixture = new CloudEvent({
+export const fixture = new CloudEvent({
   source,
   type,
   data,
@@ -107,7 +107,13 @@ function testEmitter(fn: TransportFunction, bodyAttr: string) {
   });
 }
 
-function assertBinary(response: Record<string, string>) {
+/**
+ * Verify the received binary answer compare to the original fixture message
+ *
+ * @param {Record<string, Record<string, string>>} response received to compare to fixture
+ * @return {void} void
+ */
+export function assertBinary(response: Record<string, string>): void {
   expect(response.lunchBreak).to.equal(data.lunchBreak);
   expect(response["ce-type"]).to.equal(type);
   expect(response["ce-source"]).to.equal(source);
@@ -116,7 +122,13 @@ function assertBinary(response: Record<string, string>) {
   expect(response[`ce-${ext3Name}`]).to.deep.equal(ext3Value);
 }
 
-function assertStructured(response: Record<string, Record<string, string>>) {
+/**
+ * Verify the received structured answer compare to the original fixture message
+ *
+ * @param {Record<string, Record<string, string>>} response received to compare to fixture
+ * @return {void} void
+ */
+export function assertStructured(response: Record<string, Record<string, string>>): void {
   expect(response.data.lunchBreak).to.equal(data.lunchBreak);
   expect(response.type).to.equal(type);
   expect(response.source).to.equal(source);

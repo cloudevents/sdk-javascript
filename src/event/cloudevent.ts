@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import { Emitter } from "..";
 
 import {
   CloudEventV03,
@@ -165,6 +166,16 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
         throw new ValidationError("invalid payload", e);
       }
     }
+  }
+
+  /**
+   * Emit this CloudEvent through the application
+   *
+   * @return {CloudEvent} current CloudEvent object
+   */
+  public emit(): this {
+    Emitter.emitEvent(this);
+    return this;
   }
 
   /**

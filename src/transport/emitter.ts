@@ -1,5 +1,6 @@
 import { CloudEvent } from "../event/cloudevent";
 import { HTTP, Message, Mode } from "../message";
+import { EventEmitter } from "events";
 
 /**
  * Options is an additional, optional dictionary of options that may
@@ -57,4 +58,45 @@ export function emitterFor(fn: TransportFunction, options = { binding: HTTP, mod
         throw new TypeError(`Unexpected transport mode: ${mode}`);
     }
   };
+}
+
+/**
+ * A static class to emit CloudEvents within an application
+ */
+export class Emitter extends EventEmitter {
+  /**
+   * Singleton store
+   */
+  static singleton: Emitter | undefined = undefined;
+
+  /**
+   * Create an Emitter
+   * On v4.0.0 this class will only remains as Singleton to allow using the
+   * EventEmitter of NodeJS
+   */
+  private constructor() {
+    super();
+  }
+
+  /**
+   * Return or create the Emitter singleton
+   *
+   * @return {Emitter} return Emitter singleton
+   */
+  static getSingleton(): Emitter {
+    if (!Emitter.singleton) {
+      Emitter.singleton = new Emitter();
+    }
+    return Emitter.singleton;
+  }
+
+  /**
+   * Emit an event inside this application
+   *
+   * @param {CloudEvent} event to emit
+   * @return {void}
+   */
+  static emitEvent(event: CloudEvent): void {
+    this.getSingleton().emit("event", event);
+  }
 }

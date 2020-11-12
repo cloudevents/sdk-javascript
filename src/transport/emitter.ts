@@ -67,7 +67,7 @@ export class Emitter extends EventEmitter {
   /**
    * Singleton store
    */
-  static singleton: Emitter | undefined = undefined;
+  static instance: Emitter | undefined = undefined;
 
   /**
    * Create an Emitter
@@ -83,20 +83,42 @@ export class Emitter extends EventEmitter {
    *
    * @return {Emitter} return Emitter singleton
    */
-  static getSingleton(): Emitter {
-    if (!Emitter.singleton) {
-      Emitter.singleton = new Emitter();
+  static getInstance(): Emitter {
+    if (!Emitter.instance) {
+      Emitter.instance = new Emitter();
     }
-    return Emitter.singleton;
+    return Emitter.instance;
+  }
+
+  /**
+   * Add a listener for eventing
+   *
+   * @param {string} event type to listen to
+   * @param {Function} listener to call on event
+   * @return {void}
+   */
+  static on(event: "cloudevent" | "newListener" | "removeListener", listener: (...args: any[]) => void): void {
+    this.getInstance().on(event, listener);
   }
 
   /**
    * Emit an event inside this application
    *
    * @param {CloudEvent} event to emit
+   * @param {boolean} ensureDelivery fail the promise if one listener fail
    * @return {void}
    */
-  static emitEvent(event: CloudEvent): void {
-    this.getSingleton().emit("event", event);
+  static async emitEvent(event: CloudEvent, ensureDelivery = true): Promise<void> {
+    if (!ensureDelivery) {
+      // Ensure delivery is disabled so we don't wait for Promise
+      Emitter.getInstance().emit("cloudevent", event);
+    } else {
+      // Execute all listeners and wrap them in a Promise
+      await Promise.all(
+        Emitter.getInstance()
+          .listeners("cloudevent")
+          .map(async (l) => l(event)),
+      );
+    }
   }
 }

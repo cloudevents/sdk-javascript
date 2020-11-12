@@ -107,7 +107,7 @@ function sendWithAxios(message) {
 
 const emit = emitterFor(sendWithAxios, { mode: Mode.BINARY });
 // Set the emit
-Emitter.getSingleton().on("event", emit);
+Emitter.on("cloudevent", emit);
 
 ...
 // In any part of the code will send the event

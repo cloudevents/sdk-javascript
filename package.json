@@ -99,7 +99,6 @@
   "homepage": "https://github.com/cloudevents/sdk-javascript#readme",
   "dependencies": {
     "ajv": "~6.12.3",
-    "axios": "~0.19.2",
     "uuid": "~8.3.0"
   },
   "devDependencies": {

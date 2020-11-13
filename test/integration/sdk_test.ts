@@ -1,6 +1,6 @@
 import "mocha";
 import { expect } from "chai";
-import { CloudEvent, Emitter, Version } from "../../src";
+import { CloudEvent, Version } from "../../src";
 
 const fixture = {
   type: "org.cloudevents.test",
@@ -11,13 +11,6 @@ describe("The SDK Requirements", () => {
   it("should expose a CloudEvent type", () => {
     const event = new CloudEvent(fixture);
     expect(event instanceof CloudEvent).to.equal(true);
-  });
-
-  it("should expose an Emitter type", () => {
-    const emitter = new Emitter({
-      url: "http://example.com",
-    });
-    expect(emitter instanceof Emitter).to.equal(true);
   });
 
   describe("v0.3", () => {

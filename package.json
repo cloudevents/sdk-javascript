@@ -136,8 +136,8 @@
     "typedoc": "^0.18.0",
     "typedoc-clarity-theme": "~1.1.0",
     "typescript": "^3.8.3",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
+    "webpack": "^5.1.1",
+    "webpack-cli": "^4.0.0"
   },
   "publishConfig": {
     "access": "public"

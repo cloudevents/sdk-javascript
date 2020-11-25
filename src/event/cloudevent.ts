@@ -106,13 +106,18 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
       // Extension names should only allow lowercase a-z and 0-9 in the name
       // names should not exceed 20 characters in length
       if (!key.match(/^[a-z0-9]{1,20}$/) && strict) {
-        throw new ValidationError("invalid extension name");
+        throw new ValidationError(`invalid extension name: ${key}
+CloudEvents attribute names MUST consist of lower-case letters ('a' to 'z')
+or digits ('0' to '9') from the ASCII character set. Attribute names SHOULD
+be descriptive and terse and SHOULD NOT exceed 20 characters in length.`);
       }
 
       // Value should be spec compliant
       // https://github.com/cloudevents/spec/blob/master/spec.md#type-system
       if (!isValidType(value) && strict) {
-        throw new ValidationError("invalid extension value");
+        throw new ValidationError(`invalid extension value: ${value}
+Extension values must conform to the CloudEvent type system.
+See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
       }
 
       this[key] = value;

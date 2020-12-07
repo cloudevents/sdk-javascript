@@ -138,6 +138,11 @@ There are a few trivial example applications in
 [the examples folder](https://github.com/cloudevents/sdk-javascript/tree/main/examples).
 There you will find Express.js, TypeScript and Websocket examples.
 
+
+### API Transition Guide
+
+[Guide Link](./API_TRANSITION_GUIDE.md)
+
 ## Supported specification features
 
 | Core Specification | [v0.3](https://github.com/cloudevents/spec/blob/v0.3/spec.md) | [v1.0](https://github.com/cloudevents/spec/blob/v1.0/spec.md) |

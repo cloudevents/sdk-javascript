@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://www.github.com/cloudevents/sdk-javascript/compare/v3.2.0...v4.0.0) (2020-12-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* Remove All API's that are labeled "Remove in 4.0" (#362)
+
+### Features
+
+* add EventEmitter to Emitter and singleton paradigm ([25f9c48](https://www.github.com/cloudevents/sdk-javascript/commit/25f9c4860169a8ab576fba47791497ada3048d9f))
+* allow ensureDelivery to be able to ensure delivery on emit ([43d9e01](https://www.github.com/cloudevents/sdk-javascript/commit/43d9e019720b7ddcc841117a7bbf97fff96e5e23))
+* Remove All API's that are labeled "Remove in 4.0" ([#362](https://www.github.com/cloudevents/sdk-javascript/issues/362)) ([875f700](https://www.github.com/cloudevents/sdk-javascript/commit/875f70017a09d1363c3f7eb2a5ea32eea1973e50))
+
+
+### Bug Fixes
+
+* improve error messages when validating extensions ([9f86cfd](https://www.github.com/cloudevents/sdk-javascript/commit/9f86cfdf0efa014ccee385412836206763c65b96))
+* package.json & package-lock.json to reduce vulnerabilities ([132f052](https://www.github.com/cloudevents/sdk-javascript/commit/132f052f1f64563a0dfc9b88056aa36a40f4c43f))
+
+
+### Documentation
+
+* add Emitter logic example ([bda8581](https://www.github.com/cloudevents/sdk-javascript/commit/bda85814649a0597909125914de51b3b4ca99aaa))
+
+
+### Miscellaneous
+
+* add a transition guide.  fixes [#360](https://www.github.com/cloudevents/sdk-javascript/issues/360) ([#363](https://www.github.com/cloudevents/sdk-javascript/issues/363)) ([79296a8](https://www.github.com/cloudevents/sdk-javascript/commit/79296a8e63b43325a51d7e6c9ba29d04066dee17))
+* **package:** Upgrade mocha from 7.1.2 to 8.2.0 ([#354](https://www.github.com/cloudevents/sdk-javascript/issues/354)) ([8205bc9](https://www.github.com/cloudevents/sdk-javascript/commit/8205bc96ae401099e0207bf387164fd955be7b33))
+
 ## [3.1.0](https://github.com/cloudevents/sdk-javascript/compare/v3.0.1...v3.1.0) (2020-08-11)
 
 

@@ -52,7 +52,7 @@ for `headers` and `body`.
 
 ```js
 const axios = require("axios").default;
-const { HTTP } = require("cloudevents");
+const { HTTP, CloudEvent } = require("cloudevents");
 
 const ce = new CloudEvent({ type, source, data });
 const message = HTTP.binary(ce); // Or HTTP.structured(ce)
@@ -69,7 +69,7 @@ You may also use the `emitterFor()` function as a convenience.
 
 ```js
 const axios = require("axios").default;
-const { emitterFor, Mode } = require("cloudevents");
+const { emitterFor, Mode, CloudEvent } = require("cloudevents");
 
 function sendWithAxios(message) {
   // Do what you need with the message headers

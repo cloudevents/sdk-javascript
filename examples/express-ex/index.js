@@ -3,8 +3,8 @@
 const express = require("express");
 const { Receiver } = require("cloudevents");
 const app = express();
-const bodyParser = require('body-parser')
-app.use(bodyParser.json())
+const bodyParser = require("body-parser");
+app.use(bodyParser.json());
 
 app.post("/", (req, res) => {
   console.log("HEADERS", req.headers);
@@ -14,12 +14,12 @@ app.post("/", (req, res) => {
     const event = Receiver.accept(req.headers, req.body);
     // respond as an event
     const responseEventMessage = new CloudEvent({
-      source: '/',
-      type: 'event:response',
-      ...event
+      source: "/",
+      type: "event:response",
+      ...event,
     });
     responseEventMessage.data = {
-      hello: 'world'
+      hello: "world",
     };
     res.status(201).json(responseEventMessage);
   } catch (err) {

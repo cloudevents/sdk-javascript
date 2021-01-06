@@ -1,4 +1,4 @@
-import { CloudEvent, CloudEventV1, Receiver } from "cloudevents";
+import { CloudEvent, CloudEventV1, HTTP } from "cloudevents";
 
 export function doSomeStuff(): void {
   const myevent: CloudEventV1 = new CloudEvent({
@@ -21,7 +21,7 @@ export function doSomeStuff(): void {
 
   // Typically used with an incoming HTTP request where myevent.format() is the actual
   // body of the HTTP
-  console.log("Received structured event:", Receiver.accept(headers, myevent));
+  console.log("Received structured event:", HTTP.toEvent({headers, body: myevent}));
 
   // ------ receiver binary
   const data = {
@@ -38,8 +38,8 @@ export function doSomeStuff(): void {
     "ce-extension1": "extension1",
   };
 
-  console.log("My binary event:", Receiver.accept(attributes, data));
-  console.log("My binary event extensions:", Receiver.accept(attributes, data));
+  console.log("My binary event:", HTTP.toEvent({headers: attributes, body: data}));
+  console.log("My binary event extensions:", HTTP.toEvent({headers: attributes, body: data}));
 
 }
 

@@ -1,17 +1,29 @@
 /* eslint-disable */
 
 const express = require("express");
-const { Receiver } = require("cloudevents");
+const { CloudEvent, HTTP } = require("cloudevents");
 const app = express();
-const bodyParser = require('body-parser')
-app.use(bodyParser.json())
+
+app.use((req, res, next) => {
+  let data = "";
+
+  req.setEncoding("utf8");
+  req.on("data", function (chunk) {
+    data += chunk;
+  });
+
+  req.on("end", function () {
+    req.body = data;
+    next();
+  });
+});
 
 app.post("/", (req, res) => {
   console.log("HEADERS", req.headers);
   console.log("BODY", req.body);
 
   try {
-    const event = Receiver.accept(req.headers, req.body);
+    const event = HTTP.toEvent({ headers: req.headers, body: req.body });
     // respond as an event
     const responseEventMessage = new CloudEvent({
       source: '/',

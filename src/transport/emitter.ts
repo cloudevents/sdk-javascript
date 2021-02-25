@@ -46,14 +46,14 @@ export function emitterFor(fn: TransportFunction, options = { binding: HTTP, mod
     throw new TypeError("A TransportFunction is required");
   }
   const { binding, mode } = options;
-  return function emit(event: CloudEvent, options?: Options): Promise<unknown> {
-    options = options || {};
+  return function emit(event: CloudEvent, opts?: Options): Promise<unknown> {
+    opts = opts || {};
 
     switch (mode) {
       case Mode.BINARY:
-        return fn(binding.binary(event), options);
+        return fn(binding.binary(event), opts);
       case Mode.STRUCTURED:
-        return fn(binding.structured(event), options);
+        return fn(binding.structured(event), opts);
       default:
         throw new TypeError(`Unexpected transport mode: ${mode}`);
     }
@@ -63,29 +63,20 @@ export function emitterFor(fn: TransportFunction, options = { binding: HTTP, mod
 /**
  * A static class to emit CloudEvents within an application
  */
-export class Emitter extends EventEmitter {
+export class Emitter {
   /**
    * Singleton store
    */
-  static instance: Emitter | undefined = undefined;
-
-  /**
-   * Create an Emitter
-   * On v4.0.0 this class will only remains as Singleton to allow using the
-   * EventEmitter of NodeJS
-   */
-  private constructor() {
-    super();
-  }
+  static instance: EventEmitter | undefined = undefined;
 
   /**
    * Return or create the Emitter singleton
    *
    * @return {Emitter} return Emitter singleton
    */
-  static getInstance(): Emitter {
+  static getInstance(): EventEmitter {
     if (!Emitter.instance) {
-      Emitter.instance = new Emitter();
+      Emitter.instance = new EventEmitter();
     }
     return Emitter.instance;
   }
@@ -97,7 +88,7 @@ export class Emitter extends EventEmitter {
    * @param {Function} listener to call on event
    * @return {void}
    */
-  static on(event: "cloudevent" | "newListener" | "removeListener", listener: (...args: any[]) => void): void {
+  static on(event: string, listener: (...args: any[]) => void): void {
     this.getInstance().on(event, listener);
   }
 

@@ -88,8 +88,8 @@ export class Emitter {
    * @param {Function} listener to call on event
    * @return {void}
    */
-  static on(event: string, listener: (...args: any[]) => void): void {
-    this.getInstance().on(event, listener);
+  static on(event: "cloudevent" | "newListener" | "removeListener", listener: (...args: any[]) => void): void {
+    Emitter.getInstance().on(event, listener);
   }
 
   /**

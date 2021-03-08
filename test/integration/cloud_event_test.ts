@@ -61,6 +61,12 @@ describe("A CloudEvent", () => {
       new CloudEvent({ "123456789012345678901": "extension1", ...fixture });
     }).throw("invalid extension name");
   });
+
+  it("Throws a validation error for invalid uppercase extension names", () => {
+    expect(() => {
+      new CloudEvent({ ExtensionWithCaps: "extension value", ...fixture });
+    }).throw("invalid extension name");
+  });
 });
 
 describe("A 1.0 CloudEvent", () => {

@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.1](https://www.github.com/cloudevents/sdk-javascript/compare/v4.0.0...v4.0.1) (2021-03-08)
+
+
+### Bug Fixes
+
+* cloudevents from 3.2.0 to 4.0.0 ([#376](https://www.github.com/cloudevents/sdk-javascript/issues/376)) ([6be3b27](https://www.github.com/cloudevents/sdk-javascript/commit/6be3b2751401e529fce6ccf8a406a057472c10a9))
+* Emitter should not extend EventEmitter ([1af3d43](https://www.github.com/cloudevents/sdk-javascript/commit/1af3d4334170432767d672af2fca3b748fe297a1))
+* examples/websocket/package.json to reduce vulnerabilities ([#375](https://www.github.com/cloudevents/sdk-javascript/issues/375)) ([2b1e1ec](https://www.github.com/cloudevents/sdk-javascript/commit/2b1e1ec5a2aa670625e992fd060ae7d7fb40f258))
+* package.json & package-lock.json to reduce vulnerabilities ([#384](https://www.github.com/cloudevents/sdk-javascript/issues/384)) ([39812f7](https://www.github.com/cloudevents/sdk-javascript/commit/39812f77d086d75dcf562618a3cde46c3ca57d6d))
+
+
+### Miscellaneous
+
+* **docs:** Fix minor import problems in README ([#374](https://www.github.com/cloudevents/sdk-javascript/issues/374)) ([ed81483](https://www.github.com/cloudevents/sdk-javascript/commit/ed8148326b2c1890845cf97c469c645ec76e3f51))
+
+
+### Tests
+
+* add a test for extension names with all caps. ([#389](https://www.github.com/cloudevents/sdk-javascript/issues/389)) ([e7d99eb](https://www.github.com/cloudevents/sdk-javascript/commit/e7d99eb8822d8b590bdd7018d8491a803d83ab1e))
+
 ## [4.0.0](https://github.com/cloudevents/sdk-javascript/compare/v3.1.0...v4.0.0) (2020-12-10)
 
 

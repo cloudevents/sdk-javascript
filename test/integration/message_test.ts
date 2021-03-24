@@ -59,6 +59,32 @@ describe("HTTP transport", () => {
     expect(HTTP.isEvent(message)).to.be.true;
   });
 
+  it("Can detect CloudEvent binary Messages with weird versions", () => {
+    // Now create a message that is an event
+    const message = {
+      body: `{ "greeting": "hello" }`,
+      headers: {
+        [CONSTANTS.CE_HEADERS.ID]: "1234",
+        [CONSTANTS.CE_HEADERS.SOURCE]: "test",
+        [CONSTANTS.CE_HEADERS.TYPE]: "test.event",
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: "11.8",
+      },
+    };
+    expect(HTTP.isEvent(message)).to.be.true;
+    expect(HTTP.toEvent(message)).not.to.throw;
+  });
+
+  it("Can detect CloudEvent structured Messages with weird versions", () => {
+    // Now create a message that is an event
+    const message = {
+      body: `{ "source": "test", "type": "test.event", "specversion": "11.8"}`,
+      headers: {
+        [CONSTANTS.CE_HEADERS.ID]: "1234",
+      },
+    };
+    expect(HTTP.isEvent(message)).to.be.true;
+    expect(HTTP.toEvent(message)).not.to.throw;
+  });
   // Allow for external systems to send bad events - do what we can
   // to accept them
   it("Does not throw an exception when converting an invalid Message to a CloudEvent", () => {

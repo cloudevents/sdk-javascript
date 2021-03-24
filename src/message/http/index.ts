@@ -1,7 +1,14 @@
 import { CloudEvent, CloudEventV03, CloudEventV1, CONSTANTS, Mode, Version } from "../..";
 import { Message, Headers } from "..";
 
-import { headersFor, sanitize, v03structuredParsers, v1binaryParsers, v1structuredParsers } from "./headers";
+import {
+  headersFor,
+  sanitize,
+  v03binaryParsers,
+  v03structuredParsers,
+  v1binaryParsers,
+  v1structuredParsers,
+} from "./headers";
 import { isStringOrObjectOrThrow, ValidationError } from "../../event/validation";
 import { JSONParser, MappedParser, Parser, parserByContentType } from "../../parsers";
 
@@ -122,23 +129,12 @@ function parseBinary(message: Message, version: Version): CloudEvent {
   let body = message.body;
 
   if (!headers) throw new ValidationError("headers is null or undefined");
-  if (body) {
-    isStringOrObjectOrThrow(body, new ValidationError("payload must be an object or a string"));
-  }
-
-  if (
-    headers[CONSTANTS.CE_HEADERS.SPEC_VERSION] &&
-    headers[CONSTANTS.CE_HEADERS.SPEC_VERSION] !== Version.V03 &&
-    headers[CONSTANTS.CE_HEADERS.SPEC_VERSION] !== Version.V1
-  ) {
-    throw new ValidationError(`invalid spec version ${headers[CONSTANTS.CE_HEADERS.SPEC_VERSION]}`);
-  }
 
   // Clone and low case all headers names
   const sanitizedHeaders = sanitize(headers);
 
   const eventObj: { [key: string]: unknown | string | Record<string, unknown> } = {};
-  const parserMap: Record<string, MappedParser> = version === Version.V1 ? v1binaryParsers : v1binaryParsers;
+  const parserMap: Record<string, MappedParser> = version === Version.V1 ? v1binaryParsers : v03binaryParsers;
 
   for (const header in parserMap) {
     if (sanitizedHeaders[header]) {
@@ -185,14 +181,6 @@ function parseStructured(message: Message, version: Version): CloudEvent {
   if (!payload) throw new ValidationError("payload is null or undefined");
   if (!headers) throw new ValidationError("headers is null or undefined");
   isStringOrObjectOrThrow(payload, new ValidationError("payload must be an object or a string"));
-
-  if (
-    headers[CONSTANTS.CE_HEADERS.SPEC_VERSION] &&
-    headers[CONSTANTS.CE_HEADERS.SPEC_VERSION] != Version.V03 &&
-    headers[CONSTANTS.CE_HEADERS.SPEC_VERSION] != Version.V1
-  ) {
-    throw new ValidationError(`invalid spec version ${headers[CONSTANTS.CE_HEADERS.SPEC_VERSION]}`);
-  }
 
   // Clone and low case all headers names
   const sanitizedHeaders = sanitize(headers);

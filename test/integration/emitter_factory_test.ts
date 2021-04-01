@@ -59,6 +59,47 @@ function gotEmitter(message: Message, options?: Options): Promise<unknown> {
   );
 }
 
+describe("emitterFor() defaults", () => {
+  it("Defaults to HTTP binding, binary mode", () => {
+    function transport(message: Message): Promise<unknown> {
+      // A binary message will have the source attribute as a header
+      expect(message.headers[CONSTANTS.CE_HEADERS.TYPE]).to.equal("emitter.test");
+      return Promise.resolve();
+    }
+    const emitter = emitterFor(transport);
+    emitter(
+      new CloudEvent({
+        id: "1234",
+        source: "/emitter/test",
+        type: "emitter.test",
+      }),
+    );
+  });
+
+  it("Supports HTTP binding, structured mode", () => {
+    function transport(message: Message): Promise<unknown> {
+      console.error(message);
+      // A binary message will have the source attribute as a header
+      expect(message.headers["content-type"]).to.equal(CONSTANTS.DEFAULT_CE_CONTENT_TYPE);
+      const body = JSON.parse(message.body as string);
+      /* @ts-ignore */
+      expect(body.id).to.equal("1234");
+      return Promise.resolve();
+    }
+    // Ignore the next line to ensure that HTTP transport is still the default.
+    // Otherwise, tslint would complain that the param did not have `binding: <val>`
+    /* @ts-ignore */
+    const emitter = emitterFor(transport, { mode: Mode.STRUCTURED });
+    emitter(
+      new CloudEvent({
+        id: "1234",
+        source: "/emitter/test",
+        type: "emitter.test",
+      }),
+    );
+  });
+});
+
 describe("HTTP Transport Binding for emitterFactory", () => {
   beforeEach(() => {
     nock(sink)

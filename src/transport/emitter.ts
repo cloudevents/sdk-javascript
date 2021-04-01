@@ -28,6 +28,7 @@ export interface TransportFunction {
   (message: Message, options?: Options): Promise<unknown>;
 }
 
+const emitterDefaults = { binding: HTTP, mode: Mode.BINARY };
 /**
  * emitterFactory creates and returns an EmitterFunction using the supplied
  * TransportFunction. The returned EmitterFunction will invoke the Binding's
@@ -41,11 +42,11 @@ export interface TransportFunction {
  * @param {Mode} options.mode the encoding mode (Mode.BINARY or Mode.STRUCTURED)
  * @returns {EmitterFunction} an EmitterFunction to send events with
  */
-export function emitterFor(fn: TransportFunction, options = { binding: HTTP, mode: Mode.BINARY }): EmitterFunction {
+export function emitterFor(fn: TransportFunction, options = emitterDefaults): EmitterFunction {
   if (!fn) {
     throw new TypeError("A TransportFunction is required");
   }
-  const { binding, mode } = options;
+  const { binding, mode } = { ...emitterDefaults, ...options };
   return function emit(event: CloudEvent, opts?: Options): Promise<unknown> {
     opts = opts || {};
 

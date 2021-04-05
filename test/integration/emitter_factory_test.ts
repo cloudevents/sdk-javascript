@@ -79,10 +79,9 @@ describe("emitterFor() defaults", () => {
   it("Supports HTTP binding, structured mode", () => {
     function transport(message: Message): Promise<unknown> {
       console.error(message);
-      // A binary message will have the source attribute as a header
+      // A structured message will have the application/cloudevents+json header
       expect(message.headers["content-type"]).to.equal(CONSTANTS.DEFAULT_CE_CONTENT_TYPE);
       const body = JSON.parse(message.body as string);
-      /* @ts-ignore */
       expect(body.id).to.equal("1234");
       return Promise.resolve();
     }

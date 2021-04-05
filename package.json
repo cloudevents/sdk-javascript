@@ -134,7 +134,6 @@
     "superagent": "^6.1.0",
     "ts-node": "^8.10.2",
     "typedoc": "^0.20.24",
-    "typedoc-clarity-theme": "~1.1.0",
     "typescript": "^3.8.3",
     "webpack": "^5.1.1",
     "webpack-cli": "^4.0.0"

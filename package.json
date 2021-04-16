@@ -14,65 +14,12 @@
     "coverage": "nyc --reporter=lcov --reporter=text npm run test",
     "coverage-publish": "wget -qO - https://coverage.codacy.com/get.sh | bash -s report -l JavaScript -r coverage/lcov.info",
     "generate-docs": "typedoc --excludeNotDocumented --out docs src",
-    "release": "standard-version",
     "prepublishOnly": "npm run build"
   },
   "files": [
     "dist",
     "bundles"
   ],
-  "standard-version": {
-    "scripts": {
-      "postcommit": "git commit --amend --signoff --no-edit"
-    },
-    "types": [
-      {
-        "type": "feat",
-        "section": "Features",
-        "hidden": false
-      },
-      {
-        "type": "fix",
-        "section": "Bug Fixes",
-        "hidden": false
-      },
-      {
-        "type": "docs",
-        "section": "Documentation",
-        "hidden": false
-      },
-      {
-        "type": "chore",
-        "section": "Miscellaneous",
-        "hidden": false
-      },
-      {
-        "type": "src",
-        "section": "Miscellaneous",
-        "hidden": false
-      },
-      {
-        "type": "style",
-        "section": "Miscellaneous",
-        "hidden": false
-      },
-      {
-        "type": "refactor",
-        "section": "Miscellaneous",
-        "hidden": false
-      },
-      {
-        "type": "perf",
-        "section": "Performance",
-        "hidden": false
-      },
-      {
-        "type": "test",
-        "section": "Tests",
-        "hidden": false
-      }
-    ]
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cloudevents/sdk-javascript.git"
@@ -130,7 +77,6 @@
     "nock": "~12.0.3",
     "nyc": "~15.0.0",
     "prettier": "^2.0.5",
-    "standard-version": "^9.0.0",
     "superagent": "^6.1.0",
     "ts-node": "^8.10.2",
     "typedoc": "^0.20.24",

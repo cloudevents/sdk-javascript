@@ -45,12 +45,13 @@
   },
   "homepage": "https://github.com/cloudevents/sdk-javascript#readme",
   "dependencies": {
+    "@types/axios": "^0.14.0",
     "ajv": "~6.12.3",
+    "axios": "^0.21.1",
     "uuid": "~8.3.0"
   },
   "devDependencies": {
     "@types/ajv": "^1.0.0",
-    "@types/axios": "^0.14.0",
     "@types/chai": "^4.2.11",
     "@types/cucumber": "^6.0.1",
     "@types/got": "^9.6.11",

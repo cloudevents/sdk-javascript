@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node-version: [10.x, 12.x, 14.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -35,7 +35,7 @@ jobs:
     - name: Generate coverage report
       uses: actions/setup-node@v1
       with:
-        node-version: 12.x
+        node-version: 14.x
     - run: npm ci
     - run: npm run build --if-present
     - run: npm run coverage
@@ -58,7 +58,7 @@ jobs:
     - name: Upload coverage report to codacy
       uses: actions/setup-node@v1
       with:
-        node-version: 12.x
+        node-version: 14.x
     - run: |
         ( [[ "${CODACY_PROJECT_TOKEN}" != ""  ]] && npm run coverage-publish ) || echo "Coverage report not published"
       env:

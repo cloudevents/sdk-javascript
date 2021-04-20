@@ -6,7 +6,9 @@
   "scripts": {
     "watch": "tsc --project tsconfig.json --watch",
     "build": "tsc --project tsconfig.json && tsc --project tsconfig.browser.json && webpack",
-    "lint": "eslint 'src/**/*.{js,ts}' 'test/**/*.{js,ts}' cucumber.js",
+    "lint": "npm run lint:md && npm run lint:js",
+    "lint:js": "eslint 'src/**/*.{js,ts}' 'test/**/*.{js,ts}' cucumber.js",
+    "lint:md": "remark .",
     "lint:fix": "eslint 'src/**/*.{js,ts}' 'test/**/*.{js,ts}' --fix",
     "pretest": "npm run lint && npm run conformance",
     "test": "mocha --require ts-node/register ./test/integration/**/*.ts",
@@ -15,6 +17,15 @@
     "coverage-publish": "wget -qO - https://coverage.codacy.com/get.sh | bash -s report -l JavaScript -r coverage/lcov.info",
     "generate-docs": "typedoc --excludeNotDocumented --out docs src",
     "prepublishOnly": "npm run build"
+  },
+  "remarkConfig": {
+    "plugins": [
+      "remark-preset-lint-recommended",
+      [
+        "remark-lint-list-item-indent",
+        "space"
+      ]
+    ]
   },
   "files": [
     "dist",
@@ -77,6 +88,10 @@
     "nock": "~12.0.3",
     "nyc": "~15.0.0",
     "prettier": "^2.0.5",
+    "remark-cli": "^9.0.0",
+    "remark-lint": "^8.0.0",
+    "remark-lint-list-item-indent": "^2.0.1",
+    "remark-preset-lint-recommended": "^5.0.0",
     "superagent": "^6.1.0",
     "ts-node": "^8.10.2",
     "typedoc": "^0.20.24",

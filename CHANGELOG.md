@@ -120,7 +120,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Miscellaneous
 
-*  fix promise tests to break the build when they fail ([#305](https://github.com/cloudevents/sdk-javascript/issues/305)) ([a5249de](https://github.com/cloudevents/sdk-javascript/commit/a5249de487da4a17b082c4bc59d362a62566ccaf)), closes [#303](https://github.com/cloudevents/sdk-javascript/issues/303)
+* fix promise tests to break the build when they fail ([#305](https://github.com/cloudevents/sdk-javascript/issues/305)) ([a5249de](https://github.com/cloudevents/sdk-javascript/commit/a5249de487da4a17b082c4bc59d362a62566ccaf)), closes [#303](https://github.com/cloudevents/sdk-javascript/issues/303)
 * no import star ([#297](https://github.com/cloudevents/sdk-javascript/issues/297)) ([31c2005](https://github.com/cloudevents/sdk-javascript/commit/31c200592fb819a38d17c661ce6a76b8ed0ff157))
 * Update examples to use latest sdk changes ([#282](https://github.com/cloudevents/sdk-javascript/issues/282)) ([763838c](https://github.com/cloudevents/sdk-javascript/commit/763838c89cc704397bf75c9cbde79ae0f5c731c1))
 * Update readme with correct Receiver usage ([#287](https://github.com/cloudevents/sdk-javascript/issues/287)) ([e219a30](https://github.com/cloudevents/sdk-javascript/commit/e219a30708f061ef5fdb576d18d2e087f4ba5a25))
@@ -153,18 +153,14 @@ All notable changes to this project will be documented in this file. See [standa
 * This validates the value of the cloud event extension based on the spec,
 https://github.com/cloudevents/spec/blob/master/spec.md#type-system
 
-Signed-off-by: Lucas Holmquist <lholmqui@redhat.com>
 * This changes the modules name from cloudevents-sdk to cloudevents
 
 * feat: use npm name cloudevents
 * **src:** * Extension names are now validated during object creation.  The values are defined by the specification, and can be lowercase(a-z) or digits(0-9) and must be no longer that 20 characters
 
-Signed-off-by: Lucas Holmquist <lholmqui@redhat.com>
 * **src:** * This change makes the CloudEvent Read-only and validates the input during object creation.
 
 * To augment an already created CloudEvent object, we have added a `cloneWith` method that takes attributes to add/update.
-
-Signed-off-by: Lucas Holmquist <lholmqui@redhat.com>
 
 ### Features
 
@@ -330,7 +326,7 @@ Signed-off-by: Lucas Holmquist <lholmqui@redhat.com>
 * Update uuid dependency ([42246ce](https://github.com/cloudevents/sdk-javascript/commit/42246ce36b9898eea1d5daa5f43ddb13ee6b12d0))
 * use es6 for cloudevents.js ([#73](https://github.com/cloudevents/sdk-javascript/issues/73)) ([12ac181](https://github.com/cloudevents/sdk-javascript/commit/12ac1813005d1c88e86c6fc9de675516dd3e290c))
 
-## [1.0.0]
+## [1.0.0][]
 
 ### Added
 
@@ -341,14 +337,14 @@ Signed-off-by: Lucas Holmquist <lholmqui@redhat.com>
 
 - Unmarshaller docs from README, moving them to [OLDOCS.md](./OLDOCS.md)
 
-## [0.3.2]
+## [0.3.2][]
 
 ### Fixed
 
 - Fix the special `data` handling: issue
 [#33](https://github.com/cloudevents/sdk-javascript/issues/33)
 
-## [0.3.1]
+## [0.3.1][]
 
 ### Fixed
 
@@ -356,7 +352,6 @@ Signed-off-by: Lucas Holmquist <lholmqui@redhat.com>
 - Fix the `subject` attribute unmarshal error: issue
 [#32](https://github.com/cloudevents/sdk-javascript/issues/32)
 
-[Unreleased]: https://github.com/cloudevents/sdk-javascript/compare/v1.0.0...HEAD
 [1.0.0]: https://github.com/cloudevents/sdk-javascript/compare/v0.3.2...v1.0.0
 [0.3.2]: https://github.com/cloudevents/sdk-javascript/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/cloudevents/sdk-javascript/compare/v0.3.0...v0.3.1

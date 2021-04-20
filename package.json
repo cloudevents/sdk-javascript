@@ -18,15 +18,6 @@
     "generate-docs": "typedoc --excludeNotDocumented --out docs src",
     "prepublishOnly": "npm run build"
   },
-  "remarkConfig": {
-    "plugins": [
-      "remark-preset-lint-recommended",
-      [
-        "remark-lint-list-item-indent",
-        "space"
-      ]
-    ]
-  },
   "files": [
     "dist",
     "bundles"

@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.2](https://www.github.com/cloudevents/sdk-javascript/compare/v4.0.1...v4.0.2) (2021-04-21)
+
+
+### Bug Fixes
+
+* defaults properly handled for emitterFor() ([#399](https://www.github.com/cloudevents/sdk-javascript/issues/399)) ([0f11b02](https://www.github.com/cloudevents/sdk-javascript/commit/0f11b02a0125aa3a7014819c21124d244f4158c1))
+* ensure loose validation for isEvent and toEvent ([#394](https://www.github.com/cloudevents/sdk-javascript/issues/394)) ([efe466a](https://www.github.com/cloudevents/sdk-javascript/commit/efe466ac7daa5c83c3f4e7a44efb854c519ce382))
+* examples/typescript-ex/package.json to reduce vulnerabilities ([#395](https://www.github.com/cloudevents/sdk-javascript/issues/395)) ([d359355](https://www.github.com/cloudevents/sdk-javascript/commit/d3593556f15101eb3164a500cc647975bfa6f0e0))
+
+
+### Documentation
+
+* fix 'npm run generate-docs' ([#398](https://www.github.com/cloudevents/sdk-javascript/issues/398)) ([447252e](https://www.github.com/cloudevents/sdk-javascript/commit/447252e0c7d12fb408f2fae391d6fe3b958f1d0b))
+
+
+### Miscellaneous
+
+* add markdown linter ([#403](https://www.github.com/cloudevents/sdk-javascript/issues/403)) ([fea5ac2](https://www.github.com/cloudevents/sdk-javascript/commit/fea5ac2d05b6d38021499429c4cf79471a2549a2))
+* externalize remark-lint config ([#406](https://www.github.com/cloudevents/sdk-javascript/issues/406)) ([192c6a3](https://www.github.com/cloudevents/sdk-javascript/commit/192c6a3a5c801f5e1d53f26ccd937690a43b2ec4))
+* remove @types/axios and add axios in dev ([#408](https://www.github.com/cloudevents/sdk-javascript/issues/408)) ([a0009f6](https://www.github.com/cloudevents/sdk-javascript/commit/a0009f6189daaac67944ff295d495f705528b481))
+* remove standard-version ([#402](https://www.github.com/cloudevents/sdk-javascript/issues/402)) ([edd3c7f](https://www.github.com/cloudevents/sdk-javascript/commit/edd3c7fbaced2af95275f0c9690f87833c0c6803))
+* tweak PR template ([#407](https://www.github.com/cloudevents/sdk-javascript/issues/407)) ([26ceb90](https://www.github.com/cloudevents/sdk-javascript/commit/26ceb908db13c0fb7ad31131ea28c8c33803e5c7))
+* update CI workflow to include Node.js 14.x ([#404](https://www.github.com/cloudevents/sdk-javascript/issues/404)) ([cc43f3b](https://www.github.com/cloudevents/sdk-javascript/commit/cc43f3bd10caffbc47b9ce42df71782177176001))
+* update codacy badges ([#409](https://www.github.com/cloudevents/sdk-javascript/issues/409)) ([66f0b42](https://www.github.com/cloudevents/sdk-javascript/commit/66f0b42f0da98d7f41416ce3b8bc5ee8619b6e16))
+
 ### [4.0.1](https://www.github.com/cloudevents/sdk-javascript/compare/v4.0.0...v4.0.1) (2021-03-08)
 
 

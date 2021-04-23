@@ -5,15 +5,17 @@ import { EventEmitter } from "events";
 /**
  * Options is an additional, optional dictionary of options that may
  * be passed to an EmitterFunction and TransportFunction
+ * @interface
  */
 export interface Options {
   [key: string]: string | Record<string, unknown> | unknown;
 }
 
 /**
- * EmitterFunction is an invokable interface returned by the emitterFactory
- * function. Invoke an EmitterFunction with a CloudEvent and optional transport
+ * EmitterFunction is an invokable interface returned by {@linkcode emitterFor}.
+ * Invoke an EmitterFunction with a CloudEvent and optional transport
  * options to send the event as a Message across supported transports.
+ * @interface
  */
 export interface EmitterFunction {
   (event: CloudEvent, options?: Options): Promise<unknown>;
@@ -23,6 +25,7 @@ export interface EmitterFunction {
  * TransportFunction is an invokable interface provided to the emitterFactory.
  * A TransportFunction's responsiblity is to send a JSON encoded event Message
  * across the wire.
+ * @interface
  */
 export interface TransportFunction {
   (message: Message, options?: Options): Promise<unknown>;
@@ -30,11 +33,12 @@ export interface TransportFunction {
 
 const emitterDefaults = { binding: HTTP, mode: Mode.BINARY };
 /**
- * emitterFactory creates and returns an EmitterFunction using the supplied
- * TransportFunction. The returned EmitterFunction will invoke the Binding's
- * `binary` or `structured` function to convert a CloudEvent into a JSON
- * Message based on the Mode provided, and invoke the TransportFunction with
- * the Message and any supplied options.
+ * Creates and returns an {@linkcode EmitterFunction} using the supplied
+ * {@linkcode TransportFunction}. The returned {@linkcode EmitterFunction}
+ * will invoke the {@linkcode Binding}'s `binary` or `structured` function
+ * to convert a {@linkcode CloudEvent} into a JSON
+ * {@linkcode Message} based on the {@linkcode Mode} provided, and invoke the
+ * TransportFunction with the Message and any supplied options.
  *
  * @param {TransportFunction} fn a TransportFunction that can accept an event Message
  * @param { {Binding, Mode} } options network binding and message serialization options
@@ -62,7 +66,7 @@ export function emitterFor(fn: TransportFunction, options = emitterDefaults): Em
 }
 
 /**
- * A static class to emit CloudEvents within an application
+ * A helper class to emit CloudEvents within an application
  */
 export class Emitter {
   /**
@@ -97,7 +101,7 @@ export class Emitter {
    * Emit an event inside this application
    *
    * @param {CloudEvent} event to emit
-   * @param {boolean} ensureDelivery fail the promise if one listener fail
+   * @param {boolean} ensureDelivery fail the promise if one listener fails
    * @return {void}
    */
   static async emitEvent(event: CloudEvent, ensureDelivery = true): Promise<void> {

@@ -6,6 +6,12 @@ import { binary, deserialize, structured, isEvent } from "./http";
  * Binding is an interface for transport protocols to implement,
  * which provides functions for sending CloudEvent Messages over
  * the wire.
+ * @interface
+ *
+ * @property {@link Serializer} `binary`     - converts a CloudEvent into a Message in binary mode
+ * @property {@link Serializer} `structured` - converts a CloudEvent into a Message in structured mode
+ * @property {@link Deserializer} `toEvent`  - converts a Message into a CloudEvent
+ * @property {@link Detector} `isEvent`      - determines if a Message can be converted to a CloudEvent
  */
 export interface Binding {
   binary: Serializer;
@@ -17,6 +23,7 @@ export interface Binding {
 /**
  * Headers is an interface representing transport-agnostic headers as
  * key/value string pairs
+ * @interface
  */
 export interface Headers extends IncomingHttpHeaders {
   [key: string]: string | string[] | undefined;
@@ -25,6 +32,9 @@ export interface Headers extends IncomingHttpHeaders {
 /**
  * Message is an interface representing a CloudEvent as a
  * transport-agnostic message
+ * @interface
+ * @property {@linkcode Headers} `headers` - the headers for the event Message
+ * @property string `body` - the body of the event Message
  */
 export interface Message {
   headers: Headers;
@@ -33,6 +43,7 @@ export interface Message {
 
 /**
  * An enum representing the two transport modes, binary and structured
+ * @interface
  */
 export enum Mode {
   BINARY = "binary",
@@ -42,6 +53,7 @@ export enum Mode {
 /**
  * Serializer is an interface for functions that can convert a
  * CloudEvent into a Message.
+ * @interface
  */
 export interface Serializer {
   (event: CloudEvent): Message;
@@ -50,6 +62,7 @@ export interface Serializer {
 /**
  * Deserializer is a function interface that converts a
  * Message to a CloudEvent
+ * @interface
  */
 export interface Deserializer {
   (message: Message): CloudEvent;
@@ -58,12 +71,16 @@ export interface Deserializer {
 /**
  * Detector is a function interface that detects whether
  * a message contains a valid CloudEvent
+ * @interface
  */
 export interface Detector {
   (message: Message): boolean;
 }
 
-// HTTP Message capabilities
+/**
+ * Bindings for HTTP transport support
+ * @implements {@linkcode Binding}
+ */
 export const HTTP: Binding = {
   binary: binary as Serializer,
   structured: structured as Serializer,

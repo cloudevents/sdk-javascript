@@ -12,7 +12,14 @@ import {
 import { isStringOrObjectOrThrow, ValidationError } from "../../event/validation";
 import { JSONParser, MappedParser, Parser, parserByContentType } from "../../parsers";
 
-// implements Serializer
+/**
+ * Serialize a CloudEvent for HTTP transport in binary mode
+ * @implements {Serializer}
+ * @see https://github.com/cloudevents/spec/blob/v1.0.1/http-protocol-binding.md#31-binary-content-mode
+ *
+ * @param {CloudEvent} event The event to serialize
+ * @returns {Message} a Message object with headers and body
+ */
 export function binary(event: CloudEvent): Message {
   const contentType: Headers = { [CONSTANTS.HEADER_CONTENT_TYPE]: CONSTANTS.DEFAULT_CONTENT_TYPE };
   const headers: Headers = { ...contentType, ...headersFor(event) };
@@ -27,7 +34,14 @@ export function binary(event: CloudEvent): Message {
   };
 }
 
-// implements Serializer
+/**
+ * Serialize a CloudEvent for HTTP transport in structured mode
+ * @implements {Serializer}
+ * @see https://github.com/cloudevents/spec/blob/v1.0.1/http-protocol-binding.md#32-structured-content-mode
+ *
+ * @param {CloudEvent} event the CloudEvent to be serialized
+ * @returns {Message} a Message object with headers and body
+ */
 export function structured(event: CloudEvent): Message {
   if (event.data_base64) {
     // The event's data is binary - delete it
@@ -41,9 +55,15 @@ export function structured(event: CloudEvent): Message {
   };
 }
 
-// implements Detector
-// TODO: this could probably be optimized
+/**
+ * Determine if a Message is a CloudEvent
+ * @implements {Detector}
+ *
+ * @param {Message} message an incoming Message object
+ * @returns {boolean} true if this Message is a CloudEvent
+ */
 export function isEvent(message: Message): boolean {
+  // TODO: this could probably be optimized
   try {
     deserialize(message);
     return true;
@@ -54,6 +74,7 @@ export function isEvent(message: Message): boolean {
 
 /**
  * Converts a Message to a CloudEvent
+ * @implements {Deserializer}
  *
  * @param {Message} message the incoming message
  * @return {CloudEvent} A new {CloudEvent} instance

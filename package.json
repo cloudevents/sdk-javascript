@@ -39,6 +39,10 @@
       "name": "Fábio José de Moraes",
       "email": "fabiojose@gmail.com",
       "url": "https://github.com/fabiojose"
+    },
+    {
+      "name": "Lance Ball",
+      "email": "lball@redhat.com"
     }
   ],
   "license": "Apache-2.0",

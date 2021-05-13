@@ -47,11 +47,19 @@ describe("JSON Event Format Parser", () => {
 
   it("Throw error when payload is an invalid JSON", () => {
     // setup
-    const payload = "gg";
+    const payload = "{gg";
     const parser = new Parser();
 
     // TODO: Should the parser catch the SyntaxError and re-throw a ValidationError?
-    expect(parser.parse.bind(parser, payload)).to.throw(SyntaxError, "Unexpected token g in JSON at position 0");
+    expect(parser.parse.bind(parser, payload)).to.throw(SyntaxError, "Unexpected token g in JSON at position 1");
+  });
+
+  it("Accepts a string as valid JSON", () => {
+    // setup
+    const payload = "I am a string!";
+    const parser = new Parser();
+
+    expect(parser.parse(payload)).to.equal("I am a string!");
   });
 
   it("Must accept when the payload is a string well formed as JSON", () => {

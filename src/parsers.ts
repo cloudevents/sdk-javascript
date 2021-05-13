@@ -17,6 +17,14 @@ export class JSONParser implements Parser {
    * @return {object} the parsed JSON payload.
    */
   parse(payload: Record<string, unknown> | string): string {
+    if (typeof payload === "string") {
+      // This is kind of a hack, but the payload data could be JSON in the form of a single
+      // string, such as "some data". But without the quotes in the string, JSON.parse blows
+      // up. We can check for this scenario and add quotes. Not sure if this is ideal.
+      if (!/^[[|{|"]/.test(payload)) {
+        payload = `"${payload}"`;
+      }
+    }
     if (this.decorator) {
       payload = this.decorator.parse(payload);
     }

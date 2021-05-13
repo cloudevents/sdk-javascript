@@ -1,3 +1,8 @@
+/*
+ Copyright 2021 The CloudEvents Authors
+ SPDX-License-Identifier: Apache-2.0
+*/
+
 import { IncomingHttpHeaders } from "http";
 import { CloudEvent } from "..";
 import { binary, deserialize, structured, isEvent } from "./http";

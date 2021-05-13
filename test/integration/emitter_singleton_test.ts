@@ -1,3 +1,8 @@
+/*
+ Copyright 2021 The CloudEvents Authors
+ SPDX-License-Identifier: Apache-2.0
+*/
+
 import "mocha";
 
 import { emitterFor, HTTP, Mode, Message, Emitter } from "../../src";

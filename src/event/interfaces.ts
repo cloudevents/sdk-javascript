@@ -1,3 +1,8 @@
+/*
+ Copyright 2021 The CloudEvents Authors
+ SPDX-License-Identifier: Apache-2.0
+*/
+
 /**
  * The object interface for CloudEvents 1.0.
  * @see https://github.com/cloudevents/spec/blob/v1.0/spec.md

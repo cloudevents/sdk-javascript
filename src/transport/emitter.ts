@@ -1,3 +1,8 @@
+/*
+ Copyright 2021 The CloudEvents Authors
+ SPDX-License-Identifier: Apache-2.0
+*/
+
 import { CloudEvent } from "../event/cloudevent";
 import { HTTP, Message, Mode } from "../message";
 import { EventEmitter } from "events";

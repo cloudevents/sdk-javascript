@@ -1,3 +1,8 @@
+/*
+ Copyright 2021 The CloudEvents Authors
+ SPDX-License-Identifier: Apache-2.0
+*/
+
 const CONSTANTS = Object.freeze({
   CHARSET_DEFAULT: "utf-8",
   EXTENSIONS_PREFIX: "ce-",

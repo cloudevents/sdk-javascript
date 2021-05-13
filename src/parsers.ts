@@ -21,8 +21,7 @@ export class JSONParser implements Parser {
       // This is kind of a hack, but the payload data could be JSON in the form of a single
       // string, such as "some data". But without the quotes in the string, JSON.parse blows
       // up. We can check for this scenario and add quotes. Not sure if this is ideal.
-      const r = /^[[|{|"]/;
-      if (!r.test(payload)) {
+      if (!/^[[|{|"]/.test(payload)) {
         payload = `"${payload}"`;
       }
     }

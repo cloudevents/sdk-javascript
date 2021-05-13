@@ -59,7 +59,6 @@ describe("JSON Event Format Parser", () => {
     const payload = "I am a string!";
     const parser = new Parser();
 
-    // TODO: Should the parser catch the SyntaxError and re-throw a ValidationError?
     expect(parser.parse(payload)).to.equal("I am a string!");
   });
 

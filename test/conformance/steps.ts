@@ -1,4 +1,10 @@
+/*
+ Copyright 2021 The CloudEvents Authors
+ SPDX-License-Identifier: Apache-2.0
+*/
+
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+
 import { assert } from "chai";
 import { Given, When, Then, World } from "cucumber";
 import { Message, Headers, HTTP } from "../../src";

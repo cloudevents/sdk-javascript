@@ -42,7 +42,62 @@
     },
     {
       "name": "Lance Ball",
-      "email": "lball@redhat.com"
+      "email": "lball@redhat.com",
+      "url": "https://github.com/lance"
+    },
+    {
+      "name": "Lucas Holmquist",
+      "email": "lholmqui@redhat.com",
+      "url": "https://github.com/lholmquist"
+    },
+    {
+      "name": "Grant Timmerman",
+      "url": "https://github.com/grant"
+    },
+    {
+      "name": "Daniel Bevenius",
+      "email": "daniel.bevenius@gmail.com",
+      "url": "https://github.com/danbev"
+    },
+    {
+      "name": "Helio Frota",
+      "url": "https://github.com/helio-frota"
+    },
+    {
+      "name": "Doug Davis",
+      "email": "dug@us.ibm.com",
+      "url": "https://github.com/duglin"
+    },
+    {
+      "name": "Remi Cattiau",
+      "email": "rcattiau@gmail.com",
+      "url": "https://github.com/loopingz"
+    },
+    {
+      "name": "Michele Angioni",
+      "url": "https://github.com/micheleangioni"
+    },
+    {
+      "name": "Ali Ok",
+      "email": "aliok@redhat.com",
+      "url": "https://github.com/aliok"
+    },
+    {
+      "name": "Philip Hayes",
+      "url": "https://github.com/deewhyweb"
+    },
+    {
+      "name": "Jingwen Peng",
+      "url": "https://github.com/pengsrc"
+    },
+    {
+      "name": "Sidharth Vinod",
+      "email": "sidharthv96@gmail.com",
+      "url": "https://github.com/sidharthv96"
+    },
+    {
+      "name": "Matej Vasek",
+      "url": "https://github.com/matejvasek"
     }
   ],
   "license": "Apache-2.0",
@@ -74,6 +129,7 @@
     "eslint": "^7.3.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-header": "^3.1.1",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.4",

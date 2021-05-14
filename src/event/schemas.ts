@@ -1,3 +1,8 @@
+/*
+ Copyright 2021 The CloudEvents Authors
+ SPDX-License-Identifier: Apache-2.0
+*/
+
 export const schemaV1 = {
   $ref: "#/definitions/event",
   definitions: {

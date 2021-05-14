@@ -1,3 +1,8 @@
+/*
+ Copyright 2021 The CloudEvents Authors
+ SPDX-License-Identifier: Apache-2.0
+*/
+
 import CONSTANTS from "./constants";
 import { isString, isDefinedOrThrow, isStringOrObjectOrThrow, ValidationError } from "./event/validation";
 

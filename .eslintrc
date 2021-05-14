@@ -14,6 +14,9 @@
     "node": true,
     "mocha": true
   },
+  "plugins": [
+    "header"
+  ],
   "rules": {
     "no-var": "error",
     "standard/no-callback-literal": "off",
@@ -31,6 +34,7 @@
     "valid-jsdoc": "warn",
     "semi": ["error", "always"],
     "quotes": ["error", "double", { "allowTemplateLiterals": true }],
-    "@typescript-eslint/no-explicit-any": "off"
+    "@typescript-eslint/no-explicit-any": "off",
+    "header/header": [2, "block", ["", " Copyright 2021 The CloudEvents Authors"," SPDX-License-Identifier: Apache-2.0", ""], 2]
   }
 }

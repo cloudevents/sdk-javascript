@@ -19,7 +19,7 @@ export class ValidationError extends TypeError {
           // @ts-ignore
           errors?.reduce(
             (accum: string, err: Record<string, string>) =>
-              (accum as string).concat(`
+              accum.concat(`
   ${err instanceof Object ? JSON.stringify(err) : err}`),
             message,
           )

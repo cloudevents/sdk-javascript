@@ -151,7 +151,7 @@ function getVersion(mode: Mode, headers: Headers, body: string | Record<string, 
  * @throws {ValidationError} of the event does not conform to the spec
  */
 function parseBinary(message: Message, version: Version): CloudEvent {
-  const headers = message.headers;
+  const headers = { ...message.headers };
   let body = message.body;
 
   if (!headers) throw new ValidationError("headers is null or undefined");
@@ -167,11 +167,12 @@ function parseBinary(message: Message, version: Version): CloudEvent {
       const mappedParser: MappedParser = parserMap[header];
       eventObj[mappedParser.name] = mappedParser.parser.parse(sanitizedHeaders[header]);
       delete sanitizedHeaders[header];
+      delete headers[header];
     }
   }
 
   // Every unprocessed header can be an extension
-  for (const header in sanitizedHeaders) {
+  for (const header in headers) {
     if (header.startsWith(CONSTANTS.EXTENSIONS_PREFIX)) {
       eventObj[header.substring(CONSTANTS.EXTENSIONS_PREFIX.length)] = headers[header];
     }

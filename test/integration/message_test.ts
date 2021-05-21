@@ -64,6 +64,26 @@ describe("HTTP transport", () => {
     expect(HTTP.isEvent(message)).to.be.true;
   });
 
+  it("Respects extension attribute casing (even if against spec)", () => {
+    // Now create a message that is an event
+    const message = {
+      body: `{ "greeting": "hello" }`,
+      headers: {
+        [CONSTANTS.CE_HEADERS.ID]: "1234",
+        [CONSTANTS.CE_HEADERS.SOURCE]: "test",
+        [CONSTANTS.CE_HEADERS.TYPE]: "test.event",
+        [CONSTANTS.CE_HEADERS.SPEC_VERSION]: Version.V1,
+        "ce-LUNCH": "tacos",
+      },
+    };
+    expect(HTTP.isEvent(message)).to.be.true;
+    const event: CloudEvent = HTTP.toEvent(message);
+    expect(event.LUNCH).to.equal("tacos");
+    expect(function () {
+      event.validate();
+    }).to.throw("invalid attribute name: LUNCH");
+  });
+
   it("Can detect CloudEvent binary Messages with weird versions", () => {
     // Now create a message that is an event
     const message = {

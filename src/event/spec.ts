@@ -28,14 +28,21 @@ export function validateCloudEvent(event: CloudEventV03 | CloudEventV1): boolean
     if (!isValidAgainstSchemaV1(event)) {
       throw new ValidationError("invalid payload", isValidAgainstSchemaV1.errors);
     }
-    return true;
   } else if (event.specversion === Version.V03) {
     if (!isValidAgainstSchemaV03(event)) {
       throw new ValidationError("invalid payload", isValidAgainstSchemaV03.errors);
     }
-    return checkDataContentEncoding(event);
+    checkDataContentEncoding(event);
+  } else {
+    return false;
   }
-  return false;
+  // attribute names must all be lowercase
+  for (const key in event) {
+    if (key !== key.toLowerCase()) {
+      throw new ValidationError(`invalid attribute name: ${key}`);
+    }
+  }
+  return true;
 }
 
 function checkDataContentEncoding(event: CloudEventV03): boolean {

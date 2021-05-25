@@ -87,11 +87,8 @@ export function isEvent(message: Message): boolean {
 export function deserialize(message: Message): CloudEvent {
   const cleanHeaders: Headers = sanitize(message.headers);
   const mode: Mode = getMode(cleanHeaders);
-  let version = getVersion(mode, cleanHeaders, message.body);
-  if (version !== Version.V03 && version !== Version.V1) {
-    console.error(`Unknown spec version ${version}. Default to ${Version.V1}`);
-    version = Version.V1;
-  }
+  const version = getVersion(mode, cleanHeaders, message.body);
+
   switch (mode) {
     case Mode.BINARY:
       return parseBinary(message, version);
@@ -160,7 +157,7 @@ function parseBinary(message: Message, version: Version): CloudEvent {
   const sanitizedHeaders = sanitize(headers);
 
   const eventObj: { [key: string]: unknown | string | Record<string, unknown> } = {};
-  const parserMap: Record<string, MappedParser> = version === Version.V1 ? v1binaryParsers : v03binaryParsers;
+  const parserMap: Record<string, MappedParser> = version === Version.V03 ? v03binaryParsers : v1binaryParsers;
 
   for (const header in parserMap) {
     if (sanitizedHeaders[header]) {
@@ -218,13 +215,13 @@ function parseStructured(message: Message, version: Version): CloudEvent {
   const incoming = { ...(parser.parse(payload as string) as Record<string, unknown>) };
 
   const eventObj: { [key: string]: unknown } = {};
-  const parserMap: Record<string, MappedParser> = version === Version.V1 ? v1structuredParsers : v03structuredParsers;
+  const parserMap: Record<string, MappedParser> = version === Version.V03 ? v03structuredParsers : v1structuredParsers;
 
   for (const key in parserMap) {
     const property = incoming[key];
     if (property) {
-      const parser: MappedParser = parserMap[key];
-      eventObj[parser.name] = parser.parser.parse(property as string);
+      const mappedParser: MappedParser = parserMap[key];
+      eventObj[mappedParser.name] = mappedParser.parser.parse(property as string);
     }
     delete incoming[key];
   }

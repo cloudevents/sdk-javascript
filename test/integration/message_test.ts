@@ -96,7 +96,9 @@ describe("HTTP transport", () => {
       },
     };
     expect(HTTP.isEvent(message)).to.be.true;
-    expect(HTTP.toEvent(message)).not.to.throw;
+    const event: CloudEvent = HTTP.toEvent(message);
+    expect(event.specversion).to.equal("11.8");
+    expect(event.validate()).to.be.false;
   });
 
   it("Can detect CloudEvent structured Messages with weird versions", () => {

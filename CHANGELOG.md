@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.3](https://www.github.com/cloudevents/sdk-javascript/compare/v4.0.2...v4.0.3) (2021-07-06)
+
+
+### Bug Fixes
+
+* do not modify incoming event's specversion ([#419](https://www.github.com/cloudevents/sdk-javascript/issues/419)) ([22e42dd](https://www.github.com/cloudevents/sdk-javascript/commit/22e42ddb80d21058a74219a1c24b409c245f030f))
+* do not modify incoming event's specversion ([#419](https://www.github.com/cloudevents/sdk-javascript/issues/419)) ([7c05ade](https://www.github.com/cloudevents/sdk-javascript/commit/7c05adee7b3d5d56ff5602f044a9581534ab8957))
+* throw on validation if extensions are improperly named ([#420](https://www.github.com/cloudevents/sdk-javascript/issues/420)) ([7f6b658](https://www.github.com/cloudevents/sdk-javascript/commit/7f6b658858533bfbc33edbec30d79099aeb0d021))
+
+
+### Miscellaneous
+
+* add copyrights header and lint rules ([#418](https://www.github.com/cloudevents/sdk-javascript/issues/418)) ([80d987c](https://www.github.com/cloudevents/sdk-javascript/commit/80d987c1f6046efb5e0c89b0472d653ccd35ee2c))
+* add Lance Ball to maintainers in package.json ([#411](https://www.github.com/cloudevents/sdk-javascript/issues/411)) ([d68b85a](https://www.github.com/cloudevents/sdk-javascript/commit/d68b85a2278e46e0f5dac44b561cfcb1dd8b5404))
+* be more forgiving parsing JSON as a string ([#417](https://www.github.com/cloudevents/sdk-javascript/issues/417)) ([db4be6b](https://www.github.com/cloudevents/sdk-javascript/commit/db4be6b1da479f27903efc6694d06f7cc8b054e2))
+
 ### [4.0.2](https://www.github.com/cloudevents/sdk-javascript/compare/v4.0.1...v4.0.2) (2021-04-21)
 
 

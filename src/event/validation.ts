@@ -31,7 +31,7 @@ export class ValidationError extends TypeError {
 
 export const isString = (v: unknown): boolean => typeof v === "string";
 export const isObject = (v: unknown): boolean => typeof v === "object";
-export const isDefined = (v: unknown): boolean => v && typeof v !== "undefined";
+export const isDefined = (v: unknown): boolean => v !== null && typeof v !== "undefined";
 
 export const isBoolean = (v: unknown): boolean => typeof v === "boolean";
 export const isInteger = (v: unknown): boolean => Number.isInteger(v as number);

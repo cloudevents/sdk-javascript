@@ -36,7 +36,7 @@ export interface TransportFunction {
   (message: Message, options?: Options): Promise<unknown>;
 }
 
-const emitterDefaults = { binding: HTTP, mode: Mode.BINARY };
+const emitterDefaults: Options = { binding: HTTP, mode: Mode.BINARY };
 /**
  * Creates and returns an {@linkcode EmitterFunction} using the supplied
  * {@linkcode TransportFunction}. The returned {@linkcode EmitterFunction}
@@ -55,7 +55,7 @@ export function emitterFor(fn: TransportFunction, options = emitterDefaults): Em
   if (!fn) {
     throw new TypeError("A TransportFunction is required");
   }
-  const { binding, mode } = { ...emitterDefaults, ...options };
+  const { binding, mode }: any = { ...emitterDefaults, ...options };
   return function emit(event: CloudEvent, opts?: Options): Promise<unknown> {
     opts = opts || {};
 

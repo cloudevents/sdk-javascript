@@ -70,10 +70,10 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
     delete properties.time;
 
     this.type = properties.type;
-    delete properties.type;
+    delete (properties as any).type;
 
     this.source = properties.source;
-    delete properties.source;
+    delete (properties as any).source;
 
     this.specversion = (properties.specversion as Version) || Version.V1;
     delete properties.specversion;

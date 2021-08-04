@@ -90,7 +90,7 @@ describe("CloudEvents Spec v0.3", () => {
     describe("'id'", () => {
       it("should throw an error when trying to remove", () => {
         expect(() => {
-          delete cloudevent.id;
+          delete (cloudevent as any).id;
         }).to.throw(TypeError);
       });
 
@@ -103,7 +103,7 @@ describe("CloudEvents Spec v0.3", () => {
     describe("'source'", () => {
       it("should throw an error when trying to remove", () => {
         expect(() => {
-          delete cloudevent.source;
+          delete (cloudevent as any).source;
         }).to.throw(TypeError);
       });
     });
@@ -111,7 +111,7 @@ describe("CloudEvents Spec v0.3", () => {
     describe("'specversion'", () => {
       it("should throw an error when trying to remove", () => {
         expect(() => {
-          delete cloudevent.specversion;
+          delete (cloudevent as any).specversion;
         }).to.throw(TypeError);
       });
     });
@@ -119,7 +119,7 @@ describe("CloudEvents Spec v0.3", () => {
     describe("'type'", () => {
       it("should throw an error when trying to remove", () => {
         expect(() => {
-          delete cloudevent.type;
+          delete (cloudevent as any).type;
         }).to.throw(TypeError);
       });
 

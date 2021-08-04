@@ -5,9 +5,8 @@
     "sourceType": "module"
   },
   "extends": [
-    "plugin:@typescript-eslint/recommended",
-    "prettier/@typescript-eslint",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
   "env": {
     "es6": true,
@@ -25,9 +24,6 @@
     "arrow-body-style": ["error", "as-needed"],
     "prefer-template": "error",
     "max-len": ["warn", { "code": 120 }],
-    "no-unused-vars": ["warn", {
-      "argsIgnorePattern": "^_$|^e$|^reject$|^resolve$"
-    }],
     "no-console": ["error", {
       "allow": ["warn", "error"]
     }],
@@ -35,6 +31,8 @@
     "semi": ["error", "always"],
     "quotes": ["error", "double", { "allowTemplateLiterals": true }],
     "@typescript-eslint/no-explicit-any": "off",
-    "header/header": [2, "block", ["", " Copyright 2021 The CloudEvents Authors"," SPDX-License-Identifier: Apache-2.0", ""], 2]
+    "header/header": [2, "block", ["", " Copyright 2021 The CloudEvents Authors"," SPDX-License-Identifier: Apache-2.0", ""], 2],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"]
   }
 }

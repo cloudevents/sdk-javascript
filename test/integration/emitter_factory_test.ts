@@ -60,7 +60,7 @@ function superagentEmitter(message: Message, options?: Options): Promise<unknown
 
 function gotEmitter(message: Message, options?: Options): Promise<unknown> {
   return Promise.resolve(
-    got.post(sink, { headers: message.headers, body: message.body as string, ...((options as unknown) as Options) }),
+    got.post(sink, { headers: message.headers, body: message.body as string, ...(options as Options) }),
   );
 }
 
@@ -90,9 +90,6 @@ describe("emitterFor() defaults", () => {
       expect(body.id).to.equal("1234");
       return Promise.resolve();
     }
-    // Ignore the next line to ensure that HTTP transport is still the default.
-    // Otherwise, tslint would complain that the param did not have `binding: <val>`
-    /* @ts-ignore */
     const emitter = emitterFor(transport, { mode: Mode.STRUCTURED });
     emitter(
       new CloudEvent({

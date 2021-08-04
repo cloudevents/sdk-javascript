@@ -1,0 +1,3 @@
+[submodule "conformance"]
+	path = conformance
+	url = git@github.com:cloudevents/conformance.git

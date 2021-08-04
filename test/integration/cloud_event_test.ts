@@ -8,7 +8,7 @@ import fs from "fs";
 
 import { expect } from "chai";
 import { CloudEvent, ValidationError, Version } from "../../src";
-import { CloudEventV03, CloudEventV1 } from "../../src/event/interfaces";
+import { CloudEventV1 } from "../../src/event/interfaces";
 import { asBase64 } from "../../src/event/validation";
 
 const type = "org.cncf.cloudevents.example";
@@ -204,93 +204,9 @@ describe("A 1.0 CloudEvent", () => {
   it("correctly formats a CloudEvent as JSON", () => {
     const ce = new CloudEvent({ ...fixture });
     const json = ce.toString();
-    const obj = JSON.parse((json as unknown) as string);
+    const obj = JSON.parse(json as string);
     expect(obj.type).to.equal(type);
     expect(obj.source).to.equal(source);
     expect(obj.specversion).to.equal(Version.V1);
-  });
-});
-
-describe("A 0.3 CloudEvent", () => {
-  const v03fixture: CloudEventV03 = { ...fixture };
-  v03fixture.specversion = Version.V03;
-
-  it("has retreivable source and type attributes", () => {
-    const ce = new CloudEvent(v03fixture);
-    expect(ce.source).to.equal("http://unit.test");
-    expect(ce.type).to.equal("org.cncf.cloudevents.example");
-  });
-
-  it("generates an ID if one is not provided in the constructor", () => {
-    const ce = new CloudEvent({ source, type, specversion: Version.V03 });
-    expect(ce.id).to.not.be.empty;
-    expect(ce.specversion).to.equal(Version.V03);
-  });
-
-  it("generates a timestamp by default", () => {
-    const ce = new CloudEvent(v03fixture);
-    expect(ce.time).to.not.be.empty;
-  });
-
-  it("can be constructed with a timestamp", () => {
-    const time = new Date().toISOString();
-    const ce = new CloudEvent({ time, ...v03fixture });
-    expect(ce.time).to.equal(time);
-  });
-
-  it("can be constructed with a datacontenttype", () => {
-    const ce = new CloudEvent({ datacontenttype: "application/json", ...v03fixture });
-    expect(ce.datacontenttype).to.equal("application/json");
-  });
-
-  it("can be constructed with a datacontentencoding", () => {
-    const ce = new CloudEvent({ datacontentencoding: "Base64", ...v03fixture, data: "SSB3YXMgZnVubnkg8J+Ygg==" });
-    expect(ce.datacontentencoding).to.equal("Base64");
-  });
-
-  it("can be constructed with a schemaurl", () => {
-    const ce = new CloudEvent({ schemaurl: "http://my.schema", ...v03fixture });
-    expect(ce.schemaurl).to.equal("http://my.schema");
-  });
-
-  it("can be constructed with a subject", () => {
-    const ce = new CloudEvent({ subject: "science", ...v03fixture });
-    expect(ce.subject).to.equal("science");
-  });
-
-  // Handle 1.0 attribute - should this really throw?
-  it("throws a TypeError when constructed with a dataschema", () => {
-    expect(() => {
-      new CloudEvent({ dataschema: "http://throw.com", ...v03fixture });
-    }).to.throw(TypeError, "cannot set dataschema on version 0.3 event");
-  });
-
-  it("can be constructed with data", () => {
-    const ce = new CloudEvent({
-      ...v03fixture,
-      data: { lunch: "tacos" },
-    });
-    expect(ce.data).to.deep.equal({ lunch: "tacos" });
-  });
-
-  it("throws TypeError if the CloudEvent does not conform to the schema", () => {
-    try {
-      new CloudEvent({
-        ...v03fixture,
-        source: (null as unknown) as string,
-      });
-    } catch (err) {
-      expect(err).to.be.instanceOf(ValidationError);
-      expect(err.message).to.include("invalid payload");
-    }
-  });
-
-  it("correctly formats a CloudEvent as JSON", () => {
-    const ce = new CloudEvent({ ...v03fixture });
-    const json = ce.toString();
-    const obj = JSON.parse((json as unknown) as string);
-    expect(obj.type).to.equal(type);
-    expect(obj.source).to.equal(source);
-    expect(obj.specversion).to.equal(Version.V03);
   });
 });

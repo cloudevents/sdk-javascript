@@ -3,7 +3,7 @@
  SPDX-License-Identifier: Apache-2.0
 */
 
-import { CloudEvent, CloudEventV03, CloudEventV1, CONSTANTS, Mode, Version } from "../..";
+import { CloudEvent, CloudEventV1, CONSTANTS, Mode, Version } from "../..";
 import { Message, Headers } from "..";
 
 import {
@@ -187,7 +187,7 @@ function parseBinary(message: Message, version: Version): CloudEvent {
     delete eventObj.datacontentencoding;
   }
 
-  return new CloudEvent({ ...eventObj, data: body } as CloudEventV1 | CloudEventV03, false);
+  return new CloudEvent({ ...eventObj, data: body } as CloudEventV1, false);
 }
 
 /**
@@ -240,5 +240,5 @@ function parseStructured(message: Message, version: Version): CloudEvent {
     delete eventObj.data_base64;
     delete eventObj.datacontentencoding;
   }
-  return new CloudEvent(eventObj as CloudEventV1 | CloudEventV03, false);
+  return new CloudEvent(eventObj as CloudEventV1, false);
 }

@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.4](https://www.github.com/cloudevents/sdk-javascript/compare/v4.0.3...v4.0.4) (2021-08-26)
+
+
+### Miscellaneous
+
+* update eslint and prettier dependencies ([#424](https://www.github.com/cloudevents/sdk-javascript/issues/424)) ([061c122](https://www.github.com/cloudevents/sdk-javascript/commit/061c122b867cbc116d0389d88c3198b25d7be0c1))
+* use git submodules for conformance tests ([#427](https://www.github.com/cloudevents/sdk-javascript/issues/427)) ([2118488](https://www.github.com/cloudevents/sdk-javascript/commit/2118488a148651d94c99df2ecf9e3eda5ae97f33))
+
 ### [4.0.3](https://www.github.com/cloudevents/sdk-javascript/compare/v4.0.2...v4.0.3) (2021-07-06)
 
 

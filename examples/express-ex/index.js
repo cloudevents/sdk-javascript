@@ -33,7 +33,12 @@ app.post("/", (req, res) => {
     responseEventMessage.data = {
       hello: 'world'
     };
-    res.status(201).json(responseEventMessage);
+
+    // const message = HTTP.binary(responseEventMessage)
+    const message = HTTP.structured(responseEventMessage)
+    res.set(message.headers)
+    res.send(message.body)
+
   } catch (err) {
     console.error(err);
     res.status(415).header("Content-Type", "application/json").send(JSON.stringify(err));

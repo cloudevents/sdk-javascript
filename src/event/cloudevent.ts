@@ -6,14 +6,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { Emitter } from "..";
 
-import {
-  CloudEventV03,
-  CloudEventV03Attributes,
-  CloudEventV03OptionalAttributes,
-  CloudEventV1,
-  CloudEventV1Attributes,
-  CloudEventV1OptionalAttributes,
-} from "./interfaces";
+import { CloudEventV1, CloudEventV1Attributes, CloudEventV1OptionalAttributes } from "./interfaces";
 import { validateCloudEvent } from "./spec";
 import { ValidationError, isBinary, asBase64, isValidType } from "./validation";
 
@@ -30,7 +23,7 @@ export const enum Version {
  * interoperability across services, platforms and systems.
  * @see https://github.com/cloudevents/spec/blob/v1.0/spec.md
  */
-export class CloudEvent implements CloudEventV1, CloudEventV03 {
+export class CloudEvent implements CloudEventV1 {
   id: string;
   type: string;
   source: string;
@@ -58,7 +51,7 @@ export class CloudEvent implements CloudEventV1, CloudEventV03 {
    * @param {object} event the event properties
    * @param {boolean?} strict whether to perform event validation when creating the object - default: true
    */
-  constructor(event: CloudEventV1 | CloudEventV1Attributes | CloudEventV03 | CloudEventV03Attributes, strict = true) {
+  constructor(event: CloudEventV1 | CloudEventV1Attributes, strict = true) {
     // copy the incoming event so that we can delete properties as we go
     // everything left after we have deleted know properties becomes an extension
     const properties = { ...event };
@@ -197,13 +190,7 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
    * @return {CloudEvent} returns a new CloudEvent
    */
   public cloneWith(
-    options:
-      | CloudEventV1
-      | CloudEventV1Attributes
-      | CloudEventV1OptionalAttributes
-      | CloudEventV03
-      | CloudEventV03Attributes
-      | CloudEventV03OptionalAttributes,
+    options: CloudEventV1 | CloudEventV1Attributes | CloudEventV1OptionalAttributes,
     strict = true,
   ): CloudEvent {
     return new CloudEvent(Object.assign({}, this.toJSON(), options) as CloudEvent, strict);

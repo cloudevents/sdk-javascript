@@ -120,7 +120,7 @@
     "@types/uuid": "^8.0.0",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.29.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.3",
     "chai": "~4.2.0",
     "cucumber": "^6.0.5",
     "cucumber-pretty": "^6.0.0",

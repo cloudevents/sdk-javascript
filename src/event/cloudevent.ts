@@ -198,8 +198,9 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
 
   /**
    * The native `console.log` value of the CloudEvent.
+   * @returns The string representation of the CloudEvent.
    */
-  [Symbol.for('nodejs.util.inspect.custom')](depth: any, opts: any) {
+  [Symbol.for("nodejs.util.inspect.custom")]() {
     return this.toString();
   }
 }

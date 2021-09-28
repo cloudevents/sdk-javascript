@@ -9,7 +9,6 @@ import { Emitter } from "..";
 import { CloudEventV1, CloudEventV1Attributes, CloudEventV1OptionalAttributes } from "./interfaces";
 import { validateCloudEvent } from "./spec";
 import { ValidationError, isBinary, asBase64, isValidType } from "./validation";
-import * as util from 'util';
 
 /**
  * An enum representing the CloudEvent specification version
@@ -200,7 +199,7 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
   /**
    * The native `console.log` value of the CloudEvent.
    */
-  [util.inspect.custom](depth: any, opts: any) {
+  [Symbol.for('nodejs.util.inspect.custom')](depth: any, opts: any) {
     return this.toString();
   }
 }

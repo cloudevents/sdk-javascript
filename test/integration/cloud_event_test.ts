@@ -55,6 +55,11 @@ describe("A CloudEvent", () => {
     expect(new CloudEvent(JSON.parse(JSON.stringify(ce)))).to.deep.equal(ce);
   });
 
+  it("serializes as JSON with raw log", () => {
+    const ce = new CloudEvent({ ...fixture, data: { lunch: "tacos" } });
+    expect(ce.toString()).to.deep.equal(JSON.stringify(ce));
+  });
+
   it("Throw a validation error for invalid extension names", () => {
     expect(() => {
       new CloudEvent({ "ext-1": "extension1", ...fixture });

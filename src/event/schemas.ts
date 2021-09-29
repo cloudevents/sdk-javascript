@@ -79,6 +79,7 @@ export const schemaV1 = {
     source: {
       format: "uri-reference",
       type: "string",
+      minLength: 1,
     },
   },
   type: "object",

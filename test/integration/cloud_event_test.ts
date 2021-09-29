@@ -209,4 +209,20 @@ describe("A 1.0 CloudEvent", () => {
     expect(obj.source).to.equal(source);
     expect(obj.specversion).to.equal(Version.V1);
   });
+
+  it("throws if the provded source is empty string", () => {
+    try {
+      new CloudEvent({
+        id: "0815",
+        specversion: "1.0",
+        type: "my.event.type",
+        source: "",
+      });
+    } catch (err) {
+      expect(err).to.be.instanceOf(TypeError);
+      expect(err.message).to.include("invalid payload");
+      expect(err.errors[0].dataPath).to.equal(".source");
+      expect(err.errors[0].keyword).to.equal("minLength");
+    }
+  });
 });

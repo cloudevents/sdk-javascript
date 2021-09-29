@@ -210,7 +210,7 @@ describe("A 1.0 CloudEvent", () => {
     expect(obj.specversion).to.equal(Version.V1);
   });
 
-  it(" throws if the provded source is empty string", () => {
+  it("throws if the provded source is empty string", () => {
     try {
       new CloudEvent({
         id: "0815",

@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.0.0](https://www.github.com/cloudevents/sdk-javascript/compare/v4.0.3...v5.0.0) (2021-10-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove support for 0.3 events (#425)
+
+### Features
+
+* add native logging with headers and body to CloudEvent ([#437](https://www.github.com/cloudevents/sdk-javascript/issues/437)) ([b38a48f](https://www.github.com/cloudevents/sdk-javascript/commit/b38a48fa5986fd3fc6f9a1ec728526742e945f69))
+
+
+### Bug Fixes
+
+*  update express example with framework features. ([#429](https://www.github.com/cloudevents/sdk-javascript/issues/429)) ([272bcea](https://www.github.com/cloudevents/sdk-javascript/commit/272bcea2d81145e6e62cab46e66d8c5b6d66c264)), closes [#379](https://www.github.com/cloudevents/sdk-javascript/issues/379)
+* ensure source property has min length of 1 ([#438](https://www.github.com/cloudevents/sdk-javascript/issues/438)) ([2ff7852](https://www.github.com/cloudevents/sdk-javascript/commit/2ff7852c3689c486261ec4cd45a18315750b0f2e))
+* package.json & package-lock.json to reduce vulnerabilities ([#433](https://www.github.com/cloudevents/sdk-javascript/issues/433)) ([cf47248](https://www.github.com/cloudevents/sdk-javascript/commit/cf47248d25c1039a8bf0afe44b86c08837ca4977))
+* package.json & package-lock.json to reduce vulnerabilities ([#434](https://www.github.com/cloudevents/sdk-javascript/issues/434)) ([8814919](https://www.github.com/cloudevents/sdk-javascript/commit/8814919923acbffaaac5538d869ccb35ee93a058))
+* package.json & package-lock.json to reduce vulnerabilities ([#436](https://www.github.com/cloudevents/sdk-javascript/issues/436)) ([2dc846c](https://www.github.com/cloudevents/sdk-javascript/commit/2dc846c6594d2c19b0564a5e8394235aaa5c2713))
+
+
+### Miscellaneous
+
+* remove node 10 from ci ([#435](https://www.github.com/cloudevents/sdk-javascript/issues/435)) ([a7db466](https://www.github.com/cloudevents/sdk-javascript/commit/a7db466c6ee85a9d6d86944ee376dc3a2f40b428))
+* remove support for 0.3 events ([#425](https://www.github.com/cloudevents/sdk-javascript/issues/425)) ([2bd9a5a](https://www.github.com/cloudevents/sdk-javascript/commit/2bd9a5a1e429bb641f629cfc3f18a894df8c4650))
+* update eslint and prettier dependencies ([#424](https://www.github.com/cloudevents/sdk-javascript/issues/424)) ([061c122](https://www.github.com/cloudevents/sdk-javascript/commit/061c122b867cbc116d0389d88c3198b25d7be0c1))
+* use git submodules for conformance tests ([#427](https://www.github.com/cloudevents/sdk-javascript/issues/427)) ([2118488](https://www.github.com/cloudevents/sdk-javascript/commit/2118488a148651d94c99df2ecf9e3eda5ae97f33))
+
 ### [4.0.3](https://www.github.com/cloudevents/sdk-javascript/compare/v4.0.2...v4.0.3) (2021-07-06)
 
 

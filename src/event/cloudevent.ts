@@ -3,7 +3,7 @@
  SPDX-License-Identifier: Apache-2.0
 */
 
-import { v4 as uuidv4 } from "uuid";
+import { randomUUID } from "crypto";
 import { Emitter } from "..";
 
 import { CloudEventV1, CloudEventV1Attributes, CloudEventV1OptionalAttributes } from "./interfaces";
@@ -56,7 +56,7 @@ export class CloudEvent implements CloudEventV1 {
     // everything left after we have deleted know properties becomes an extension
     const properties = { ...event };
 
-    this.id = (properties.id as string) || uuidv4();
+    this.id = (properties.id as string) || randomUUID();
     delete properties.id;
 
     this.time = properties.time || new Date().toISOString();

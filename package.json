@@ -135,6 +135,7 @@
     "http-parser-js": "^0.5.2",
     "mocha": "~8.3.0",
     "nock": "~12.0.3",
+    "node-polyfill-webpack-plugin": "^1.1.4",
     "nyc": "~15.0.0",
     "prettier": "^2.0.5",
     "remark-cli": "^10.0.0",

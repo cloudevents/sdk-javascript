@@ -1,4 +1,8 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable header/header */
+/* eslint-disable prettier/prettier */
 const path = require("path");
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 
 module.exports = {
   entry: {
@@ -12,5 +16,8 @@ module.exports = {
     umdNamedDefine: true
   },
   devtool: "source-map",
-  mode: "production"
+  mode: "production",
+  plugins: [
+    new NodePolyfillPlugin()
+  ]
 };

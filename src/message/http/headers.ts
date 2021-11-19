@@ -65,11 +65,6 @@ export function sanitize(headers: Headers): Headers {
     .filter((header) => Object.hasOwnProperty.call(headers, header))
     .forEach((header) => (sanitized[header.toLowerCase()] = headers[header]));
 
-  // If no content-type header is sent, assume application/json
-  if (!sanitized[CONSTANTS.HEADER_CONTENT_TYPE]) {
-    sanitized[CONSTANTS.HEADER_CONTENT_TYPE] = CONSTANTS.MIME_JSON;
-  }
-
   return sanitized;
 }
 

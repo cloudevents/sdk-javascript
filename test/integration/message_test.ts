@@ -41,6 +41,21 @@ const imageData = new Uint32Array(fs.readFileSync(path.join(process.cwd(), "test
 const image_base64 = asBase64(imageData);
 
 describe("HTTP transport", () => {
+  it("Handles events with no content-type and no datacontenttype", () => {
+    const body = "{Something[Not:valid}JSON";
+    const message: Message = {
+      body,
+      headers: {
+        "ce-source": "/test/type",
+        "ce-type": "test.type",
+        "ce-id": "1234",
+      },
+    };
+    const event: CloudEvent = HTTP.toEvent(message);
+    expect(event.data).to.equal(body);
+    expect(event.datacontentype).to.equal(undefined);
+  });
+
   it("Can detect invalid CloudEvent Messages", () => {
     // Create a message that is not an actual event
     const message: Message = {

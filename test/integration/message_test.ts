@@ -64,6 +64,19 @@ describe("HTTP transport", () => {
     expect(HTTP.isEvent(message)).to.be.true;
   });
 
+  it("Handles CloudEvents with datacontenttype of text/plain", () => {
+    const message: Message = HTTP.binary(
+      new CloudEvent({
+        source: "/test",
+        type: "example",
+        datacontenttype: "text/plain",
+        data: "Hello, friends!",
+      }),
+    );
+    const event = HTTP.toEvent(message);
+    expect(event.validate()).to.be.true;
+  });
+
   it("Respects extension attribute casing (even if against spec)", () => {
     // Now create a message that is an event
     const message = {

@@ -19,7 +19,7 @@ const data = {
 };
 const subject = "subject-x0";
 
-let cloudevent = new CloudEvent({
+let cloudevent = new CloudEvent<any>({
   specversion: Version.V1,
   id,
   source,

@@ -24,7 +24,7 @@ export const requiredHeaders = [
  * @param {CloudEvent} event a CloudEvent
  * @returns {Object} the headers that will be sent for the event
  */
-export function headersFor(event: CloudEvent): Headers {
+export function headersFor<T>(event: CloudEvent<T>): Headers {
   const headers: Headers = {};
   let headerMap: Readonly<{ [key: string]: MappedParser }>;
   if (event.specversion === Version.V1) {

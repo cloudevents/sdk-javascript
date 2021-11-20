@@ -23,7 +23,7 @@ export const enum Version {
  * interoperability across services, platforms and systems.
  * @see https://github.com/cloudevents/spec/blob/v1.0/spec.md
  */
-export class CloudEvent implements CloudEventV1 {
+export class CloudEvent<T> implements CloudEventV1<T> {
   id: string;
   type: string;
   source: string;
@@ -32,7 +32,7 @@ export class CloudEvent implements CloudEventV1 {
   dataschema?: string;
   subject?: string;
   time?: string;
-  #_data?: Record<string, unknown | string | number | boolean> | string | number | boolean | null | unknown;
+  #_data?: T;
   data_base64?: string;
 
   // Extensions should not exist as it's own object, but instead
@@ -51,7 +51,7 @@ export class CloudEvent implements CloudEventV1 {
    * @param {object} event the event properties
    * @param {boolean?} strict whether to perform event validation when creating the object - default: true
    */
-  constructor(event: CloudEventV1 | CloudEventV1Attributes, strict = true) {
+  constructor(event: CloudEventV1<T> | CloudEventV1Attributes<T>, strict = true) {
     // copy the incoming event so that we can delete properties as we go
     // everything left after we have deleted know properties becomes an extension
     const properties = { ...event };
@@ -89,7 +89,7 @@ export class CloudEvent implements CloudEventV1 {
     this.schemaurl = properties.schemaurl as string;
     delete properties.schemaurl;
 
-    this.data = properties.data;
+    this.data = properties.data as T;
     delete properties.data;
 
     // sanity checking
@@ -126,13 +126,13 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
     Object.freeze(this);
   }
 
-  get data(): unknown {
-    return this.#_data;
+  get data(): T {
+    return this.#_data as T;
   }
 
-  set data(value: unknown) {
+  set data(value: T) {
     if (isBinary(value)) {
-      this.data_base64 = asBase64(value as Uint32Array);
+      this.data_base64 = asBase64((value as unknown) as Uint32Array);
     }
     this.#_data = value;
   }
@@ -146,7 +146,7 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
   toJSON(): Record<string, unknown> {
     const event = { ...this };
     event.time = new Date(this.time as string).toISOString();
-    event.data = !isBinary(this.data) ? this.data : undefined;
+    event.data = (!isBinary(this.data) ? this.data : undefined) as T;
     return event;
   }
 
@@ -190,10 +190,10 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
    * @return {CloudEvent} returns a new CloudEvent
    */
   public cloneWith(
-    options: CloudEventV1 | CloudEventV1Attributes | CloudEventV1OptionalAttributes,
+    options: CloudEventV1<T> | CloudEventV1Attributes<T> | CloudEventV1OptionalAttributes<T>,
     strict = true,
-  ): CloudEvent {
-    return new CloudEvent(Object.assign({}, this.toJSON(), options) as CloudEvent, strict);
+  ): CloudEvent<T> {
+    return new CloudEvent(Object.assign({}, this.toJSON(), options) as CloudEvent<T>, strict);
   }
 
   /**

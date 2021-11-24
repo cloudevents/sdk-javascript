@@ -88,7 +88,6 @@ export function deserialize<T>(message: Message): CloudEvent<T> | CloudEvent<T>[
   const cleanHeaders: Headers = sanitize(message.headers);
   const mode: Mode = getMode(cleanHeaders);
   const version = getVersion(mode, cleanHeaders, message.body);
-  console.error("MODE", mode);
   switch (mode) {
     case Mode.BINARY:
       return parseBinary(message, version);

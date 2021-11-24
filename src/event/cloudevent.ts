@@ -51,7 +51,7 @@ export class CloudEvent<T = undefined> implements CloudEventV1<T> {
    * @param {object} event the event properties
    * @param {boolean?} strict whether to perform event validation when creating the object - default: true
    */
-  constructor(event: Partial<CloudEventV1<T>>, strict = true) {
+  constructor(event: Pick<Partial<CloudEventV1<T>>, "source">, strict = true) {
     // copy the incoming event so that we can delete properties as we go
     // everything left after we have deleted know properties becomes an extension
     const properties = { ...event };
@@ -146,7 +146,7 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
   toJSON(): Record<string, unknown> {
     const event = { ...this };
     event.time = new Date(this.time as string).toISOString();
-    event.data = (!isBinary(this.data) ? this.data : undefined) as T;
+    event.data = !isBinary(this.data) ? this.data : undefined;
     return event;
   }
 

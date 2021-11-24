@@ -113,9 +113,11 @@ function getMode(headers: Headers): Mode {
       return Mode.BATCH;
     } else if (contentType.startsWith(CONSTANTS.MIME_CE)) {
       return Mode.STRUCTURED;
-    } else if (headers[CONSTANTS.CE_HEADERS.ID]) {
-      return Mode.BINARY;
     }
+  }
+
+  if (headers[CONSTANTS.CE_HEADERS.ID]) {
+    return Mode.BINARY;
   }
   throw new ValidationError("no cloud event detected");
 }

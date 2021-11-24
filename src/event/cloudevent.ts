@@ -32,7 +32,7 @@ export class CloudEvent<T = undefined> implements CloudEventV1<T> {
   dataschema?: string;
   subject?: string;
   time?: string;
-  #_data?: T = undefined;
+  #_data?: T;
   data_base64?: string;
 
   // Extensions should not exist as it's own object, but instead
@@ -132,7 +132,7 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
 
   set data(value: T | undefined) {
     if (isBinary(value)) {
-      this.data_base64 = asBase64((value as unknown) as Uint32Array);
+      this.data_base64 = asBase64(value);
     }
     this.#_data = value;
   }
@@ -184,14 +184,27 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
 
   /**
    * Clone a CloudEvent with new/update attributes
-   * @param {object} options attributes to augment the CloudEvent with
+   * @param {object} options attributes to augment the CloudEvent with an `data` property
+   * @param {boolean} strict whether or not to use strict validation when cloning (default: true)
+   * @throws if the CloudEvent does not conform to the schema
+   * @return {CloudEvent} returns a new CloudEvent<T>
+   */
+  public cloneWith(options: Partial<Exclude<CloudEventV1<never>, "data">>, strict?: boolean): CloudEvent<T>;
+  /**
+   * Clone a CloudEvent with new/update attributes
+   * @param {object} options attributes to augment the CloudEvent with a `data` property
+   * @param {boolean} strict whether or not to use strict validation when cloning (default: true)
+   * @throws if the CloudEvent does not conform to the schema
+   * @return {CloudEvent} returns a new CloudEvent<D>
+   */
+  public cloneWith<D>(options: Partial<CloudEvent<D>>, strict?: boolean): CloudEvent<D>;
+  /**
+   * Clone a CloudEvent with new/update attributes
+   * @param {object} options attributes to augment the CloudEvent
    * @param {boolean} strict whether or not to use strict validation when cloning (default: true)
    * @throws if the CloudEvent does not conform to the schema
    * @return {CloudEvent} returns a new CloudEvent
    */
-  public cloneWith(options: Partial<Exclude<CloudEventV1<never>, "data">>, strict?: boolean): CloudEvent<T>;
-  // If the cloned event has a data property, the returned event should use the provided type
-  public cloneWith<D>(options: Partial<CloudEvent<D>>, strict?: boolean): CloudEvent<D>;
   public cloneWith<D>(options: Partial<CloudEventV1<D>>, strict = true): CloudEvent<D | T> {
     return new CloudEvent(Object.assign({}, this.toJSON(), options), strict);
   }

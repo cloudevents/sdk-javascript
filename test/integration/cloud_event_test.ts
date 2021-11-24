@@ -8,14 +8,13 @@ import fs from "fs";
 
 import { expect } from "chai";
 import { CloudEvent, ValidationError, Version } from "../../src";
-import { CloudEventV1 } from "../../src/event/interfaces";
 import { asBase64 } from "../../src/event/validation";
 
 const type = "org.cncf.cloudevents.example";
 const source = "http://unit.test";
 const id = "b46cf653-d48a-4b90-8dfa-355c01061361";
 
-const fixture: CloudEventV1<string> = {
+const fixture = {
   id,
   specversion: Version.V1,
   source,
@@ -34,17 +33,17 @@ describe("A CloudEvent", () => {
   });
 
   it("Can be constructed with loose validation", () => {
-    const ce = new CloudEvent({} as CloudEventV1<string>, false);
+    const ce = new CloudEvent({}, false);
     expect(ce).to.be.instanceOf(CloudEvent);
   });
 
   it("Loosely validated events can be cloned", () => {
-    const ce = new CloudEvent({} as CloudEventV1<string>, false);
+    const ce = new CloudEvent({}, false);
     expect(ce.cloneWith({}, false)).to.be.instanceOf(CloudEvent);
   });
 
   it("Loosely validated events throw when validated", () => {
-    const ce = new CloudEvent({} as CloudEventV1<string>, false);
+    const ce = new CloudEvent({}, false);
     expect(ce.validate).to.throw(ValidationError, "invalid payload");
   });
 

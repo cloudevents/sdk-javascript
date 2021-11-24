@@ -53,6 +53,7 @@ export interface Message {
 export enum Mode {
   BINARY = "binary",
   STRUCTURED = "structured",
+  BATCH = "batch",
 }
 
 /**

@@ -6,7 +6,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { Emitter } from "..";
 
-import { CloudEventV1, CloudEventV1Attributes, CloudEventV1OptionalAttributes } from "./interfaces";
+import { CloudEventV1 } from "./interfaces";
 import { validateCloudEvent } from "./spec";
 import { ValidationError, isBinary, asBase64, isValidType } from "./validation";
 
@@ -23,7 +23,7 @@ export const enum Version {
  * interoperability across services, platforms and systems.
  * @see https://github.com/cloudevents/spec/blob/v1.0/spec.md
  */
-export class CloudEvent implements CloudEventV1 {
+export class CloudEvent<T = undefined> implements CloudEventV1<T> {
   id: string;
   type: string;
   source: string;
@@ -32,7 +32,7 @@ export class CloudEvent implements CloudEventV1 {
   dataschema?: string;
   subject?: string;
   time?: string;
-  #_data?: Record<string, unknown | string | number | boolean> | string | number | boolean | null | unknown;
+  #_data?: T;
   data_base64?: string;
 
   // Extensions should not exist as it's own object, but instead
@@ -51,7 +51,7 @@ export class CloudEvent implements CloudEventV1 {
    * @param {object} event the event properties
    * @param {boolean?} strict whether to perform event validation when creating the object - default: true
    */
-  constructor(event: CloudEventV1 | CloudEventV1Attributes, strict = true) {
+  constructor(event: Partial<CloudEventV1<T>>, strict = true) {
     // copy the incoming event so that we can delete properties as we go
     // everything left after we have deleted know properties becomes an extension
     const properties = { ...event };
@@ -62,10 +62,10 @@ export class CloudEvent implements CloudEventV1 {
     this.time = properties.time || new Date().toISOString();
     delete properties.time;
 
-    this.type = properties.type;
+    this.type = properties.type as string;
     delete (properties as any).type;
 
-    this.source = properties.source;
+    this.source = properties.source as string;
     delete (properties as any).source;
 
     this.specversion = (properties.specversion as Version) || Version.V1;
@@ -126,13 +126,13 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
     Object.freeze(this);
   }
 
-  get data(): unknown {
+  get data(): T | undefined {
     return this.#_data;
   }
 
-  set data(value: unknown) {
+  set data(value: T | undefined) {
     if (isBinary(value)) {
-      this.data_base64 = asBase64(value as Uint32Array);
+      this.data_base64 = asBase64(value);
     }
     this.#_data = value;
   }
@@ -184,16 +184,29 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
 
   /**
    * Clone a CloudEvent with new/update attributes
-   * @param {object} options attributes to augment the CloudEvent with
+   * @param {object} options attributes to augment the CloudEvent with an `data` property
+   * @param {boolean} strict whether or not to use strict validation when cloning (default: true)
+   * @throws if the CloudEvent does not conform to the schema
+   * @return {CloudEvent} returns a new CloudEvent<T>
+   */
+  public cloneWith(options: Partial<Exclude<CloudEventV1<never>, "data">>, strict?: boolean): CloudEvent<T>;
+  /**
+   * Clone a CloudEvent with new/update attributes
+   * @param {object} options attributes to augment the CloudEvent with a `data` property
+   * @param {boolean} strict whether or not to use strict validation when cloning (default: true)
+   * @throws if the CloudEvent does not conform to the schema
+   * @return {CloudEvent} returns a new CloudEvent<D>
+   */
+  public cloneWith<D>(options: Partial<CloudEvent<D>>, strict?: boolean): CloudEvent<D>;
+  /**
+   * Clone a CloudEvent with new/update attributes
+   * @param {object} options attributes to augment the CloudEvent
    * @param {boolean} strict whether or not to use strict validation when cloning (default: true)
    * @throws if the CloudEvent does not conform to the schema
    * @return {CloudEvent} returns a new CloudEvent
    */
-  public cloneWith(
-    options: CloudEventV1 | CloudEventV1Attributes | CloudEventV1OptionalAttributes,
-    strict = true,
-  ): CloudEvent {
-    return new CloudEvent(Object.assign({}, this.toJSON(), options) as CloudEvent, strict);
+  public cloneWith<D>(options: Partial<CloudEventV1<D>>, strict = true): CloudEvent<D | T> {
+    return new CloudEvent(Object.assign({}, this.toJSON(), options), strict);
   }
 
   /**

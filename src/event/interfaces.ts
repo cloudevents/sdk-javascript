@@ -7,7 +7,7 @@
  * The object interface for CloudEvents 1.0.
  * @see https://github.com/cloudevents/spec/blob/v1.0/spec.md
  */
-export interface CloudEventV1 extends CloudEventV1Attributes {
+export interface CloudEventV1<T> extends CloudEventV1Attributes<T> {
   // REQUIRED Attributes
   /**
    * [REQUIRED] Identifies the event. Producers MUST ensure that `source` + `id`
@@ -30,7 +30,7 @@ export interface CloudEventV1 extends CloudEventV1Attributes {
   specversion: string;
 }
 
-export interface CloudEventV1Attributes extends CloudEventV1OptionalAttributes {
+export interface CloudEventV1Attributes<T> extends CloudEventV1OptionalAttributes<T> {
   /**
    * [REQUIRED] Identifies the context in which an event happened. Often this
    * will include information such as the type of the event source, the
@@ -65,7 +65,7 @@ export interface CloudEventV1Attributes extends CloudEventV1OptionalAttributes {
   type: string;
 }
 
-export interface CloudEventV1OptionalAttributes {
+export interface CloudEventV1OptionalAttributes<T> {
   /**
    * The following fields are optional.
    */
@@ -126,7 +126,7 @@ export interface CloudEventV1OptionalAttributes {
    * specified by the datacontenttype attribute (e.g. application/json), and adheres
    * to the dataschema format when those respective attributes are present.
    */
-  data?: Record<string, unknown | string | number | boolean> | string | number | boolean | null | unknown;
+  data?: T;
 
   /**
    * [OPTIONAL] The event payload encoded as base64 data. This is used when the

@@ -61,7 +61,7 @@ export enum Mode {
  * @interface
  */
 export interface Serializer {
-  (event: CloudEvent): Message;
+  <T>(event: CloudEvent<T>): Message;
 }
 
 /**
@@ -70,7 +70,7 @@ export interface Serializer {
  * @interface
  */
 export interface Deserializer {
-  (message: Message): CloudEvent;
+  <T>(message: Message): CloudEvent<T>;
 }
 
 /**

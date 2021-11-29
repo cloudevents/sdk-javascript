@@ -21,7 +21,7 @@ ajv.addFormat("js-date-time", function (dateTimeString) {
 
 const isValidAgainstSchemaV1 = ajv.compile(schemaV1);
 
-export function validateCloudEvent(event: CloudEventV1): boolean {
+export function validateCloudEvent<T>(event: CloudEventV1<T>): boolean {
   if (event.specversion === Version.V1) {
     if (!isValidAgainstSchemaV1(event)) {
       throw new ValidationError("invalid payload", isValidAgainstSchemaV1.errors);

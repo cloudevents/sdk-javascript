@@ -164,13 +164,13 @@ describe("CloudEvents Spec v1.0", () => {
       expect(cloudevent.data).to.deep.equal(data);
     });
 
-    it("should maintain the type of data when no data content type", () => {
-      const dct = cloudevent.datacontenttype;
-      cloudevent = cloudevent.cloneWith({ datacontenttype: undefined });
-      cloudevent.data = JSON.stringify(data);
-
-      expect(typeof cloudevent.data).to.equal("string");
-      cloudevent = cloudevent.cloneWith({ datacontenttype: dct });
+    it("should maintain the type of data when no datacontenttype is provided", () => {
+      const ce = new CloudEvent({
+        source: "/cloudevents/test",
+        type: "cloudevents.test",
+        data: JSON.stringify(data),
+      });
+      expect(typeof ce.data).to.equal("string");
     });
 
     it("should be ok when type is 'Uint32Array' for 'Binary'", () => {
@@ -179,9 +179,8 @@ describe("CloudEvents Spec v1.0", () => {
       const dataBinary = Uint32Array.from(dataString, (c) => c.codePointAt(0) as number);
       const expected = asBase64(dataBinary);
 
-      cloudevent = cloudevent.cloneWith({ datacontenttype: "text/plain", data: dataBinary });
-
-      expect(cloudevent.data_base64).to.equal(expected);
+      const ce = cloudevent.cloneWith({ datacontenttype: "text/plain", data: dataBinary });
+      expect(ce.data_base64).to.equal(expected);
     });
   });
 });

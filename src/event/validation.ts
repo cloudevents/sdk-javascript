@@ -35,8 +35,8 @@ export const isDefined = (v: unknown): boolean => v !== null && typeof v !== "un
 
 export const isBoolean = (v: unknown): boolean => typeof v === "boolean";
 export const isInteger = (v: unknown): boolean => Number.isInteger(v as number);
-export const isDate = (v: unknown): boolean => v instanceof Date;
-export const isBinary = (v: unknown): boolean => v instanceof Uint32Array;
+export const isDate = (v: unknown): v is Date => v instanceof Date;
+export const isBinary = (v: unknown): v is Uint32Array => v instanceof Uint32Array;
 
 export const isStringOrThrow = (v: unknown, t: Error): boolean =>
   isString(v)
@@ -75,7 +75,7 @@ export const isBuffer = (value: unknown): boolean => value instanceof Buffer;
 
 export const asBuffer = (value: string | Buffer | Uint32Array): Buffer =>
   isBinary(value)
-    ? Buffer.from(value as string)
+    ? Buffer.from((value as unknown) as string)
     : isBuffer(value)
     ? (value as Buffer)
     : (() => {

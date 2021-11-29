@@ -105,7 +105,7 @@ describe("HTTP transport", () => {
       },
     };
     expect(HTTP.isEvent(message)).to.be.true;
-    const event: CloudEvent = HTTP.toEvent(message);
+    const event = HTTP.toEvent(message);
     expect(event.LUNCH).to.equal("tacos");
     expect(function () {
       event.validate();
@@ -124,7 +124,7 @@ describe("HTTP transport", () => {
       },
     };
     expect(HTTP.isEvent(message)).to.be.true;
-    const event: CloudEvent = HTTP.toEvent(message);
+    const event = HTTP.toEvent(message);
     expect(event.specversion).to.equal("11.8");
     expect(event.validate()).to.be.false;
   });
@@ -195,7 +195,7 @@ describe("HTTP transport", () => {
   });
 
   describe("Specification version V1", () => {
-    const fixture: CloudEvent = new CloudEvent({
+    const fixture = new CloudEvent({
       specversion: Version.V1,
       id,
       type,
@@ -298,7 +298,7 @@ describe("HTTP transport", () => {
   });
 
   describe("Specification version V03", () => {
-    const fixture: CloudEvent = new CloudEvent({
+    const fixture = new CloudEvent({
       specversion: Version.V03,
       id,
       type,

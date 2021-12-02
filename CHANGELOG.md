@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.1.0](https://www.github.com/cloudevents/sdk-javascript/compare/v5.0.0...v5.1.0) (2021-12-01)
+
+
+### Features
+
+* use generic type for CloudEvent data ([#446](https://www.github.com/cloudevents/sdk-javascript/issues/446)) ([d941e2d](https://www.github.com/cloudevents/sdk-javascript/commit/d941e2d4d9e491912860e30acd7fa34e9dda7669))
+
+
+### Bug Fixes
+
+* do not assume an empty content-type header is JSON ([#444](https://www.github.com/cloudevents/sdk-javascript/issues/444)) ([52ea7de](https://www.github.com/cloudevents/sdk-javascript/commit/52ea7de80dd98c6766531936fa95963990119612))
+* package.json & package-lock.json to reduce vulnerabilities ([#439](https://www.github.com/cloudevents/sdk-javascript/issues/439)) ([0f5a4c0](https://www.github.com/cloudevents/sdk-javascript/commit/0f5a4c0de26e0181f4a33be9b9e91687879f38b1))
+
+
+### Miscellaneous
+
+* add test for text/plain data ([#442](https://www.github.com/cloudevents/sdk-javascript/issues/442)) ([b4266b1](https://www.github.com/cloudevents/sdk-javascript/commit/b4266b1f378d16c796aa4b7c5bbdbda8d9f8c1e8))
+
 ## [5.0.0](https://www.github.com/cloudevents/sdk-javascript/compare/v4.0.3...v5.0.0) (2021-10-04)
 
 

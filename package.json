@@ -123,7 +123,7 @@
     "axios": "^0.21.3",
     "chai": "~4.2.0",
     "cucumber": "^6.0.5",
-    "cucumber-pretty": "^6.0.0",
+    "cucumber-pretty": "^6.0.1",
     "cucumber-tsflow": "^3.2.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",

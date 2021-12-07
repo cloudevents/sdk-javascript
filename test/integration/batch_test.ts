@@ -34,7 +34,7 @@ describe("A batched CloudEvent message over HTTP", () => {
     };
     const batch = HTTP.toEvent(message);
     expect(batch.length).to.equal(10);
-    const ce = (batch as CloudEvent[])[0];
+    const ce = (batch as CloudEvent<any>[])[0];
     expect(typeof ce).to.equal("object");
     expect(ce.constructor.name).to.equal("CloudEvent");
   });

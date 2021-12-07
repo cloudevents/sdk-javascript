@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.2.0](https://www.github.com/cloudevents/sdk-javascript/compare/v5.1.0...v5.2.0) (2021-12-07)
+
+
+### Features
+
+* add batch mode ([#448](https://www.github.com/cloudevents/sdk-javascript/issues/448)) ([9a46e33](https://www.github.com/cloudevents/sdk-javascript/commit/9a46e335f5fc4b1d01520fc02b5229ce35956709))
+
 ## [5.1.0](https://www.github.com/cloudevents/sdk-javascript/compare/v5.0.0...v5.1.0) (2021-12-01)
 
 

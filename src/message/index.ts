@@ -53,6 +53,7 @@ export interface Message {
 export enum Mode {
   BINARY = "binary",
   STRUCTURED = "structured",
+  BATCH = "batch",
 }
 
 /**
@@ -70,7 +71,7 @@ export interface Serializer {
  * @interface
  */
 export interface Deserializer {
-  <T>(message: Message): CloudEvent<T>;
+  <T>(message: Message): CloudEvent<T> | CloudEvent<T>[];
 }
 
 /**

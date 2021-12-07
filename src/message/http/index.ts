@@ -84,16 +84,17 @@ export function isEvent(message: Message): boolean {
  * @param {Message} message the incoming message
  * @return {CloudEvent} A new {CloudEvent} instance
  */
-export function deserialize<T>(message: Message): CloudEvent<T> {
+export function deserialize<T>(message: Message): CloudEvent<T> | CloudEvent<T>[] {
   const cleanHeaders: Headers = sanitize(message.headers);
   const mode: Mode = getMode(cleanHeaders);
   const version = getVersion(mode, cleanHeaders, message.body);
-
   switch (mode) {
     case Mode.BINARY:
       return parseBinary(message, version);
     case Mode.STRUCTURED:
       return parseStructured(message, version);
+    case Mode.BATCH:
+      return parseBatched(message);
     default:
       throw new ValidationError("Unknown Message mode");
   }
@@ -107,9 +108,14 @@ export function deserialize<T>(message: Message): CloudEvent<T> {
  */
 function getMode(headers: Headers): Mode {
   const contentType = headers[CONSTANTS.HEADER_CONTENT_TYPE];
-  if (contentType && contentType.startsWith(CONSTANTS.MIME_CE)) {
-    return Mode.STRUCTURED;
+  if (contentType) {
+    if (contentType.startsWith(CONSTANTS.MIME_CE_BATCH)) {
+      return Mode.BATCH;
+    } else if (contentType.startsWith(CONSTANTS.MIME_CE)) {
+      return Mode.STRUCTURED;
+    }
   }
+
   if (headers[CONSTANTS.CE_HEADERS.ID]) {
     return Mode.BINARY;
   }
@@ -245,4 +251,13 @@ function parseStructured<T>(message: Message, version: Version): CloudEvent<T> {
     delete eventObj.datacontentencoding;
   }
   return new CloudEvent<T>(eventObj as CloudEventV1<T>, false);
+}
+
+function parseBatched<T>(message: Message): CloudEvent<T> | CloudEvent<T>[] {
+  const ret: CloudEvent<T>[] = [];
+  const events = JSON.parse(message.body as string);
+  events.forEach((element: CloudEvent) => {
+    ret.push(new CloudEvent<T>(element));
+  });
+  return ret;
 }

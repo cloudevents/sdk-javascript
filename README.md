@@ -113,7 +113,7 @@ Emitter.on("cloudevent", emit);
 // In any part of the code will send the event
 new CloudEvent({ type, source, data }).emit();
 
-// You can also have several listener to send the event to several endpoint
+// You can also have several listeners to send the event to several endpoints
 ```
 
 ## CloudEvent Objects
@@ -151,14 +151,14 @@ There you will find Express.js, TypeScript and Websocket examples.
 
 ---
 
-| Event Formats     | [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/tree/v1.0) |
+| Event Formats     | [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/blob/v1.0/spec.md#event-format) |
 | ----------------- | ----------------------------------------------------- | ----------------------------------------------------- |
 | AVRO Event Format | :x:                                                   | :x:                                                   |
 | JSON Event Format | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
 
 ---
 
-| Transport Protocols    | [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/tree/v1.0) |
+| Protocol Bindings    | [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/blob/v1.0/spec.md#protocol-binding) |
 | ---------------------- | ----------------------------------------------------- | ----------------------------------------------------- |
 | AMQP Protocol Binding  | :x:                                                   | :x:                                                   |
 | HTTP Protocol Binding  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
@@ -166,6 +166,13 @@ There you will find Express.js, TypeScript and Websocket examples.
 | MQTT Protocol Binding  | :x:                                                   | :x:                                                   |
 | NATS Protocol Binding  | :x:                                                   | :x:                                                   |
 
+---
+
+| Content Modes    | [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/blob/v1.0/http-protocol-binding.md#13-content-modes) |
+| ---------------------- | ----------------------------------------------------- | ----------------------------------------------------- |
+| HTTP Binary  | :heavy_check_mark:                                                   | :heavy_check_mark:                                                   |
+| HTTP Structured  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
+| HTTP Batch  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
 ## Community
 
 - There are bi-weekly calls immediately following the [Serverless/CloudEvents

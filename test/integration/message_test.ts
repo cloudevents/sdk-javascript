@@ -51,7 +51,7 @@ describe("HTTP transport", () => {
         "ce-id": "1234",
       },
     };
-    const event: CloudEvent = HTTP.toEvent(message);
+    const event: CloudEvent = HTTP.toEvent(message) as CloudEvent;
     expect(event.data).to.equal(body);
     expect(event.datacontentype).to.equal(undefined);
   });
@@ -88,7 +88,7 @@ describe("HTTP transport", () => {
         data: "Hello, friends!",
       }),
     );
-    const event = HTTP.toEvent(message);
+    const event = HTTP.toEvent(message) as CloudEvent;
     expect(event.validate()).to.be.true;
   });
 
@@ -105,7 +105,7 @@ describe("HTTP transport", () => {
       },
     };
     expect(HTTP.isEvent(message)).to.be.true;
-    const event = HTTP.toEvent(message);
+    const event = HTTP.toEvent(message) as CloudEvent;
     expect(event.LUNCH).to.equal("tacos");
     expect(function () {
       event.validate();
@@ -124,7 +124,7 @@ describe("HTTP transport", () => {
       },
     };
     expect(HTTP.isEvent(message)).to.be.true;
-    const event = HTTP.toEvent(message);
+    const event = HTTP.toEvent(message) as CloudEvent;
     expect(event.specversion).to.equal("11.8");
     expect(event.validate()).to.be.false;
   });
@@ -153,7 +153,7 @@ describe("HTTP transport", () => {
         // no required ce-source header, thus an invalid event
       },
     };
-    const event = HTTP.toEvent(message);
+    const event = HTTP.toEvent(message) as CloudEvent;
     expect(event).to.be.instanceOf(CloudEvent);
     // ensure that we actually now have an invalid event
     expect(event.validate).to.throw;
@@ -190,7 +190,7 @@ describe("HTTP transport", () => {
       headers,
       body,
     };
-    const event = HTTP.toEvent(message);
+    const event = HTTP.toEvent(message) as CloudEvent;
     expect(event.data).to.deep.equal({ lunch: "tacos" });
   });
 
@@ -263,21 +263,21 @@ describe("HTTP transport", () => {
 
     it("Converts base64 encoded data to binary when deserializing structured messages", () => {
       const message = HTTP.structured(fixture.cloneWith({ data: imageData, datacontenttype: "image/png" }));
-      const eventDeserialized = HTTP.toEvent(message);
+      const eventDeserialized = HTTP.toEvent(message) as CloudEvent;
       expect(eventDeserialized.data).to.deep.equal(imageData);
       expect(eventDeserialized.data_base64).to.equal(image_base64);
     });
 
     it("Does not parse binary data from structured messages with content type application/json", () => {
       const message = HTTP.structured(fixture.cloneWith({ data: dataBinary }));
-      const eventDeserialized = HTTP.toEvent(message);
+      const eventDeserialized = HTTP.toEvent(message) as CloudEvent;
       expect(eventDeserialized.data).to.deep.equal(dataBinary);
       expect(eventDeserialized.data_base64).to.equal(data_base64);
     });
 
     it("Converts base64 encoded data to binary when deserializing binary messages", () => {
       const message = HTTP.binary(fixture.cloneWith({ data: imageData, datacontenttype: "image/png" }));
-      const eventDeserialized = HTTP.toEvent(message);
+      const eventDeserialized = HTTP.toEvent(message) as CloudEvent;
       expect(eventDeserialized.data).to.deep.equal(imageData);
       expect(eventDeserialized.data_base64).to.equal(image_base64);
     });
@@ -291,7 +291,7 @@ describe("HTTP transport", () => {
 
     it("Does not parse binary data from binary messages with content type application/json", () => {
       const message = HTTP.binary(fixture.cloneWith({ data: dataBinary }));
-      const eventDeserialized = HTTP.toEvent(message);
+      const eventDeserialized = HTTP.toEvent(message) as CloudEvent;
       expect(eventDeserialized.data).to.deep.equal(dataBinary);
       expect(eventDeserialized.data_base64).to.equal(data_base64);
     });
@@ -368,14 +368,14 @@ describe("HTTP transport", () => {
       // Creating an event with binary data automatically produces base64 encoded data
       // which is then set as the 'data' attribute on the message body
       const message = HTTP.structured(fixture.cloneWith({ data: imageData, datacontenttype: "image/png" }));
-      const eventDeserialized = HTTP.toEvent(message);
+      const eventDeserialized = HTTP.toEvent(message) as CloudEvent;
       expect(eventDeserialized.data).to.deep.equal(imageData);
       expect(eventDeserialized.data_base64).to.equal(image_base64);
     });
 
     it("Converts base64 encoded data to binary when deserializing binary messages", () => {
       const message = HTTP.binary(fixture.cloneWith({ data: imageData, datacontenttype: "image/png" }));
-      const eventDeserialized = HTTP.toEvent(message);
+      const eventDeserialized = HTTP.toEvent(message) as CloudEvent;
       expect(eventDeserialized.data).to.deep.equal(imageData);
       expect(eventDeserialized.data_base64).to.equal(image_base64);
     });

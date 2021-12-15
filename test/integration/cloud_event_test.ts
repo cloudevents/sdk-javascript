@@ -9,6 +9,7 @@ import fs from "fs";
 import { expect } from "chai";
 import { CloudEvent, ValidationError, Version } from "../../src";
 import { asBase64 } from "../../src/event/validation";
+import { ErrorObject } from "schema-utils/declarations/validate";
 
 const type = "org.cncf.cloudevents.example";
 const source = "http://unit.test";
@@ -203,7 +204,7 @@ describe("A 1.0 CloudEvent", () => {
       });
     } catch (err) {
       expect(err).to.be.instanceOf(TypeError);
-      expect(err.message).to.include("invalid payload");
+      expect((err as TypeError).message).to.include("invalid payload");
     }
   });
 
@@ -225,10 +226,12 @@ describe("A 1.0 CloudEvent", () => {
         source: "",
       });
     } catch (err) {
-      expect(err).to.be.instanceOf(TypeError);
-      expect(err.message).to.include("invalid payload");
-      expect(err.errors[0].dataPath).to.equal(".source");
-      expect(err.errors[0].keyword).to.equal("minLength");
+      expect(err).to.be.instanceOf(ValidationError);
+      const e = err as unknown as ValidationError;
+      const errors = e.errors as ErrorObject[];
+      expect(e.message).to.include("invalid payload");
+      expect(errors[0].dataPath).to.equal(".source");
+      expect(errors[0].keyword).to.equal("minLength");
     }
   });
 });

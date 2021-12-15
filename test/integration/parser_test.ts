@@ -69,7 +69,6 @@ describe("JSON Event Format Parser", () => {
 
   it("Must accept when the payload is a string well formed as JSON", () => {
     // setup
-    // eslint-disable-next-line prettier/prettier
     const payload = "{\"much\" : \"wow\"}";
     const parser = new Parser();
 

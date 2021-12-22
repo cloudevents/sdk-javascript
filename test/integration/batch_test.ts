@@ -5,6 +5,7 @@
 
 import { expect } from "chai";
 import { CloudEvent, HTTP, Message } from "../../src";
+import { Kafka, KafkaMessage } from "../../src/message";
 
 const type = "org.cncf.cloudevents.example";
 const source = "http://unit.test";
@@ -33,6 +34,25 @@ describe("A batched CloudEvent message over HTTP", () => {
       body: JSON.stringify(fixture),
     };
     const batch = HTTP.toEvent(message);
+    expect(batch.length).to.equal(10);
+    const ce = (batch as CloudEvent<any>[])[0];
+    expect(typeof ce).to.equal("object");
+    expect(ce.constructor.name).to.equal("CloudEvent");
+  });
+});
+
+describe("A batched CloudEvent message over Kafka", () => {
+  it("Can be created with a typed Message", () => {
+    const value = JSON.stringify(fixture);
+    const message: KafkaMessage = {
+      key: "123",
+      value,
+      headers: {
+        "content-type": "application/cloudevents-batch+json",
+      },
+      body: value,
+    };
+    const batch = Kafka.toEvent(message);
     expect(batch.length).to.equal(10);
     const ce = (batch as CloudEvent<any>[])[0];
     expect(typeof ce).to.equal("object");

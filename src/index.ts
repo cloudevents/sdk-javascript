@@ -8,7 +8,9 @@ import { ValidationError } from "./event/validation";
 import { CloudEventV1, CloudEventV1Attributes } from "./event/interfaces";
 
 import { Options, TransportFunction, EmitterFunction, emitterFor, Emitter } from "./transport/emitter";
-import { Headers, Mode, Binding, HTTP, Message, Serializer, Deserializer } from "./message";
+import { 
+  Headers, Mode, Binding, HTTP, Kafka, KafkaEvent, KafkaMessage, Message,
+  Serializer, Deserializer } from "./message";
 
 import CONSTANTS from "./constants";
 
@@ -27,6 +29,9 @@ export {
   Deserializer,
   Serializer,
   HTTP,
+  Kafka,
+  KafkaEvent,
+  KafkaMessage,
   // From transport
   TransportFunction,
   EmitterFunction,

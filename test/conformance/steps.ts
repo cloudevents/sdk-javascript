@@ -6,7 +6,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
 import { assert } from "chai";
-import { Given, When, Then, World } from "cucumber";
+import { Given, When, Then, World } from "@cucumber/cucumber";
 import { Message, Headers, HTTP } from "../../src";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires

@@ -3,6 +3,7 @@
  SPDX-License-Identifier: Apache-2.0
 */
 
+import { ErrorObject } from "ajv";
 import { v4 as uuidv4 } from "uuid";
 import { Emitter } from "..";
 
@@ -166,7 +167,7 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
       if (e instanceof ValidationError) {
         throw e;
       } else {
-        throw new ValidationError("invalid payload", e);
+        throw new ValidationError("invalid payload", [e] as ErrorObject[]);
       }
     }
   }

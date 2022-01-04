@@ -198,7 +198,7 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
    * @throws if the CloudEvent does not conform to the schema
    * @return {CloudEvent} returns a new CloudEvent<D>
    */
-  public cloneWith<D>(options: Partial<CloudEvent<D>>, strict?: boolean): CloudEvent<D>;
+  public cloneWith<D>(options: Partial<CloudEventV1<D>>, strict?: boolean): CloudEvent<D>;
   /**
    * Clone a CloudEvent with new/update attributes
    * @param {object} options attributes to augment the CloudEvent
@@ -207,7 +207,7 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
    * @return {CloudEvent} returns a new CloudEvent
    */
   public cloneWith<D>(options: Partial<CloudEventV1<D>>, strict = true): CloudEvent<D | T> {
-    return new CloudEvent(Object.assign({}, this.toJSON(), options), strict);
+    return CloudEvent.cloneWith(this as CloudEvent<T>, options, strict);
   }
 
   /**
@@ -217,4 +217,11 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
   [Symbol.for("nodejs.util.inspect.custom")](): string {
     return this.toString();
   }
+
+  public static cloneWith(
+    event: CloudEvent<any>, // Must be a concrete CloudEvent class
+    options: Partial<CloudEventV1<any>>, // May take any 
+    strict = true): CloudEvent<any> {
+      return new CloudEvent(Object.assign({}, event.toJSON(), options), strict);
+    }
 }

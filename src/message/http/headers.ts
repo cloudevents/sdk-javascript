@@ -4,7 +4,7 @@
 */
 
 import { PassThroughParser, DateParser, MappedParser } from "../../parsers";
-import { CloudEvent } from "../..";
+import { CloudEventV1 } from "../..";
 import { Headers } from "../";
 import { Version } from "../../event/cloudevent";
 import CONSTANTS from "../../constants";
@@ -24,7 +24,7 @@ export const requiredHeaders = [
  * @param {CloudEvent} event a CloudEvent
  * @returns {Object} the headers that will be sent for the event
  */
-export function headersFor<T>(event: CloudEvent<T>): Headers {
+export function headersFor<T>(event: CloudEventV1<T>): Headers {
   const headers: Headers = {};
   let headerMap: Readonly<{ [key: string]: MappedParser }>;
   if (event.specversion === Version.V1) {

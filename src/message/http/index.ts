@@ -4,7 +4,7 @@
 */
 
 import { CloudEvent, CloudEventV1, CONSTANTS, Mode, Version } from "../..";
-import { Message, Headers } from "..";
+import { Message, Headers, Binding } from "..";
 
 import {
   headersFor,
@@ -25,7 +25,7 @@ import { JSONParser, MappedParser, Parser, parserByContentType } from "../../par
  * @param {CloudEvent} event The event to serialize
  * @returns {Message} a Message object with headers and body
  */
-export function binary<T>(event: CloudEvent<T>): Message {
+function binary<T>(event: CloudEventV1<T>): Message {
   const contentType: Headers = { [CONSTANTS.HEADER_CONTENT_TYPE]: CONSTANTS.DEFAULT_CONTENT_TYPE };
   const headers: Headers = { ...contentType, ...headersFor(event) };
   let body = event.data;
@@ -47,10 +47,10 @@ export function binary<T>(event: CloudEvent<T>): Message {
  * @param {CloudEvent} event the CloudEvent to be serialized
  * @returns {Message} a Message object with headers and body
  */
-export function structured<T>(event: CloudEvent<T>): Message {
+function structured<T>(event: CloudEventV1<T>): Message {
   if (event.data_base64) {
     // The event's data is binary - delete it
-    event = event.cloneWith({ data: undefined });
+    event = (event as CloudEvent).cloneWith({ data: undefined });
   }
   return {
     headers: {
@@ -67,7 +67,7 @@ export function structured<T>(event: CloudEvent<T>): Message {
  * @param {Message} message an incoming Message object
  * @returns {boolean} true if this Message is a CloudEvent
  */
-export function isEvent(message: Message): boolean {
+function isEvent(message: Message): boolean {
   // TODO: this could probably be optimized
   try {
     deserialize(message);
@@ -84,7 +84,7 @@ export function isEvent(message: Message): boolean {
  * @param {Message} message the incoming message
  * @return {CloudEvent} A new {CloudEvent} instance
  */
-export function deserialize<T>(message: Message): CloudEvent<T> | CloudEvent<T>[] {
+function deserialize<T>(message: Message): CloudEvent<T> | CloudEvent<T>[] {
   const cleanHeaders: Headers = sanitize(message.headers);
   const mode: Mode = getMode(cleanHeaders);
   const version = getVersion(mode, cleanHeaders, message.body);
@@ -261,3 +261,14 @@ function parseBatched<T>(message: Message): CloudEvent<T> | CloudEvent<T>[] {
   });
   return ret;
 }
+
+/**
+ * Bindings for HTTP transport support
+ * @implements {@linkcode Binding}
+ */
+ export const HTTP: Binding = {
+  binary,
+  structured,
+  toEvent: deserialize,
+  isEvent: isEvent,
+};

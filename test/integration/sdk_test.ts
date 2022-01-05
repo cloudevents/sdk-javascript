@@ -5,11 +5,13 @@
 
 import "mocha";
 import { expect } from "chai";
-import { CloudEvent, Version } from "../../src";
+import { CloudEvent, CloudEventV1, Version } from "../../src";
 
-const fixture = {
+const fixture: CloudEventV1<undefined> = {
+  id: "123",
   type: "org.cloudevents.test",
   source: "http://cloudevents.io",
+  specversion: Version.V1,
 };
 
 describe("The SDK Requirements", () => {
@@ -32,6 +34,21 @@ describe("The SDK Requirements", () => {
   describe("v1.0", () => {
     it("should create an event using the right spec version", () => {
       expect(new CloudEvent(fixture).specversion).to.equal(Version.V1);
+    });
+  });
+
+  describe("Cloning events", () => {
+    it("should clone simple objects that adhere to the CloudEventV1 interface", () => {
+      const copy = CloudEvent.cloneWith(fixture, { id: "456" }, false);
+      expect(copy.id).to.equal("456");
+      expect(copy.type).to.equal(fixture.type);
+      expect(copy.source).to.equal(fixture.source);
+      expect(copy.specversion).to.equal(fixture.specversion);
+    });
+
+    it("should clone simple objects with data that adhere to the CloudEventV1 interface", () => {
+      const copy = CloudEvent.cloneWith(fixture, { data: { lunch: "tacos" } }, false);
+      expect(copy.data.lunch).to.equal("tacos");
     });
   });
 });

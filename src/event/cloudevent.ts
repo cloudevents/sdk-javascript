@@ -207,7 +207,7 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
    * @return {CloudEvent} returns a new CloudEvent
    */
   public cloneWith<D>(options: Partial<CloudEventV1<D>>, strict = true): CloudEvent<D | T> {
-    return CloudEvent.cloneWith(this as CloudEvent<T>, options, strict);
+    return CloudEvent.cloneWith(this, options, strict);
   }
 
   /**

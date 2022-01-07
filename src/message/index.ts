@@ -6,8 +6,9 @@
 import { IncomingHttpHeaders } from "http";
 import { CloudEventV1 } from "..";
 
-// reexport the HTTP protocol binding
+// reexport the protocol bindings
 export * from "./http";
+export * from "./kafka";
 
 /**
  * Binding is an interface for transport protocols to implement,

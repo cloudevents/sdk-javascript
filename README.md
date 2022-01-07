@@ -162,7 +162,7 @@ There you will find Express.js, TypeScript and Websocket examples.
 | ---------------------- | ----------------------------------------------------- | ----------------------------------------------------- |
 | AMQP Protocol Binding  | :x:                                                   | :x:                                                   |
 | HTTP Protocol Binding  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
-| Kafka Protocol Binding | :x:                                                   | :x:                                                   |
+| Kafka Protocol Binding | :x:                                                   | :heavy_check_mark:                                                   |
 | MQTT Protocol Binding  | :x:                                                   | :x:                                                   |
 | NATS Protocol Binding  | :x:                                                   | :x:                                                   |
 
@@ -173,6 +173,9 @@ There you will find Express.js, TypeScript and Websocket examples.
 | HTTP Binary  | :heavy_check_mark:                                                   | :heavy_check_mark:                                                   |
 | HTTP Structured  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
 | HTTP Batch  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
+| Kafka Binary  | :heavy_check_mark:                                                   | :heavy_check_mark:                                                   |
+| Kafka Structured  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
+| Kafka Batch  | :heavy_check_mark:                                    | :heavy_check_mark:  
 ## Community
 
 - There are bi-weekly calls immediately following the [Serverless/CloudEvents

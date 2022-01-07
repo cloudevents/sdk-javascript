@@ -43,7 +43,7 @@ const image_base64 = asBase64(imageData);
 describe("HTTP transport", () => {
   it("Handles events with no content-type and no datacontenttype", () => {
     const body = "{Something[Not:valid}JSON";
-    const message: Message = {
+    const message: Message<undefined> = {
       body,
       headers: {
         "ce-source": "/test/type",
@@ -58,7 +58,7 @@ describe("HTTP transport", () => {
 
   it("Can detect invalid CloudEvent Messages", () => {
     // Create a message that is not an actual event
-    const message: Message = {
+    const message: Message<undefined> = {
       body: "Hello world!",
       headers: {
         "Content-type": "text/plain",
@@ -88,7 +88,7 @@ describe("HTTP transport", () => {
         data: "Hello, friends!",
       }),
     );
-    const event = HTTP.toEvent(message) as CloudEvent;
+    const event = HTTP.toEvent(message) as CloudEvent<string>;
     expect(event.validate()).to.be.true;
   });
 
@@ -143,7 +143,7 @@ describe("HTTP transport", () => {
   // Allow for external systems to send bad events - do what we can
   // to accept them
   it("Does not throw an exception when converting an invalid Message to a CloudEvent", () => {
-    const message: Message = {
+    const message: Message<undefined> = {
       body: `"hello world"`,
       headers: {
         "content-type": "application/json",
@@ -186,7 +186,7 @@ describe("HTTP transport", () => {
       specversion: Version.V1,
       data: { lunch: "tacos" },
     });
-    const message: Message = {
+    const message: Message<undefined> = {
       headers,
       body,
     };
@@ -226,7 +226,7 @@ describe("HTTP transport", () => {
     });
 
     it("Structured Messages can be created from a CloudEvent", () => {
-      const message: Message = HTTP.structured(fixture);
+      const message: Message<string> = HTTP.structured(fixture);
       expect(message.headers[CONSTANTS.HEADER_CONTENT_TYPE]).to.equal(CONSTANTS.DEFAULT_CE_CONTENT_TYPE);
       // Parse the message body as JSON, then validate the attributes
       const body = JSON.parse(message.body as string);
@@ -263,21 +263,21 @@ describe("HTTP transport", () => {
 
     it("Converts base64 encoded data to binary when deserializing structured messages", () => {
       const message = HTTP.structured(fixture.cloneWith({ data: imageData, datacontenttype: "image/png" }));
-      const eventDeserialized = HTTP.toEvent(message) as CloudEvent;
+      const eventDeserialized = HTTP.toEvent(message) as CloudEvent<Uint32Array>;
       expect(eventDeserialized.data).to.deep.equal(imageData);
       expect(eventDeserialized.data_base64).to.equal(image_base64);
     });
 
     it("Does not parse binary data from structured messages with content type application/json", () => {
       const message = HTTP.structured(fixture.cloneWith({ data: dataBinary }));
-      const eventDeserialized = HTTP.toEvent(message) as CloudEvent;
+      const eventDeserialized = HTTP.toEvent(message) as CloudEvent<Uint32Array>;
       expect(eventDeserialized.data).to.deep.equal(dataBinary);
       expect(eventDeserialized.data_base64).to.equal(data_base64);
     });
 
     it("Converts base64 encoded data to binary when deserializing binary messages", () => {
       const message = HTTP.binary(fixture.cloneWith({ data: imageData, datacontenttype: "image/png" }));
-      const eventDeserialized = HTTP.toEvent(message) as CloudEvent;
+      const eventDeserialized = HTTP.toEvent(message) as CloudEvent<Uint32Array>;
       expect(eventDeserialized.data).to.deep.equal(imageData);
       expect(eventDeserialized.data_base64).to.equal(image_base64);
     });
@@ -291,7 +291,7 @@ describe("HTTP transport", () => {
 
     it("Does not parse binary data from binary messages with content type application/json", () => {
       const message = HTTP.binary(fixture.cloneWith({ data: dataBinary }));
-      const eventDeserialized = HTTP.toEvent(message) as CloudEvent;
+      const eventDeserialized = HTTP.toEvent(message) as CloudEvent<Uint32Array>;
       expect(eventDeserialized.data).to.deep.equal(dataBinary);
       expect(eventDeserialized.data_base64).to.equal(data_base64);
     });
@@ -368,14 +368,14 @@ describe("HTTP transport", () => {
       // Creating an event with binary data automatically produces base64 encoded data
       // which is then set as the 'data' attribute on the message body
       const message = HTTP.structured(fixture.cloneWith({ data: imageData, datacontenttype: "image/png" }));
-      const eventDeserialized = HTTP.toEvent(message) as CloudEvent;
+      const eventDeserialized = HTTP.toEvent(message) as CloudEvent<Uint32Array>;
       expect(eventDeserialized.data).to.deep.equal(imageData);
       expect(eventDeserialized.data_base64).to.equal(image_base64);
     });
 
     it("Converts base64 encoded data to binary when deserializing binary messages", () => {
       const message = HTTP.binary(fixture.cloneWith({ data: imageData, datacontenttype: "image/png" }));
-      const eventDeserialized = HTTP.toEvent(message) as CloudEvent;
+      const eventDeserialized = HTTP.toEvent(message) as CloudEvent<Uint32Array>;
       expect(eventDeserialized.data).to.deep.equal(imageData);
       expect(eventDeserialized.data_base64).to.equal(image_base64);
     });

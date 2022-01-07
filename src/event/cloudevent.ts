@@ -147,7 +147,7 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
   toJSON(): Record<string, unknown> {
     const event = { ...this };
     event.time = new Date(this.time as string).toISOString();
-    event.data = !isBinary(this.data) ? this.data : undefined;
+    event.data = this.#_data;
     return event;
   }
 
@@ -184,30 +184,30 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
   }
 
   /**
-   * Clone a CloudEvent with new/update attributes
-   * @param {object} options attributes to augment the CloudEvent with an `data` property
+   * Clone a CloudEvent with new/updated attributes
+   * @param {object} options attributes to augment the CloudEvent without a `data` property
    * @param {boolean} strict whether or not to use strict validation when cloning (default: true)
    * @throws if the CloudEvent does not conform to the schema
    * @return {CloudEvent} returns a new CloudEvent<T>
    */
   public cloneWith(options: Partial<Exclude<CloudEventV1<never>, "data">>, strict?: boolean): CloudEvent<T>;
   /**
-   * Clone a CloudEvent with new/update attributes
-   * @param {object} options attributes to augment the CloudEvent with a `data` property
+   * Clone a CloudEvent with new/updated attributes and new data
+   * @param {object} options attributes to augment the CloudEvent with a `data` property and type
    * @param {boolean} strict whether or not to use strict validation when cloning (default: true)
    * @throws if the CloudEvent does not conform to the schema
    * @return {CloudEvent} returns a new CloudEvent<D>
    */
-  public cloneWith<D>(options: Partial<CloudEvent<D>>, strict?: boolean): CloudEvent<D>;
+  public cloneWith<D>(options: Partial<CloudEventV1<D>>, strict?: boolean): CloudEvent<D>;
   /**
-   * Clone a CloudEvent with new/update attributes
+   * Clone a CloudEvent with new/updated attributes and possibly different data types
    * @param {object} options attributes to augment the CloudEvent
    * @param {boolean} strict whether or not to use strict validation when cloning (default: true)
    * @throws if the CloudEvent does not conform to the schema
    * @return {CloudEvent} returns a new CloudEvent
    */
   public cloneWith<D>(options: Partial<CloudEventV1<D>>, strict = true): CloudEvent<D | T> {
-    return new CloudEvent(Object.assign({}, this.toJSON(), options), strict);
+    return CloudEvent.cloneWith(this, options, strict);
   }
 
   /**
@@ -217,4 +217,22 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
   [Symbol.for("nodejs.util.inspect.custom")](): string {
     return this.toString();
   }
+
+  /**
+   * Clone a CloudEvent with new or updated attributes.
+   * @param {CloudEventV1<any>} event an object that implements the {@linkcode CloudEventV1} interface
+   * @param {Partial<CloudEventV1<any>>} options an object with new or updated attributes
+   * @param {boolean} strict `true` if the resulting event should be valid per the CloudEvent specification
+   * @throws {ValidationError} if `strict` is `true` and the resulting event is invalid
+   * @returns {CloudEvent<any>} a CloudEvent cloned from `event` with `options` applied.
+   */
+  public static cloneWith(
+    event: CloudEventV1<any>,
+    options: Partial<CloudEventV1<any>>,
+    strict = true): CloudEvent<any> {
+      if (event instanceof CloudEvent) {
+        event = event.toJSON() as CloudEventV1<any>;
+      }
+      return new CloudEvent(Object.assign({}, event, options), strict);
+    }
 }

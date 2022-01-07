@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.2.1](https://www.github.com/cloudevents/sdk-javascript/compare/v5.2.0...v5.2.1) (2022-01-07)
+
+
+### Miscellaneous
+
+* **refactor:** prefer interfaces over concrete classes ([#457](https://www.github.com/cloudevents/sdk-javascript/issues/457)) ([2ac731e](https://www.github.com/cloudevents/sdk-javascript/commit/2ac731eb884965e91a19bb3529100a6aee7069dd))
+* update cucumber dependency and remove prettier ([#453](https://www.github.com/cloudevents/sdk-javascript/issues/453)) ([320354f](https://www.github.com/cloudevents/sdk-javascript/commit/320354f750420f74ac1258f1e0530962a9c58788))
+
 ## [5.2.0](https://www.github.com/cloudevents/sdk-javascript/compare/v5.1.0...v5.2.0) (2021-12-07)
 
 

@@ -9,7 +9,7 @@ import { CloudEventV1, CloudEventV1Attributes } from "./event/interfaces";
 
 import { Options, TransportFunction, EmitterFunction, emitterFor, Emitter } from "./transport/emitter";
 import { 
-  Headers, Mode, Binding, HTTP, Kafka, KafkaEvent, KafkaMessage, Message,
+  Headers, Mode, Binding, HTTP, Kafka, KafkaEvent, KafkaMessage, Message, MQTT, MQTTMessage,
   Serializer, Deserializer } from "./message";
 
 import CONSTANTS from "./constants";
@@ -32,6 +32,8 @@ export {
   Kafka,
   KafkaEvent,
   KafkaMessage,
+  MQTT,
+  MQTTMessage,
   // From transport
   TransportFunction,
   EmitterFunction,

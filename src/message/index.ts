@@ -9,6 +9,7 @@ import { CloudEventV1 } from "..";
 // reexport the protocol bindings
 export * from "./http";
 export * from "./kafka";
+export * from "./mqtt";
 
 /**
  * Binding is an interface for transport protocols to implement,

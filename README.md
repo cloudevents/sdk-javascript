@@ -163,7 +163,7 @@ There you will find Express.js, TypeScript and Websocket examples.
 | AMQP Protocol Binding  | :x:                                                   | :x:                                                   |
 | HTTP Protocol Binding  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
 | Kafka Protocol Binding | :x:                                                   | :heavy_check_mark:                                                   |
-| MQTT Protocol Binding  | :x:                                                   | :x:                                                   |
+| MQTT Protocol Binding  | :heavy_check_mark:                                                   | :x:                                                   |
 | NATS Protocol Binding  | :x:                                                   | :x:                                                   |
 
 ---
@@ -176,6 +176,9 @@ There you will find Express.js, TypeScript and Websocket examples.
 | Kafka Binary  | :heavy_check_mark:                                                   | :heavy_check_mark:                                                   |
 | Kafka Structured  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
 | Kafka Batch  | :heavy_check_mark:                                    | :heavy_check_mark:  
+| MQTT Binary  | :heavy_check_mark:                                                   | :heavy_check_mark:                                                   |
+| MQTT Structured  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
+
 ## Community
 
 - There are bi-weekly calls immediately following the [Serverless/CloudEvents

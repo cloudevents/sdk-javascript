@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.3.0](https://www.github.com/cloudevents/sdk-javascript/compare/v5.2.0...v5.3.0) (2022-01-14)
+
+
+### Features
+
+* add MQTT transport messaging ([#459](https://www.github.com/cloudevents/sdk-javascript/issues/459)) ([591d133](https://www.github.com/cloudevents/sdk-javascript/commit/591d133f31d5802e526952d6177dcb0a3383c221))
+* add support for kafka transport ([#455](https://www.github.com/cloudevents/sdk-javascript/issues/455)) ([5d1f744](https://www.github.com/cloudevents/sdk-javascript/commit/5d1f744f503dbb56f4cfb3365d66cac635cc03b3))
+
+
+### Miscellaneous
+
+* **refactor:** prefer interfaces over concrete classes ([#457](https://www.github.com/cloudevents/sdk-javascript/issues/457)) ([2ac731e](https://www.github.com/cloudevents/sdk-javascript/commit/2ac731eb884965e91a19bb3529100a6aee7069dd))
+* update cucumber dependency and remove prettier ([#453](https://www.github.com/cloudevents/sdk-javascript/issues/453)) ([320354f](https://www.github.com/cloudevents/sdk-javascript/commit/320354f750420f74ac1258f1e0530962a9c58788))
+
 ## [5.2.0](https://www.github.com/cloudevents/sdk-javascript/compare/v5.1.0...v5.2.0) (2021-12-07)
 
 

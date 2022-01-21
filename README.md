@@ -132,6 +132,29 @@ const ce = new CloudEvent({...});
 const ce2 = ce.cloneWith({extension: "Value"});
 ```
 
+You can create a `CloudEvent` object in many ways, for example:
+
+```js
+import { CloudEvent, CloudEventV1, CloudEventV1Attributes } from "cloudevents";
+const ce: CloudEventV1<string> = {
+    specversion: '1.0',
+    source: '/some/source',
+    type: 'example',
+    id: '1234'
+};
+const event = new CloudEvent(ce);
+const ce2: CloudEventV1Attributes<string> = {
+    specversion: '1.0',
+    source: '/some/source',
+    type: 'example',
+};
+const event2 = new CloudEvent(ce2);
+const event3 = new CloudEvent({
+    source: '/some/source',
+    type: 'example',
+});
+```
+
 ### Example Applications
 
 There are a few trivial example applications in

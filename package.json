@@ -131,7 +131,7 @@
     "eslint-plugin-promise": "^5.1.0",
     "got": "^11.7.0",
     "http-parser-js": "^0.5.2",
-    "mocha": "~9.1.2",
+    "mocha": "~9.2.0",
     "nock": "~12.0.3",
     "nyc": "~15.0.0",
     "prettier": "^2.0.5",

@@ -3,6 +3,8 @@
  SPDX-License-Identifier: Apache-2.0
 */
 
+import { types } from "util";
+
 import { CloudEvent, CloudEventV1, CONSTANTS, Mode, Version } from "../..";
 import { Message, Headers, Binding } from "..";
 
@@ -29,7 +31,7 @@ function binary<T>(event: CloudEventV1<T>): Message {
   const contentType: Headers = { [CONSTANTS.HEADER_CONTENT_TYPE]: CONSTANTS.DEFAULT_CONTENT_TYPE };
   const headers: Headers = { ...contentType, ...headersFor(event) };
   let body = event.data;
-  if (typeof event.data === "object" && !(event.data instanceof Uint32Array)) {
+  if (typeof event.data === "object" && !types.isTypedArray(event.data)) {
     // we'll stringify objects, but not binary data
     body = (JSON.stringify(event.data) as unknown) as T;
   }

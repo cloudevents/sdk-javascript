@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.3.1](https://www.github.com/cloudevents/sdk-javascript/compare/v5.3.0...v5.3.1) (2022-02-02)
+
+
+### Bug Fixes
+
+* improve binary data detection in HTTP transport ([#468](https://www.github.com/cloudevents/sdk-javascript/issues/468)) ([cd4dea9](https://www.github.com/cloudevents/sdk-javascript/commit/cd4dea954b1797eb0e0fe2acd1b32ef75a3b7b65))
+* package.json & package-lock.json to reduce vulnerabilities ([#462](https://www.github.com/cloudevents/sdk-javascript/issues/462)) ([ae8fa79](https://www.github.com/cloudevents/sdk-javascript/commit/ae8fa799afea279adfbd1f35103fb168621c8a24))
+
+
+### Documentation
+
+* add TS examples for CloudEvent usage ([#461](https://www.github.com/cloudevents/sdk-javascript/issues/461)) ([c603831](https://www.github.com/cloudevents/sdk-javascript/commit/c603831e934c68c1f430708b5bff4dad938093dd))
+* fix ts example ([#467](https://www.github.com/cloudevents/sdk-javascript/issues/467)) ([349b84c](https://www.github.com/cloudevents/sdk-javascript/commit/349b84c3dad5d282d24780a884a0f94643871247))
+
+
+### Miscellaneous
+
+* update readme with current Node LTS versions and add Node 16 to the testing matrix([#465](https://www.github.com/cloudevents/sdk-javascript/issues/465)) ([8abbc11](https://www.github.com/cloudevents/sdk-javascript/commit/8abbc114af4b784c5061737f432f0af9ccb6c6f2))
+
 ## [5.3.0](https://www.github.com/cloudevents/sdk-javascript/compare/v5.2.0...v5.3.0) (2022-01-14)
 
 

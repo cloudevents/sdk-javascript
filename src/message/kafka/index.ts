@@ -10,7 +10,10 @@ import { sanitize } from "../http/headers";
 
 // Export the binding implementation and message interface
 export {
-  Kafka,
+  Kafka
+};
+
+export type {
   KafkaMessage,
   KafkaEvent
 };

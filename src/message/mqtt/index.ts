@@ -6,10 +6,9 @@
 import { Binding, Deserializer, CloudEvent, CloudEventV1, CONSTANTS, Message, ValidationError, Headers } from "../..";
 
 export {
-  MQTT,
-  MQTTMessage,
-  MQTTMessageFactory
+  MQTT, MQTTMessageFactory
 };
+export type { MQTTMessage };
 
 /**
  * Extends the base {@linkcode Message} interface to include MQTT attributes, some of which

@@ -17,30 +17,33 @@ import CONSTANTS from "./constants";
 export {
   // From event
   CloudEvent,
-  CloudEventV1,
-  CloudEventV1Attributes,
   Version,
   ValidationError,
+  Mode,
+  HTTP,
+  Kafka,
+  MQTT,
+  MQTTMessageFactory,
+  emitterFor,
+  Emitter,
+  // From Constants
+  CONSTANTS
+};
+
+export type {
+  CloudEventV1,
+  CloudEventV1Attributes,
   // From message
   Headers,
-  Mode,
   Binding,
   Message,
   Deserializer,
   Serializer,
-  HTTP,
-  Kafka,
   KafkaEvent,
   KafkaMessage,
-  MQTT,
   MQTTMessage,
-  MQTTMessageFactory,
   // From transport
   TransportFunction,
   EmitterFunction,
-  emitterFor,
-  Emitter,
-  Options,
-  // From Constants
-  CONSTANTS,
+  Options
 };

@@ -13,7 +13,7 @@
     "lint:js": "eslint 'src/**/*.{js,ts}' 'test/**/*.{js,ts}' cucumber.js",
     "lint:md": "remark .",
     "lint:fix": "eslint 'src/**/*.{js,ts}' 'test/**/*.{js,ts}' --fix",
-    "pretest": "npm run lint",
+    "pretest": "npm run lint && npm run conformance",
     "test": "mocha --require ts-node/register ./test/integration/**/*.ts",
     "conformance": "cucumber-js ./conformance/features/*-protocol-binding.feature -p default",
     "coverage": "nyc --reporter=lcov --reporter=text npm run test",
@@ -110,7 +110,6 @@
   "homepage": "https://github.com/cloudevents/sdk-javascript#readme",
   "dependencies": {
     "ajv": "^8.6.3",
-    "ajv-formats": "^2.1.1",
     "util": "^0.12.4",
     "uuid": "~8.3.0"
   },
@@ -126,6 +125,7 @@
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.29.0",
     "ajv-cli": "^5.0.0",
+    "ajv-formats": "^2.1.1",
     "axios": "^0.21.3",
     "chai": "~4.2.0",
     "eslint": "^7.32.0",

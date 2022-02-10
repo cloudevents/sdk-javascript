@@ -15,6 +15,7 @@
   "plugins": [
     "header"
   ],
+  "ignorePatterns": ["**/schema/*"],
   "rules": {
     "no-var": "error",
     "standard/no-callback-literal": "off",

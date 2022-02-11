@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.3.2](https://www.github.com/cloudevents/sdk-javascript/compare/v5.3.1...v5.3.2) (2022-02-11)
+
+
+### Bug Fixes
+
+* use `isolatedModules: true` in tsconfig.json ([#469](https://www.github.com/cloudevents/sdk-javascript/issues/469)) ([b5c0b56](https://www.github.com/cloudevents/sdk-javascript/commit/b5c0b56f52dd6119949df1a583b76a48c6e3cec7))
+
+
+### Miscellaneous
+
+* bump typedoc to remove vuln ([#472](https://www.github.com/cloudevents/sdk-javascript/issues/472)) ([c3d9f39](https://www.github.com/cloudevents/sdk-javascript/commit/c3d9f39a53afaf411fa91aeb2323fef2eddb4d32))
+
 ### [5.3.1](https://www.github.com/cloudevents/sdk-javascript/compare/v5.3.0...v5.3.1) (2022-02-02)
 
 

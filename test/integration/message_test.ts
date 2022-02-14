@@ -23,6 +23,9 @@ const data = {
   foo: "bar",
 };
 
+// Attributes for v03 events
+const schemaurl = "https://cloudevents.io/schema.json";
+
 const ext1Name = "extension1";
 const ext1Value = "foobar";
 const ext2Name = "extension2";
@@ -291,6 +294,97 @@ describe("HTTP transport", () => {
       const eventDeserialized = HTTP.toEvent(message) as CloudEvent<Uint32Array>;
       expect(eventDeserialized.data).to.deep.equal(dataBinary);
       expect(eventDeserialized.data_base64).to.equal(data_base64);
+    });
+  });
+
+  describe("Specification version V03", () => {
+    const fixture = new CloudEvent({
+      specversion: Version.V03,
+      id,
+      type,
+      source,
+      datacontenttype,
+      subject,
+      time,
+      schemaurl,
+      data,
+      [ext1Name]: ext1Value,
+      [ext2Name]: ext2Value,
+    });
+
+    it("Binary Messages can be created from a CloudEvent", () => {
+      const message: Message = HTTP.binary(fixture);
+      expect(message.body).to.equal(JSON.stringify(data));
+      // validate all headers
+      expect(message.headers[CONSTANTS.HEADER_CONTENT_TYPE]).to.equal(datacontenttype);
+      expect(message.headers[CONSTANTS.CE_HEADERS.SPEC_VERSION]).to.equal(Version.V03);
+      expect(message.headers[CONSTANTS.CE_HEADERS.ID]).to.equal(id);
+      expect(message.headers[CONSTANTS.CE_HEADERS.TYPE]).to.equal(type);
+      expect(message.headers[CONSTANTS.CE_HEADERS.SOURCE]).to.equal(source);
+      expect(message.headers[CONSTANTS.CE_HEADERS.SUBJECT]).to.equal(subject);
+      expect(message.headers[CONSTANTS.CE_HEADERS.TIME]).to.equal(fixture.time);
+      expect(message.headers[CONSTANTS.BINARY_HEADERS_03.SCHEMA_URL]).to.equal(schemaurl);
+      expect(message.headers[`ce-${ext1Name}`]).to.equal(ext1Value);
+      expect(message.headers[`ce-${ext2Name}`]).to.equal(ext2Value);
+    });
+
+    it("Structured Messages can be created from a CloudEvent", () => {
+      const message: Message = HTTP.structured(fixture);
+      expect(message.headers[CONSTANTS.HEADER_CONTENT_TYPE]).to.equal(CONSTANTS.DEFAULT_CE_CONTENT_TYPE);
+      // Parse the message body as JSON, then validate the attributes
+      const body = JSON.parse(message.body as string);
+      expect(body[CONSTANTS.CE_ATTRIBUTES.SPEC_VERSION]).to.equal(Version.V03);
+      expect(body[CONSTANTS.CE_ATTRIBUTES.ID]).to.equal(id);
+      expect(body[CONSTANTS.CE_ATTRIBUTES.TYPE]).to.equal(type);
+      expect(body[CONSTANTS.CE_ATTRIBUTES.SOURCE]).to.equal(source);
+      expect(body[CONSTANTS.CE_ATTRIBUTES.SUBJECT]).to.equal(subject);
+      expect(body[CONSTANTS.CE_ATTRIBUTES.TIME]).to.equal(fixture.time);
+      expect(body[CONSTANTS.STRUCTURED_ATTRS_03.SCHEMA_URL]).to.equal(schemaurl);
+      expect(body[ext1Name]).to.equal(ext1Value);
+      expect(body[ext2Name]).to.equal(ext2Value);
+    });
+
+    it("A CloudEvent can be converted from a binary Message", () => {
+      const message = HTTP.binary(fixture);
+      const event = HTTP.toEvent(message);
+      expect(event).to.deep.equal(fixture);
+    });
+
+    it("A CloudEvent can be converted from a structured Message", () => {
+      const message = HTTP.structured(fixture);
+      const event = HTTP.toEvent(message);
+      expect(event).to.deep.equal(fixture);
+    });
+
+    it("Converts binary data to base64 when serializing structured messages", () => {
+      const event = fixture.cloneWith({ data: imageData, datacontenttype: "image/png" });
+      expect(event.data).to.equal(imageData);
+      const message = HTTP.structured(event);
+      const messageBody = JSON.parse(message.body as string);
+      expect(messageBody.data_base64).to.equal(image_base64);
+    });
+
+    it("Converts base64 encoded data to binary when deserializing structured messages", () => {
+      // Creating an event with binary data automatically produces base64 encoded data
+      // which is then set as the 'data' attribute on the message body
+      const message = HTTP.structured(fixture.cloneWith({ data: imageData, datacontenttype: "image/png" }));
+      const eventDeserialized = HTTP.toEvent(message) as CloudEvent<Uint32Array>;
+      expect(eventDeserialized.data).to.deep.equal(imageData);
+      expect(eventDeserialized.data_base64).to.equal(image_base64);
+    });
+
+    it("Converts base64 encoded data to binary when deserializing binary messages", () => {
+      const message = HTTP.binary(fixture.cloneWith({ data: imageData, datacontenttype: "image/png" }));
+      const eventDeserialized = HTTP.toEvent(message) as CloudEvent<Uint32Array>;
+      expect(eventDeserialized.data).to.deep.equal(imageData);
+      expect(eventDeserialized.data_base64).to.equal(image_base64);
+    });
+
+    it("Keeps binary data binary when serializing binary messages", () => {
+      const event = fixture.cloneWith({ data: dataBinary });
+      expect(event.data).to.equal(dataBinary);
+      const message = HTTP.binary(event);
+      expect(message.body).to.equal(dataBinary);
     });
   });
 });

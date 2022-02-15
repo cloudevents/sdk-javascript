@@ -21,12 +21,12 @@ describe("The SDK Requirements", () => {
   });
 
   describe("v0.3", () => {
-    it("should create an event using the right spec version", () => {
+    it("should create an (invalid) event using the right spec version", () => {
       expect(
         new CloudEvent({
           ...fixture,
           specversion: Version.V03,
-        }).specversion,
+        }, false).specversion,
       ).to.equal(Version.V03);
     });
   });

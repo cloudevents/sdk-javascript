@@ -5,7 +5,10 @@
   "main": "dist/index.js",
   "scripts": {
     "watch": "tsc --project tsconfig.json --watch",
-    "build": "tsc --project tsconfig.json && tsc --project tsconfig.browser.json && webpack",
+    "build:src": "tsc --project tsconfig.json",
+    "build:browser": "tsc --project tsconfig.browser.json && webpack",
+    "build:schema": "ajv compile -c ./src/schema/formats.js -s src/schema/cloudevent.json --strict-types false -o src/schema/v1.js",
+    "build": "npm run build:schema && npm run build:src && npm run build:browser",
     "lint": "npm run lint:md && npm run lint:js",
     "lint:js": "eslint 'src/**/*.{js,ts}' 'test/**/*.{js,ts}' cucumber.js",
     "lint:md": "remark .",
@@ -106,13 +109,12 @@
   },
   "homepage": "https://github.com/cloudevents/sdk-javascript#readme",
   "dependencies": {
-    "ajv": "~6.12.3",
+    "ajv": "^8.6.3",
     "util": "^0.12.4",
     "uuid": "~8.3.0"
   },
   "devDependencies": {
     "@cucumber/cucumber": "^8.0.0-rc.1",
-    "@types/ajv": "^1.0.0",
     "@types/chai": "^4.2.11",
     "@types/cucumber": "^6.0.1",
     "@types/got": "^9.6.11",
@@ -122,6 +124,8 @@
     "@types/uuid": "^8.0.0",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.29.0",
+    "ajv-cli": "^5.0.0",
+    "ajv-formats": "^2.1.1",
     "axios": "^0.21.3",
     "chai": "~4.2.0",
     "eslint": "^7.32.0",

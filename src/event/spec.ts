@@ -3,28 +3,17 @@
  SPDX-License-Identifier: Apache-2.0
 */
 
-import Ajv, { Options } from "ajv";
 import { ValidationError } from "./validation";
 
 import { CloudEventV1 } from "./interfaces";
-import { schemaV1 } from "./schemas";
 import { Version } from "./cloudevent";
+import validate from "../schema/v1";
 
-const ajv = new Ajv({ extendRefs: true } as Options);
-
-// handle date-time format specially because a user could pass
-// Date().toString(), which is not spec compliant date-time format
-ajv.addFormat("js-date-time", function (dateTimeString) {
-  const date = new Date(Date.parse(dateTimeString));
-  return date.toString() !== "Invalid Date";
-});
-
-const isValidAgainstSchemaV1 = ajv.compile(schemaV1);
 
 export function validateCloudEvent<T>(event: CloudEventV1<T>): boolean {
   if (event.specversion === Version.V1) {
-    if (!isValidAgainstSchemaV1(event)) {
-      throw new ValidationError("invalid payload", isValidAgainstSchemaV1.errors);
+    if (!validate(event)) {
+      throw new ValidationError("invalid payload", (validate as any).errors);
     }
   } else {
     return false;

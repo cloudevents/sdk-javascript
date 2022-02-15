@@ -150,7 +150,7 @@ describe("CloudEvents Spec v1.0", () => {
     describe("'time'", () => {
       it("must adhere to the format specified in RFC 3339", () => {
         const d = new Date();
-        cloudevent = cloudevent.cloneWith({ time: d.toString() });
+        cloudevent = cloudevent.cloneWith({ time: d.toString() }, false);
         // ensure that we always get back the same thing we passed in
         expect(cloudevent.time).to.equal(d.toString());
         // ensure that when stringified, the timestamp is in RFC3339 format

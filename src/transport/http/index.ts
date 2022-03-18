@@ -3,11 +3,12 @@
  SPDX-License-Identifier: Apache-2.0
 */
 
+import { Socket } from "net";
 import http, { OutgoingHttpHeaders } from "http";
+import https, { RequestOptions } from "https";
 
 import { Message, Options } from "../..";
 import { TransportFunction } from "../emitter";
-import { RequestOptions } from "https";
 
 /**
  * httpTransport provides a simple HTTP Transport function, which can send a CloudEvent,
@@ -22,6 +23,15 @@ import { RequestOptions } from "https";
  * @returns {TransportFunction} a function which can be used to send CloudEvents to _sink_
  */
 export function httpTransport(sink: string | URL): TransportFunction {
+  const url = new URL(sink);
+  let base: any;
+  if (url.protocol === "https:") {
+    base = https;
+  } else if (url.protocol === "http:") {
+    base = http;
+  } else {
+    throw new TypeError(`unsupported protocol ${url.protocol}`);
+  }
   return function(message: Message, options?: Options): Promise<unknown> {
     return new Promise((resolve, reject) => {
       options = { ...options };
@@ -36,9 +46,9 @@ export function httpTransport(sink: string | URL): TransportFunction {
           body: "",
           headers: {},
         };
-        const req = http.request(sink, opts, (res) => {
+        const req = base.request(url, opts, (res: Socket) => {
           res.setEncoding("utf-8");
-          response.headers = res.headers;
+          response.headers = (res as any).headers;
           res.on("data", (chunk) => response.body += chunk);
           res.on("end", () => { resolve(response); });
         });

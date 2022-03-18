@@ -15,7 +15,7 @@ import { CloudEvent, HTTP, Message, Mode, Options, TransportFunction, emitterFor
   from "../../src";
 
 const DEFAULT_CE_CONTENT_TYPE = CONSTANTS.DEFAULT_CE_CONTENT_TYPE;
-const sink = "http://cloudevents.io/";
+const sink = "https://cloudevents.io/";
 const type = "com.example.test";
 const source = "urn:event:from:myapi/resource/123";
 const ext1Name = "lunch";
@@ -101,37 +101,50 @@ describe("emitterFor() defaults", () => {
   });
 });
 
+function setupMock(uri: string) {
+  nock(uri)
+  .post("/")
+  .reply(function (uri: string, body: nock.Body) {
+    // return the request body and the headers so they can be
+    // examined in the test
+    if (typeof body === "string") {
+      body = JSON.parse(body);
+    }
+    const returnBody = { ...(body as Record<string, unknown>), ...this.req.headers };
+    return [201, returnBody];
+  });
+}
+
 describe("HTTP Transport Binding for emitterFactory", () => {
-  beforeEach(() => {
-    nock(sink)
-      .post("/")
-      .reply(function (uri: string, body: nock.Body) {
-        // return the request body and the headers so they can be
-        // examined in the test
-        if (typeof body === "string") {
-          body = JSON.parse(body);
-        }
-        const returnBody = { ...(body as Record<string, unknown>), ...this.req.headers };
-        return [201, returnBody];
-      });
+  beforeEach(() => { setupMock(sink); });
+
+  describe("HTTPS builtin", () => {
+    testEmitterBinary(httpTransport(sink), "body");
   });
 
   describe("HTTP builtin", () => {
-    testEmitter(httpTransport(sink), "body");
+    setupMock("http://cloudevents.io");
+    testEmitterBinary(httpTransport("http://cloudevents.io"), "body");
+    setupMock("http://cloudevents.io");
+    testEmitterStructured(httpTransport("http://cloudevents.io"), "body");
   });
 
   describe("Axios", () => {
-    testEmitter(axiosEmitter, "data");
+    testEmitterBinary(axiosEmitter, "data");
+    testEmitterStructured(axiosEmitter, "data");
   });
   describe("SuperAgent", () => {
-    testEmitter(superagentEmitter, "body");
+    testEmitterBinary(superagentEmitter, "body");
+    testEmitterStructured(superagentEmitter, "body");
   });
+
   describe("Got", () => {
-    testEmitter(gotEmitter, "body");
+    testEmitterBinary(gotEmitter, "body");
+    testEmitterStructured(gotEmitter, "body");
   });
 });
 
-function testEmitter(fn: TransportFunction, bodyAttr: string) {
+function testEmitterBinary(fn: TransportFunction, bodyAttr: string) {
   it("Works as a binary event emitter", async () => {
     const emitter = emitterFor(fn);
     const response = (await emitter(fixture)) as Record<string, Record<string, string>>;
@@ -141,7 +154,9 @@ function testEmitter(fn: TransportFunction, bodyAttr: string) {
     }
     assertBinary(body);
   });
+}
 
+function testEmitterStructured(fn: TransportFunction, bodyAttr: string) {
   it("Works as a structured event emitter", async () => {
     const emitter = emitterFor(fn, { binding: HTTP, mode: Mode.STRUCTURED });
     const response = (await emitter(fixture)) as Record<string, Record<string, Record<string, string>>>;

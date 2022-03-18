@@ -7,23 +7,7 @@ import http, { OutgoingHttpHeaders } from "http";
 
 import { Message, Options } from "../..";
 import { TransportFunction } from "../emitter";
-import axios from "axios";
 import { RequestOptions } from "https";
-
-export function axiosTransport(sink: string): TransportFunction {
-  return function (message: Message, options?: Options): Promise<unknown> {
-    options = { ...options };
-    const headers = {
-      ...message.headers,
-      ...(options.headers as Record<string, string>),
-    };
-    delete options.headers;
-    return axios.post(sink, message.body, {
-      headers: headers,
-      ...options,
-    });
-  };
-}
 
 /**
  * httpTransport provides a simple HTTP Transport function, which can send a CloudEvent,

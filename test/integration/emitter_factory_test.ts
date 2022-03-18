@@ -11,8 +11,7 @@ import request from "superagent";
 import got from "got";
 
 import CONSTANTS from "../../src/constants";
-import { CloudEvent, HTTP, Message, Mode, Options, TransportFunction, 
-  axiosTransport, emitterFor, httpTransport }
+import { CloudEvent, HTTP, Message, Mode, Options, TransportFunction, emitterFor, httpTransport }
   from "../../src";
 
 const DEFAULT_CE_CONTENT_TYPE = CONSTANTS.DEFAULT_CE_CONTENT_TYPE;
@@ -119,10 +118,6 @@ describe("HTTP Transport Binding for emitterFactory", () => {
 
   describe("HTTP builtin", () => {
     testEmitter(httpTransport(sink), "body");
-  });
-
-  describe("Axios builtin", () => {
-    testEmitter(axiosTransport(sink), "data");
   });
 
   describe("Axios", () => {

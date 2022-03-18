@@ -6,7 +6,7 @@
 import "mocha";
 import { expect } from "chai";
 import nock from "nock";
-import axios from "axios";
+import axios, { AxiosRequestHeaders } from "axios";
 import request from "superagent";
 import got from "got";
 
@@ -39,7 +39,7 @@ export const fixture = new CloudEvent({
 });
 
 function axiosEmitter(message: Message, options?: Options): Promise<unknown> {
-  return axios.post(sink, message.body, { headers: message.headers, ...options });
+  return axios.post(sink, message.body, { headers: message.headers as AxiosRequestHeaders, ...options });
 }
 
 function superagentEmitter(message: Message, options?: Options): Promise<unknown> {

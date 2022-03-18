@@ -111,7 +111,7 @@
   "dependencies": {
     "ajv": "^8.6.3",
     "util": "^0.12.4",
-    "uuid": "~8.3.0"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@cucumber/cucumber": "^8.0.0-rc.1",
@@ -121,7 +121,7 @@
     "@types/mocha": "^7.0.2",
     "@types/node": "^14.14.10",
     "@types/superagent": "^4.1.10",
-    "@types/uuid": "^8.0.0",
+    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.29.0",
     "ajv-cli": "^5.0.0",
@@ -144,7 +144,7 @@
     "remark-lint": "^8.0.0",
     "remark-lint-list-item-indent": "^2.0.1",
     "remark-preset-lint-recommended": "^5.0.0",
-    "superagent": "^6.1.0",
+    "superagent": "^7.1.1",
     "ts-node": "^8.10.2",
     "typedoc": "^0.22.11",
     "typescript": "^4.3.5",

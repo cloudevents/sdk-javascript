@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.4.0](https://www.github.com/cloudevents/sdk-javascript/compare/v5.3.2...v5.4.0) (2022-03-18)
+
+
+### Features
+
+* precompile cloudevent schema ([#471](https://www.github.com/cloudevents/sdk-javascript/issues/471)) ([b13bde9](https://www.github.com/cloudevents/sdk-javascript/commit/b13bde9b4967f5c8b02b788a40a89dd4cec5b78a))
+
+
+### Miscellaneous
+
+* add an npm test:once script ([#480](https://www.github.com/cloudevents/sdk-javascript/issues/480)) ([b4d7aa9](https://www.github.com/cloudevents/sdk-javascript/commit/b4d7aa9adbb92bb5d037c464dd3d4bcd1ba88fe6))
+* update package.json format and deps ([#479](https://www.github.com/cloudevents/sdk-javascript/issues/479)) ([6204805](https://www.github.com/cloudevents/sdk-javascript/commit/6204805bfcebf68fd1b94777ecb3df6d7473e10e))
+* update the release documentation ([#476](https://www.github.com/cloudevents/sdk-javascript/issues/476)) ([c420da4](https://www.github.com/cloudevents/sdk-javascript/commit/c420da479343bc71a5ba4d5ed41841280f4c989a))
+
 ### [5.3.2](https://www.github.com/cloudevents/sdk-javascript/compare/v5.3.1...v5.3.2) (2022-02-11)
 
 

@@ -6,7 +6,9 @@ module.exports = {
   },
   resolve: {
     fallback: {
-      util: require.resolve("util/")
+      util: require.resolve("util/"),
+      http: false,
+      https: false
     },
   },
   output: {

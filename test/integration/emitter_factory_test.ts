@@ -11,10 +11,12 @@ import request from "superagent";
 import got from "got";
 
 import CONSTANTS from "../../src/constants";
-import { CloudEvent, emitterFor, HTTP, Mode, Message, Options, TransportFunction } from "../../src";
+import { CloudEvent, HTTP, Message, Mode, Options, TransportFunction, 
+  axiosTransport, emitterFor, httpTransport }
+  from "../../src";
 
 const DEFAULT_CE_CONTENT_TYPE = CONSTANTS.DEFAULT_CE_CONTENT_TYPE;
-const sink = "https://cloudevents.io/";
+const sink = "http://cloudevents.io/";
 const type = "com.example.test";
 const source = "urn:event:from:myapi/resource/123";
 const ext1Name = "lunch";
@@ -83,7 +85,6 @@ describe("emitterFor() defaults", () => {
 
   it("Supports HTTP binding, structured mode", () => {
     function transport(message: Message): Promise<unknown> {
-      console.error(message);
       // A structured message will have the application/cloudevents+json header
       expect(message.headers["content-type"]).to.equal(CONSTANTS.DEFAULT_CE_CONTENT_TYPE);
       const body = JSON.parse(message.body as string);
@@ -114,6 +115,14 @@ describe("HTTP Transport Binding for emitterFactory", () => {
         const returnBody = { ...(body as Record<string, unknown>), ...this.req.headers };
         return [201, returnBody];
       });
+  });
+
+  describe("HTTP builtin", () => {
+    testEmitter(httpTransport(sink), "body");
+  });
+
+  describe("Axios builtin", () => {
+    testEmitter(axiosTransport(sink), "data");
   });
 
   describe("Axios", () => {

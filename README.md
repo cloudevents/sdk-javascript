@@ -14,7 +14,7 @@ The CloudEvents SDK for JavaScript.
 - Serialize and deserialize CloudEvents in different [event formats](https://github.com/cloudevents/spec/blob/v1.0/spec.md#event-format).
 - Send and recieve CloudEvents with via different [protocol bindings](https://github.com/cloudevents/spec/blob/v1.0/spec.md#protocol-binding).
 
-_Note:_ Supports CloudEvent versions 0.3, 1.0
+_Note:_ Supports CloudEvent version 1.0
 
 ## Installation
 
@@ -46,9 +46,26 @@ app.post("/", (req, res) => {
 
 #### Emitting Events
 
-You can send events over HTTP in either binary or structured format
-using the `HTTP` binding to create a `Message` which has properties
-for `headers` and `body`.
+The easiest way to send events is to use the built-in HTTP emitter.
+
+```js
+const { httpTransport, emitterFor, CloudEvent } = require("cloudevents");
+
+// Create an emitter to send events to an to a reciever
+const emit = emitterFor(httpTransport("https://my.receiver.com/endpoint"));
+
+// Create a new CloudEvent
+const ce = new CloudEvent({ type, source, data });
+
+// Send it to the endpoint - encoded as HTTP binary by default
+emit(ce);
+```
+
+If you prefer to use another transport mechanism for sending events
+over HTTP, you can use the `HTTP` binding to create a `Message` which
+has properties for `headers` and `body`, allowing greater flexibility
+and customization. For example, the `axios` module is used here to send
+a CloudEvent.
 
 ```js
 const axios = require("axios").default;
@@ -87,30 +104,20 @@ const emit = emitterFor(sendWithAxios, { mode: Mode.BINARY });
 emit(new CloudEvent({ type, source, data }));
 ```
 
-You may also use the `Emitter` singleton
+You may also use the `Emitter` singleton to send your `CloudEvents`.
 
 ```js
-const axios = require("axios").default;
-const { emitterFor, Mode, CloudEvent, Emitter } = require("cloudevents");
+const { emitterFor, httpTransport, Mode, CloudEvent, Emitter } = require("cloudevents");
 
-function sendWithAxios(message) {
-  // Do what you need with the message headers
-  // and body in this function, then send the
-  // event
-  axios({
-    method: "post",
-    url: "...",
-    data: message.body,
-    headers: message.headers,
-  });
-}
+// Create a CloudEvent emitter function to send events to our receiver
+const emit = emitterFor(httpTransport("https://example.com/receiver"));
 
-const emit = emitterFor(sendWithAxios, { mode: Mode.BINARY });
-// Set the emit
+// Use the emit() function to send a CloudEvent to its endpoint when a "cloudevent" event is emitted
+// (see: https://nodejs.org/api/events.html#class-eventemitter)
 Emitter.on("cloudevent", emit);
 
 ...
-// In any part of the code will send the event
+// In any part of the code, calling `emit()` on a `CloudEvent` instance will send the event
 new CloudEvent({ type, source, data }).emit();
 
 // You can also have several listeners to send the event to several endpoints

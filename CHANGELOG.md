@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.0.1](https://www.github.com/cloudevents/sdk-javascript/compare/v6.0.0...v6.0.1) (2022-03-21)
+
+
+### Miscellaneous
+
+* update dependencies to inlude ajv-formats ([#484](https://www.github.com/cloudevents/sdk-javascript/issues/484)) ([c0b1f77](https://www.github.com/cloudevents/sdk-javascript/commit/c0b1f7705a448dda3e6292d872a5bf435d26fab4)), closes [/github.com/cloudevents/sdk-javascript/pull/471/files#diff-7ae45ad102eab3b6d7e7896acd08c427a9b25b346470d7bc6507b6481575d519R128](https://www.github.com/cloudevents//github.com/cloudevents/sdk-javascript/pull/471/files/issues/diff-7ae45ad102eab3b6d7e7896acd08c427a9b25b346470d7bc6507b6481575d519R128)
+
 ## [6.0.0](https://www.github.com/cloudevents/sdk-javascript/compare/v5.3.2...v6.0.0) (2022-03-21)
 
 

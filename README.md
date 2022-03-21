@@ -46,7 +46,7 @@ app.post("/", (req, res) => {
 
 #### Emitting Events
 
-The easiest way to send events is to use the builtin HTTP emitter.
+The easiest way to send events is to use the built-in HTTP emitter.
 
 ```js
 const { httpTransport, emitterFor, CloudEvent } = require("cloudevents");

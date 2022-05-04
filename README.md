@@ -51,7 +51,7 @@ The easiest way to send events is to use the built-in HTTP emitter.
 ```js
 const { httpTransport, emitterFor, CloudEvent } = require("cloudevents");
 
-// Create an emitter to send events to an to a reciever
+// Create an emitter to send events to a reciever
 const emit = emitterFor(httpTransport("https://my.receiver.com/endpoint"));
 
 // Create a new CloudEvent

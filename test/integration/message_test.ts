@@ -75,6 +75,26 @@ describe("HTTP transport", () => {
     expect(body.extboolean).to.equal(false);
   });
 
+  it("Handles big integers in structured mode", () => {
+    process.env[CONSTANTS.USE_BIG_INT_ENV] = "true";
+    const ce = HTTP.toEvent({
+      headers: { "content-type": "application/cloudevents+json" },
+      body: `{"data": 1524831183200260097}`
+    }) as CloudEvent;
+    expect(ce.data).to.equal(1524831183200260097n);
+    process.env[CONSTANTS.USE_BIG_INT_ENV] = undefined;
+  });
+
+  it("Handles big integers in binary mode", () => {
+    process.env[CONSTANTS.USE_BIG_INT_ENV] = "true";
+    const ce = HTTP.toEvent({
+      headers: { "content-type": "application/json", "ce-id": "1234" },
+      body: `{"data": 1524831183200260097}`
+    }) as CloudEvent<Record<string, never>>;
+    expect((ce.data as Record<string, never>).data).to.equal(1524831183200260097n);
+    process.env[CONSTANTS.USE_BIG_INT_ENV] = undefined;
+  });
+
   it("Handles events with no content-type and no datacontenttype", () => {
     const body = "{Something[Not:valid}JSON";
     const message: Message<undefined> = {

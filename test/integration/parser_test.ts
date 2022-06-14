@@ -55,6 +55,7 @@ describe("JSON Event Format Parser", () => {
     const payload = "{gg";
     const parser = new Parser();
 
+    console.error("BIG_INT", process.env["CLOUDEVENT_BIG_INT"]);
     // TODO: Should the parser catch the SyntaxError and re-throw a ValidationError?
     expect(parser.parse.bind(parser, payload)).to.throw(SyntaxError);
   });

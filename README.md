@@ -162,6 +162,20 @@ const event3 = new CloudEvent({
 });
 ```
 
+### A Note About Big Integers
+
+When parsing JSON data, if a JSON field value is a number, and that number
+is really big, JavaScript loses precision. For example, the Twitter API exposes
+the Tweet ID. This is a large number that exceeds the integer space of `Number`.
+
+In order to address this situation, you can set the environment variable
+`CE_USE_BIG_INT` to the string value `"true"` to enable the use of the
+[`json-bigint`](https://www.npmjs.com/package/json-bigint) package. This
+package is not used by default due to the resulting slowdown in parse speed
+by a factor of 7x.
+
+See for more information: https://github.com/cloudevents/sdk-javascript/issues/489
+
 ### Example Applications
 
 There are a few trivial example applications in
@@ -205,7 +219,7 @@ There you will find Express.js, TypeScript and Websocket examples.
 | HTTP Batch  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
 | Kafka Binary  | :heavy_check_mark:                                                   | :heavy_check_mark:                                                   |
 | Kafka Structured  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
-| Kafka Batch  | :heavy_check_mark:                                    | :heavy_check_mark:  
+| Kafka Batch  | :heavy_check_mark:                                    | :heavy_check_mark:
 | MQTT Binary  | :heavy_check_mark:                                                   | :heavy_check_mark:                                                   |
 | MQTT Structured  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
 

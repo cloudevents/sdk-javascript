@@ -3,9 +3,11 @@
  SPDX-License-Identifier: Apache-2.0
 */
 
+import JSONbig from "json-bigint";
 import CONSTANTS from "./constants";
 import { isString, isDefinedOrThrow, isStringOrObjectOrThrow, ValidationError } from "./event/validation";
 
+const __JSON = JSON;
 export abstract class Parser {
   abstract parse(payload: Record<string, unknown> | string | string[] | undefined): unknown;
 }
@@ -36,6 +38,13 @@ export class JSONParser implements Parser {
 
     isDefinedOrThrow(payload, new ValidationError("null or undefined payload"));
     isStringOrObjectOrThrow(payload, new ValidationError("invalid payload type, allowed are: string or object"));
+
+    if (process.env[CONSTANTS.USE_BIG_INT_ENV] === "true") {
+      JSON = JSONbig(({ useNativeBigInt: true })) as JSON;
+    } else {
+      JSON = __JSON;
+    }
+
     const parseJSON = (v: Record<string, unknown> | string): string => (isString(v) ? JSON.parse(v as string) : v);
     return parseJSON(payload);
   }

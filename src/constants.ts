@@ -54,6 +54,7 @@ const CONSTANTS = Object.freeze({
     DATA_SCHEMA: "dataschema",
     DATA_BASE64: "data_base64",
   },
+  USE_BIG_INT_ENV: "CE_USE_BIG_INT"
 } as const);
 
 export default CONSTANTS;

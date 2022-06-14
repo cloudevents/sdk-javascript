@@ -41,6 +41,16 @@ const imageData = new Uint32Array(fs.readFileSync(path.join(process.cwd(), "test
 const image_base64 = asBase64(imageData);
 
 describe("HTTP transport", () => {
+  
+  it("Includes extensions when type is 'boolean' with a false value", () => {
+    const evt = new CloudEvent({ source: "test", type: "test", extboolean: false });
+    expect(evt.hasOwnProperty("extboolean")).to.equal(true);
+    expect(evt["extboolean"]).to.equal(false);
+    const message = HTTP.binary(evt);
+    expect(message.headers.hasOwnProperty("ce-extboolean")).to.equal(true);
+    expect(message.headers["ce-extboolean"]).to.equal(false);
+  });
+
   it("Handles events with no content-type and no datacontenttype", () => {
     const body = "{Something[Not:valid}JSON";
     const message: Message<undefined> = {

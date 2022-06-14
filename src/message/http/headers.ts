@@ -36,7 +36,7 @@ export function headersFor<T>(event: CloudEventV1<T>): Headers {
   // iterate over the event properties - generate a header for each
   Object.getOwnPropertyNames(event).forEach((property) => {
     const value = event[property];
-    if (value) {
+    if (value !== undefined) {
       const map: MappedParser | undefined = headerMap[property] as MappedParser;
       if (map) {
         headers[map.name] = map.parser.parse(value as string) as string;

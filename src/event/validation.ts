@@ -5,6 +5,10 @@
 
 import { ErrorObject } from "ajv";
 
+export type TypeArray = Int8Array | Uint8Array | Int16Array | Uint16Array | 
+  Int32Array | Uint32Array | Uint8ClampedArray | Float32Array | Float64Array;
+
+
 /**
  * An Error class that will be thrown when a CloudEvent
  * cannot be properly validated against a specification.
@@ -36,10 +40,7 @@ export const isDefined = (v: unknown): boolean => v !== null && typeof v !== "un
 export const isBoolean = (v: unknown): boolean => typeof v === "boolean";
 export const isInteger = (v: unknown): boolean => Number.isInteger(v as number);
 export const isDate = (v: unknown): v is Date => v instanceof Date;
-export const isBinary = (v: unknown): boolean =>
-  v instanceof Uint32Array ||
-  v instanceof Uint16Array ||
-  v instanceof Uint8Array;
+export const isBinary = (v: unknown): boolean => ArrayBuffer.isView(v);
 
 export const isStringOrThrow = (v: unknown, t: Error): boolean =>
   isString(v)
@@ -76,7 +77,7 @@ export const isBase64 = (value: unknown): boolean =>
 
 export const isBuffer = (value: unknown): boolean => value instanceof Buffer;
 
-export const asBuffer = (value: string | Buffer | Uint32Array | Uint16Array | Uint8Array): Buffer =>
+export const asBuffer = (value: string | Buffer | TypeArray): Buffer =>
   isBinary(value)
     ? Buffer.from((value as unknown) as string)
     : isBuffer(value)
@@ -86,7 +87,7 @@ export const asBuffer = (value: string | Buffer | Uint32Array | Uint16Array | Ui
       })();
 
 export const asBase64 = 
-(value: string | Buffer | Uint32Array | Uint16Array | Uint8Array): string => asBuffer(value).toString("base64");
+(value: string | Buffer | TypeArray): string => asBuffer(value).toString("base64");
 
 export const clone = (o: Record<string, unknown>): Record<string, unknown> => JSON.parse(JSON.stringify(o));
 
@@ -101,5 +102,5 @@ export const asData = (data: unknown, contentType: string): string => {
   return isBinary(maybeJson) ? asBase64(maybeJson) : maybeJson;
 };
 
-export const isValidType = (v: boolean | number | string | Date | Uint32Array | unknown): boolean =>
+export const isValidType = (v: boolean | number | string | Date | TypeArray | unknown): boolean =>
   isBoolean(v) || isInteger(v) || isString(v) || isDate(v) || isBinary(v) || isObject(v);

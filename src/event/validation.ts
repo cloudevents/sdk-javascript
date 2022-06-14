@@ -36,7 +36,10 @@ export const isDefined = (v: unknown): boolean => v !== null && typeof v !== "un
 export const isBoolean = (v: unknown): boolean => typeof v === "boolean";
 export const isInteger = (v: unknown): boolean => Number.isInteger(v as number);
 export const isDate = (v: unknown): v is Date => v instanceof Date;
-export const isBinary = (v: unknown): v is Uint32Array => v instanceof Uint32Array;
+export const isBinary = (v: unknown): boolean =>
+  v instanceof Uint32Array ||
+  v instanceof Uint16Array ||
+  v instanceof Uint8Array;
 
 export const isStringOrThrow = (v: unknown, t: Error): boolean =>
   isString(v)
@@ -73,7 +76,7 @@ export const isBase64 = (value: unknown): boolean =>
 
 export const isBuffer = (value: unknown): boolean => value instanceof Buffer;
 
-export const asBuffer = (value: string | Buffer | Uint32Array): Buffer =>
+export const asBuffer = (value: string | Buffer | Uint32Array | Uint16Array | Uint8Array): Buffer =>
   isBinary(value)
     ? Buffer.from((value as unknown) as string)
     : isBuffer(value)
@@ -82,7 +85,8 @@ export const asBuffer = (value: string | Buffer | Uint32Array): Buffer =>
         throw new TypeError("is not buffer or a valid binary");
       })();
 
-export const asBase64 = (value: string | Buffer | Uint32Array): string => asBuffer(value).toString("base64");
+export const asBase64 = 
+(value: string | Buffer | Uint32Array | Uint16Array | Uint8Array): string => asBuffer(value).toString("base64");
 
 export const clone = (o: Record<string, unknown>): Record<string, unknown> => JSON.parse(JSON.stringify(o));
 

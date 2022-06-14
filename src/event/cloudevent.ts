@@ -133,7 +133,7 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
 
   set data(value: T | undefined) {
     if (isBinary(value)) {
-      this.data_base64 = asBase64(value);
+      this.data_base64 = asBase64(value as unknown as Buffer);
     }
     this.#_data = value;
   }

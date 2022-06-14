@@ -182,5 +182,25 @@ describe("CloudEvents Spec v1.0", () => {
       const ce = cloudevent.cloneWith({ datacontenttype: "text/plain", data: dataBinary });
       expect(ce.data_base64).to.equal(expected);
     });
+
+    it("should be ok when type is 'Uint16Array' for 'Binary'", () => {
+      const dataString = ")(*~^my data for ce#@#$%";
+
+      const dataBinary = Uint16Array.from(dataString, (c) => c.codePointAt(0) as number);
+      const expected = asBase64(dataBinary);
+
+      const ce = cloudevent.cloneWith({ datacontenttype: "text/plain", data: dataBinary });
+      expect(ce.data_base64).to.equal(expected);
+    });
+
+    it("should be ok when type is 'Uint8Array' for 'Binary'", () => {
+      const dataString = ")(*~^my data for ce#@#$%";
+
+      const dataBinary = Uint8Array.from(dataString, (c) => c.codePointAt(0) as number);
+      const expected = asBase64(dataBinary);
+
+      const ce = cloudevent.cloneWith({ datacontenttype: "text/plain", data: dataBinary });
+      expect(ce.data_base64).to.equal(expected);
+    });
   });
 });

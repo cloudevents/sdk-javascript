@@ -6,13 +6,39 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
 import { assert } from "chai";
-import { Given, When, Then, World } from "cucumber";
-import { Message, Headers, HTTP } from "../../src";
+import { Given, When, Then, World } from "@cucumber/cucumber";
+import { Message, Headers, HTTP, KafkaMessage, Kafka } from "../../src";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { HTTPParser } = require("http-parser-js");
 
 const parser = new HTTPParser(HTTPParser.REQUEST);
+
+Given("Kafka Protocol Binding is supported", function (this: World) {
+  return true;
+});
+
+Given("a Kafka message with payload:", function (request: string) {
+  // Create a KafkaMessage from the incoming HTTP request
+  const value = Buffer.from(request);
+  const message: KafkaMessage = {
+    key: "",
+    headers: {},
+    body: value,
+    value,
+  };
+  this.message = message;
+  return true;
+});
+
+Then("Kafka headers:", function (attributes: { rawTable: [] }) {
+  this.message.headers = tableToObject(attributes.rawTable);
+});
+
+When("parsed as Kafka message", function () {
+  this.cloudevent = Kafka.toEvent(this.message);
+  return true;
+});
 
 Given("HTTP Protocol Binding is supported", function (this: World) {
   return true;

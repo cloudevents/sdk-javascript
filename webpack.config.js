@@ -4,6 +4,13 @@ module.exports = {
   entry: {
     "cloudevents": "./browser/index.js"
   },
+  resolve: {
+    fallback: {
+      util: require.resolve("util/"),
+      http: false,
+      https: false
+    },
+  },
   output: {
     path: path.resolve(__dirname, "bundles"),
     filename: "[name].js",

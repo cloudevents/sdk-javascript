@@ -4,7 +4,7 @@
 */
 
 import { PassThroughParser, DateParser, MappedParser } from "../../parsers";
-import { CloudEvent } from "../..";
+import { CloudEventV1 } from "../..";
 import { Headers } from "../";
 import { Version } from "../../event/cloudevent";
 import CONSTANTS from "../../constants";
@@ -24,7 +24,7 @@ export const requiredHeaders = [
  * @param {CloudEvent} event a CloudEvent
  * @returns {Object} the headers that will be sent for the event
  */
-export function headersFor(event: CloudEvent): Headers {
+export function headersFor<T>(event: CloudEventV1<T>): Headers {
   const headers: Headers = {};
   let headerMap: Readonly<{ [key: string]: MappedParser }>;
   if (event.specversion === Version.V1) {
@@ -36,7 +36,7 @@ export function headersFor(event: CloudEvent): Headers {
   // iterate over the event properties - generate a header for each
   Object.getOwnPropertyNames(event).forEach((property) => {
     const value = event[property];
-    if (value) {
+    if (value !== undefined) {
       const map: MappedParser | undefined = headerMap[property] as MappedParser;
       if (map) {
         headers[map.name] = map.parser.parse(value as string) as string;
@@ -64,11 +64,6 @@ export function sanitize(headers: Headers): Headers {
   Array.from(Object.keys(headers))
     .filter((header) => Object.hasOwnProperty.call(headers, header))
     .forEach((header) => (sanitized[header.toLowerCase()] = headers[header]));
-
-  // If no content-type header is sent, assume application/json
-  if (!sanitized[CONSTANTS.HEADER_CONTENT_TYPE]) {
-    sanitized[CONSTANTS.HEADER_CONTENT_TYPE] = CONSTANTS.MIME_JSON;
-  }
 
   return sanitized;
 }

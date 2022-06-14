@@ -4,8 +4,12 @@
 */
 
 import { IncomingHttpHeaders } from "http";
-import { CloudEvent } from "..";
-import { binary, deserialize, structured, isEvent } from "./http";
+import { CloudEventV1 } from "..";
+
+// reexport the protocol bindings
+export * from "./http";
+export * from "./kafka";
+export * from "./mqtt";
 
 /**
  * Binding is an interface for transport protocols to implement,
@@ -39,11 +43,11 @@ export interface Headers extends IncomingHttpHeaders {
  * transport-agnostic message
  * @interface
  * @property {@linkcode Headers} `headers` - the headers for the event Message
- * @property string `body` - the body of the event Message
+ * @property {T | string | Buffer | unknown} `body` - the body of the event Message
  */
-export interface Message {
+export interface Message<T = string> {
   headers: Headers;
-  body: string | unknown;
+  body: T | string | Buffer | unknown;
 }
 
 /**
@@ -53,6 +57,7 @@ export interface Message {
 export enum Mode {
   BINARY = "binary",
   STRUCTURED = "structured",
+  BATCH = "batch",
 }
 
 /**
@@ -61,7 +66,7 @@ export enum Mode {
  * @interface
  */
 export interface Serializer {
-  (event: CloudEvent): Message;
+  <T>(event: CloudEventV1<T>): Message;
 }
 
 /**
@@ -70,7 +75,7 @@ export interface Serializer {
  * @interface
  */
 export interface Deserializer {
-  (message: Message): CloudEvent;
+  <T>(message: Message): CloudEventV1<T> | CloudEventV1<T>[];
 }
 
 /**
@@ -81,14 +86,3 @@ export interface Deserializer {
 export interface Detector {
   (message: Message): boolean;
 }
-
-/**
- * Bindings for HTTP transport support
- * @implements {@linkcode Binding}
- */
-export const HTTP: Binding = {
-  binary: binary as Serializer,
-  structured: structured as Serializer,
-  toEvent: deserialize as Deserializer,
-  isEvent: isEvent as Detector,
-};

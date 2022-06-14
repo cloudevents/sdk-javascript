@@ -8,14 +8,13 @@ import fs from "fs";
 
 import { expect } from "chai";
 import { CloudEvent, ValidationError, Version } from "../../src";
-import { CloudEventV1 } from "../../src/event/interfaces";
 import { asBase64 } from "../../src/event/validation";
 
 const type = "org.cncf.cloudevents.example";
 const source = "http://unit.test";
 const id = "b46cf653-d48a-4b90-8dfa-355c01061361";
 
-const fixture: CloudEventV1 = {
+const fixture = {
   id,
   specversion: Version.V1,
   source,
@@ -34,17 +33,17 @@ describe("A CloudEvent", () => {
   });
 
   it("Can be constructed with loose validation", () => {
-    const ce = new CloudEvent({} as CloudEventV1, false);
+    const ce = new CloudEvent({}, false);
     expect(ce).to.be.instanceOf(CloudEvent);
   });
 
   it("Loosely validated events can be cloned", () => {
-    const ce = new CloudEvent({} as CloudEventV1, false);
+    const ce = new CloudEvent({}, false);
     expect(ce.cloneWith({}, false)).to.be.instanceOf(CloudEvent);
   });
 
   it("Loosely validated events throw when validated", () => {
-    const ce = new CloudEvent({} as CloudEventV1, false);
+    const ce = new CloudEvent({}, false);
     expect(ce.validate).to.throw(ValidationError, "invalid payload");
   });
 
@@ -53,6 +52,13 @@ describe("A CloudEvent", () => {
     expect(ce.toString()).to.deep.equal(JSON.stringify(ce));
     expect(new CloudEvent(JSON.parse(ce.toString()))).to.deep.equal(ce);
     expect(new CloudEvent(JSON.parse(JSON.stringify(ce)))).to.deep.equal(ce);
+  });
+
+  it("serializes as JSON with raw log", () => {
+    const ce = new CloudEvent({ ...fixture, data: { lunch: "tacos" } });
+    const inspectSymbol = (Symbol.for("nodejs.util.inspect.custom") as unknown) as string;
+    const ceToString = (ce[inspectSymbol] as CallableFunction).bind(ce);
+    expect(ce.toString()).to.deep.equal(ceToString());
   });
 
   it("Throw a validation error for invalid extension names", () => {
@@ -197,7 +203,7 @@ describe("A 1.0 CloudEvent", () => {
       });
     } catch (err) {
       expect(err).to.be.instanceOf(TypeError);
-      expect(err.message).to.include("invalid payload");
+      expect((err as TypeError).message).to.include("invalid payload");
     }
   });
 
@@ -208,5 +214,22 @@ describe("A 1.0 CloudEvent", () => {
     expect(obj.type).to.equal(type);
     expect(obj.source).to.equal(source);
     expect(obj.specversion).to.equal(Version.V1);
+  });
+
+  it("throws if the provded source is empty string", () => {
+    try {
+      new CloudEvent({
+        id: "0815",
+        specversion: "1.0",
+        type: "my.event.type",
+        source: "",
+      });
+    } catch (err: any) {
+      expect(err).to.be.instanceOf(ValidationError);
+      const error = err.errors[0] as any;
+      expect(err.message).to.include("invalid payload");
+      expect(error.instancePath).to.equal("/source");
+      expect(error.keyword).to.equal("minLength");
+    }
   });
 });

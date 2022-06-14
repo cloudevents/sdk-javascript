@@ -23,7 +23,7 @@ export interface Options {
  * @interface
  */
 export interface EmitterFunction {
-  (event: CloudEvent, options?: Options): Promise<unknown>;
+  <T>(event: CloudEvent<T>, options?: Options): Promise<unknown>;
 }
 
 /**
@@ -56,7 +56,7 @@ export function emitterFor(fn: TransportFunction, options = emitterDefaults): Em
     throw new TypeError("A TransportFunction is required");
   }
   const { binding, mode }: any = { ...emitterDefaults, ...options };
-  return function emit(event: CloudEvent, opts?: Options): Promise<unknown> {
+  return function emit<T>(event: CloudEvent<T>, opts?: Options): Promise<unknown> {
     opts = opts || {};
 
     switch (mode) {
@@ -109,7 +109,7 @@ export class Emitter {
    * @param {boolean} ensureDelivery fail the promise if one listener fails
    * @return {void}
    */
-  static async emitEvent(event: CloudEvent, ensureDelivery = true): Promise<void> {
+  static async emitEvent<T>(event: CloudEvent<T>, ensureDelivery = true): Promise<void> {
     if (!ensureDelivery) {
       // Ensure delivery is disabled so we don't wait for Promise
       Emitter.getInstance().emit("cloudevent", event);

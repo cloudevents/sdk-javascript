@@ -14,12 +14,12 @@ The CloudEvents SDK for JavaScript.
 - Serialize and deserialize CloudEvents in different [event formats](https://github.com/cloudevents/spec/blob/v1.0/spec.md#event-format).
 - Send and recieve CloudEvents with via different [protocol bindings](https://github.com/cloudevents/spec/blob/v1.0/spec.md#protocol-binding).
 
-_Note:_ Supports CloudEvent versions 0.3, 1.0
+_Note:_ Supports CloudEvent version 1.0
 
 ## Installation
 
 The CloudEvents SDK requires a current LTS version of Node.js. At the moment
-those are Node.js 10.x and Node.js 12.x. To install in your Node.js project:
+those are Node.js 12.x, Node.js 14.x and Node.js 16.x. To install in your Node.js project:
 
 ```console
 npm install cloudevents
@@ -46,9 +46,26 @@ app.post("/", (req, res) => {
 
 #### Emitting Events
 
-You can send events over HTTP in either binary or structured format
-using the `HTTP` binding to create a `Message` which has properties
-for `headers` and `body`.
+The easiest way to send events is to use the built-in HTTP emitter.
+
+```js
+const { httpTransport, emitterFor, CloudEvent } = require("cloudevents");
+
+// Create an emitter to send events to a reciever
+const emit = emitterFor(httpTransport("https://my.receiver.com/endpoint"));
+
+// Create a new CloudEvent
+const ce = new CloudEvent({ type, source, data });
+
+// Send it to the endpoint - encoded as HTTP binary by default
+emit(ce);
+```
+
+If you prefer to use another transport mechanism for sending events
+over HTTP, you can use the `HTTP` binding to create a `Message` which
+has properties for `headers` and `body`, allowing greater flexibility
+and customization. For example, the `axios` module is used here to send
+a CloudEvent.
 
 ```js
 const axios = require("axios").default;
@@ -87,33 +104,23 @@ const emit = emitterFor(sendWithAxios, { mode: Mode.BINARY });
 emit(new CloudEvent({ type, source, data }));
 ```
 
-You may also use the `Emitter` singleton
+You may also use the `Emitter` singleton to send your `CloudEvents`.
 
 ```js
-const axios = require("axios").default;
-const { emitterFor, Mode, CloudEvent, Emitter } = require("cloudevents");
+const { emitterFor, httpTransport, Mode, CloudEvent, Emitter } = require("cloudevents");
 
-function sendWithAxios(message) {
-  // Do what you need with the message headers
-  // and body in this function, then send the
-  // event
-  axios({
-    method: "post",
-    url: "...",
-    data: message.body,
-    headers: message.headers,
-  });
-}
+// Create a CloudEvent emitter function to send events to our receiver
+const emit = emitterFor(httpTransport("https://example.com/receiver"));
 
-const emit = emitterFor(sendWithAxios, { mode: Mode.BINARY });
-// Set the emit
+// Use the emit() function to send a CloudEvent to its endpoint when a "cloudevent" event is emitted
+// (see: https://nodejs.org/api/events.html#class-eventemitter)
 Emitter.on("cloudevent", emit);
 
 ...
-// In any part of the code will send the event
+// In any part of the code, calling `emit()` on a `CloudEvent` instance will send the event
 new CloudEvent({ type, source, data }).emit();
 
-// You can also have several listener to send the event to several endpoint
+// You can also have several listeners to send the event to several endpoints
 ```
 
 ## CloudEvent Objects
@@ -130,6 +137,29 @@ const ce = new CloudEvent({...});
 
 // Add a new extension to an existing CloudEvent
 const ce2 = ce.cloneWith({extension: "Value"});
+```
+
+You can create a `CloudEvent` object in many ways, for example, in TypeScript:
+
+```ts
+import { CloudEvent, CloudEventV1, CloudEventV1Attributes } from "cloudevents";
+const ce: CloudEventV1<string> = {
+  specversion: "1.0",
+  source: "/some/source",
+  type: "example",
+  id: "1234"
+};
+const event = new CloudEvent(ce);
+const ce2: CloudEventV1Attributes<string> = {
+  specversion: "1.0",
+  source: "/some/source",
+  type: "example",
+};
+const event2 = new CloudEvent(ce2);
+const event3 = new CloudEvent({
+  source: "/some/source",
+  type: "example",
+});
 ```
 
 ### Example Applications
@@ -151,20 +181,33 @@ There you will find Express.js, TypeScript and Websocket examples.
 
 ---
 
-| Event Formats     | [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/tree/v1.0) |
+| Event Formats     | [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/blob/v1.0/spec.md#event-format) |
 | ----------------- | ----------------------------------------------------- | ----------------------------------------------------- |
 | AVRO Event Format | :x:                                                   | :x:                                                   |
 | JSON Event Format | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
 
 ---
 
-| Transport Protocols    | [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/tree/v1.0) |
+| Protocol Bindings    | [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/blob/v1.0/spec.md#protocol-binding) |
 | ---------------------- | ----------------------------------------------------- | ----------------------------------------------------- |
 | AMQP Protocol Binding  | :x:                                                   | :x:                                                   |
 | HTTP Protocol Binding  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
-| Kafka Protocol Binding | :x:                                                   | :x:                                                   |
-| MQTT Protocol Binding  | :x:                                                   | :x:                                                   |
+| Kafka Protocol Binding | :x:                                                   | :heavy_check_mark:                                                   |
+| MQTT Protocol Binding  | :heavy_check_mark:                                                   | :x:                                                   |
 | NATS Protocol Binding  | :x:                                                   | :x:                                                   |
+
+---
+
+| Content Modes    | [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/blob/v1.0/http-protocol-binding.md#13-content-modes) |
+| ---------------------- | ----------------------------------------------------- | ----------------------------------------------------- |
+| HTTP Binary  | :heavy_check_mark:                                                   | :heavy_check_mark:                                                   |
+| HTTP Structured  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
+| HTTP Batch  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
+| Kafka Binary  | :heavy_check_mark:                                                   | :heavy_check_mark:                                                   |
+| Kafka Structured  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
+| Kafka Batch  | :heavy_check_mark:                                    | :heavy_check_mark:  
+| MQTT Binary  | :heavy_check_mark:                                                   | :heavy_check_mark:                                                   |
+| MQTT Structured  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
 
 ## Community
 
@@ -176,10 +219,14 @@ There you will find Express.js, TypeScript and Websocket examples.
   to determine which week will have the call.
 - Slack: #cloudeventssdk channel under
   [CNCF's Slack workspace](https://slack.cncf.io/).
-- Maintainers typically available on Slack
-  - Lance Ball
-  - Lucas Holmquist
 - Email: https://lists.cncf.io/g/cncf-cloudevents-sdk
+
+## Maintainers
+
+Currently active maintainers who may be found in the CNCF Slack.
+
+- Lance Ball (@lance)
+- Lucas Holmquist (@lholmquist)
 
 ## Contributing
 

@@ -13,6 +13,7 @@ index.js
 /bundles
 /dist
 /docs
+src/schema/v1.js
 
 # Runtime data
 pids

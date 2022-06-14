@@ -8,31 +8,44 @@ import { ValidationError } from "./event/validation";
 import { CloudEventV1, CloudEventV1Attributes } from "./event/interfaces";
 
 import { Options, TransportFunction, EmitterFunction, emitterFor, Emitter } from "./transport/emitter";
-import { Headers, Mode, Binding, HTTP, Message, Serializer, Deserializer } from "./message";
+import { httpTransport } from "./transport/http";
+import { 
+  Headers, Mode, Binding, HTTP, Kafka, KafkaEvent, KafkaMessage, Message, MQTT, MQTTMessage, MQTTMessageFactory,
+  Serializer, Deserializer } from "./message";
 
 import CONSTANTS from "./constants";
 
 export {
   // From event
   CloudEvent,
-  CloudEventV1,
-  CloudEventV1Attributes,
   Version,
   ValidationError,
+  Mode,
+  HTTP,
+  Kafka,
+  MQTT,
+  MQTTMessageFactory,
+  emitterFor,
+  httpTransport,
+  Emitter,
+  // From Constants
+  CONSTANTS
+};
+
+export type {
+  CloudEventV1,
+  CloudEventV1Attributes,
   // From message
   Headers,
-  Mode,
   Binding,
   Message,
   Deserializer,
   Serializer,
-  HTTP,
+  KafkaEvent,
+  KafkaMessage,
+  MQTTMessage,
   // From transport
   TransportFunction,
   EmitterFunction,
-  emitterFor,
-  Emitter,
-  Options,
-  // From Constants
-  CONSTANTS,
+  Options
 };

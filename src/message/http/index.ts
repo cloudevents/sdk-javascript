@@ -3,8 +3,10 @@
  SPDX-License-Identifier: Apache-2.0
 */
 
+import { types } from "util";
+
 import { CloudEvent, CloudEventV1, CONSTANTS, Mode, Version } from "../..";
-import { Message, Headers } from "..";
+import { Message, Headers, Binding } from "..";
 
 import {
   headersFor,
@@ -25,13 +27,13 @@ import { JSONParser, MappedParser, Parser, parserByContentType } from "../../par
  * @param {CloudEvent} event The event to serialize
  * @returns {Message} a Message object with headers and body
  */
-export function binary(event: CloudEvent): Message {
+function binary<T>(event: CloudEventV1<T>): Message {
   const contentType: Headers = { [CONSTANTS.HEADER_CONTENT_TYPE]: CONSTANTS.DEFAULT_CONTENT_TYPE };
   const headers: Headers = { ...contentType, ...headersFor(event) };
   let body = event.data;
-  if (typeof event.data === "object" && !(event.data instanceof Uint32Array)) {
+  if (typeof event.data === "object" && !types.isTypedArray(event.data)) {
     // we'll stringify objects, but not binary data
-    body = JSON.stringify(event.data);
+    body = (JSON.stringify(event.data) as unknown) as T;
   }
   return {
     headers,
@@ -47,10 +49,10 @@ export function binary(event: CloudEvent): Message {
  * @param {CloudEvent} event the CloudEvent to be serialized
  * @returns {Message} a Message object with headers and body
  */
-export function structured(event: CloudEvent): Message {
+function structured<T>(event: CloudEventV1<T>): Message {
   if (event.data_base64) {
     // The event's data is binary - delete it
-    event = event.cloneWith({ data: undefined });
+    event = (event as CloudEvent).cloneWith({ data: undefined });
   }
   return {
     headers: {
@@ -67,7 +69,7 @@ export function structured(event: CloudEvent): Message {
  * @param {Message} message an incoming Message object
  * @returns {boolean} true if this Message is a CloudEvent
  */
-export function isEvent(message: Message): boolean {
+function isEvent(message: Message): boolean {
   // TODO: this could probably be optimized
   try {
     deserialize(message);
@@ -84,16 +86,17 @@ export function isEvent(message: Message): boolean {
  * @param {Message} message the incoming message
  * @return {CloudEvent} A new {CloudEvent} instance
  */
-export function deserialize(message: Message): CloudEvent {
+function deserialize<T>(message: Message): CloudEvent<T> | CloudEvent<T>[] {
   const cleanHeaders: Headers = sanitize(message.headers);
   const mode: Mode = getMode(cleanHeaders);
   const version = getVersion(mode, cleanHeaders, message.body);
-
   switch (mode) {
     case Mode.BINARY:
       return parseBinary(message, version);
     case Mode.STRUCTURED:
       return parseStructured(message, version);
+    case Mode.BATCH:
+      return parseBatched(message);
     default:
       throw new ValidationError("Unknown Message mode");
   }
@@ -107,9 +110,14 @@ export function deserialize(message: Message): CloudEvent {
  */
 function getMode(headers: Headers): Mode {
   const contentType = headers[CONSTANTS.HEADER_CONTENT_TYPE];
-  if (contentType && contentType.startsWith(CONSTANTS.MIME_CE)) {
-    return Mode.STRUCTURED;
+  if (contentType) {
+    if (contentType.startsWith(CONSTANTS.MIME_CE_BATCH)) {
+      return Mode.BATCH;
+    } else if (contentType.startsWith(CONSTANTS.MIME_CE)) {
+      return Mode.STRUCTURED;
+    }
   }
+
   if (headers[CONSTANTS.CE_HEADERS.ID]) {
     return Mode.BINARY;
   }
@@ -133,7 +141,11 @@ function getVersion(mode: Mode, headers: Headers, body: string | Record<string, 
     }
   } else {
     // structured mode - the version is in the body
-    return typeof body === "string" ? JSON.parse(body).specversion : (body as CloudEvent).specversion;
+    if (typeof body === "string") {
+      return JSON.parse(body).specversion;
+    } else {
+      return (body as Record<string, string>).specversion;
+    }
   }
   return Version.V1;
 }
@@ -147,7 +159,7 @@ function getVersion(mode: Mode, headers: Headers, body: string | Record<string, 
  * @returns {CloudEvent} an instance of CloudEvent representing the incoming request
  * @throws {ValidationError} of the event does not conform to the spec
  */
-function parseBinary(message: Message, version: Version): CloudEvent {
+function parseBinary<T>(message: Message, version: Version): CloudEvent<T> {
   const headers = { ...message.headers };
   let body = message.body;
 
@@ -187,7 +199,7 @@ function parseBinary(message: Message, version: Version): CloudEvent {
     delete eventObj.datacontentencoding;
   }
 
-  return new CloudEvent({ ...eventObj, data: body } as CloudEventV1, false);
+  return new CloudEvent<T>({ ...eventObj, data: body } as CloudEventV1<T>, false);
 }
 
 /**
@@ -198,7 +210,7 @@ function parseBinary(message: Message, version: Version): CloudEvent {
  * @returns {CloudEvent} a new CloudEvent instance for the provided headers and payload
  * @throws {ValidationError} if the payload and header combination do not conform to the spec
  */
-function parseStructured(message: Message, version: Version): CloudEvent {
+function parseStructured<T>(message: Message, version: Version): CloudEvent<T> {
   const payload = message.body;
   const headers = message.headers;
 
@@ -240,5 +252,25 @@ function parseStructured(message: Message, version: Version): CloudEvent {
     delete eventObj.data_base64;
     delete eventObj.datacontentencoding;
   }
-  return new CloudEvent(eventObj as CloudEventV1, false);
+  return new CloudEvent<T>(eventObj as CloudEventV1<T>, false);
 }
+
+function parseBatched<T>(message: Message): CloudEvent<T> | CloudEvent<T>[] {
+  const ret: CloudEvent<T>[] = [];
+  const events = JSON.parse(message.body as string);
+  events.forEach((element: CloudEvent) => {
+    ret.push(new CloudEvent<T>(element));
+  });
+  return ret;
+}
+
+/**
+ * Bindings for HTTP transport support
+ * @implements {@linkcode Binding}
+ */
+ export const HTTP: Binding = {
+  binary,
+  structured,
+  toEvent: deserialize,
+  isEvent: isEvent,
+};

@@ -13,6 +13,7 @@ const CONSTANTS = Object.freeze({
   MIME_OCTET_STREAM: "application/octet-stream",
   MIME_CE: "application/cloudevents",
   MIME_CE_JSON: "application/cloudevents+json",
+  MIME_CE_BATCH: "application/cloudevents-batch+json",
   HEADER_CONTENT_TYPE: "content-type",
   DEFAULT_CONTENT_TYPE: "application/json; charset=utf-8",
   DEFAULT_CE_CONTENT_TYPE: "application/cloudevents+json; charset=utf-8",

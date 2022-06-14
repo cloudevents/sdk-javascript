@@ -22,11 +22,11 @@ describe("Emitter Singleton", () => {
 
       fixture.emit(false);
     });
-    let body: unknown = (<Message>(<unknown>msg)).body;
+    let body: unknown = (msg as Message).body;
     if (typeof body === "string") {
       body = JSON.parse(body);
     }
-    assertStructured({ ...(<any>body), ...(<Message>(<unknown>msg)).headers });
+    assertStructured({ ...(<any>body), ...(msg as Message).headers });
   });
 
   it("emit a Node.js 'cloudevent' event as an EventEmitter with ensureDelivery", async () => {
@@ -37,11 +37,11 @@ describe("Emitter Singleton", () => {
     const emitter = emitterFor(fn, { binding: HTTP, mode: Mode.STRUCTURED });
     Emitter.on("cloudevent", emitter);
     await fixture.emit(true);
-    let body: any = (<Message>msg).body;
+    let body: any = (msg as Message).body;
     if (typeof body === "string") {
       body = JSON.parse(body);
     }
-    assertStructured({ ...(<any>body), ...(<Message>(<unknown>msg)).headers });
+    assertStructured({ ...(<any>body), ...(msg as Message).headers });
   });
 
   it("emit a Node.js 'cloudevent' event as an EventEmitter with ensureDelivery Error", async () => {

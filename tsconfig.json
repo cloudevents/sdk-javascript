@@ -11,7 +11,8 @@
     "forceConsistentCasingInFileNames": true,  /* Disallow inconsistently-cased references to the same file. */
     "outDir": "./dist",
     "declaration": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "isolatedModules": true,
   },
   "compileOnSave": true,
   "include": [

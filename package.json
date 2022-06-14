@@ -110,7 +110,7 @@
   },
   "homepage": "https://github.com/cloudevents/sdk-javascript#readme",
   "dependencies": {
-    "ajv": "^8.6.3",
+    "ajv": "^8.11.0",
     "ajv-formats": "^2.1.1",
     "util": "^0.12.4",
     "uuid": "^8.3.2"
@@ -126,7 +126,6 @@
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.29.0",
-    "ajv-cli": "^5.0.0",
     "axios": "^0.26.1",
     "chai": "~4.2.0",
     "eslint": "^7.32.0",

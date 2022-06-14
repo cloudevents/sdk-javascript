@@ -110,7 +110,7 @@
   },
   "homepage": "https://github.com/cloudevents/sdk-javascript#readme",
   "dependencies": {
-    "ajv": "^8.6.3",
+    "ajv": "^8.11.0",
     "ajv-formats": "^2.1.1",
     "util": "^0.12.4",
     "uuid": "^8.3.2"
@@ -146,7 +146,7 @@
     "remark-lint-list-item-indent": "^2.0.1",
     "remark-preset-lint-recommended": "^5.0.0",
     "superagent": "^7.1.1",
-    "ts-node": "^8.10.2",
+    "ts-node": "^10.8.1",
     "typedoc": "^0.22.11",
     "typescript": "^4.3.5",
     "webpack": "^5.1.1",

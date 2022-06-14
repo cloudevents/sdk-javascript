@@ -42,13 +42,23 @@ const image_base64 = asBase64(imageData);
 
 describe("HTTP transport", () => {
   
-  it("Includes extensions when type is 'boolean' with a false value", () => {
+  it("Includes extensions in binary mode when type is 'boolean' with a false value", () => {
     const evt = new CloudEvent({ source: "test", type: "test", extboolean: false });
     expect(evt.hasOwnProperty("extboolean")).to.equal(true);
     expect(evt["extboolean"]).to.equal(false);
     const message = HTTP.binary(evt);
     expect(message.headers.hasOwnProperty("ce-extboolean")).to.equal(true);
     expect(message.headers["ce-extboolean"]).to.equal(false);
+  });
+
+  it("Includes extensions in structured when type is 'boolean' with a false value", () => {
+    const evt = new CloudEvent({ source: "test", type: "test", extboolean: false });
+    expect(evt.hasOwnProperty("extboolean")).to.equal(true);
+    expect(evt["extboolean"]).to.equal(false);
+    const message = HTTP.structured(evt);
+    const body = JSON.parse(message.body as string);
+    expect(body.hasOwnProperty("extboolean")).to.equal(true);
+    expect(body.extboolean).to.equal(false);
   });
 
   it("Handles events with no content-type and no datacontenttype", () => {

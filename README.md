@@ -227,7 +227,6 @@ Currently active maintainers who may be found in the CNCF Slack.
 
 - Lance Ball (@lance)
 - Lucas Holmquist (@lholmquist)
-- Grant Timmerman (@grant)
 
 ## Contributing
 

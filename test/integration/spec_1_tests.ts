@@ -173,14 +173,60 @@ describe("CloudEvents Spec v1.0", () => {
       expect(typeof ce.data).to.equal("string");
     });
 
-    it("should be ok when type is 'Uint32Array' for 'Binary'", () => {
-      const dataString = ")(*~^my data for ce#@#$%";
+    const dataString = ")(*~^my data for ce#@#$%";
+    const testCases = [
+      {
+        type: Int8Array,
+        data: Int8Array.from(dataString, (c) => c.codePointAt(0) as number),
+        expected: asBase64(Int8Array.from(dataString, (c) => c.codePointAt(0) as number))
+      },
+      {
+        type: Uint8Array,
+        data: Uint8Array.from(dataString, (c) => c.codePointAt(0) as number),
+        expected: asBase64(Uint8Array.from(dataString, (c) => c.codePointAt(0) as number))
+      },
+      {
+        type: Int16Array,
+        data: Int16Array.from(dataString, (c) => c.codePointAt(0) as number),
+        expected: asBase64(Int16Array.from(dataString, (c) => c.codePointAt(0) as number))
+      },
+      {
+        type: Uint16Array,
+        data: Uint16Array.from(dataString, (c) => c.codePointAt(0) as number),
+        expected: asBase64(Uint16Array.from(dataString, (c) => c.codePointAt(0) as number))
+      },
+      {
+        type: Int32Array,
+        data: Int32Array.from(dataString, (c) => c.codePointAt(0) as number),
+        expected: asBase64(Int32Array.from(dataString, (c) => c.codePointAt(0) as number))
+      },
+      {
+        type: Uint32Array,
+        data: Uint32Array.from(dataString, (c) => c.codePointAt(0) as number),
+        expected: asBase64(Uint32Array.from(dataString, (c) => c.codePointAt(0) as number))
+      },
+      {
+        type: Uint8ClampedArray,
+        data: Uint8ClampedArray.from(dataString, (c) => c.codePointAt(0) as number),
+        expected: asBase64(Uint8ClampedArray.from(dataString, (c) => c.codePointAt(0) as number))
+      },
+      {
+        type: Float32Array,
+        data: Float32Array.from(dataString, (c) => c.codePointAt(0) as number),
+        expected: asBase64(Float32Array.from(dataString, (c) => c.codePointAt(0) as number))
+      },
+      {
+        type: Float64Array,
+        data: Float64Array.from(dataString, (c) => c.codePointAt(0) as number),
+        expected: asBase64(Float64Array.from(dataString, (c) => c.codePointAt(0) as number))
+      },
+    ];
 
-      const dataBinary = Uint32Array.from(dataString, (c) => c.codePointAt(0) as number);
-      const expected = asBase64(dataBinary);
-
-      const ce = cloudevent.cloneWith({ datacontenttype: "text/plain", data: dataBinary });
-      expect(ce.data_base64).to.equal(expected);
+    testCases.forEach((test) => {
+      it(`should be ok when type is '${test.type.name}' for 'Binary'`, () => {
+        const ce = cloudevent.cloneWith({ datacontenttype: "text/plain", data: test.data });
+        expect(ce.data_base64).to.equal(test.expected);
+      });
     });
   });
 });

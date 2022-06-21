@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.0.2](https://www.github.com/cloudevents/sdk-javascript/compare/v6.0.1...v6.0.2) (2022-06-21)
+
+
+### Bug Fixes
+
+* allow `TypedArray` for binary data ([#494](https://www.github.com/cloudevents/sdk-javascript/issues/494)) ([921e273](https://www.github.com/cloudevents/sdk-javascript/commit/921e273ede100ab9a262fdfa1f3d6561d3fab0f9))
+* HTTP headers for extensions with false values ([#493](https://www.github.com/cloudevents/sdk-javascript/issues/493)) ([d6f52ca](https://www.github.com/cloudevents/sdk-javascript/commit/d6f52ca65f893fdb581bf06b2ff97b3d6eeeb744))
+* package.json & package-lock.json to reduce vulnerabilities ([ed63f14](https://www.github.com/cloudevents/sdk-javascript/commit/ed63f14339fb7774bff865726370fe72a49abca3))
+
+
+### Miscellaneous
+
+* bump ajv and remove old dep dependency ([#496](https://www.github.com/cloudevents/sdk-javascript/issues/496)) ([ce02e0a](https://www.github.com/cloudevents/sdk-javascript/commit/ce02e0a1f3b24624bd8ba443c744b4a6c0cfcb44))
+* update owners ([#499](https://www.github.com/cloudevents/sdk-javascript/issues/499)) ([a62eb44](https://www.github.com/cloudevents/sdk-javascript/commit/a62eb4466985972cd3112e6f8e3e0b62cb01c1c1))
+
 ### [6.0.1](https://www.github.com/cloudevents/sdk-javascript/compare/v6.0.0...v6.0.1) (2022-03-21)
 
 

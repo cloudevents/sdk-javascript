@@ -99,6 +99,16 @@ describe("CloudEvents Spec v1.0", () => {
     it("should be ok when the type is an string converted from an object", () => {
       expect(cloudevent.cloneWith({ objectextension: JSON.stringify({ some: "object" }) }).validate()).to.equal(true);
     });
+
+    it("should only allow a-z|0-9 in the attribute names", () => {
+      const testCases = [
+        "an extension", "an_extension", "an-extension", "an.extension", "an+extension"
+      ];
+      testCases.forEach((testCase) => {
+        const evt = cloudevent.cloneWith({ [testCase]: "a value"}, false);
+        expect(() => evt.validate()).to.throw(ValidationError);
+      });
+    });
   });
 
   describe("The Constraints check", () => {

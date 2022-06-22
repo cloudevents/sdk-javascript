@@ -18,10 +18,11 @@ export function validateCloudEvent<T>(event: CloudEventV1<T>): boolean {
   } else {
     return false;
   }
-  // attribute names must all be lowercase
+  // attribute names must all be [a-z|0-9]
+  const validation = /^[a-z0-9]+$/;
   for (const key in event) {
-    if (key !== key.toLowerCase()) {
-      throw new ValidationError(`invalid attribute name: ${key}`);
+    if (validation.test(key) === false && key !== "data_base64") {
+      throw new ValidationError(`invalid attribute name: "${key}"`);
     }
   }
   return true;

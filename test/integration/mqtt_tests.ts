@@ -134,7 +134,7 @@ describe("MQTT transport", () => {
     expect(event.LUNCH).to.equal("tacos");
     expect(function () {
       event.validate();
-    }).to.throw("invalid attribute name: LUNCH");
+    }).to.throw("invalid attribute name: \"LUNCH\"");
   });
 
   it("Can detect CloudEvent binary Messages with weird versions", () => {

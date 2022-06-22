@@ -41,7 +41,21 @@ const imageData = new Uint32Array(fs.readFileSync(path.join(process.cwd(), "test
 const image_base64 = asBase64(imageData);
 
 describe("HTTP transport", () => {
-  
+  it("validates extension attribute names for incoming messages", () => {
+    // create a new Message
+    const msg: Message = {
+      headers: {
+        "ce-id": "213",
+        "ce-source": "test",
+        "ce-type": "test",
+        "ce-bad-extension": "value"
+      },
+      body: undefined
+    };
+    const evt = HTTP.toEvent(msg) as CloudEvent;
+    expect(() => evt.validate()).to.throw(TypeError);
+  });
+
   it("Includes extensions in binary mode when type is 'boolean' with a false value", () => {
     const evt = new CloudEvent({ source: "test", type: "test", extboolean: false });
     expect(evt.hasOwnProperty("extboolean")).to.equal(true);
@@ -129,7 +143,7 @@ describe("HTTP transport", () => {
     expect(event.LUNCH).to.equal("tacos");
     expect(function () {
       event.validate();
-    }).to.throw("invalid attribute name: LUNCH");
+    }).to.throw("invalid attribute name: \"LUNCH\"");
   });
 
   it("Can detect CloudEvent binary Messages with weird versions", () => {

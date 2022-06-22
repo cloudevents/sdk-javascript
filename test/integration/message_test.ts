@@ -53,14 +53,7 @@ describe("HTTP transport", () => {
       body: undefined
     };
     const evt = HTTP.toEvent(msg) as CloudEvent;
-    // expect(evt.validate).to.throw(TypeError);
-    try {
-      evt.validate();
-      console.error(evt);
-      // fail("Should ahve thrown");
-    } catch(err) {
-      console.error(err);
-    }
+    expect(() => evt.validate()).to.throw(TypeError);
   });
 
   it("Includes extensions in binary mode when type is 'boolean' with a false value", () => {

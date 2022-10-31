@@ -7,23 +7,38 @@ import path from "path";
 import fs from "fs";
 
 import { expect } from "chai";
-import { CloudEvent, ValidationError, Version } from "../../src";
+import { CloudEvent, CloudEventV1, ValidationError, Version } from "../../src";
 import { asBase64 } from "../../src/event/validation";
 
 const type = "org.cncf.cloudevents.example";
 const source = "http://unit.test";
 const id = "b46cf653-d48a-4b90-8dfa-355c01061361";
 
-const fixture = {
+const fixture = Object.freeze({
   id,
   specversion: Version.V1,
   source,
   type,
-  data: `"some data"`,
-};
+  data: `"some data"`
+});
 
 const imageData = new Uint32Array(fs.readFileSync(path.join(process.cwd(), "test", "integration", "ce.png")));
 const image_base64 = asBase64(imageData);
+
+// Do not replace this with the assignment of a class instance
+// as we just want to test if we can enumerate all explicitly defined fields!
+const cloudEventV1InterfaceFields: (keyof CloudEventV1<unknown>)[] = Object.keys({
+  id: "",
+  type: "",
+  data: undefined,
+  data_base64: "",
+  source: "",
+  time: "",
+  datacontenttype: "",
+  dataschema: "",
+  specversion: "",
+  subject: ""
+} as Required<CloudEventV1<unknown>>);
 
 describe("A CloudEvent", () => {
   it("Can be constructed with a typed Message", () => {
@@ -77,6 +92,58 @@ describe("A CloudEvent", () => {
     expect(() => {
       new CloudEvent({ ExtensionWithCaps: "extension value", ...fixture });
     }).throw("invalid extension name");
+  });
+
+  it("CloudEventV1 interface fields should be enumerable", () => {
+    const classInstanceKeys = Object.keys(new CloudEvent({ ...fixture }));
+
+    for (const key of cloudEventV1InterfaceFields) {
+      expect(classInstanceKeys).to.contain(key);
+    }
+  });
+
+  it("throws TypeError on trying to set any field value", () => {
+    const ce = new CloudEvent({
+      ...fixture,
+      mycustomfield: "initialValue"
+    });
+
+    const keySet = new Set([...cloudEventV1InterfaceFields, ...Object.keys(ce)]);
+
+    expect(keySet).not.to.be.empty;
+
+    for (const cloudEventKey of keySet) {
+      let threw = false;
+
+      try {
+        ce[cloudEventKey] = "newValue";
+      } catch (err) {
+        threw = true;
+        expect(err).to.be.instanceOf(TypeError);
+        expect((err as TypeError).message).to.include("Cannot assign to read only property");
+      }
+
+      if (!threw) {
+        expect.fail(`Assigning a value to ${cloudEventKey} did not throw`);
+      }
+    }
+  });
+
+  describe("toJSON()", () => {
+    it("does not return data field if data_base64 field is set to comply with JSON format spec 3.1.1", () => {
+      const binaryData = new Uint8Array([1,2,3]);
+
+      const ce = new CloudEvent({
+        ...fixture,
+        data: binaryData
+      });
+
+      expect(ce.data).to.be.equal(binaryData);
+
+      const json = ce.toJSON();
+      expect(json.data).to.not.exist;
+      expect(json.data_base64).to.be.equal("AQID");
+    });
   });
 });
 

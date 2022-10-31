@@ -9,7 +9,7 @@ import { Emitter } from "..";
 
 import { CloudEventV1 } from "./interfaces";
 import { validateCloudEvent } from "./spec";
-import { ValidationError, isBinary, asBase64, isValidType } from "./validation";
+import { ValidationError, isBinary, asBase64, isValidType, base64AsBinary } from "./validation";
 
 /**
  * An enum representing the CloudEvent specification version
@@ -33,7 +33,7 @@ export class CloudEvent<T = undefined> implements CloudEventV1<T> {
   dataschema?: string;
   subject?: string;
   time?: string;
-  #_data?: T;
+  data?: T;
   data_base64?: string;
 
   // Extensions should not exist as it's own object, but instead
@@ -85,12 +85,21 @@ export class CloudEvent<T = undefined> implements CloudEventV1<T> {
     delete properties.dataschema;
 
     this.data_base64 = properties.data_base64 as string;
+
+    if (this.data_base64) {
+      this.data = base64AsBinary(this.data_base64) as unknown as T;
+    }
+
     delete properties.data_base64;
 
     this.schemaurl = properties.schemaurl as string;
     delete properties.schemaurl;
 
-    this.data = properties.data;
+    if (isBinary(properties.data)) {
+      this.data_base64 = asBase64(properties.data as unknown as Buffer);
+    }
+
+    this.data = typeof properties.data !== "undefined" ? properties.data : this.data;
     delete properties.data;
 
     // sanity checking
@@ -127,17 +136,6 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
     Object.freeze(this);
   }
 
-  get data(): T | undefined {
-    return this.#_data;
-  }
-
-  set data(value: T | undefined) {
-    if (isBinary(value)) {
-      this.data_base64 = asBase64(value as unknown as Buffer);
-    }
-    this.#_data = value;
-  }
-
   /**
    * Used by JSON.stringify(). The name is confusing, but this method is called by
    * JSON.stringify() when converting this object to JSON.
@@ -147,7 +145,11 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
   toJSON(): Record<string, unknown> {
     const event = { ...this };
     event.time = new Date(this.time as string).toISOString();
-    event.data = this.#_data;
+
+    if (event.data_base64 && event.data) {
+      delete event.data;
+    }
+
     return event;
   }
 
@@ -230,9 +232,6 @@ See: https://github.com/cloudevents/spec/blob/v1.0/spec.md#type-system`);
     event: CloudEventV1<any>,
     options: Partial<CloudEventV1<any>>,
     strict = true): CloudEvent<any> {
-      if (event instanceof CloudEvent) {
-        event = event.toJSON() as CloudEventV1<any>;
-      }
       return new CloudEvent(Object.assign({}, event, options), strict);
     }
 }

@@ -91,3 +91,6 @@ typings/
 
 # Package lock
 package-lock.json
+
+# Jetbrains IDE directories
+.idea

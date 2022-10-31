@@ -19,7 +19,7 @@ const data = {
 };
 const subject = "subject-x0";
 
-let cloudevent = new CloudEvent({
+const cloudevent = new CloudEvent({
   specversion: Version.V1,
   id,
   source,
@@ -120,8 +120,8 @@ describe("CloudEvents Spec v1.0", () => {
       });
 
       it("defaut ID create when an empty string", () => {
-        cloudevent = cloudevent.cloneWith({ id: "" });
-        expect(cloudevent.id.length).to.be.greaterThan(0);
+        const testEvent = cloudevent.cloneWith({ id: "" });
+        expect(testEvent.id.length).to.be.greaterThan(0);
       });
     });
 
@@ -160,11 +160,11 @@ describe("CloudEvents Spec v1.0", () => {
     describe("'time'", () => {
       it("must adhere to the format specified in RFC 3339", () => {
         const d = new Date();
-        cloudevent = cloudevent.cloneWith({ time: d.toString() }, false);
+        const testEvent = cloudevent.cloneWith({ time: d.toString() }, false);
         // ensure that we always get back the same thing we passed in
-        expect(cloudevent.time).to.equal(d.toString());
+        expect(testEvent.time).to.equal(d.toString());
         // ensure that when stringified, the timestamp is in RFC3339 format
-        expect(JSON.parse(JSON.stringify(cloudevent)).time).to.equal(new Date(d.toString()).toISOString());
+        expect(JSON.parse(JSON.stringify(testEvent)).time).to.equal(new Date(d.toString()).toISOString());
       });
     });
   });

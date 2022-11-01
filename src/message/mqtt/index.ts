@@ -4,6 +4,7 @@
 */
 
 import { Binding, Deserializer, CloudEvent, CloudEventV1, CONSTANTS, Message, ValidationError, Headers } from "../..";
+import { base64AsBinary } from "../../event/validation";
 
 export {
   MQTT, MQTTMessageFactory
@@ -50,14 +51,16 @@ const MQTT: Binding = {
  * @implements {Serializer}
  */
 function binary<T>(event: CloudEventV1<T>): MQTTMessage<T> {
-  let properties;
-  if (event instanceof CloudEvent) {
-    properties = event.toJSON();
-  } else {
-    properties = event;
+  const properties = { ...event };
+
+  let body = properties.data as T;
+
+  if (!body && properties.data_base64) {
+    body = base64AsBinary(properties.data_base64) as unknown as T;
   }
-  const body = properties.data as T;
+
   delete properties.data;
+  delete properties.data_base64;
 
   return MQTTMessageFactory(event.datacontenttype as string, properties, body);
 }

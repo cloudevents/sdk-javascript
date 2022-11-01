@@ -8,6 +8,19 @@ import { ErrorObject } from "ajv";
 export type TypeArray = Int8Array | Uint8Array | Int16Array | Uint16Array | 
   Int32Array | Uint32Array | Uint8ClampedArray | Float32Array | Float64Array;
 
+const globalThisPolyfill = (function() {
+  try {
+    return globalThis;
+  }
+  catch (e) {
+    try {
+      return self;
+    }
+    catch (e) {
+      return global;
+    }
+  }
+}());
 
 /**
  * An Error class that will be thrown when a CloudEvent
@@ -85,6 +98,14 @@ export const asBuffer = (value: string | Buffer | TypeArray): Buffer =>
     : (() => {
         throw new TypeError("is not buffer or a valid binary");
       })();
+
+export const base64AsBinary = (base64String: string): Uint8Array => {
+  const toBinaryString = (base64Str: string): string => globalThisPolyfill.atob
+    ? globalThisPolyfill.atob(base64Str)
+    : Buffer.from(base64Str, "base64").toString("binary");
+
+  return Uint8Array.from(toBinaryString(base64String), (c) => c.charCodeAt(0));
+};
 
 export const asBase64 = 
 (value: string | Buffer | TypeArray): string => asBuffer(value).toString("base64");

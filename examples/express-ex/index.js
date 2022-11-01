@@ -28,11 +28,11 @@ app.post("/", (req, res) => {
     const responseEventMessage = new CloudEvent({
       source: '/',
       type: 'event:response',
-      ...event
+      ...event,
+      data: {
+        hello: 'world'
+      }
     });
-    responseEventMessage.data = {
-      hello: 'world'
-    };
 
     // const message = HTTP.binary(responseEventMessage)
     const message = HTTP.structured(responseEventMessage)

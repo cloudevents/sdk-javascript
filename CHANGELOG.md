@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.0.3](https://www.github.com/cloudevents/sdk-javascript/compare/v6.0.2...v6.0.3) (2022-11-01)
+
+
+### Bug Fixes
+
+* improve validation on extension attribute ([#502](https://www.github.com/cloudevents/sdk-javascript/issues/502)) ([ea94a4d](https://www.github.com/cloudevents/sdk-javascript/commit/ea94a4d779d0744ef40abc81d08ab8b7e93e9133))
+* Make CloudEvent data field immutable and enumerable using Object.keys() ([#515](https://www.github.com/cloudevents/sdk-javascript/issues/515)) ([#516](https://www.github.com/cloudevents/sdk-javascript/issues/516)) ([2d5fab1](https://www.github.com/cloudevents/sdk-javascript/commit/2d5fab1b7133241493bb9327aa26e7de4117616d))
+
+
+### Miscellaneous
+
+* bump cucumber to full release version ([#514](https://www.github.com/cloudevents/sdk-javascript/issues/514)) ([c09a9cc](https://www.github.com/cloudevents/sdk-javascript/commit/c09a9cc20a601ddc36c5c1b56fb52dc9c2161e1b))
+* bump mocha to 10.1.0 ([#512](https://www.github.com/cloudevents/sdk-javascript/issues/512)) ([4831e6a](https://www.github.com/cloudevents/sdk-javascript/commit/4831e6a1a5003c4c1c7bcbd5a3a2fc5c48e0ba4c))
+* bump webpack to 5.74.0 ([#509](https://www.github.com/cloudevents/sdk-javascript/issues/509)) ([760a024](https://www.github.com/cloudevents/sdk-javascript/commit/760a0240674c79ca6be142ae9f9b242080c4d59d))
+
 ### [6.0.2](https://www.github.com/cloudevents/sdk-javascript/compare/v6.0.1...v6.0.2) (2022-06-21)
 
 

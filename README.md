@@ -12,7 +12,7 @@ The CloudEvents SDK for JavaScript.
 
 - Represent CloudEvents in memory
 - Serialize and deserialize CloudEvents in different [event formats](https://github.com/cloudevents/spec/blob/v1.0/spec.md#event-format).
-- Send and recieve CloudEvents with via different [protocol bindings](https://github.com/cloudevents/spec/blob/v1.0/spec.md#protocol-binding).
+- Send and receive CloudEvents with via different [protocol bindings](https://github.com/cloudevents/spec/blob/v1.0/spec.md#protocol-binding).
 
 _Note:_ Supports CloudEvent version 1.0
 
@@ -51,7 +51,7 @@ The easiest way to send events is to use the built-in HTTP emitter.
 ```js
 const { httpTransport, emitterFor, CloudEvent } = require("cloudevents");
 
-// Create an emitter to send events to a reciever
+// Create an emitter to send events to a receiver
 const emit = emitterFor(httpTransport("https://my.receiver.com/endpoint"));
 
 // Create a new CloudEvent

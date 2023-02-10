@@ -1,4 +1,5 @@
 const path = require("path");
+const webpack = require("webpack");
 
 module.exports = {
   entry: {
@@ -11,6 +12,11 @@ module.exports = {
       https: false
     },
   },
+  plugins: [
+    new webpack.ProvidePlugin({
+      process: 'process/browser'
+    })
+  ],
   output: {
     path: path.resolve(__dirname, "bundles"),
     filename: "[name].js",

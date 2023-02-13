@@ -157,6 +157,6 @@
   },
   "types": "./dist/index.d.ts",
   "engines": {
-    "node": ">=14.0.0 <20.0.0"
+    "node": ">=12 <20.0.0"
   }
 }

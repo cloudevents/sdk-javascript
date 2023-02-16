@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.0.3](https://www.github.com/cloudevents/sdk-javascript/compare/v6.0.2...v6.0.3) (2023-02-16)
+
+
+### Bug Fixes
+
+* improve validation on extension attribute ([#502](https://www.github.com/cloudevents/sdk-javascript/issues/502)) ([ea94a4d](https://www.github.com/cloudevents/sdk-javascript/commit/ea94a4d779d0744ef40abc81d08ab8b7e93e9133))
+* Make CloudEvent data field immutable and enumerable using Object.keys() ([#515](https://www.github.com/cloudevents/sdk-javascript/issues/515)) ([#516](https://www.github.com/cloudevents/sdk-javascript/issues/516)) ([2d5fab1](https://www.github.com/cloudevents/sdk-javascript/commit/2d5fab1b7133241493bb9327aa26e7de4117616d))
+* This fixes bug [#525](https://www.github.com/cloudevents/sdk-javascript/issues/525) where the browser version was breaking becuase of process not being found. ([#526](https://www.github.com/cloudevents/sdk-javascript/issues/526)) ([e5ee836](https://www.github.com/cloudevents/sdk-javascript/commit/e5ee8369ba5838aa24c2d99efeb81788757b71d1))
+
+
+### Miscellaneous
+
+* added the engines property to the package.json ([bc3aaca](https://www.github.com/cloudevents/sdk-javascript/commit/bc3aaca2ef250e4acd72b909488b326233237c83))
+* bump cucumber to full release version ([#514](https://www.github.com/cloudevents/sdk-javascript/issues/514)) ([c09a9cc](https://www.github.com/cloudevents/sdk-javascript/commit/c09a9cc20a601ddc36c5c1b56fb52dc9c2161e1b))
+* bump mocha to 10.1.0 ([#512](https://www.github.com/cloudevents/sdk-javascript/issues/512)) ([4831e6a](https://www.github.com/cloudevents/sdk-javascript/commit/4831e6a1a5003c4c1c7bcbd5a3a2fc5c48e0ba4c))
+* bump webpack to 5.74.0 ([#509](https://www.github.com/cloudevents/sdk-javascript/issues/509)) ([760a024](https://www.github.com/cloudevents/sdk-javascript/commit/760a0240674c79ca6be142ae9f9b242080c4d59d))
+* release 6.0.3 ([#503](https://www.github.com/cloudevents/sdk-javascript/issues/503)) ([3619ef2](https://www.github.com/cloudevents/sdk-javascript/commit/3619ef2bbd6e2b3e9e6e5bb5ad904689d40f4b79))
+* Typos ([953bc2a](https://www.github.com/cloudevents/sdk-javascript/commit/953bc2a143a66d04d850c727305a5a465e843bff))
+* **examples:** add mqtt example ([#523](https://www.github.com/cloudevents/sdk-javascript/issues/523)) ([b374d9a](https://www.github.com/cloudevents/sdk-javascript/commit/b374d9ac3313023e4f8a59cb22785751bbb0f686))
+
 ### [6.0.3](https://www.github.com/cloudevents/sdk-javascript/compare/v6.0.2...v6.0.3) (2022-11-01)
 
 

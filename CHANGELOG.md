@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.0.0](https://github.com/cloudevents/sdk-javascript/compare/v6.0.4...v7.0.0) (2023-05-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove node 12 and node 14 ([#545](https://github.com/cloudevents/sdk-javascript/issues/545))
+
+### Features
+
+* remove node 12 and node 14 ([#545](https://github.com/cloudevents/sdk-javascript/issues/545)) ([2cb9364](https://github.com/cloudevents/sdk-javascript/commit/2cb9364a25a5e82f2a68504dbe19839a7fbfd9d4))
+
+
+### Miscellaneous
+
+* add the build script to the pretest script. ([#539](https://github.com/cloudevents/sdk-javascript/issues/539)) ([c06ffc1](https://github.com/cloudevents/sdk-javascript/commit/c06ffc196389fedd7d5141d69fac3f4d95156193))
+* fix release-please-action ([#543](https://github.com/cloudevents/sdk-javascript/issues/543)) ([ec83abc](https://github.com/cloudevents/sdk-javascript/commit/ec83abc82799159aa1f64c791c92e035ef6f42b8))
+* release 6.0.5 ([#542](https://github.com/cloudevents/sdk-javascript/issues/542)) ([343382e](https://github.com/cloudevents/sdk-javascript/commit/343382ebdedc9a2efbc5b3ba5cd36e4e069fd38f))
+* release 7.0.0 ([#546](https://github.com/cloudevents/sdk-javascript/issues/546)) ([0120d22](https://github.com/cloudevents/sdk-javascript/commit/0120d224ab67e804e201625e0a9d59947a5a212d))
+* Update CI action to node 18.x ([#533](https://github.com/cloudevents/sdk-javascript/issues/533)) ([7ff64f8](https://github.com/cloudevents/sdk-javascript/commit/7ff64f8b82e1c5a824bbe985df4948d79e919e8c))
+
 ### [6.0.3](https://www.github.com/cloudevents/sdk-javascript/compare/v6.0.2...v6.0.3) (2023-02-16)
 
 

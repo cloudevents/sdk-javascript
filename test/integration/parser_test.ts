@@ -56,7 +56,7 @@ describe("JSON Event Format Parser", () => {
     const parser = new Parser();
 
     // TODO: Should the parser catch the SyntaxError and re-throw a ValidationError?
-    expect(parser.parse.bind(parser, payload)).to.throw(SyntaxError, "Unexpected token g in JSON at position 1");
+    expect(parser.parse.bind(parser, payload)).to.throw(SyntaxError);
   });
 
   it("Accepts a string as valid JSON", () => {

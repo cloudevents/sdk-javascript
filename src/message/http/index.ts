@@ -4,7 +4,6 @@
 */
 
 import { types } from "util";
-import JSONbig from "json-bigint";
 
 import { CloudEvent, CloudEventV1, CONSTANTS, Mode, Version } from "../..";
 import { Message, Headers, Binding } from "..";
@@ -19,8 +18,6 @@ import {
 } from "./headers";
 import { isStringOrObjectOrThrow, ValidationError } from "../../event/validation";
 import { JSONParser, MappedParser, Parser, parserByContentType } from "../../parsers";
-
-const JSON = JSONbig(({ useNativeBigInt: true }));
 
 /**
  * Serialize a CloudEvent for HTTP transport in binary mode

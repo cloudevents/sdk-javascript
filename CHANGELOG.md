@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.0.1](https://github.com/cloudevents/sdk-javascript/compare/v7.0.0...v7.0.1) (2023-05-30)
+
+
+### Bug Fixes
+
+* handle big integers in incoming events ([#495](https://github.com/cloudevents/sdk-javascript/issues/495)) ([43c3584](https://github.com/cloudevents/sdk-javascript/commit/43c3584b984aa170b1c1c4dff7218d027cd28d02))
+
+
+### Miscellaneous
+
+* add publish automation ([#550](https://github.com/cloudevents/sdk-javascript/issues/550)) ([3931b22](https://github.com/cloudevents/sdk-javascript/commit/3931b224cb3140ad3ba759edcf564621a2e34542))
+* remove old Node versions from the readme ([#549](https://github.com/cloudevents/sdk-javascript/issues/549)) ([11442d3](https://github.com/cloudevents/sdk-javascript/commit/11442d32d307a0e8416ed573ce34fc825d3b63c4))
+* Update compatible node version ([#552](https://github.com/cloudevents/sdk-javascript/issues/552)) ([f3659eb](https://github.com/cloudevents/sdk-javascript/commit/f3659ebfc6251b4c57997f70709688916a061a2d))
+
 ## [7.0.0](https://github.com/cloudevents/sdk-javascript/compare/v6.0.4...v7.0.0) (2023-05-03)
 
 

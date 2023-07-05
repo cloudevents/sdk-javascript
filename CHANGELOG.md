@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.0.2](https://github.com/cloudevents/sdk-javascript/compare/v7.0.1...v7.0.2) (2023-07-05)
+
+
+### Miscellaneous
+
+* add the provenance flag when publishing to npm ([#556](https://github.com/cloudevents/sdk-javascript/issues/556)) ([a0d8682](https://github.com/cloudevents/sdk-javascript/commit/a0d86826138be31072c9a30edf26f4b91da576ed))
+* fix the release-please automation script. ([#554](https://github.com/cloudevents/sdk-javascript/issues/554)) ([023171d](https://github.com/cloudevents/sdk-javascript/commit/023171d9a08484c32e24f8228602ef4d5173c749))
+
 ## [7.0.1](https://github.com/cloudevents/sdk-javascript/compare/v7.0.0...v7.0.1) (2023-05-30)
 
 

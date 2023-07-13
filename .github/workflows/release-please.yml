@@ -13,4 +13,5 @@ jobs:
           token: ${{ secrets.CLOUDEVENTS_RELEASES_TOKEN }}
           release-type: node
           package-name: cloudevents
+          signoff: "Lucas Holmquist <lholmqui@redhat.com>"
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"docs","section":"Documentation","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false},{"type":"src","section":"Miscellaneous","hidden":false},{"type":"style","section":"Miscellaneous","hidden":false},{"type":"refactor","section":"Miscellaneous","hidden":false},{"type":"perf","section":"Performance","hidden":false},{"type":"test","section":"Tests","hidden":false}]'

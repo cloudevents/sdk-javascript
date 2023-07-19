@@ -7,7 +7,7 @@ import path from "path";
 import fs from "fs";
 
 import { expect } from "chai";
-import { CloudEvent, CONSTANTS, Version } from "../../src";
+import { CloudEvent, CONSTANTS, V1 } from "../../src";
 import { asBase64 } from "../../src/event/validation";
 import { Message, Kafka, KafkaMessage, KafkaEvent } from "../../src/message";
 import { KAFKA_CE_HEADERS } from "../../src/message/kafka/headers";
@@ -43,7 +43,7 @@ const imageData = new Uint32Array(fs.readFileSync(path.join(process.cwd(), "test
 const image_base64 = asBase64(imageData);
 
 const fixture = new CloudEvent({
-  specversion: Version.V1,
+  specversion: V1,
   id,
   type,
   source,
@@ -233,7 +233,7 @@ describe("Kafka transport", () => {
     expect(message.body).to.equal(data);
     // validate all headers
     expect(message.headers[CONSTANTS.HEADER_CONTENT_TYPE]).to.equal(datacontenttype);
-    expect(message.headers[KAFKA_CE_HEADERS.SPEC_VERSION]).to.equal(Version.V1);
+    expect(message.headers[KAFKA_CE_HEADERS.SPEC_VERSION]).to.equal(V1);
     expect(message.headers[KAFKA_CE_HEADERS.ID]).to.equal(id);
     expect(message.headers[KAFKA_CE_HEADERS.TYPE]).to.equal(type);
     expect(message.headers[KAFKA_CE_HEADERS.SOURCE]).to.equal(source);
@@ -249,7 +249,7 @@ describe("Kafka transport", () => {
     expect(message.headers[CONSTANTS.HEADER_CONTENT_TYPE]).to.equal(CONSTANTS.DEFAULT_CE_CONTENT_TYPE);
     // Parse the message body as JSON, then validate the attributes
     const body = JSON.parse(message.body as string);
-    expect(body[CONSTANTS.CE_ATTRIBUTES.SPEC_VERSION]).to.equal(Version.V1);
+    expect(body[CONSTANTS.CE_ATTRIBUTES.SPEC_VERSION]).to.equal(V1);
     expect(body[CONSTANTS.CE_ATTRIBUTES.ID]).to.equal(id);
     expect(body[CONSTANTS.CE_ATTRIBUTES.TYPE]).to.equal(type);
     expect(body[CONSTANTS.CE_ATTRIBUTES.SOURCE]).to.equal(source);

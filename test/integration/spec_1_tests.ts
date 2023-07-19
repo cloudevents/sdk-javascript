@@ -5,7 +5,7 @@
 
 import "mocha";
 import { expect } from "chai";
-import { CloudEvent, Version, ValidationError } from "../../src";
+import { CloudEvent, V1, ValidationError } from "../../src";
 import { asBase64 } from "../../src/event/validation";
 import Constants from "../../src/constants";
 
@@ -20,7 +20,7 @@ const data = {
 const subject = "subject-x0";
 
 const cloudevent = new CloudEvent({
-  specversion: Version.V1,
+  specversion: V1,
   id,
   source,
   type,

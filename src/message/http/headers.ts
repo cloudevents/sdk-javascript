@@ -6,7 +6,7 @@
 import { PassThroughParser, DateParser, MappedParser } from "../../parsers";
 import { CloudEventV1 } from "../..";
 import { Headers } from "../";
-import { Version } from "../../event/cloudevent";
+import { V1 } from "../../event/cloudevent";
 import CONSTANTS from "../../constants";
 
 export const allowedContentTypes = [CONSTANTS.DEFAULT_CONTENT_TYPE, CONSTANTS.MIME_JSON, CONSTANTS.MIME_OCTET_STREAM];
@@ -27,7 +27,7 @@ export const requiredHeaders = [
 export function headersFor<T>(event: CloudEventV1<T>): Headers {
   const headers: Headers = {};
   let headerMap: Readonly<{ [key: string]: MappedParser }>;
-  if (event.specversion === Version.V1) {
+  if (event.specversion === V1) {
     headerMap = v1headerMap;
   } else {
     headerMap = v03headerMap;

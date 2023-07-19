@@ -7,7 +7,7 @@ import path from "path";
 import fs from "fs";
 
 import { expect } from "chai";
-import { CloudEvent, CloudEventV1, ValidationError, Version } from "../../src";
+import { CloudEvent, CloudEventV1, ValidationError, V1 } from "../../src";
 import { asBase64 } from "../../src/event/validation";
 
 const type = "org.cncf.cloudevents.example";
@@ -16,7 +16,7 @@ const id = "b46cf653-d48a-4b90-8dfa-355c01061361";
 
 const fixture = Object.freeze({
   id,
-  specversion: Version.V1,
+  specversion: V1,
   source,
   type,
   data: `"some data"`
@@ -165,7 +165,7 @@ describe("A 1.0 CloudEvent", () => {
   });
 
   it("can be constructed with an ID", () => {
-    const ce = new CloudEvent({ id: "1234", specversion: Version.V1, source, type });
+    const ce = new CloudEvent({ id: "1234", specversion: V1, source, type });
     expect(ce.id).to.equal("1234");
   });
 
@@ -280,7 +280,7 @@ describe("A 1.0 CloudEvent", () => {
     const obj = JSON.parse(json as string);
     expect(obj.type).to.equal(type);
     expect(obj.source).to.equal(source);
-    expect(obj.specversion).to.equal(Version.V1);
+    expect(obj.specversion).to.equal(V1);
   });
 
   it("throws if the provded source is empty string", () => {

@@ -7,7 +7,7 @@ import path from "path";
 import fs from "fs";
 
 import { expect } from "chai";
-import { CloudEvent, CONSTANTS, Version, Headers } from "../../src";
+import { CloudEvent, CONSTANTS, V1, Headers } from "../../src";
 import { asBase64 } from "../../src/event/validation";
 import { Message, MQTT, MQTTMessage } from "../../src/message";
 
@@ -43,7 +43,7 @@ const image_base64 = asBase64(imageData);
 const PUBLISH = {"Content Type": "application/json; charset=utf-8"};
 
 const fixture = new CloudEvent({
-  specversion: Version.V1,
+  specversion: V1,
   id,
   type,
   source,
@@ -216,7 +216,7 @@ describe("MQTT transport", () => {
     expect(message.body).to.equal(data);
     // validate all headers
     expect(message.headers.datacontenttype).to.equal(datacontenttype);
-    expect(message.headers.specversion).to.equal(Version.V1);
+    expect(message.headers.specversion).to.equal(V1);
     expect(message.headers.id).to.equal(id);
     expect(message.headers.type).to.equal(type);
     expect(message.headers.source).to.equal(source);
@@ -232,7 +232,7 @@ describe("MQTT transport", () => {
     expect(message.body).to.equal(data);
     // validate all headers
     expect(message["User Properties"]?.datacontenttype).to.equal(datacontenttype);
-    expect(message["User Properties"]?.specversion).to.equal(Version.V1);
+    expect(message["User Properties"]?.specversion).to.equal(V1);
     expect(message["User Properties"]?.id).to.equal(id);
     expect(message["User Properties"]?.type).to.equal(type);
     expect(message["User Properties"]?.source).to.equal(source);
@@ -249,7 +249,7 @@ describe("MQTT transport", () => {
     expect(message.body).to.deep.equal(message.payload);
     expect(message.payload).to.deep.equal(fixture.toJSON());
     const body = message.body as Record<string, string>;
-    expect(body[CONSTANTS.CE_ATTRIBUTES.SPEC_VERSION]).to.equal(Version.V1);
+    expect(body[CONSTANTS.CE_ATTRIBUTES.SPEC_VERSION]).to.equal(V1);
     expect(body[CONSTANTS.CE_ATTRIBUTES.ID]).to.equal(id);
     expect(body[CONSTANTS.CE_ATTRIBUTES.TYPE]).to.equal(type);
     expect(body[CONSTANTS.CE_ATTRIBUTES.SOURCE]).to.equal(source);

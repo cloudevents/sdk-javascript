@@ -5,7 +5,7 @@
 
 import { types } from "util";
 
-import { CloudEvent, CloudEventV1, CONSTANTS, Mode, Version } from "../..";
+import { CloudEvent, CloudEventV1, CONSTANTS, Mode, V1, V03 } from "../..";
 import { Message, Headers, Binding } from "..";
 
 import {
@@ -147,7 +147,7 @@ function getVersion(mode: Mode, headers: Headers, body: string | Record<string, 
       return (body as Record<string, string>).specversion;
     }
   }
-  return Version.V1;
+  return V1;
 }
 
 /**
@@ -155,11 +155,11 @@ function getVersion(mode: Mode, headers: Headers, body: string | Record<string, 
  * instance if it conforms to the Cloud Event specification for this receiver.
  *
  * @param {Message} message the incoming HTTP Message
- * @param {Version} version the spec version of the incoming event
+ * @param {string} version the spec version of the incoming event
  * @returns {CloudEvent} an instance of CloudEvent representing the incoming request
  * @throws {ValidationError} of the event does not conform to the spec
  */
-function parseBinary<T>(message: Message, version: Version): CloudEvent<T> {
+function parseBinary<T>(message: Message, version: string): CloudEvent<T> {
   const headers = { ...message.headers };
   let body = message.body;
 
@@ -169,7 +169,7 @@ function parseBinary<T>(message: Message, version: Version): CloudEvent<T> {
   const sanitizedHeaders = sanitize(headers);
 
   const eventObj: { [key: string]: unknown | string | Record<string, unknown> } = {};
-  const parserMap: Record<string, MappedParser> = version === Version.V03 ? v03binaryParsers : v1binaryParsers;
+  const parserMap: Record<string, MappedParser> = version === V03 ? v03binaryParsers : v1binaryParsers;
 
   for (const header in parserMap) {
     if (sanitizedHeaders[header]) {
@@ -206,11 +206,11 @@ function parseBinary<T>(message: Message, version: Version): CloudEvent<T> {
  * Creates a new CloudEvent instance based on the provided payload and headers.
  *
  * @param {Message} message the incoming Message
- * @param {Version} version the spec version of this message (v1 or v03)
+ * @param {string} version the spec version of this message (v1 or v03)
  * @returns {CloudEvent} a new CloudEvent instance for the provided headers and payload
  * @throws {ValidationError} if the payload and header combination do not conform to the spec
  */
-function parseStructured<T>(message: Message, version: Version): CloudEvent<T> {
+function parseStructured<T>(message: Message, version: string): CloudEvent<T> {
   const payload = message.body;
   const headers = message.headers;
 
@@ -227,7 +227,7 @@ function parseStructured<T>(message: Message, version: Version): CloudEvent<T> {
   const incoming = { ...(parser.parse(payload as string) as Record<string, unknown>) };
 
   const eventObj: { [key: string]: unknown } = {};
-  const parserMap: Record<string, MappedParser> = version === Version.V03 ? v03structuredParsers : v1structuredParsers;
+  const parserMap: Record<string, MappedParser> = version === V03 ? v03structuredParsers : v1structuredParsers;
 
   for (const key in parserMap) {
     const property = incoming[key];

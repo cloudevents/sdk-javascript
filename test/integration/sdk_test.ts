@@ -5,13 +5,13 @@
 
 import "mocha";
 import { expect } from "chai";
-import { CloudEvent, CloudEventV1, Version } from "../../src";
+import { CloudEvent, CloudEventV1, V1, V03 } from "../../src";
 
 const fixture: CloudEventV1<undefined> = {
   id: "123",
   type: "org.cloudevents.test",
   source: "http://cloudevents.io",
-  specversion: Version.V1,
+  specversion: V1,
 };
 
 describe("The SDK Requirements", () => {
@@ -25,15 +25,15 @@ describe("The SDK Requirements", () => {
       expect(
         new CloudEvent({
           ...fixture,
-          specversion: Version.V03,
+          specversion: V03,
         }, false).specversion,
-      ).to.equal(Version.V03);
+      ).to.equal(V03);
     });
   });
 
   describe("v1.0", () => {
     it("should create an event using the right spec version", () => {
-      expect(new CloudEvent(fixture).specversion).to.equal(Version.V1);
+      expect(new CloudEvent(fixture).specversion).to.equal(V1);
     });
   });
 

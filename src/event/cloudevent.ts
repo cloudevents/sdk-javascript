@@ -12,12 +12,10 @@ import { validateCloudEvent } from "./spec";
 import { ValidationError, isBinary, asBase64, isValidType, base64AsBinary } from "./validation";
 
 /**
- * An enum representing the CloudEvent specification version
+ * Constants representing the CloudEvent specification version
  */
-export const enum Version {
-  V1 = "1.0",
-  V03 = "0.3",
-}
+export const V1 = "1.0";
+export const V03 = "0.3";
 
 /**
  * A CloudEvent describes event data in common formats to provide
@@ -28,7 +26,7 @@ export class CloudEvent<T = undefined> implements CloudEventV1<T> {
   id: string;
   type: string;
   source: string;
-  specversion: Version;
+  specversion: string;
   datacontenttype?: string;
   dataschema?: string;
   subject?: string;
@@ -69,7 +67,7 @@ export class CloudEvent<T = undefined> implements CloudEventV1<T> {
     this.source = properties.source as string;
     delete (properties as any).source;
 
-    this.specversion = (properties.specversion as Version) || Version.V1;
+    this.specversion = (properties.specversion) || V1;
     delete properties.specversion;
 
     this.datacontenttype = properties.datacontenttype;
@@ -103,9 +101,9 @@ export class CloudEvent<T = undefined> implements CloudEventV1<T> {
     delete properties.data;
 
     // sanity checking
-    if (this.specversion === Version.V1 && this.schemaurl) {
+    if (this.specversion === V1 && this.schemaurl) {
       throw new TypeError("cannot set schemaurl on version 1.0 event");
-    } else if (this.specversion === Version.V03 && this.dataschema) {
+    } else if (this.specversion === V03 && this.dataschema) {
       throw new TypeError("cannot set dataschema on version 0.3 event");
     }
 

@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.0.0](https://github.com/cloudevents/sdk-javascript/compare/v7.0.2...v8.0.0) (2023-07-24)
+
+### ⚠ BREAKING CHANGES
+
+* use string instead of enum for Version ([#561](https://github.com/cloudevents/sdk-javascript/issues/561)) ([15f6505](https://github.com/cloudevents/sdk-javascript/commit/15f6505a580b2bbf8d6b2e89feea10cbd40ab827))
+TypeScript does not consider enum values equivalent, even if the string
+representation is the same. So, when a module imports `cloudevents` and
+also has a dependency on `cloudevents` this can cause conflicts where
+the `CloudEvent.version` attribute is not considered equal when, in
+fact, it is.
+
+### Miscellaneous
+
+* add `npm run build:schema` to the doc generation action ([#557](https://github.com/cloudevents/sdk-javascript/issues/557)) ([fa388f7](https://github.com/cloudevents/sdk-javascript/commit/fa388f7dc65c1739864d7a885d6d28111ce07775))
+* modify release-please to use Signed-Off-By on commits ([#559](https://github.com/cloudevents/sdk-javascript/issues/559)) ([089520a](https://github.com/cloudevents/sdk-javascript/commit/089520a4cc8304e39ac9bfccf0ed59c76ea8c11a))
+* release 8.0.0 ([#563](https://github.com/cloudevents/sdk-javascript/issues/563)) ([1ed43c8](https://github.com/cloudevents/sdk-javascript/commit/1ed43c84868ccfd18531deaf6cc9d4e4fcb21a08))
+
 ## [7.0.2](https://github.com/cloudevents/sdk-javascript/compare/v7.0.1...v7.0.2) (2023-07-05)
 
 

@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## [8.0.0](https://github.com/cloudevents/sdk-javascript/compare/v7.0.2...v8.0.0) (2023-07-24)
 
+### ⚠ BREAKING CHANGES
+
+* use string instead of enum for Version ([#561](https://github.com/cloudevents/sdk-javascript/issues/561)) ([15f6505](https://github.com/cloudevents/sdk-javascript/commit/15f6505a580b2bbf8d6b2e89feea10cbd40ab827))
+TypeScript does not consider enum values equivalent, even if the string
+representation is the same. So, when a module imports `cloudevents` and
+also has a dependency on `cloudevents` this can cause conflicts where
+the `CloudEvent.version` attribute is not considered equal when, in
+fact, it is.
 
 ### Miscellaneous
 

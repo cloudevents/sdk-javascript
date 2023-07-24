@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.0.0](https://github.com/cloudevents/sdk-javascript/compare/v7.0.2...v8.0.0) (2023-07-24)
+
+
+### Miscellaneous
+
+* add `npm run build:schema` to the doc generation action ([#557](https://github.com/cloudevents/sdk-javascript/issues/557)) ([fa388f7](https://github.com/cloudevents/sdk-javascript/commit/fa388f7dc65c1739864d7a885d6d28111ce07775))
+* modify release-please to use Signed-Off-By on commits ([#559](https://github.com/cloudevents/sdk-javascript/issues/559)) ([089520a](https://github.com/cloudevents/sdk-javascript/commit/089520a4cc8304e39ac9bfccf0ed59c76ea8c11a))
+* release 8.0.0 ([#563](https://github.com/cloudevents/sdk-javascript/issues/563)) ([1ed43c8](https://github.com/cloudevents/sdk-javascript/commit/1ed43c84868ccfd18531deaf6cc9d4e4fcb21a08))
+
 ## [7.0.2](https://github.com/cloudevents/sdk-javascript/compare/v7.0.1...v7.0.2) (2023-07-05)
 
 

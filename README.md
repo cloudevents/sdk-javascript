@@ -258,3 +258,10 @@ how SDK projects are
 for how PR reviews and approval, and our
 [Code of Conduct](https://github.com/cloudevents/spec/blob/master/community/GOVERNANCE.md#additional-information)
 information.
+
+## Additional SDK Resources
+
+- [List of current active maintainers](MAINTAINERS.md)
+- [How to contribute to the project](CONTRIBUTING.md)
+- [SDK's License](LICENSE)
+- [SDK's Release process](RELEASING.md)

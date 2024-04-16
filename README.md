@@ -191,37 +191,37 @@ There you will find Express.js, TypeScript and Websocket examples.
 
 | Core Specification | [v0.3](https://github.com/cloudevents/spec/blob/v0.3/spec.md) | [v1.0](https://github.com/cloudevents/spec/blob/v1.0/spec.md) |
 | ------------------ | ------------------------------------------------------------- | ------------------------------------------------------------- |
-| CloudEvents Core   | :heavy_check_mark:                                            | :heavy_check_mark:                                            |
+| CloudEvents Core   | :white_check_mark:                                            | :white_check_mark:                                            |
 
 ---
 
 | Event Formats     | [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/blob/v1.0/spec.md#event-format) |
 | ----------------- | ----------------------------------------------------- | ----------------------------------------------------- |
 | AVRO Event Format | :x:                                                   | :x:                                                   |
-| JSON Event Format | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
+| JSON Event Format | :white_check_mark:                                    | :white_check_mark:                                    |
 
 ---
 
 | Protocol Bindings    | [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/blob/v1.0/spec.md#protocol-binding) |
 | ---------------------- | ----------------------------------------------------- | ----------------------------------------------------- |
 | AMQP Protocol Binding  | :x:                                                   | :x:                                                   |
-| HTTP Protocol Binding  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
-| Kafka Protocol Binding | :x:                                                   | :heavy_check_mark:                                                   |
-| MQTT Protocol Binding  | :heavy_check_mark:                                                   | :x:                                                   |
+| HTTP Protocol Binding  | :white_check_mark:                                    | :white_check_mark:                                    |
+| Kafka Protocol Binding | :x:                                                   | :white_check_mark:                                                   |
+| MQTT Protocol Binding  | :white_check_mark:                                                   | :x:                                                   |
 | NATS Protocol Binding  | :x:                                                   | :x:                                                   |
 
 ---
 
 | Content Modes    | [v0.3](https://github.com/cloudevents/spec/tree/v0.3) | [v1.0](https://github.com/cloudevents/spec/blob/v1.0/http-protocol-binding.md#13-content-modes) |
 | ---------------------- | ----------------------------------------------------- | ----------------------------------------------------- |
-| HTTP Binary  | :heavy_check_mark:                                                   | :heavy_check_mark:                                                   |
-| HTTP Structured  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
-| HTTP Batch  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
-| Kafka Binary  | :heavy_check_mark:                                                   | :heavy_check_mark:                                                   |
-| Kafka Structured  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
-| Kafka Batch  | :heavy_check_mark:                                    | :heavy_check_mark:
-| MQTT Binary  | :heavy_check_mark:                                                   | :heavy_check_mark:                                                   |
-| MQTT Structured  | :heavy_check_mark:                                    | :heavy_check_mark:                                    |
+| HTTP Binary  | :white_check_mark:                                                   | :white_check_mark:                                                   |
+| HTTP Structured  | :white_check_mark:                                    | :white_check_mark:                                    |
+| HTTP Batch  | :white_check_mark:                                    | :white_check_mark:                                    |
+| Kafka Binary  | :white_check_mark:                                                   | :white_check_mark:                                                   |
+| Kafka Structured  | :white_check_mark:                                    | :white_check_mark:                                    |
+| Kafka Batch  | :white_check_mark:                                    | :white_check_mark:
+| MQTT Binary  | :white_check_mark:                                                   | :white_check_mark:                                                   |
+| MQTT Structured  | :white_check_mark:                                    | :white_check_mark:                                    |
 
 ## Community
 

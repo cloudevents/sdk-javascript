@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.0.1](https://github.com/cloudevents/sdk-javascript/compare/v8.0.0...v8.0.1) (2024-06-12)
+
+
+### Bug Fixes
+
+* allow Node 22 and use it by default ([#587](https://github.com/cloudevents/sdk-javascript/issues/587)) ([e762607](https://github.com/cloudevents/sdk-javascript/commit/e7626077ed22b2bcbfa71b0403a58ac187c57cba))
+
+
+### Miscellaneous
+
+* Update compatible node version ([#573](https://github.com/cloudevents/sdk-javascript/issues/573)) ([245bae9](https://github.com/cloudevents/sdk-javascript/commit/245bae92d1c84b4a44fe7aae2f82c5a90818f1c5))
+* updated check mark symbol to show some green checkboxes ([#582](https://github.com/cloudevents/sdk-javascript/issues/582)) ([c65afe9](https://github.com/cloudevents/sdk-javascript/commit/c65afe94d2320eae9b8b74de9b1e1bd8793baa6a))
+
 ## [8.0.0](https://github.com/cloudevents/sdk-javascript/compare/v7.0.2...v8.0.0) (2023-07-24)
 
 ### ⚠ BREAKING CHANGES

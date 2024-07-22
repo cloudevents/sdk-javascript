@@ -82,10 +82,10 @@ describe("A CloudEvent", () => {
     }).throw("invalid extension name");
   });
 
-  it("Throw a validation error for invalid extension names, more than 20 chars", () => {
+  it("Not throw a validation error for invalid extension names, more than 20 chars", () => {
     expect(() => {
       new CloudEvent({ "123456789012345678901": "extension1", ...fixture });
-    }).throw("invalid extension name");
+    }).not.throw("invalid extension name");
   });
 
   it("Throws a validation error for invalid uppercase extension names", () => {

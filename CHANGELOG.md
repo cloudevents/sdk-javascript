@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.0.2](https://github.com/cloudevents/sdk-javascript/compare/v8.0.1...v8.0.2) (2024-07-22)
+
+
+### Bug Fixes
+
+* creating an event does not error when the event attribute name is too long ([#593](https://github.com/cloudevents/sdk-javascript/issues/593)) ([6977113](https://github.com/cloudevents/sdk-javascript/commit/6977113d7b49bd2b702632cc09e29cc0c003e2a1))
+
 ## [8.0.1](https://github.com/cloudevents/sdk-javascript/compare/v8.0.0...v8.0.1) (2024-06-12)
 
 

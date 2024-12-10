@@ -140,7 +140,7 @@
     "eslint-plugin-promise": "^5.1.0",
     "got": "^11.8.5",
     "http-parser-js": "^0.5.2",
-    "mocha": "^10.1.0",
+    "mocha": "^11.0.1",
     "nock": "~12.0.3",
     "nyc": "~15.0.0",
     "prettier": "^2.0.5",

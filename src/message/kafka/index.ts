@@ -22,7 +22,7 @@ export type {
  * Bindings for Kafka transport
  * @implements {@linkcode Binding}
  */
- const Kafka: Binding = {
+ const Kafka: Binding<KafkaMessage<unknown>, KafkaMessage<string>> = {
   binary: toBinaryKafkaMessage,
   structured: toStructuredKafkaMessage,
   toEvent: deserializeKafkaMessage,
@@ -35,9 +35,9 @@ type Key = string | Buffer;
  * Extends the base Message type to include
  * Kafka-specific fields
  */
-interface KafkaMessage<T = string> extends Message {
+interface KafkaMessage<T = string | Buffer | unknown> extends Message {
   key: Key
-  value: T | string | Buffer | unknown
+  value: T
   timestamp?: string
 }
 
@@ -61,7 +61,7 @@ interface KafkaEvent<T> extends CloudEventV1<T> {
  * @param {KafkaEvent<T>} event The event to serialize
  * @returns {KafkaMessage<T>} a KafkaMessage instance
  */
-function toBinaryKafkaMessage<T>(event: CloudEventV1<T>): KafkaMessage<T> {
+function toBinaryKafkaMessage<T>(event: CloudEventV1<T>): KafkaMessage<T | undefined> {
   // 3.2.1. Content Type
   // For the binary mode, the header content-type property MUST be mapped directly
   // to the CloudEvents datacontenttype attribute.
@@ -86,7 +86,7 @@ function toBinaryKafkaMessage<T>(event: CloudEventV1<T>): KafkaMessage<T> {
  * @param {CloudEvent<T>} event the CloudEvent to be serialized
  * @returns {KafkaMessage<T>} a KafkaMessage instance
  */
- function toStructuredKafkaMessage<T>(event: CloudEventV1<T>): KafkaMessage<T> {
+ function toStructuredKafkaMessage<T>(event: CloudEventV1<T>): KafkaMessage<string> {
   if ((event instanceof CloudEvent) && event.data_base64) {
     // The event's data is binary - delete it
     event = event.cloneWith({ data: undefined });
@@ -130,9 +130,9 @@ function deserializeKafkaMessage<T>(message: Message): CloudEvent<T> | CloudEven
     case Mode.BINARY:
       return parseBinary(m);
     case Mode.STRUCTURED:
-      return parseStructured(m);
+      return parseStructured(m as unknown as KafkaMessage<string>);
     case Mode.BATCH:
-      return parseBatched(m);
+      return parseBatched(m as unknown as KafkaMessage<string>);
     default:
       throw new ValidationError("Unknown Message mode");
   }
@@ -212,14 +212,14 @@ function parseBinary<T>(message: KafkaMessage<T>): CloudEvent<T> {
  * @param {KafkaMessage<T>} message the message
  * @returns {CloudEvent<T>} a KafkaEvent<T>
  */
-function parseStructured<T>(message: KafkaMessage<T>): CloudEvent<T> {
+function parseStructured<T>(message: KafkaMessage<string>): CloudEvent<T> {
   // Although the format of a structured encoded event could be something
   // other than JSON, e.g. XML, we currently only support JSON
   // encoded structured events.
   if (!message.headers[CONSTANTS.HEADER_CONTENT_TYPE]?.startsWith(CONSTANTS.MIME_CE_JSON)) {
     throw new ValidationError(`Unsupported event encoding ${message.headers[CONSTANTS.HEADER_CONTENT_TYPE]}`);
   }
-  const eventObj = JSON.parse(message.value as string);
+  const eventObj = JSON.parse(message.value);
   eventObj.time = new Date(eventObj.time).toISOString();
   return new CloudEvent({
     ...eventObj,
@@ -232,14 +232,14 @@ function parseStructured<T>(message: KafkaMessage<T>): CloudEvent<T> {
  * @param {KafkaMessage<T>} message the message
  * @returns {CloudEvent<T>[]} an array of KafkaEvent<T>
  */
-function parseBatched<T>(message: KafkaMessage<T>): CloudEvent<T>[] {
+function parseBatched<T>(message: KafkaMessage<string>): CloudEvent<T>[] {
   // Although the format of batch encoded events could be something
   // other than JSON, e.g. XML, we currently only support JSON
   // encoded structured events.
   if (!message.headers[CONSTANTS.HEADER_CONTENT_TYPE]?.startsWith(CONSTANTS.MIME_CE_BATCH)) {
     throw new ValidationError(`Unsupported event encoding ${message.headers[CONSTANTS.HEADER_CONTENT_TYPE]}`);
   }
-  const events = JSON.parse(message.value as string) as Record<string, unknown>[];
+  const events = JSON.parse(message.value) as Record<string, unknown>[];
   return events.map((e) => new CloudEvent({ ...e, partitionkey: message.key }, false));
 }
 

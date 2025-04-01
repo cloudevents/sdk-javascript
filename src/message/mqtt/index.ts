@@ -15,7 +15,7 @@ export type { MQTTMessage };
  * Extends the base {@linkcode Message} interface to include MQTT attributes, some of which
  * are aliases of the {Message} attributes.
  */
-interface MQTTMessage<T> extends Message<T> {
+interface MQTTMessage<T = unknown> extends Message<T> {
   /**
    * Identifies this message as a PUBLISH packet. MQTTMessages created with
    * the `binary` and `structured` Serializers will contain a "Content Type"
@@ -37,7 +37,7 @@ interface MQTTMessage<T> extends Message<T> {
  * Binding for MQTT transport support
  * @implements @linkcode Binding
  */
-const MQTT: Binding = {
+const MQTT: Binding<MQTTMessage, MQTTMessage> = {
   binary,
   structured,
   toEvent: toEvent as Deserializer,

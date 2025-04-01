@@ -22,9 +22,9 @@ export * from "./mqtt";
  * @property {@link Deserializer} `toEvent`  - converts a Message into a CloudEvent
  * @property {@link Detector} `isEvent`      - determines if a Message can be converted to a CloudEvent
  */
-export interface Binding {
-  binary: Serializer;
-  structured: Serializer;
+export interface Binding<B extends Message = Message, S extends Message = Message> {
+  binary: Serializer<B>;
+  structured: Serializer<S>;
   toEvent: Deserializer;
   isEvent: Detector;
 }
@@ -65,8 +65,8 @@ export enum Mode {
  * CloudEvent into a Message.
  * @interface
  */
-export interface Serializer {
-  <T>(event: CloudEventV1<T>): Message;
+export interface Serializer<M extends Message> {
+  <T>(event: CloudEventV1<T>): M;
 }
 
 /**

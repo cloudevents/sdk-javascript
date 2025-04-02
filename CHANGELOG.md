@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.0.3](https://github.com/cloudevents/sdk-javascript/compare/v8.0.2...v8.0.3) (2025-04-02)
+
+
+### Bug Fixes
+
+* add generics to `Binding` type ([#604](https://github.com/cloudevents/sdk-javascript/issues/604)) ([f475cdf](https://github.com/cloudevents/sdk-javascript/commit/f475cdfd7ee7e80a375b997ba2f41b1655a44a03))
+
 ## [8.0.2](https://github.com/cloudevents/sdk-javascript/compare/v8.0.1...v8.0.2) (2024-07-22)
 
 

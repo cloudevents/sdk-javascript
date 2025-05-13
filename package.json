@@ -118,7 +118,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@cucumber/cucumber": "^8.0.0",
+    "@cucumber/cucumber": "^9.5.0",
     "@types/chai": "^4.2.11",
     "@types/cucumber": "^6.0.1",
     "@types/got": "^9.6.11",

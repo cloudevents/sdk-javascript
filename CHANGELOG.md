@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.0.0](https://github.com/cloudevents/sdk-javascript/compare/v9.0.0...v10.0.0) (2025-06-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove Node 18 support ([#616](https://github.com/cloudevents/sdk-javascript/issues/616))
+
+### Features
+
+* add node 24 support ([#614](https://github.com/cloudevents/sdk-javascript/issues/614)) ([beac735](https://github.com/cloudevents/sdk-javascript/commit/beac7356a789944cf4a8d76d2508fa6d7c5bcf7e))
+* remove Node 18 support ([#616](https://github.com/cloudevents/sdk-javascript/issues/616)) ([3c8819e](https://github.com/cloudevents/sdk-javascript/commit/3c8819e2bcf97fe7b352b2a004d511965a4cc414))
+
 ## [9.0.0](https://github.com/cloudevents/sdk-javascript/compare/v8.0.3...v9.0.0) (2025-04-03)
 
 

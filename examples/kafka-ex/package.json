@@ -1,8 +1,8 @@
 {
   "name": "kafka-ex",
+  "description": "Simple kafka example using CloudEvents",
+  "repository": "https://github.com/cloudevents/sdk-javascript.git",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
     "build": "tsc",
     "start:producer": "ts-node src/producer.ts",

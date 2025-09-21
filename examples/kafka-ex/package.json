@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "kafka example using CloudEvents",
   "repository": "https://github.com/cloudevents/sdk-javascript.git",
-  "main": "index.js",
   "scripts": {
     "build": "tsc",
     "start:producer": "ts-node src/producer.ts",

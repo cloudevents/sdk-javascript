@@ -1,3 +1,4 @@
+/* eslint-disable */
 import "dotenv/config";
 import { Kafka } from "kafkajs";
 

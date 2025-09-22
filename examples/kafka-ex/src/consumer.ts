@@ -1,4 +1,5 @@
 /* eslint-disable */
+
 import { Headers, Kafka, Message } from "cloudevents";
 import kafka from "./client";
 
@@ -21,10 +22,10 @@ const groupId = process.argv[2];
       });
 
       try {
-        let newHeaders: Headers = {};
+        const newHeaders: Headers = {};
         Object.keys(message.headers as Headers).forEach((key) => {
           // this is needed here because the headers are buffer values
-          // when it gets to the consumer which is invalid for the
+          // when it gets to the consumer and the buffer headers are not valid for the
           // toEvent api from cloudevents, so this converts each key value to a string
           // as expected by the toEvent api
           newHeaders[key] = message!.headers![key]?.toString() ?? "";

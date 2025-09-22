@@ -1,4 +1,5 @@
 /* eslint-disable */
+
 import { CloudEvent, Kafka } from "cloudevents";
 import readline from "readline";
 import kafka from "./client";
@@ -12,7 +13,7 @@ const rl = readline.createInterface({
   const producer = kafka.producer();
   await producer.connect();
 
-  rl.setPrompt("> ");
+  rl.setPrompt("Enter message > ");
   rl.prompt();
   rl.on("line", async (line) => {
     const event = new CloudEvent({

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.0.1](https://github.com/cloudevents/sdk-javascript/compare/v10.0.0...v10.0.1) (2025-09-24)
+
+
+### Documentation
+
+* **examples:** Kafka protocol example ([#625](https://github.com/cloudevents/sdk-javascript/issues/625)) ([bf5d53f](https://github.com/cloudevents/sdk-javascript/commit/bf5d53f2862248d72d9869cf5173f51b32583faf))
+
 ## [10.0.0](https://github.com/cloudevents/sdk-javascript/compare/v9.0.0...v10.0.0) (2025-06-05)
 
 

@@ -71,7 +71,11 @@ Then("the attributes are:", function (attributes: { rawTable: [] }) {
   assert.equal(this.cloudevent.id, expected.id);
   assert.equal(this.cloudevent.type, expected.type);
   assert.equal(this.cloudevent.source, expected.source);
-  assert.equal(this.cloudevent.time, new Date(expected.time).toISOString());
+  if (this.cloudevent.time && expected.time) {
+    assert.equal(new Date(this.cloudevent.time).toISOString(), new Date(expected.time).toISOString());
+  } else {
+    assert.equal(this.cloudevent.time, expected.time);
+  }
   assert.equal(this.cloudevent.specversion, expected.specversion);
   assert.equal(this.cloudevent.datacontenttype, expected.datacontenttype);
   return true;

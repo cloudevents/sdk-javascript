@@ -23,7 +23,7 @@ export class JSONParser implements Parser {
    * @param {object|string} payload the JSON payload
    * @return {object} the parsed JSON payload.
    */
-  parse(payload: Record<string, unknown> | string): string {
+  parse(payload: Record<string, unknown> | string): unknown {
     if (typeof payload === "string") {
       // This is kind of a hack, but the payload data could be JSON in the form of a single
       // string, such as "some data". But without the quotes in the string, JSON.parse blows
@@ -33,7 +33,7 @@ export class JSONParser implements Parser {
       }
     }
     if (this.decorator) {
-      payload = this.decorator.parse(payload);
+      payload = this.decorator.parse(payload) as string | Record<string, unknown>;
     }
 
     isDefinedOrThrow(payload, new ValidationError("null or undefined payload"));
@@ -45,7 +45,7 @@ export class JSONParser implements Parser {
       JSON = __JSON;
     }
 
-    const parseJSON = (v: Record<string, unknown> | string): string => (isString(v) ? JSON.parse(v as string) : v);
+    const parseJSON = (v: Record<string, unknown> | string): unknown => (isString(v) ? JSON.parse(v as string) : v);
     return parseJSON(payload);
   }
 }
@@ -89,9 +89,9 @@ export interface MappedParser {
 
 export class DateParser extends Parser {
   parse(payload: string): string {
-    let date = new Date(Date.parse(payload));
+    const date = new Date(Date.parse(payload));
     if (date.toString() === "Invalid Date") {
-      date = new Date();
+      return new Date().toISOString();
     }
     return date.toISOString();
   }

@@ -5,7 +5,7 @@
 
 import { ErrorObject } from "ajv";
 
-export type TypeArray = Int8Array | Uint8Array | Int16Array | Uint16Array | 
+export type TypeArray = Int8Array | Uint8Array | Int16Array | Uint16Array |
   Int32Array | Uint32Array | Uint8ClampedArray | Float32Array | Float64Array;
 
 const globalThisPolyfill = (function() {
@@ -30,17 +30,15 @@ export class ValidationError extends TypeError {
   errors?: string[] | ErrorObject[] | null;
 
   constructor(message: string, errors?: string[] | ErrorObject[] | null) {
-    const messageString =
-      errors instanceof Array
-        ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          errors?.reduce(
-            (accum: string, err: Record<string, string>) =>
-              accum.concat(`
-  ${err instanceof Object ? JSON.stringify(err) : err}`),
-            message,
-          )
-        : message;
+    let messageString = message;
+    if (Array.isArray(errors)) {
+      messageString = errors.reduce(
+        (accum: string, err: string | ErrorObject) =>
+          accum.concat(`
+  ${typeof err === "object" ? JSON.stringify(err) : err}`),
+        message,
+      );
+    }
     super(messageString);
     this.errors = errors ? errors : [];
   }
@@ -107,7 +105,7 @@ export const base64AsBinary = (base64String: string): Uint8Array => {
   return Uint8Array.from(toBinaryString(base64String), (c) => c.charCodeAt(0));
 };
 
-export const asBase64 = 
+export const asBase64 =
 (value: string | Buffer | TypeArray): string => asBuffer(value).toString("base64");
 
 export const clone = (o: Record<string, unknown>): Record<string, unknown> => JSON.parse(JSON.stringify(o));

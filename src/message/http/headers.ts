@@ -41,7 +41,12 @@ export function headersFor<T>(event: CloudEventV1<T>): Headers {
       if (map) {
         headers[map.name] = map.parser.parse(value as string) as string;
       } else if (property !== CONSTANTS.DATA_ATTRIBUTE && property !== `${CONSTANTS.DATA_ATTRIBUTE}_base64`) {
-        headers[`${CONSTANTS.EXTENSIONS_PREFIX}${property}`] = value as string;
+        const headerName = `${CONSTANTS.EXTENSIONS_PREFIX}${property}`;
+        if (typeof value === "object") {
+          headers[headerName] = JSON.stringify(value);
+        } else {
+          headers[headerName] = value as string;
+        }
       }
     }
   });

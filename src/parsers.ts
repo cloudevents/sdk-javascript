@@ -45,7 +45,8 @@ export class JSONParser implements Parser {
       JSON = __JSON;
     }
 
-    const parseJSON = (v: Record<string, unknown> | string): string => (isString(v) ? JSON.parse(v as string) : v);
+    const parseJSON = (v: Record<string, unknown> | string): string =>
+      (isString(v) ? JSON.parse(v as string) : v) as string;
     return parseJSON(payload);
   }
 }

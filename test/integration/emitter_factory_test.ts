@@ -180,7 +180,12 @@ export function assertBinary(response: Record<string, string>): void {
   expect(response["ce-source"]).to.equal(source);
   expect(response[`ce-${ext1Name}`]).to.deep.equal(ext1Value);
   expect(response[`ce-${ext2Name}`]).to.deep.equal(ext2Value);
-  expect(response[`ce-${ext3Name}`]).to.deep.equal(ext3Value);
+  const ext3 = response[`ce-${ext3Name}`];
+  if (typeof ext3 === "string") {
+    expect(JSON.parse(ext3)).to.deep.equal(ext3Value);
+  } else {
+    expect(ext3).to.deep.equal(ext3Value);
+  }
 }
 
 /**

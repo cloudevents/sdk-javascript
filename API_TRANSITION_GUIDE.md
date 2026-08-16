@@ -60,7 +60,7 @@ function sendWithAxios(message) {
   // Do what you need with the message headers
   // and body in this function, then send the
   // event
-  axios({
+  return axios({
     method: 'post',
     url: '...',
     data: message.body,
@@ -82,7 +82,7 @@ function sendWithAxios(message) {
   // Do what you need with the message headers
   // and body in this function, then send the
   // event
-  axios({
+  return axios({
     method: "post",
     url: "...",
     data: message.body,

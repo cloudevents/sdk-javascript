@@ -46,7 +46,8 @@ app.post("/", (req, res) => {
 
 #### Emitting Events
 
-The easiest way to send events is to use the built-in HTTP emitter.
+The easiest way to send events is to use the built-in HTTP emitter, which sends
+them with the Fetch API.
 
 ```js
 const { httpTransport, emitterFor, CloudEvent } = require("cloudevents");
@@ -57,9 +58,89 @@ const emit = emitterFor(httpTransport("https://my.receiver.com/endpoint"));
 // Create a new CloudEvent
 const ce = new CloudEvent({ type, source, data });
 
-// Send it to the endpoint - encoded as HTTP binary by default
-emit(ce);
+async function main() {
+  // Send it to the endpoint - encoded as HTTP binary by default
+  const { response, body } = await emit(ce);
+  console.log(response.status, body);
+}
+
+main().catch(console.error);
 ```
+
+A 2xx response resolves with the native Fetch `Response` and its body, read as
+text by default. Anything else rejects with an `HTTPTransportError`, whose
+`kind` separates a response that was not 2xx from an abort and from a request
+that never reached a response.
+
+The body of a response that was not 2xx is on the error as `error.body`.
+`error.response` cannot be read a second time. If reading the body failed,
+`error.body` is absent and the error carries a `cause`.
+
+```js
+import { HTTPTransportError } from "cloudevents";
+
+async function main() {
+  try {
+    await emit(ce);
+  } catch (error) {
+    if (error instanceof HTTPTransportError) {
+      console.error(error.kind, error.response?.status, error.body);
+    }
+    throw error;
+  }
+}
+
+main().catch(console.error);
+```
+
+`httpTransport()` also takes the headers for every event, an `AbortSignal`, a
+`responseHandler` to read the body another way (or `httpDiscardResponseHandler`
+to skip it), and the remaining Fetch options under `fetchOptions`. Headers
+passed to `emit()` apply to that event only, and there is no timeout option: a
+deadline is an `AbortSignal`.
+
+```js
+const emit = emitterFor(httpTransport("https://my.receiver.com/endpoint", {
+  headers: { authorization: `Bearer ${process.env.RECEIVER_TOKEN}` },
+  responseHandler: (response) => response.json(),
+}));
+
+async function main() {
+  await emit(ce, { signal: AbortSignal.timeout(10000) });
+}
+
+main().catch(console.error);
+```
+
+A 2xx response means the receiver accepted the event, so a body that cannot be
+read resolves with `{ response, bodyError }` in place of `{ response, body }`.
+Only one of the two is present. Check which property the result has before using
+it:
+
+```js
+async function main() {
+  const result = await emit(ce);
+  if ("body" in result) {
+    console.log(result.body);
+  } else {
+    console.error(result.bodyError);
+  }
+}
+
+main().catch(console.error);
+```
+
+Redirects are not followed by default, so each one is reported as a failed send.
+On Node.js the `HTTPTransportError` carries the 3xx response; a browser returns
+an opaque redirect instead, so `error.response.status` is `0` and the `location`
+header cannot be read. Set `fetchOptions: { redirect: "follow" }` to follow
+them, keeping in mind that Fetch preserves the CloudEvent POST and its body only
+for `307` and `308` - it turns a `301`, `302` or `303` into a bodyless `GET`,
+which drops the event.
+
+The [API transition guide](./API_TRANSITION_GUIDE.md) covers the header forms
+the transport accepts and where a proxy or a custom CA goes now that
+`http.globalAgent` no longer applies.
 
 If you prefer to use another transport mechanism for sending events
 over HTTP, you can use the `HTTP` binding to create a `Message` which
@@ -109,19 +190,30 @@ You may also use the `Emitter` singleton to send your `CloudEvents`.
 ```js
 const { emitterFor, httpTransport, Mode, CloudEvent, Emitter } = require("cloudevents");
 
-// Create a CloudEvent emitter function to send events to our receiver
-const emit = emitterFor(httpTransport("https://example.com/receiver"));
+async function main() {
+  // Create a CloudEvent emitter function to send events to our receiver
+  const emit = emitterFor(httpTransport("https://example.com/receiver"));
 
-// Use the emit() function to send a CloudEvent to its endpoint when a "cloudevent" event is emitted
-// (see: https://nodejs.org/api/events.html#class-eventemitter)
-Emitter.on("cloudevent", emit);
+  // Use the emit() function to send a CloudEvent to its endpoint when a
+  // "cloudevent" event is emitted
+  // (see: https://nodejs.org/api/events.html#class-eventemitter)
+  Emitter.on("cloudevent", emit);
 
-...
-// In any part of the code, calling `emit()` on a `CloudEvent` instance will send the event
-new CloudEvent({ type, source, data }).emit();
+  // Calling emit() on a CloudEvent instance sends it through every listener
+  await new CloudEvent({
+    type: "com.example.order.created",
+    source: "/stores/store-42",
+    data: { orderId: "order-123" },
+  }).emit();
+}
 
-// You can also have several listeners to send the event to several endpoints
+main().catch(console.error);
 ```
+
+You can also have several listeners to send the event to several endpoints.
+`emit()` waits for all of them, and an endpoint which refuses the event fails
+the whole call. See the [API transition guide](./API_TRANSITION_GUIDE.md) for
+the details.
 
 ## CloudEvent Objects
 

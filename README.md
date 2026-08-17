@@ -25,6 +25,9 @@ those are Node.js 16.x, and Node.js 18.x. To install in your Node.js project:
 npm install cloudevents
 ```
 
+The examples below use ECMAScript modules; CommonJS applications can use
+`require("cloudevents")` instead.
+
 ### Receiving and Emitting Events
 
 #### Receiving Events
@@ -34,8 +37,10 @@ object can be created by simply providing the `HTTP` protocol binding
 the incoming headers and request body.
 
 ```js
-const app = require("express")();
-const { HTTP } = require("cloudevents");
+import express from "express";
+import { HTTP } from "cloudevents";
+
+const app = express();
 
 app.post("/", (req, res) => {
   // body and headers come from an incoming HTTP request, e.g. express.js
@@ -49,7 +54,7 @@ app.post("/", (req, res) => {
 The easiest way to send events is to use the built-in HTTP emitter.
 
 ```js
-const { httpTransport, emitterFor, CloudEvent } = require("cloudevents");
+import { CloudEvent, emitterFor, httpTransport } from "cloudevents";
 
 // Create an emitter to send events to a receiver
 const emit = emitterFor(httpTransport("https://my.receiver.com/endpoint"));
@@ -68,8 +73,8 @@ and customization. For example, the `axios` module is used here to send
 a CloudEvent.
 
 ```js
-const axios = require("axios").default;
-const { HTTP, CloudEvent } = require("cloudevents");
+import axios from "axios";
+import { CloudEvent, HTTP } from "cloudevents";
 
 const ce = new CloudEvent({ type, source, data });
 const message = HTTP.binary(ce); // Or HTTP.structured(ce)
@@ -85,8 +90,8 @@ axios({
 You may also use the `emitterFor()` function as a convenience.
 
 ```js
-const axios = require("axios").default;
-const { emitterFor, Mode, CloudEvent } = require("cloudevents");
+import axios from "axios";
+import { CloudEvent, emitterFor, Mode } from "cloudevents";
 
 function sendWithAxios(message) {
   // Do what you need with the message headers
@@ -107,7 +112,13 @@ emit(new CloudEvent({ type, source, data }));
 You may also use the `Emitter` singleton to send your `CloudEvents`.
 
 ```js
-const { emitterFor, httpTransport, Mode, CloudEvent, Emitter } = require("cloudevents");
+import {
+  CloudEvent,
+  Emitter,
+  emitterFor,
+  httpTransport,
+  Mode,
+} from "cloudevents";
 
 // Create a CloudEvent emitter function to send events to our receiver
 const emit = emitterFor(httpTransport("https://example.com/receiver"));
@@ -128,9 +139,7 @@ new CloudEvent({ type, source, data }).emit();
 All created `CloudEvent` objects are read-only. If you need to update a property or add a new extension to an existing cloud event object, you can use the `cloneWith` method. This will return a new `CloudEvent` with any update or new properties. For example:
 
 ```js
-const {
-  CloudEvent,
-} = require("cloudevents");
+import { CloudEvent } from "cloudevents";
 
 // Create a new CloudEvent
 const ce = new CloudEvent({...});

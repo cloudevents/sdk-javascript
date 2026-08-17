@@ -5,7 +5,43 @@
 
 import "mocha";
 import { expect } from "chai";
-import { isStringOrThrow, equalsOrThrow, isBase64, asData } from "../../src/event/validation";
+import { ValidationError, isStringOrThrow, equalsOrThrow, isBase64, asData } from "../../src/event/validation";
+
+describe("ValidationError", () => {
+  it("includes string errors in its message", () => {
+    const errors = ["source is required", "type is required"];
+
+    const error = new ValidationError("invalid payload", errors);
+
+    expect(error.message).to.equal(`invalid payload
+  source is required
+  type is required`);
+    expect(error.errors).to.equal(errors);
+  });
+
+  it("includes AJV errors as JSON in its message", () => {
+    const errors = [
+      {
+        instancePath: "/source",
+        schemaPath: "#/properties/source/minLength",
+        keyword: "minLength",
+        params: { limit: 1 },
+        message: "must NOT have fewer than 1 characters",
+      },
+    ];
+
+    const error = new ValidationError("invalid payload", errors);
+
+    expect(error.message).to.equal(`invalid payload
+  ${JSON.stringify(errors[0])}`);
+    expect(error.errors).to.equal(errors);
+  });
+
+  it("keeps the original message when no errors are provided", () => {
+    expect(new ValidationError("invalid payload").message).to.equal("invalid payload");
+    expect(new ValidationError("invalid payload", null).message).to.equal("invalid payload");
+  });
+});
 
 describe("Utilities", () => {
   describe("isStringOrThrow", () => {

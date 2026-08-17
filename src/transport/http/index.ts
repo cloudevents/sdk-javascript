@@ -5,6 +5,7 @@
 
 import { Headers as CloudEventHeaders, Message } from "../../message";
 import { Options, TransportFunction } from "../emitter";
+import { combineSignals, signalFrom } from "../signal";
 
 /** The request options accepted by the Fetch implementation in the current environment */
 export type FetchRequestInit = NonNullable<Parameters<typeof globalThis.fetch>[1]>;
@@ -89,22 +90,6 @@ export interface HTTPTransportFunction<TDefaultBody = string>
 type HandledResponse =
   | { handled: true; body: unknown }
   | { handled: false; error: unknown };
-
-/** An abort signal scoped to one send, and the cleanup which ends that scope */
-interface CombinedSignal {
-  signal?: AbortSignal;
-  dispose: () => void;
-}
-
-/** Subscribers sharing the one platform listener attached to an abort signal */
-interface AbortFanout {
-  subscribers: Set<() => void>;
-  listener: () => void;
-  listening: boolean;
-}
-
-/** Active fan-outs, weakly keyed so an otherwise unused signal can still be collected */
-const abortFanouts = new WeakMap<AbortSignal, AbortFanout>();
 
 /**
  * The failure category reported by {@linkcode HTTPTransportError}
@@ -287,135 +272,6 @@ function validateHTTPURL(sink: string | URL): URL {
     throw new TypeError(`unsupported protocol ${url.protocol}`);
   }
   return url;
-}
-
-/**
- * Check a signal supplied by a caller, either for this transport or for a single send, by its
- * platform brand rather than the interface prototype of this realm
- *
- * @param {unknown} value the signal supplied by the caller, if any
- * @returns {AbortSignal|undefined} the signal, or undefined when none was supplied
- */
-function signalFrom(value: unknown): AbortSignal | undefined {
-  if (value === undefined || value === null) {
-    return undefined;
-  }
-  try {
-    // the getter checks the AbortSignal platform brand and accepts signals from another realm
-    Reflect.get(AbortSignal.prototype, "aborted", value);
-  } catch {
-    throw new TypeError("options.signal must be an AbortSignal");
-  }
-  return value as AbortSignal;
-}
-
-/**
- * Create and attach the shared platform listener for one signal
- *
- * @param {AbortSignal} source the signal which owns the listener
- * @returns {AbortFanout} the shared subscriber collection
- */
-function createAbortFanout(source: AbortSignal): AbortFanout {
-  const subscribers = new Set<() => void>();
-  const fanout: AbortFanout = {
-    subscribers,
-    listening: true,
-    listener: () => {
-      const current = Array.from(subscribers);
-      subscribers.clear();
-      fanout.listening = false;
-      abortFanouts.delete(source);
-      current.forEach((callback) => callback());
-    },
-  };
-
-  abortFanouts.set(source, fanout);
-  source.addEventListener("abort", fanout.listener, { once: true });
-  return fanout;
-}
-
-/**
- * Subscribe to a signal through one shared platform listener, however many sends use it
- *
- * @param {AbortSignal} source the signal whose abort should be relayed
- * @param {Function} subscriber one send's abort callback
- * @returns {Function} an idempotent function which removes this subscription
- */
-function subscribeAbort(source: AbortSignal, subscriber: () => void): () => void {
-  const fanout = abortFanouts.get(source) ?? createAbortFanout(source);
-
-  fanout.subscribers.add(subscriber);
-  let disposed = false;
-
-  return (): void => {
-    if (disposed) {
-      return;
-    }
-    disposed = true;
-    fanout.subscribers.delete(subscriber);
-
-    if (fanout.listening && fanout.subscribers.size === 0) {
-      fanout.listening = false;
-      source.removeEventListener("abort", fanout.listener);
-      abortFanouts.delete(source);
-    }
-  };
-}
-
-/** The relay for a send which has no signal to relay */
-const NO_ABORT: CombinedSignal = { signal: undefined, dispose: () => undefined };
-
-/**
- * Combine abort signals behind a disposable relay, so they apply while the transport is
- * fetching and handling a response without retaining a long-lived source after that work ends
- *
- * `AbortSignal.any()` is not used here. Node.js 24 validates its arguments with `instanceof`,
- * so it rejects the signals from another realm that {@linkcode signalFrom} accepts, with
- * `The "signals[0]" argument must be an instance of AbortSignal`. `addEventListener()` works
- * across realms on every supported version, so the sources are relayed through
- * {@linkcode subscribeAbort}, which also keeps one listener per source however many sends
- * share it.
- *
- * @param {AbortSignal} transportSignal the signal of the transport, if it has one
- * @param {AbortSignal} sendSignal the signal of this send, if it has one
- * @returns {CombinedSignal} the signal for Fetch and an idempotent cleanup function
- */
-function combineSignals(transportSignal?: AbortSignal, sendSignal?: AbortSignal): CombinedSignal {
-  if (transportSignal === undefined && sendSignal === undefined) {
-    return NO_ABORT;
-  }
-  // a send may pass the transport's own signal, which then only has to be relayed once
-  const sources = Array.from(new Set([transportSignal, sendSignal]))
-    .filter((signal): signal is AbortSignal => signal !== undefined);
-
-  const controller = new AbortController();
-  const unsubscribe: Array<() => void> = [];
-  let disposed = false;
-
-  const dispose = (): void => {
-    if (disposed) {
-      return;
-    }
-    disposed = true;
-    unsubscribe.forEach((remove) => remove());
-    unsubscribe.length = 0;
-  };
-
-  const abortFrom = (source: AbortSignal): void => {
-    controller.abort(source.reason);
-    dispose();
-  };
-
-  const alreadyAborted = sources.find((source) => source.aborted);
-  if (alreadyAborted) {
-    abortFrom(alreadyAborted);
-    return { signal: controller.signal, dispose };
-  }
-
-  sources.forEach((source) => {
-    unsubscribe.push(subscribeAbort(source, () => abortFrom(source)));
-  });
-  return { signal: controller.signal, dispose };
 }
 
 /**

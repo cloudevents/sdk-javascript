@@ -138,6 +138,56 @@ them, keeping in mind that Fetch preserves the CloudEvent POST and its body only
 for `307` and `308` - it turns a `301`, `302` or `303` into a bodyless `GET`,
 which drops the event.
 
+`httpTransport()` sends each event once. Applications which can accept
+at-least-once delivery can add retries by wrapping the emitter. `maxAttempts`
+counts the first send, so this emitter makes at most five requests:
+
+```js
+import { CloudEvent, emitterFor, httpTransport, withRetry } from "cloudevents";
+
+const emit = withRetry(
+  emitterFor(httpTransport("https://events.example.com/orders")),
+  { maxAttempts: 5 },
+);
+const orderCreated = new CloudEvent({
+  type: "com.example.order.created",
+  source: "/orders",
+  data: { orderId: "order-123" },
+});
+
+async function main() {
+  await emit(orderCreated, { signal: AbortSignal.timeout(30000) });
+}
+
+main().catch(console.error);
+```
+
+The default retry policy handles failures which are commonly temporary:
+
+| Failure reported by the emitter | Retried by default |
+| ------------------------------- | ------------------ |
+| Network failure before a response | Yes |
+| HTTP 408, 425, 429, 500, 502, 503 or 504 | Yes |
+| An aborted send or another HTTP status | No |
+| An error from a custom transport | No |
+
+Retries use randomized exponential backoff. For HTTP 429 and 503, a valid
+`Retry-After` header takes precedence, and `maxRetryDelay` caps whatever a delay
+asks for - 30 seconds by default, so a distant `Retry-After` cannot park an
+emitter for hours. Pass `shouldRetry(error, context)` or
+`retryDelay(error, context)` to replace either policy. The exported
+`isRetryableHTTPError()` and `defaultRetryDelay()` functions let a custom policy
+reuse the defaults.
+
+The signal passed with the event also ends a wait between attempts. The emitter
+then rejects with what that signal carries, rather than with the failure which
+led to the retry.
+
+A network failure can happen after the receiver accepted an event but before
+its response arrived. Every attempt therefore uses the same CloudEvent and the
+same `source` and `id`, but the receiver still needs to recognize duplicate
+delivery.
+
 The [API transition guide](./API_TRANSITION_GUIDE.md) covers the header forms
 the transport accepts and where a proxy or a custom CA goes now that
 `http.globalAgent` no longer applies.

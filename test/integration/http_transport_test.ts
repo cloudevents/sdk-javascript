@@ -824,7 +824,7 @@ async function withFetch(stub: typeof globalThis.fetch, run: () => Promise<void>
   }
 }
 
-async function withServer(handler: Handler, run: (url: string) => Promise<void>): Promise<void> {
+export async function withServer(handler: Handler, run: (url: string) => Promise<void>): Promise<void> {
   const server = createServer((request, response) => {
     Promise.resolve(handler(request, response)).catch((error) => {
       response.destroy(error);

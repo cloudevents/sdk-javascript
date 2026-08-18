@@ -96,21 +96,31 @@ main().catch(console.error);
 `httpTransport()` also takes the headers for every event, an `AbortSignal`, a
 `responseHandler` to read the body another way (or `httpDiscardResponseHandler`
 to skip it), and the remaining Fetch options under `fetchOptions`. Headers
-passed to `emit()` apply to that event only, and there is no timeout option: a
-deadline is an `AbortSignal`.
+passed to `emit()` apply to that event only. Wrap an emitter with `withTimeout()`
+when every send should have the same time limit:
 
 ```js
-const emit = emitterFor(httpTransport("https://my.receiver.com/endpoint", {
-  headers: { authorization: `Bearer ${process.env.RECEIVER_TOKEN}` },
-  responseHandler: (response) => response.json(),
-}));
+import { emitterFor, httpTransport, withTimeout } from "cloudevents";
+
+const emit = withTimeout(
+  emitterFor(httpTransport("https://my.receiver.com/endpoint", {
+    headers: { authorization: `Bearer ${process.env.RECEIVER_TOKEN}` },
+    responseHandler: (response) => response.json(),
+  })),
+  10000,
+);
 
 async function main() {
-  await emit(ce, { signal: AbortSignal.timeout(10000) });
+  await emit(ce);
 }
 
 main().catch(console.error);
 ```
+
+For a deadline which varies by event, pass `AbortSignal.timeout()` to that
+`emit()` call instead. If both are present, the caller's signal and the timeout
+can each abort the send. The timeout passed to `withTimeout()` must be a whole
+number from 0 to 2,147,483,647 milliseconds.
 
 A 2xx response means the receiver accepted the event, so a body that cannot be
 read resolves with `{ response, bodyError }` in place of `{ response, body }`.
@@ -143,10 +153,15 @@ at-least-once delivery can add retries by wrapping the emitter. `maxAttempts`
 counts the first send, so this emitter makes at most five requests:
 
 ```js
-import { CloudEvent, emitterFor, httpTransport, withRetry } from "cloudevents";
+import {
+  CloudEvent, emitterFor, httpTransport, withRetry, withTimeout,
+} from "cloudevents";
 
 const emit = withRetry(
-  emitterFor(httpTransport("https://events.example.com/orders")),
+  withTimeout(
+    emitterFor(httpTransport("https://events.example.com/orders")),
+    10000,
+  ),
   { maxAttempts: 5 },
 );
 const orderCreated = new CloudEvent({
@@ -156,7 +171,7 @@ const orderCreated = new CloudEvent({
 });
 
 async function main() {
-  await emit(orderCreated, { signal: AbortSignal.timeout(30000) });
+  await emit(orderCreated);
 }
 
 main().catch(console.error);
@@ -170,6 +185,17 @@ The default retry policy handles failures which are commonly temporary:
 | HTTP 408, 425, 429, 500, 502, 503 or 504 | Yes |
 | An aborted send or another HTTP status | No |
 | An error from a custom transport | No |
+
+The wrapper order decides which work the timeout covers:
+
+| Goal | Composition | What the timeout covers |
+| ---- | ----------- | ----------------------- |
+| Limit each attempt to 10 seconds | `withRetry(withTimeout(base, 10000))` | One fresh timeout per attempt; retry backoff is excluded |
+| Limit the whole delivery to 30 seconds | `withTimeout(withRetry(base), 30000)` | Every attempt and retry backoff share one timeout |
+
+A timed-out HTTP send is reported as an abort, which the default policy does
+not retry. When an attempt fails earlier with a retryable network or HTTP error,
+the next attempt receives a fresh timeout in the first composition above.
 
 Retries use randomized exponential backoff. For HTTP 429 and 503, a valid
 `Retry-After` header takes precedence, and `maxRetryDelay` caps whatever a delay

@@ -46,7 +46,8 @@ app.post("/", (req, res) => {
 
 #### Emitting Events
 
-The easiest way to send events is to use the built-in HTTP emitter.
+The easiest way to send events is to use the built-in HTTP emitter, which sends
+them with the Fetch API.
 
 ```js
 const { httpTransport, emitterFor, CloudEvent } = require("cloudevents");
@@ -57,9 +58,165 @@ const emit = emitterFor(httpTransport("https://my.receiver.com/endpoint"));
 // Create a new CloudEvent
 const ce = new CloudEvent({ type, source, data });
 
-// Send it to the endpoint - encoded as HTTP binary by default
-emit(ce);
+async function main() {
+  // Send it to the endpoint - encoded as HTTP binary by default
+  const { response, body } = await emit(ce);
+  console.log(response.status, body);
+}
+
+main().catch(console.error);
 ```
+
+A 2xx response resolves with the native Fetch `Response` and its body, read as
+text by default. Anything else rejects with an `HTTPTransportError`, whose
+`kind` separates a response that was not 2xx from an abort and from a request
+that never reached a response.
+
+The body of a response that was not 2xx is on the error as `error.body`.
+`error.response` cannot be read a second time. If reading the body failed,
+`error.body` is absent and the error carries a `cause`.
+
+```js
+import { HTTPTransportError } from "cloudevents";
+
+async function main() {
+  try {
+    await emit(ce);
+  } catch (error) {
+    if (error instanceof HTTPTransportError) {
+      console.error(error.kind, error.response?.status, error.body);
+    }
+    throw error;
+  }
+}
+
+main().catch(console.error);
+```
+
+`httpTransport()` also takes the headers for every event, an `AbortSignal`, a
+`responseHandler` to read the body another way (or `httpDiscardResponseHandler`
+to skip it), and the remaining Fetch options under `fetchOptions`. Headers
+passed to `emit()` apply to that event only. Wrap an emitter with `withTimeout()`
+when every send should have the same time limit:
+
+```js
+import { emitterFor, httpTransport, withTimeout } from "cloudevents";
+
+const emit = withTimeout(
+  emitterFor(httpTransport("https://my.receiver.com/endpoint", {
+    headers: { authorization: `Bearer ${process.env.RECEIVER_TOKEN}` },
+    responseHandler: (response) => response.json(),
+  })),
+  10000,
+);
+
+async function main() {
+  await emit(ce);
+}
+
+main().catch(console.error);
+```
+
+For a deadline which varies by event, pass `AbortSignal.timeout()` to that
+`emit()` call instead. If both are present, the caller's signal and the timeout
+can each abort the send. The timeout passed to `withTimeout()` must be a whole
+number from 0 to 2,147,483,647 milliseconds.
+
+A 2xx response means the receiver accepted the event, so a body that cannot be
+read resolves with `{ response, bodyError }` in place of `{ response, body }`.
+Only one of the two is present. Check which property the result has before using
+it:
+
+```js
+async function main() {
+  const result = await emit(ce);
+  if ("body" in result) {
+    console.log(result.body);
+  } else {
+    console.error(result.bodyError);
+  }
+}
+
+main().catch(console.error);
+```
+
+Redirects are not followed by default, so each one is reported as a failed send.
+On Node.js the `HTTPTransportError` carries the 3xx response; a browser returns
+an opaque redirect instead, so `error.response.status` is `0` and the `location`
+header cannot be read. Set `fetchOptions: { redirect: "follow" }` to follow
+them, keeping in mind that Fetch preserves the CloudEvent POST and its body only
+for `307` and `308` - it turns a `301`, `302` or `303` into a bodyless `GET`,
+which drops the event.
+
+`httpTransport()` sends each event once. Applications which can accept
+at-least-once delivery can add retries by wrapping the emitter. `maxAttempts`
+counts the first send, so this emitter makes at most five requests:
+
+```js
+import {
+  CloudEvent, emitterFor, httpTransport, withRetry, withTimeout,
+} from "cloudevents";
+
+const emit = withRetry(
+  withTimeout(
+    emitterFor(httpTransport("https://events.example.com/orders")),
+    10000,
+  ),
+  { maxAttempts: 5 },
+);
+const orderCreated = new CloudEvent({
+  type: "com.example.order.created",
+  source: "/orders",
+  data: { orderId: "order-123" },
+});
+
+async function main() {
+  await emit(orderCreated);
+}
+
+main().catch(console.error);
+```
+
+The default retry policy handles failures which are commonly temporary:
+
+| Failure reported by the emitter | Retried by default |
+| ------------------------------- | ------------------ |
+| Network failure before a response | Yes |
+| HTTP 408, 425, 429, 500, 502, 503 or 504 | Yes |
+| An aborted send or another HTTP status | No |
+| An error from a custom transport | No |
+
+The wrapper order decides which work the timeout covers:
+
+| Goal | Composition | What the timeout covers |
+| ---- | ----------- | ----------------------- |
+| Limit each attempt to 10 seconds | `withRetry(withTimeout(base, 10000))` | One fresh timeout per attempt; retry backoff is excluded |
+| Limit the whole delivery to 30 seconds | `withTimeout(withRetry(base), 30000)` | Every attempt and retry backoff share one timeout |
+
+A timed-out HTTP send is reported as an abort, which the default policy does
+not retry. When an attempt fails earlier with a retryable network or HTTP error,
+the next attempt receives a fresh timeout in the first composition above.
+
+Retries use randomized exponential backoff. For HTTP 429 and 503, a valid
+`Retry-After` header takes precedence, and `maxRetryDelay` caps whatever a delay
+asks for - 30 seconds by default, so a distant `Retry-After` cannot park an
+emitter for hours. Pass `shouldRetry(error, context)` or
+`retryDelay(error, context)` to replace either policy. The exported
+`isRetryableHTTPError()` and `defaultRetryDelay()` functions let a custom policy
+reuse the defaults.
+
+The signal passed with the event also ends a wait between attempts. The emitter
+then rejects with what that signal carries, rather than with the failure which
+led to the retry.
+
+A network failure can happen after the receiver accepted an event but before
+its response arrived. Every attempt therefore uses the same CloudEvent and the
+same `source` and `id`, but the receiver still needs to recognize duplicate
+delivery.
+
+The [API transition guide](./API_TRANSITION_GUIDE.md) covers the header forms
+the transport accepts and where a proxy or a custom CA goes now that
+`http.globalAgent` no longer applies.
 
 If you prefer to use another transport mechanism for sending events
 over HTTP, you can use the `HTTP` binding to create a `Message` which
@@ -109,19 +266,30 @@ You may also use the `Emitter` singleton to send your `CloudEvents`.
 ```js
 const { emitterFor, httpTransport, Mode, CloudEvent, Emitter } = require("cloudevents");
 
-// Create a CloudEvent emitter function to send events to our receiver
-const emit = emitterFor(httpTransport("https://example.com/receiver"));
+async function main() {
+  // Create a CloudEvent emitter function to send events to our receiver
+  const emit = emitterFor(httpTransport("https://example.com/receiver"));
 
-// Use the emit() function to send a CloudEvent to its endpoint when a "cloudevent" event is emitted
-// (see: https://nodejs.org/api/events.html#class-eventemitter)
-Emitter.on("cloudevent", emit);
+  // Use the emit() function to send a CloudEvent to its endpoint when a
+  // "cloudevent" event is emitted
+  // (see: https://nodejs.org/api/events.html#class-eventemitter)
+  Emitter.on("cloudevent", emit);
 
-...
-// In any part of the code, calling `emit()` on a `CloudEvent` instance will send the event
-new CloudEvent({ type, source, data }).emit();
+  // Calling emit() on a CloudEvent instance sends it through every listener
+  await new CloudEvent({
+    type: "com.example.order.created",
+    source: "/stores/store-42",
+    data: { orderId: "order-123" },
+  }).emit();
+}
 
-// You can also have several listeners to send the event to several endpoints
+main().catch(console.error);
 ```
+
+You can also have several listeners to send the event to several endpoints.
+`emit()` waits for all of them, and an endpoint which refuses the event fails
+the whole call. See the [API transition guide](./API_TRANSITION_GUIDE.md) for
+the details.
 
 ## CloudEvent Objects
 

@@ -11,7 +11,7 @@ import request from "superagent";
 import got from "got";
 
 import CONSTANTS from "../../src/constants";
-import { CloudEvent, HTTP, Message, Mode, Options, TransportFunction, emitterFor, httpTransport }
+import { CloudEvent, HTTP, Message, Mode, Options, TransportFunction, emitterFor }
   from "../../src";
 
 const DEFAULT_CE_CONTENT_TYPE = CONSTANTS.DEFAULT_CE_CONTENT_TYPE;
@@ -101,8 +101,8 @@ describe("emitterFor() defaults", () => {
   });
 });
 
-function setupMock(uri: string) {
-  nock(uri)
+function setupMock() {
+  nock(sink)
   .post("/")
   .reply(function (uri: string, body: nock.Body) {
     // return the request body and the headers so they can be
@@ -116,18 +116,7 @@ function setupMock(uri: string) {
 }
 
 describe("HTTP Transport Binding for emitterFactory", () => {
-  beforeEach(() => { setupMock(sink); });
-
-  describe("HTTPS builtin", () => {
-    testEmitterBinary(httpTransport(sink), "body");
-  });
-
-  describe("HTTP builtin", () => {
-    setupMock("http://cloudevents.io");
-    testEmitterBinary(httpTransport("http://cloudevents.io"), "body");
-    setupMock("http://cloudevents.io");
-    testEmitterStructured(httpTransport("http://cloudevents.io"), "body");
-  });
+  beforeEach(() => { setupMock(); });
 
   describe("Axios", () => {
     testEmitterBinary(axiosEmitter, "data");

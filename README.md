@@ -46,7 +46,8 @@ app.post("/", (req, res) => {
 
 #### Emitting Events
 
-The easiest way to send events is to use the built-in HTTP emitter.
+The easiest way to send events is to use the built-in HTTP emitter, which sends
+them with the Fetch API.
 
 ```js
 const { httpTransport, emitterFor, CloudEvent } = require("cloudevents");
@@ -57,9 +58,27 @@ const emit = emitterFor(httpTransport("https://my.receiver.com/endpoint"));
 // Create a new CloudEvent
 const ce = new CloudEvent({ type, source, data });
 
-// Send it to the endpoint - encoded as HTTP binary by default
-emit(ce);
+async function main() {
+  // Send it to the endpoint - encoded as HTTP binary by default
+  const { response, body } = await emit(ce);
+  console.log(response.status, body);
+}
+
+main().catch(console.error);
 ```
+
+The transport resolves with the native Fetch `Response` and its body as text
+for every HTTP status. It sends each event once. Redirects are not followed
+unless `fetchOptions: { redirect: "follow" }` enables them; Fetch preserves the
+CloudEvent POST and its body only for `307` and `308`.
+
+`httpTransport()` accepts transport-wide `headers` and other Fetch options under
+`fetchOptions`. Headers passed to `emit()` apply to that event only and take
+precedence over transport and CloudEvent headers. URL credentials become an
+authorization header unless the caller overrides it.
+
+See the [API transition guide](./API_TRANSITION_GUIDE.md) for response access and
+Node.js proxy, certificate and connection settings.
 
 If you prefer to use another transport mechanism for sending events
 over HTTP, you can use the `HTTP` binding to create a `Message` which

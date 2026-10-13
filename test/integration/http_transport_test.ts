@@ -6,6 +6,7 @@
 import "mocha";
 import { rejects } from "assert";
 import { expect } from "chai";
+import { getEventListeners } from "events";
 import { createServer, IncomingMessage, ServerResponse } from "http";
 import { AddressInfo } from "net";
 import { json, text } from "stream/consumers";
@@ -28,6 +29,13 @@ const UNREACHABLE_URL = "http://127.0.0.1:1";
 const acceptEvent: Handler = (_request, response) => {
   response.writeHead(204);
   response.end();
+};
+
+// a sink which accepts the event, then finishes its body a moment later
+const streamEvent: Handler = (_request, response) => {
+  response.writeHead(202);
+  response.write("stream");
+  setTimeout(() => response.end("ed"), 50);
 };
 
 describe("Built-in HTTP transport", () => {
@@ -175,6 +183,23 @@ describe("Built-in HTTP transport", () => {
       expect(result.body).to.equal(undefined);
       expect(result.response.bodyUsed).to.equal(true);
       expect("bodyError" in result).to.equal(false);
+    });
+  });
+
+  it("Lets a custom response handler hand its stream to the caller", async () => {
+    await withServer(streamEvent, async (url) => {
+      const controller = new AbortController();
+      const emit = emitterFor(httpTransport(url));
+      const result = await emit(fixture, {
+        signal: controller.signal,
+        responseHandler: async (response) => response.body,
+      });
+
+      expectType<ReadableStream<Uint8Array> | null | undefined>(result.body);
+      expect(result.response.bodyUsed).to.equal(false);
+      // after the handler returns the stream, cancelling it is up to the caller
+      controller.abort();
+      expect(await new Response(result.body).text()).to.equal("streamed");
     });
   });
 
@@ -460,6 +485,47 @@ describe("Built-in HTTP transport", () => {
     });
   }
 
+  it("Reports a caller timeout as an abort, with the reason it carries", async () => {
+    await withServer(() => undefined, async (url) => {
+      const emit = emitterFor(httpTransport(url));
+      const error = await transportErrorFrom(emit(fixture, { signal: AbortSignal.timeout(50) }));
+
+      expect(error.kind).to.equal("aborted");
+      expect(error.response).to.equal(undefined);
+      expect((error.cause as Error)?.name).to.equal("TimeoutError");
+    });
+  });
+
+  it("Returns an abort during a 2xx body as bodyError", async () => {
+    const controller = new AbortController();
+    let markHandlerStarted = (): void => undefined;
+    const handlerStarted = new Promise<void>((resolve) => {
+      markHandlerStarted = resolve;
+    });
+
+    await withServer((_request, response) => {
+      response.writeHead(202);
+      response.write("partial");
+    }, async (url) => {
+      const emit = emitterFor(httpTransport(url));
+      const emitted = emit(fixture, {
+        signal: controller.signal,
+        responseHandler: async (response) => {
+          markHandlerStarted();
+          return response.text();
+        },
+      });
+
+      await handlerStarted;
+      controller.abort(new DOMException("deadline exceeded", "TimeoutError"));
+      const result = await emitted;
+
+      expect(result.response.status).to.equal(202);
+      expect("body" in result).to.equal(false);
+      expect((result.bodyError as Error).name).to.equal("TimeoutError");
+    });
+  });
+
   it("Reports a non-2xx status whose body cannot be read", async () => {
     // the sink starts an error body, then closes the connection before finishing it
     await withServer((_request, response) => {
@@ -474,6 +540,177 @@ describe("Built-in HTTP transport", () => {
       expect(error.body).to.equal(undefined);
       expect(error.cause).not.to.equal(undefined);
     });
+  });
+
+  it("Reports an abort from the transport signal", async () => {
+    const controller = new AbortController();
+
+    await withServer(() => controller.abort(new Error("shutting down")), async (url) => {
+      const emit = emitterFor(httpTransport(url, { signal: controller.signal }));
+      const error = await transportErrorFrom(emit(fixture));
+
+      expect(error.kind).to.equal("aborted");
+      expect(error.response).to.equal(undefined);
+      expect((error.cause as Error).message).to.equal("shutting down");
+    });
+  });
+
+  it("Reports an abort from a per-send signal", async () => {
+    const controller = new AbortController();
+
+    await withServer(() => controller.abort(), async (url) => {
+      const emit = emitterFor(httpTransport(url));
+      const error = await transportErrorFrom(emit(fixture, { signal: controller.signal }));
+
+      expect(error.kind).to.equal("aborted");
+      expect(error.cause).not.to.equal(undefined);
+    });
+  });
+
+  it("Accepts an AbortSignal whose interface prototype comes from another realm", async () => {
+    const controller = new AbortController();
+    const signal = withForeignInterfacePrototype(controller.signal);
+    expect(signal).not.to.be.instanceOf(AbortSignal);
+
+    await withServer(() => controller.abort(new Error("foreign signal gave up")), async (url) => {
+      const emit = emitterFor(httpTransport(url));
+      const error = await transportErrorFrom(emit(fixture, { signal }));
+
+      expect(error.kind).to.equal("aborted");
+      expect((error.cause as Error).message).to.equal("foreign signal gave up");
+    });
+  });
+
+  it("Does not send when the signal is already aborted", async () => {
+    let requestCount = 0;
+    const controller = new AbortController();
+    controller.abort();
+
+    await withServer(() => { requestCount++; }, async (url) => {
+      const emit = emitterFor(httpTransport(url, { signal: controller.signal }));
+      const error = await transportErrorFrom(emit(fixture));
+
+      expect(error.kind).to.equal("aborted");
+      expect(requestCount).to.equal(0);
+    });
+  });
+
+  it("Uses the first reason when both signals are already aborted", async () => {
+    const transport = new AbortController();
+    const send = new AbortController();
+    transport.abort(new Error("transport stopped first"));
+    send.abort(new Error("send stopped second"));
+
+    const emit = emitterFor(httpTransport(UNREACHABLE_URL, { signal: transport.signal }));
+    const error = await transportErrorFrom(emit(fixture, { signal: send.signal }));
+
+    expect(error.kind).to.equal("aborted");
+    expect((error.cause as Error).message).to.equal("transport stopped first");
+  });
+
+  it("Sends with a transport signal and a per-send signal set at once", async () => {
+    const transport = new AbortController();
+
+    await withServer(acceptEvent, async (url) => {
+      const emit = emitterFor(httpTransport(url, { signal: transport.signal }));
+      const { response } = await emit(fixture, { signal: new AbortController().signal });
+
+      expect(response.status).to.equal(204);
+      expect(transport.signal.aborted).to.equal(false);
+    });
+  });
+
+  it("Reports an abort from either signal when both are set", async () => {
+    for (const abortedSignal of ["transport", "per-send"]) {
+      const transport = new AbortController();
+      const send = new AbortController();
+      const aborting = abortedSignal === "transport" ? transport : send;
+
+      await withServer(() => aborting.abort(new Error(`${abortedSignal} gave up`)), async (url) => {
+        const emit = emitterFor(httpTransport(url, { signal: transport.signal }));
+        const error = await transportErrorFrom(emit(fixture, { signal: send.signal }));
+
+        expect(error.kind).to.equal("aborted");
+        expect((error.cause as Error).message).to.equal(`${abortedSignal} gave up`);
+      });
+    }
+  });
+
+  it("Shares one source listener between concurrent sends and removes it afterward", async () => {
+    const controller = new AbortController();
+    let releaseRequests = (): void => undefined;
+    const requestsMayComplete = new Promise<void>((resolve) => {
+      releaseRequests = resolve;
+    });
+
+    await withFetch(async () => {
+      await requestsMayComplete;
+      return new Response(null, { status: 204 });
+    }, async () => {
+      const emit = emitterFor(httpTransport("https://events.example.com", { signal: controller.signal }));
+      const emitted = Array.from({ length: 20 }, () => emit(fixture));
+
+      try {
+        expect(getEventListeners(controller.signal, "abort")).to.have.length(1);
+        releaseRequests();
+        await Promise.all(emitted);
+        expect(getEventListeners(controller.signal, "abort")).to.have.length(0);
+      } finally {
+        releaseRequests();
+        await Promise.allSettled(emitted);
+      }
+    });
+  });
+
+  it("Fans a shared transport abort out to every concurrent send", async () => {
+    const controller = new AbortController();
+    const reason = new Error("transport shutting down");
+
+    await withFetch(async (_input, options) => new Promise<Response>((_resolve, reject) => {
+      const signal = options?.signal;
+      if (!signal) {
+        reject(new Error("expected a combined abort signal"));
+        return;
+      }
+      signal.addEventListener("abort", () => reject(signal.reason), { once: true });
+    }), async () => {
+      const emit = emitterFor(httpTransport("https://events.example.com", { signal: controller.signal }));
+      const emitted = Array.from({ length: 20 }, () => transportErrorFrom(emit(fixture)));
+
+      try {
+        expect(getEventListeners(controller.signal, "abort")).to.have.length(1);
+        controller.abort(reason);
+        const errors = await Promise.all(emitted);
+        errors.forEach((error) => {
+          expect(error.kind).to.equal("aborted");
+          expect(error.cause).to.equal(reason);
+        });
+        expect(getEventListeners(controller.signal, "abort")).to.have.length(0);
+      } finally {
+        controller.abort(reason);
+        await Promise.allSettled(emitted);
+      }
+    });
+  });
+
+  it("Stops applying a transport signal once the send has resolved", async () => {
+    const transport = new AbortController();
+
+    await withServer(streamEvent, async (url) => {
+      const emit = emitterFor(httpTransport(url, { signal: transport.signal }));
+      const result = await emit(fixture, {
+        responseHandler: async (response) => response.body,
+      });
+
+      // the transport signal no longer reaches a body the handler handed to the caller
+      transport.abort();
+      expect(await new Response(result.body).text()).to.equal("streamed");
+    });
+  });
+
+  it("Rejects a per-send signal that is not an AbortSignal", async () => {
+    const emit = emitterFor(httpTransport(UNREACHABLE_URL));
+    await rejects(emit(fixture, { signal: "not a signal" as unknown as AbortSignal }), TypeError);
   });
 
   it("Rejects a per-send response handler that is not a function", async () => {
@@ -535,6 +772,9 @@ describe("Built-in HTTP transport", () => {
     expect(() => httpTransport("https://events.example.com", {
       headers: new Headers({ "x-tenant-id": "store-42" }),
     })).not.to.throw();
+    expect(() => httpTransport("https://events.example.com", {
+      signal: "not a signal" as unknown as AbortSignal,
+    })).to.throw(TypeError, "options.signal must be an AbortSignal");
     expect(() => httpTransport("https://events.example.com", {
       responseHandler: "text" as never,
     })).to.throw(TypeError, "options.responseHandler must be a function");

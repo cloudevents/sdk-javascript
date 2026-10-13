@@ -5,6 +5,7 @@
 
 import { Headers as CloudEventHeaders, Message } from "../../message";
 import { Options, TransportFunction } from "../emitter";
+import { combineSignals, signalFrom } from "../signal";
 
 /** The request options accepted by the Fetch implementation in the current environment */
 export type FetchRequestInit = NonNullable<Parameters<typeof globalThis.fetch>[1]>;
@@ -41,6 +42,11 @@ export async function httpDiscardResponseHandler(response: Response): Promise<vo
 export interface HTTPTransportOptions<TBody = string> {
   /** HTTP headers applied to every request, per-send headers take precedence */
   headers?: FetchHeadersInit;
+  /**
+   * Aborts every request sent by this transport, combined with the per-send signal. It lasts
+   * as long as the transport does, so set a per-request deadline on the per-send signal
+   */
+  signal?: AbortSignal;
   /** Fetch options applied to every request, apart from the ones this transport controls */
   fetchOptions?: Omit<FetchRequestInit, "method" | "headers" | "body" | "signal">;
   /** Reads every response body; defaults to {@linkcode httpTextResponseHandler} */
@@ -89,9 +95,10 @@ type HandledResponse =
  * The failure category reported by {@linkcode HTTPTransportError}
  *
  * - `http-status`: the sink returned a response that was not 2xx
+ * - `aborted`: a signal supplied by the caller aborted the request
  * - `network`: the request never produced a response, e.g. DNS, connection, or TLS failure
  */
-export type HTTPTransportErrorKind = "http-status" | "network";
+export type HTTPTransportErrorKind = "http-status" | "aborted" | "network";
 
 /**
  * What an {@linkcode HTTPTransportError} reports alongside its {@linkcode HTTPTransportErrorKind}
@@ -108,7 +115,7 @@ export class HTTPTransportError extends Error {
   readonly response?: Response;
   /** What the response handler returned, present when it succeeded for `http-status` */
   readonly body?: unknown;
-  /** The underlying Fetch or response handler failure */
+  /** The underlying failure, e.g. what fetch threw or the reason carried by a signal */
   readonly cause?: unknown;
 
   constructor(kind: HTTPTransportErrorKind, details: HTTPTransportErrorDetails = {}) {
@@ -141,13 +148,14 @@ export class HTTPTransportError extends Error {
  * Every response body is passed to the configured response handler. It is read as text by
  * default; a handler passed with one send takes precedence over the transport's handler.
  * A handler may also return `response.body` to hand the stream to the caller, who then
- * has to cancel it if it is not read to the end.
+ * has to cancel it if it is not read to the end, since the abort signals no longer apply
+ * once the handler has resolved.
  *
  * Credentials in _sink_ are sent as an `authorization` header, which the `headers` option
  * and the headers of one send override.
  *
  * @param {string|URL} sink the destination endpoint for the event
- * @param {HTTPTransportOptions} options headers, Fetch options and response behavior
+ * @param {HTTPTransportOptions} options headers, Fetch options, abort and response behavior
  * @returns {HTTPTransportFunction} a function that sends CloudEvents to _sink_
  */
 export function httpTransport<TBody = string>(
@@ -156,6 +164,7 @@ export function httpTransport<TBody = string>(
   const url = validateHTTPURL(sink);
   // fetch refuses a URL with credentials
   const sinkHeaders = credentialsFrom(url);
+  const transportSignal = signalFrom(options.signal);
   const transportHeaders = headersFrom(options.headers);
   const transportResponseHandler = responseHandlerFrom(options.responseHandler, httpTextResponseHandler);
   const fetchOptions: FetchRequestInit = {
@@ -168,31 +177,40 @@ export function httpTransport<TBody = string>(
   const send = async (
     message: Message, sendOptions?: Options<FetchHeadersInit>,
   ): Promise<HTTPTransportResponse<unknown>> => {
+    const sendSignal = signalFrom(sendOptions?.signal);
     const headers = requestHeaders(
       sinkHeaders, message.headers, transportHeaders, headersFrom(sendOptions?.headers),
     );
     const responseHandler = responseHandlerFrom(sendOptions?.responseHandler, transportResponseHandler);
-    let response: Response;
+    const combinedSignal = combineSignals(transportSignal, sendSignal);
     try {
-      response = await fetch(url, {
-        ...fetchOptions,
-        headers,
-        body: message.body as BodyInit,
-      });
-    } catch (cause) {
-      throw new HTTPTransportError("network", { cause });
-    }
+      let response: Response;
+      try {
+        response = await fetch(url, {
+          ...fetchOptions,
+          headers,
+          body: message.body as BodyInit,
+          signal: combinedSignal.signal,
+        });
+      } catch (cause) {
+        throw combinedSignal.signal?.aborted
+          ? new HTTPTransportError("aborted", { cause: combinedSignal.signal.reason ?? cause })
+          : new HTTPTransportError("network", { cause });
+      }
 
-    const handled = await handleResponse(response, responseHandler);
-    if (!response.ok) {
-      // the status is the failure; the handler result or error goes alongside it
-      throw new HTTPTransportError("http-status", handled.handled
+      const handled = await handleResponse(response, responseHandler);
+      if (!response.ok) {
+        // the status is the failure; the handler result or error goes alongside it
+        throw new HTTPTransportError("http-status", handled.handled
+          ? { response, body: handled.body }
+          : { response, cause: handled.error });
+      }
+      return handled.handled
         ? { response, body: handled.body }
-        : { response, cause: handled.error });
+        : { response, bodyError: handled.error };
+    } finally {
+      combinedSignal.dispose();
     }
-    return handled.handled
-      ? { response, body: handled.body }
-      : { response, bodyError: handled.error };
   };
 
   // the overloads type the per-send handler this implementation cannot
@@ -392,6 +410,8 @@ function errorMessage(kind: HTTPTransportErrorKind, details: HTTPTransportErrorD
   switch (kind) {
     case "http-status":
       return `HTTP transport received a non-2xx response: ${details.response?.status}`;
+    case "aborted":
+      return "HTTP transport request was aborted";
     default:
       return "HTTP transport request failed";
   }

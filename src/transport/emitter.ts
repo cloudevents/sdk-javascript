@@ -16,6 +16,8 @@ import type {
  * @interface
  */
 export interface Options<THeaders = CloudEventHeaders> {
+  /** Aborts the send, for transports that support cancellation */
+  signal?: AbortSignal;
   /** Headers for this send, taking precedence over the ones the binding produced */
   headers?: THeaders;
   [key: string]: string | Record<string, unknown> | unknown;

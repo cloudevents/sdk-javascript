@@ -143,11 +143,14 @@ try {
 }
 ```
 
-The transport takes a second argument now, for headers, how the response body
+The transport takes a second argument now, for headers, a signal, how the response body
 is read and, under `fetchOptions`, the other Fetch options. Its headers are Fetch header
 forms, so a `string[]` value becomes a `Headers` you `append()` to. A redirect is a
 failed send unless `fetchOptions: { redirect: "follow" }` says otherwise, and a body
-that cannot be read after a 2xx resolves with `bodyError` in place of `body`.
+that cannot be read after a 2xx resolves with `bodyError` in place of `body`. The
+signal given to `httpTransport()` lasts as long as the transport, so a per-request
+deadline belongs on the signal passed with the event.
+
 ```js
 const headers = new Headers();
 headers.append("accept", "application/cloudevents+json");
@@ -233,7 +236,7 @@ DOM `RequestInit` most projects compile with, pass it as
 
 #### Emitter Options
 
-`Options` now declares `headers` instead of leaving it to an index
+`Options` now declares `headers` and `signal` instead of leaving them to an index
 signature that resolved to `unknown`. Its default header type remains the
 CloudEvent header record used by custom transports. The emitter returned from
 `httpTransport()` specializes it to `FetchHeadersInit`.

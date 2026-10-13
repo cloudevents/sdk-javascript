@@ -7,8 +7,13 @@ import { CloudEvent, V1, V03 } from "./event/cloudevent";
 import { ValidationError } from "./event/validation";
 import { CloudEventV1, CloudEventV1Attributes } from "./event/interfaces";
 
-import { Options, TransportFunction, EmitterFunction, emitterFor, Emitter } from "./transport/emitter";
-import { httpTransport } from "./transport/http";
+import {
+  Options, TransportFunction, EmitterFunction, emitterFor, Emitter,
+} from "./transport/emitter";
+import {
+  FetchHeadersInit, FetchRequestInit, HTTPTransportFunction, HTTPTransportOptions,
+  HTTPTransportResponse, httpTransport,
+} from "./transport/http";
 import {
   Headers, Mode, Binding, HTTP, Kafka, KafkaEvent, KafkaMessage, Message, MQTT, MQTTMessage, MQTTMessageFactory,
   Serializer, Deserializer } from "./message";
@@ -26,6 +31,7 @@ export {
   Kafka,
   MQTT,
   MQTTMessageFactory,
+  // From transport
   emitterFor,
   httpTransport,
   Emitter,
@@ -48,5 +54,10 @@ export type {
   // From transport
   TransportFunction,
   EmitterFunction,
-  Options
+  Options,
+  FetchHeadersInit,
+  FetchRequestInit,
+  HTTPTransportFunction,
+  HTTPTransportOptions,
+  HTTPTransportResponse
 };

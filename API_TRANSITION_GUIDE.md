@@ -100,3 +100,68 @@ new CloudEvent({ type, source, data }).emit();
 
 // You can also have several listener to send the event to several endpoint
 ```
+
+### Upgrading From 10.x to 11.0
+
+#### HTTP Transport
+
+`httpTransport()` uses Fetch and resolves with `{ response, body }`, where
+`response` is the native Fetch `Response` and `body` is its text, instead of
+`{ body, headers }`. Access headers through `response.headers.get(name)` and
+the status through `response.status`.
+
+```js
+const { response, body } = await emit(event);
+console.log(response.status, response.headers.get("x-request-id"), body);
+```
+
+#### Proxies, Custom CAs, mTLS and Connection Pooling
+
+The old transport went through Node.js `http.request()` or `https.request()`, so a proxy
+library or connection options set on `http.globalAgent` or `https.globalAgent` reached
+the corresponding requests. Fetch does not use those agents; on Node.js the equivalent
+is a dispatcher from [undici](https://www.npmjs.com/package/undici), which `fetchOptions`
+passes through:
+
+```js
+import { emitterFor, httpTransport } from "cloudevents";
+import { ProxyAgent } from "undici";
+
+const emit = emitterFor(httpTransport("https://my.receiver.com/endpoint", {
+  fetchOptions: { dispatcher: new ProxyAgent("http://proxy.example.com:3128") },
+}));
+```
+
+For example, an order service that presents a client certificate to an events receiver
+and trusts the receiver's private CA can use an `Agent`:
+
+```js
+import { readFileSync } from "node:fs";
+import { emitterFor, httpTransport } from "cloudevents";
+import { Agent } from "undici";
+
+const dispatcher = new Agent({
+  connect: {
+    cert: readFileSync("./certs/order-service-client.pem"),
+    key: readFileSync("./certs/order-service-client-key.pem"),
+    ca: readFileSync("./certs/events-receiver-ca.pem"),
+  },
+});
+
+const emit = emitterFor(httpTransport("https://events.example.com/orders", {
+  fetchOptions: { dispatcher },
+}));
+```
+
+The `cert` and `key` identify the client when the receiver requires mTLS. The `ca`
+controls which server certificates the client trusts, so it is needed here because the
+receiver uses a private CA; it is separate from client authentication. An `Agent` also
+tunes connection pooling, and `undici.setGlobalDispatcher()` applies to every send rather
+than one transport. In the browser the platform handles proxies, certificates and trust,
+so `dispatcher` is a Node.js-only option.
+
+`fetchOptions` takes the Fetch options of whichever declarations type `fetch` in your
+project, so TypeScript accepts `dispatcher` only where those are undici's. Against the
+DOM `RequestInit` most projects compile with, pass it as
+`fetchOptions: { dispatcher } as FetchRequestInit` or reach for
+`setGlobalDispatcher()` instead.

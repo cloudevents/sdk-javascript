@@ -69,8 +69,8 @@ main().catch(console.error);
 
 A 2xx response resolves with the native Fetch `Response` and its body, read as
 text by default. Anything else rejects with an `HTTPTransportError`, whose
-`kind` separates a response that was not 2xx from a request that never reached
-a response.
+`kind` separates a response that was not 2xx from an abort and from a request
+that never reached a response.
 
 The body of a response that was not 2xx is on the error as `error.body`.
 `error.response` cannot be read a second time. If reading the body failed,
@@ -93,17 +93,23 @@ async function main() {
 main().catch(console.error);
 ```
 
-`httpTransport()` also takes headers for every event, a `responseHandler` to read
-the body another way (or `httpDiscardResponseHandler` to skip it), and the other
-Fetch options under `fetchOptions`. Headers passed to `emit()` apply to that
-event only. A response handler passed with an event overrides the transport's
-handler, and its return value determines the response body type.
+`httpTransport()` also takes the headers for every event, an `AbortSignal`, a
+`responseHandler` to read the body another way (or `httpDiscardResponseHandler`
+to skip it), and the remaining Fetch options under `fetchOptions`. Headers
+passed to `emit()` apply to that event only, and there is no timeout option: a
+deadline is an `AbortSignal`.
 
 ```js
 const emit = emitterFor(httpTransport("https://my.receiver.com/endpoint", {
   headers: { authorization: `Bearer ${process.env.RECEIVER_TOKEN}` },
   responseHandler: (response) => response.json(),
 }));
+
+async function main() {
+  await emit(ce, { signal: AbortSignal.timeout(10000) });
+}
+
+main().catch(console.error);
 ```
 
 A 2xx response means the receiver accepted the event, so a body that cannot be

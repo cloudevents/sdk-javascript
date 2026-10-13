@@ -91,8 +91,9 @@ const { emitterFor, Mode, CloudEvent } = require("cloudevents");
 function sendWithAxios(message) {
   // Do what you need with the message headers
   // and body in this function, then send the
-  // event
-  axios({
+  // event. Return the promise so that `await emit(event)`
+  // waits for the send and rejects if it fails.
+  return axios({
     method: "post",
     url: "...",
     data: message.body,

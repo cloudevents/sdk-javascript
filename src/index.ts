@@ -14,6 +14,9 @@ import {
   HTTPResponseHandler, HTTPTransportError, HTTPTransportErrorKind, HTTPTransportOptions, HTTPTransportResponse,
   httpTransport } from "./transport/http";
 import {
+  RetryContext, RetryOptions, defaultRetryDelay, isRetryableHTTPError, withRetry,
+} from "./transport/retry";
+import {
   Headers, Mode, Binding, HTTP, Kafka, KafkaEvent, KafkaMessage, Message, MQTT, MQTTMessage, MQTTMessageFactory,
   Serializer, Deserializer } from "./message";
 
@@ -32,6 +35,9 @@ export {
   MQTTMessageFactory,
   // From transport
   emitterFor,
+  withRetry,
+  defaultRetryDelay,
+  isRetryableHTTPError,
   httpTransport,
   HTTPTransportError,
   Emitter,
@@ -54,6 +60,8 @@ export type {
   // From transport
   TransportFunction,
   EmitterFunction,
+  RetryContext,
+  RetryOptions,
   Options,
   HTTPResponseHandler,
   HTTPTransportErrorKind,

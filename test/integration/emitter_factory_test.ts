@@ -11,8 +11,7 @@ import request from "superagent";
 import got from "got";
 
 import CONSTANTS from "../../src/constants";
-import { CloudEvent, HTTP, Message, Mode, Options, TransportFunction, emitterFor }
-  from "../../src";
+import { CloudEvent, HTTP, Message, Mode, Options, TransportFunction, emitterFor } from "../../src";
 
 const DEFAULT_CE_CONTENT_TYPE = CONSTANTS.DEFAULT_CE_CONTENT_TYPE;
 const sink = "https://cloudevents.io/";
@@ -46,7 +45,9 @@ function axiosEmitter(message: Message, options?: Options): Promise<unknown> {
   for (const [name, value] of Object.entries(message.headers)) {
     headers[name] = typeof value === "string" ? value : JSON.stringify(value);
   }
-  return axios.post(sink, message.body, { headers, ...options });
+  // per-send headers are merged over the ones the binding produced
+  const { headers: sendHeaders, ...rest } = options ?? {};
+  return axios.post(sink, message.body, { headers: { ...headers, ...sendHeaders }, ...rest });
 }
 
 function superagentEmitter(message: Message, options?: Options): Promise<unknown> {
@@ -73,6 +74,15 @@ function gotEmitter(message: Message, options?: Options): Promise<unknown> {
 }
 
 describe("emitterFor() defaults", () => {
+  it("Keeps CloudEvent header arrays in custom transport options", async () => {
+    const transport: TransportFunction<void> = async (_message, options) => {
+      expect(options?.headers?.["x-tenant-id"]).to.deep.equal(["store-42", "store-99"]);
+    };
+    const emit = emitterFor(transport);
+
+    await emit(fixture, { headers: { "x-tenant-id": ["store-42", "store-99"] } });
+  });
+
   it("Defaults to HTTP binding, binary mode", () => {
     function transport(message: Message): Promise<unknown> {
       // A binary message will have the source attribute as a header

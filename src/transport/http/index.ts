@@ -12,40 +12,152 @@ export type FetchRequestInit = NonNullable<Parameters<typeof globalThis.fetch>[1
 /** The header forms accepted by the Fetch implementation in the current environment */
 export type FetchHeadersInit = NonNullable<FetchRequestInit["headers"]>;
 
-/** Options applied to every request sent by an HTTP transport */
-export interface HTTPTransportOptions {
+/** Turns a Fetch response into the body value handed back by the HTTP transport */
+export type HTTPResponseHandler<TBody> = (response: Response) => Promise<TBody>;
+
+/**
+ * Read a response body as text, the default behavior of the HTTP transport
+ *
+ * @param {Response} response the response whose body should be read
+ * @returns {Promise<string>} the response body as text
+ */
+export function httpTextResponseHandler(response: Response): Promise<string> {
+  return response.text();
+}
+
+/**
+ * Discard a response body when the caller only needs the response metadata
+ *
+ * @param {Response} response the response whose body should be discarded
+ * @returns {Promise<void>} completion after the body has been cancelled
+ */
+export async function httpDiscardResponseHandler(response: Response): Promise<void> {
+  await response.body?.cancel();
+}
+
+/**
+ * Options applied to every request sent by an HTTP transport
+ */
+export interface HTTPTransportOptions<TBody = string> {
   /** HTTP headers applied to every request, per-send headers take precedence */
   headers?: FetchHeadersInit;
   /** Fetch options applied to every request, apart from the ones this transport controls */
   fetchOptions?: Omit<FetchRequestInit, "method" | "headers" | "body" | "signal">;
+  /** Reads every response body; defaults to {@linkcode httpTextResponseHandler} */
+  responseHandler?: HTTPResponseHandler<TBody>;
 }
-
-/** The native Fetch response and its body, read as text */
-export interface HTTPTransportResponse {
-  response: Response;
-  body: string;
-}
-
-/** A transport that returns an HTTP response */
-export type HTTPTransportFunction = TransportFunction<HTTPTransportResponse>;
 
 /**
- * Send an HTTP-bound CloudEvent with Fetch. The transport sends once and resolves with
- * the native response and its body as text, for every HTTP status. Redirects are not
- * followed unless fetchOptions.redirect enables them. Credentials in the sink URL become
- * an authorization header, overridden by transport or per-send headers.
+ * Options which replace the response handler for one send
+ */
+export interface HTTPTransportSendOptions<TBody> extends Options<FetchHeadersInit> {
+  /** Reads this response body instead of the handler configured for the transport */
+  responseHandler: HTTPResponseHandler<TBody>;
+}
+
+/** What the built-in HTTP transport hands back for a send the sink accepted */
+export type HTTPTransportResponse<TBody = string> =
+  | {
+    /** The native Fetch response, whose body has been handled */
+    response: Response;
+    /** What the configured response handler returned */
+    body: TBody;
+    bodyError?: never;
+  }
+  | {
+    /** The native Fetch response, whose status is still a successful 2xx */
+    response: Response;
+    body?: never;
+    /** What the response handler threw after the sink accepted the event */
+    bodyError: unknown;
+  };
+
+/**
+ * An HTTP transport whose default response body type can be replaced for one send
+ */
+export interface HTTPTransportFunction<TDefaultBody = string>
+  extends TransportFunction<HTTPTransportResponse<TDefaultBody>, Options<FetchHeadersInit>> {
+  <TBody>(message: Message, options: HTTPTransportSendOptions<TBody>): Promise<HTTPTransportResponse<TBody>>;
+}
+
+/** The result of attempting to handle a response body */
+type HandledResponse =
+  | { handled: true; body: unknown }
+  | { handled: false; error: unknown };
+
+/**
+ * The failure category reported by {@linkcode HTTPTransportError}
+ *
+ * - `http-status`: the sink returned a response that was not 2xx
+ * - `network`: the request never produced a response, e.g. DNS, connection, or TLS failure
+ */
+export type HTTPTransportErrorKind = "http-status" | "network";
+
+/**
+ * What an {@linkcode HTTPTransportError} reports alongside its {@linkcode HTTPTransportErrorKind}
+ */
+export type HTTPTransportErrorDetails = Pick<HTTPTransportError, "response" | "body" | "cause">;
+
+/**
+ * A request failure reported by the built-in HTTP transport
+ */
+export class HTTPTransportError extends Error {
+  /** The failure category */
+  readonly kind: HTTPTransportErrorKind;
+  /** The response the sink sent, present only for `http-status` */
+  readonly response?: Response;
+  /** What the response handler returned, present when it succeeded for `http-status` */
+  readonly body?: unknown;
+  /** The underlying Fetch or response handler failure */
+  readonly cause?: unknown;
+
+  constructor(kind: HTTPTransportErrorKind, details: HTTPTransportErrorDetails = {}) {
+    super(errorMessage(kind, details));
+    this.name = "HTTPTransportError";
+    this.kind = kind;
+    this.response = details.response;
+    this.body = details.body;
+    this.cause = details.cause;
+  }
+}
+
+/**
+ * httpTransport provides a simple HTTP Transport function, which can send a CloudEvent,
+ * encoded as a Message to the endpoint. The returned function can be used with emitterFor()
+ * to provide an event emitter, for example:
+ *
+ * ```js
+ * const emit = emitterFor(httpTransport("http://example.com"));
+ * emit(myCloudEvent)
+ *    .then(({ response, body }) => console.log(response.status, body))
+ *    .catch(err => console.error(err.kind, err.response?.status));
+ * ```
+ *
+ * The event is sent once, without retries. A response that is not 2xx rejects with an
+ * {@linkcode HTTPTransportError} holding the response the sink sent back. Redirects are
+ * reported as errors unless `fetchOptions.redirect` says otherwise, since Fetch keeps the
+ * CloudEvent POST only for 307 and 308 - see the README for the details.
+ *
+ * Every response body is passed to the configured response handler. It is read as text by
+ * default; a handler passed with one send takes precedence over the transport's handler.
+ * A handler may also return `response.body` to hand the stream to the caller, who then
+ * has to cancel it if it is not read to the end.
+ *
+ * Credentials in _sink_ are sent as an `authorization` header, which the `headers` option
+ * and the headers of one send override.
  *
  * @param {string|URL} sink the destination endpoint for the event
- * @param {HTTPTransportOptions} options headers and Fetch request options
- * @returns {HTTPTransportFunction} a function that sends CloudEvents to the sink
+ * @param {HTTPTransportOptions} options headers, Fetch options and response behavior
+ * @returns {HTTPTransportFunction} a function that sends CloudEvents to _sink_
  */
-export function httpTransport(
-  sink: string | URL, options: HTTPTransportOptions = {},
-): HTTPTransportFunction {
+export function httpTransport<TBody = string>(
+  sink: string | URL, options: HTTPTransportOptions<TBody> = {},
+): HTTPTransportFunction<TBody> {
   const url = validateHTTPURL(sink);
   // fetch refuses a URL with credentials
   const sinkHeaders = credentialsFrom(url);
   const transportHeaders = headersFrom(options.headers);
+  const transportResponseHandler = responseHandlerFrom(options.responseHandler, httpTextResponseHandler);
   const fetchOptions: FetchRequestInit = {
     ...options.fetchOptions,
     // fetch reads an explicitly undefined redirect as absent, so the default comes last
@@ -53,17 +165,81 @@ export function httpTransport(
     method: "POST",
   };
 
-  return async (message: Message, sendOptions?: Options): Promise<HTTPTransportResponse> => {
+  const send = async (
+    message: Message, sendOptions?: Options<FetchHeadersInit>,
+  ): Promise<HTTPTransportResponse<unknown>> => {
     const headers = requestHeaders(
       sinkHeaders, message.headers, transportHeaders, headersFrom(sendOptions?.headers),
     );
-    const response = await fetch(url, {
-      ...fetchOptions,
-      headers,
-      body: message.body as BodyInit,
-    });
-    return { response, body: await response.text() };
+    const responseHandler = responseHandlerFrom(sendOptions?.responseHandler, transportResponseHandler);
+    let response: Response;
+    try {
+      response = await fetch(url, {
+        ...fetchOptions,
+        headers,
+        body: message.body as BodyInit,
+      });
+    } catch (cause) {
+      throw new HTTPTransportError("network", { cause });
+    }
+
+    const handled = await handleResponse(response, responseHandler);
+    if (!response.ok) {
+      // the status is the failure; the handler result or error goes alongside it
+      throw new HTTPTransportError("http-status", handled.handled
+        ? { response, body: handled.body }
+        : { response, cause: handled.error });
+    }
+    return handled.handled
+      ? { response, body: handled.body }
+      : { response, bodyError: handled.error };
   };
+
+  // the overloads type the per-send handler this implementation cannot
+  return send as HTTPTransportFunction<TBody>;
+}
+
+/**
+ * Check a response handler and fall back to the handler from the enclosing transport
+ *
+ * @param {unknown} value the handler supplied at this layer, if any
+ * @param {HTTPResponseHandler} fallback the handler inherited from the transport or default
+ * @returns {HTTPResponseHandler} the handler to run
+ */
+function responseHandlerFrom(
+  value: unknown, fallback: HTTPResponseHandler<unknown>,
+): HTTPResponseHandler<unknown> {
+  if (value === undefined || value === null) {
+    return fallback;
+  }
+  if (typeof value !== "function") {
+    throw new TypeError("options.responseHandler must be a function");
+  }
+  return value as HTTPResponseHandler<unknown>;
+}
+
+/**
+ * Run the caller's response handler. A handler that resolves may leave its body unread on
+ * purpose; one that throws has the rest of its body cancelled, so a failed send does not
+ * hold a connection open.
+ *
+ * @param {Response} response the response to handle
+ * @param {HTTPResponseHandler} handler the selected handler
+ * @returns {HandledResponse} the handler's body value or thrown error
+ */
+async function handleResponse(
+  response: Response, handler: HTTPResponseHandler<unknown>,
+): Promise<HandledResponse> {
+  try {
+    return { handled: true, body: await handler(response) };
+  } catch (error) {
+    try {
+      await httpDiscardResponseHandler(response);
+    } catch {
+      // best effort cleanup
+    }
+    return { handled: false, error };
+  }
 }
 
 /**
@@ -203,4 +379,20 @@ function headerValueFrom(value: unknown): string | undefined {
     return values.length > 0 ? values.join(", ") : undefined;
   }
   return String(value);
+}
+
+/**
+ * Build the message for an {@linkcode HTTPTransportError}
+ *
+ * @param {HTTPTransportErrorKind} kind the failure category
+ * @param {HTTPTransportErrorDetails} details what is known about the failure
+ * @returns {string} the error message
+ */
+function errorMessage(kind: HTTPTransportErrorKind, details: HTTPTransportErrorDetails): string {
+  switch (kind) {
+    case "http-status":
+      return `HTTP transport received a non-2xx response: ${details.response?.status}`;
+    default:
+      return "HTTP transport request failed";
+  }
 }

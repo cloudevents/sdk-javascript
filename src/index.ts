@@ -18,6 +18,7 @@ import {
 import {
   RetryContext, RetryOptions, defaultRetryDelay, isRetryableHTTPError, withRetry,
 } from "./transport/retry";
+import { withTimeout } from "./transport/timeout";
 import {
   Headers, Mode, Binding, HTTP, Kafka, KafkaEvent, KafkaMessage, Message, MQTT, MQTTMessage, MQTTMessageFactory,
   Serializer, Deserializer } from "./message";
@@ -38,6 +39,7 @@ export {
   // From transport
   emitterFor,
   withRetry,
+  withTimeout,
   defaultRetryDelay,
   isRetryableHTTPError,
   httpTransport,

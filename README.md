@@ -153,10 +153,15 @@ at-least-once delivery can add retries by wrapping the emitter. `maxAttempts`
 counts the first send, so this emitter makes at most five requests:
 
 ```js
-import { CloudEvent, emitterFor, httpTransport, withRetry } from "cloudevents";
+import {
+  CloudEvent, emitterFor, httpTransport, withRetry, withTimeout,
+} from "cloudevents";
 
 const emit = withRetry(
-  emitterFor(httpTransport("https://events.example.com/orders")),
+  withTimeout(
+    emitterFor(httpTransport("https://events.example.com/orders")),
+    10000,
+  ),
   { maxAttempts: 5 },
 );
 const orderCreated = new CloudEvent({
@@ -166,7 +171,7 @@ const orderCreated = new CloudEvent({
 });
 
 async function main() {
-  await emit(orderCreated, { signal: AbortSignal.timeout(30000) });
+  await emit(orderCreated);
 }
 
 main().catch(console.error);
@@ -180,6 +185,17 @@ The default retry policy handles failures which are commonly temporary:
 | HTTP 408, 425, 429, 500, 502, 503 or 504 | Yes |
 | An aborted send or another HTTP status | No |
 | An error from a custom transport | No |
+
+The wrapper order decides which work the timeout covers:
+
+| Goal | Composition | What the timeout covers |
+| ---- | ----------- | ----------------------- |
+| Limit each attempt to 10 seconds | `withRetry(withTimeout(base, 10000))` | One fresh timeout per attempt; retry backoff is excluded |
+| Limit the whole delivery to 30 seconds | `withTimeout(withRetry(base), 30000)` | Every attempt and retry backoff share one timeout |
+
+A timed-out HTTP send is reported as an abort, which the default policy does
+not retry. When an attempt fails earlier with a retryable network or HTTP error,
+the next attempt receives a fresh timeout in the first composition above.
 
 Retries use randomized exponential backoff. For HTTP 429 and 503, a valid
 `Retry-After` header takes precedence, and `maxRetryDelay` caps whatever a delay

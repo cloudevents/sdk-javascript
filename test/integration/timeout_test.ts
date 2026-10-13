@@ -8,7 +8,7 @@ import { expect } from "chai";
 
 import {
   EmitterFunction, HTTPTransportError, HTTPTransportResponse, emitterFor, httpTransport,
-  withTimeout,
+  withRetry, withTimeout,
 } from "../../src";
 import { fixture } from "./emitter_factory_test";
 import { withServer } from "./http_transport_test";
@@ -54,6 +54,38 @@ describe("withTimeout()", () => {
     expect(received?.label).to.equal("order-123");
     expect(received?.signal).not.to.equal(controller.signal);
     expect(sendOptions.signal).to.equal(controller.signal);
+  });
+
+  it("Starts a fresh timeout for every retry attempt when wrapped inside withRetry", async () => {
+    const signals: Array<AbortSignal | undefined> = [];
+    let attempts = 0;
+    const emitter: EmitterFunction<string, TestSendOptions> = async (_event, options) => {
+      signals.push(options?.signal);
+      if (attempts++ === 0) {
+        throw new HTTPTransportError("network");
+      }
+      return "accepted";
+    };
+    const emit = withRetry(withTimeout(emitter, 10_000), { retryDelay: () => 0 });
+
+    expect(await emit(fixture)).to.equal("accepted");
+    expect(signals).to.have.length(2);
+    expect(signals[0]).not.to.equal(undefined);
+    expect(signals[1]).not.to.equal(signals[0]);
+  });
+
+  it("Stops retry backoff when the timeout covers the whole delivery", async () => {
+    let attempts = 0;
+    const emitter: EmitterFunction<void, TestSendOptions> = async () => {
+      attempts++;
+      throw new HTTPTransportError("network");
+    };
+    const emit = withTimeout(withRetry(emitter, { retryDelay: () => 10_000 }), 25);
+
+    const error = await errorFrom(emit(fixture));
+
+    expect((error as Error).name).to.equal("TimeoutError");
+    expect(attempts).to.equal(1);
   });
 
   it("Validates its emitter and timeout", () => {

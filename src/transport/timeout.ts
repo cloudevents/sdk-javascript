@@ -31,6 +31,9 @@ export function withTimeout<TBody>(
  * must honor `options.signal`. When a caller also supplies a signal, either that signal or the
  * timeout can abort the invocation. Other send options are preserved.
  *
+ * Wrapping `withTimeout` inside `withRetry` starts a fresh timeout for every attempt. Wrapping
+ * `withRetry` inside `withTimeout` applies one timeout across all attempts and backoff waits.
+ *
  * @param {EmitterFunction} emitter the emitter to invoke with a timeout signal
  * @param {number} timeoutMs the maximum duration of one invocation in milliseconds, from 0 to 2147483647
  * @returns {EmitterFunction} an emitter with the same result and option types

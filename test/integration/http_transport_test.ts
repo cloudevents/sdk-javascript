@@ -12,8 +12,8 @@ import { json, text } from "stream/consumers";
 import { runInNewContext } from "vm";
 
 import {
-  CONSTANTS, FetchHeadersInit, FetchRequestInit, Headers as CloudEventHeaders,
-  Message, Mode, emitterFor, httpTransport,
+  CONSTANTS, FetchHeadersInit, FetchRequestInit, Headers as CloudEventHeaders, HTTPTransportError,
+  Message, Mode, emitterFor, httpDiscardResponseHandler, httpTextResponseHandler, httpTransport,
 } from "../../src";
 import { assertStructured, fixture } from "./emitter_factory_test";
 
@@ -121,6 +121,79 @@ describe("Built-in HTTP transport", () => {
         "session=abc; Path=/",
         "tenant=store-42; Path=/",
       ]);
+    });
+  });
+
+  it("Reports an unreadable body without failing an accepted event", async () => {
+    // the sink accepts the event, then closes the connection before finishing its body
+    await withServer((_request, response) => {
+      response.writeHead(202);
+      response.write("partial", () => response.socket?.end());
+    }, async (url) => {
+      const emit = emitterFor(httpTransport(url));
+      const result = await emit(fixture);
+
+      expect(result.response.status).to.equal(202);
+      expect("body" in result).to.equal(false);
+      expect("bodyError" in result).to.equal(true);
+      expect(result.bodyError).not.to.equal(undefined);
+    });
+  });
+
+  it("Infers bodies from transport and per-send response handlers", async () => {
+    await withServer((_request, response) => {
+      response.writeHead(202);
+      response.end("42");
+    }, async (url) => {
+      const emit = emitterFor(httpTransport(url, {
+        responseHandler: async (response) => ({ receipt: Number(await response.text()) }),
+      }));
+
+      const configured = await emit(fixture);
+      expectType<{ receipt: number } | undefined>(configured.body);
+      // @ts-expect-error the transport handler determines the default body type
+      expectType<string | undefined>(configured.body);
+      expect(configured.body).to.deep.equal({ receipt: 42 });
+
+      const overridden = await emit(fixture, { responseHandler: httpTextResponseHandler });
+      expectType<string | undefined>(overridden.body);
+      // @ts-expect-error the per-send handler replaces the transport body type for this call
+      expectType<{ receipt: number } | undefined>(overridden.body);
+      expect(overridden.body).to.equal("42");
+    });
+  });
+
+  it("Discards a body with the exported response handler", async () => {
+    await withServer((_request, response) => {
+      response.writeHead(202);
+      response.end("not needed");
+    }, async (url) => {
+      const emit = emitterFor(httpTransport(url));
+      const result = await emit(fixture, { responseHandler: httpDiscardResponseHandler });
+
+      expectType<void | undefined>(result.body);
+      expect(result.body).to.equal(undefined);
+      expect(result.response.bodyUsed).to.equal(true);
+      expect("bodyError" in result).to.equal(false);
+    });
+  });
+
+  it("Returns what a custom response handler throws as bodyError for 2xx", async () => {
+    const handlerError = new Error("receipt was malformed");
+
+    await withServer((_request, response) => {
+      response.writeHead(202);
+      response.end("not a receipt");
+    }, async (url) => {
+      const emit = emitterFor(httpTransport(url));
+      const result = await emit(fixture, {
+        responseHandler: async () => { throw handlerError; },
+      });
+
+      expect(result.response.status).to.equal(202);
+      expect(result.response.bodyUsed).to.equal(true);
+      expect("body" in result).to.equal(false);
+      expect(result.bodyError).to.equal(handlerError);
     });
   });
 
@@ -284,6 +357,72 @@ describe("Built-in HTTP transport", () => {
     expect(receivedOptions?.redirect).to.equal("manual");
   });
 
+  for (const statusCode of [400, 503]) {
+    it(`Reports a ${statusCode} response without retrying it`, async () => {
+      let requestCount = 0;
+
+      await withServer((_request, response) => {
+        requestCount++;
+        response.writeHead(statusCode, { "x-request-id": `request-${statusCode}` });
+        response.end(`status ${statusCode}`);
+      }, async (url) => {
+        const emit = emitterFor(httpTransport(url));
+        const error = await transportErrorFrom(emit(fixture));
+
+        expect(error.kind).to.equal("http-status");
+        expect(error.response?.status).to.equal(statusCode);
+        expect(error.response?.headers.get("x-request-id")).to.equal(`request-${statusCode}`);
+        expect(error.body).to.equal(`status ${statusCode}`);
+        expect(error.response?.bodyUsed).to.equal(true);
+        expect(error.cause).to.equal(undefined);
+        expect(requestCount).to.equal(1);
+      });
+    });
+  }
+
+  it("Applies a custom response handler to a non-2xx body", async () => {
+    await withServer((_request, response) => {
+      response.writeHead(422, { "content-type": "application/json" });
+      response.end(`{"message":"invalid event"}`);
+    }, async (url) => {
+      const emit = emitterFor(httpTransport(url, {
+        responseHandler: async (response) => JSON.parse(await response.text()) as { message: string },
+      }));
+      const error = await transportErrorFrom(emit(fixture));
+
+      expect(error.kind).to.equal("http-status");
+      expect(error.response?.status).to.equal(422);
+      expect(error.body).to.deep.equal({ message: "invalid event" });
+      expect(error.cause).to.equal(undefined);
+    });
+  });
+
+  for (const statusCode of [301, 302, 303]) {
+    it(`Returns ${statusCode} as an error by default instead of following it`, async () => {
+      let requestCount = 0;
+      let targetRequestCount = 0;
+
+      await withServer((request, response) => {
+        requestCount++;
+        if (request.url === "/target") {
+          targetRequestCount++;
+          response.writeHead(204);
+        } else {
+          response.writeHead(statusCode, { location: "/target" });
+        }
+        response.end();
+      }, async (url) => {
+        const emit = emitterFor(httpTransport(`${url}/start`));
+        const error = await transportErrorFrom(emit(fixture));
+
+        expect(error.kind).to.equal("http-status");
+        expect(error.response?.status).to.equal(statusCode);
+        expect(requestCount).to.equal(1);
+        expect(targetRequestCount).to.equal(0);
+      });
+    });
+  }
+
   // Fetch keeps POST only for 307 and 308, the others become a bodyless GET
   for (const { statusCode, method, keepsBody } of [
     { statusCode: 301, method: "GET", keepsBody: false },
@@ -321,21 +460,26 @@ describe("Built-in HTTP transport", () => {
     });
   }
 
-  for (const statusCode of [400, 503]) {
-    it(`Resolves a ${statusCode} response without retrying it`, async () => {
-      let requestCount = 0;
-      await withServer((_request, response) => {
-        requestCount++;
-        response.writeHead(statusCode);
-        response.end("rejected");
-      }, async (url) => {
-        const result = await emitterFor(httpTransport(url))(fixture);
-        expect(result.response.status).to.equal(statusCode);
-        expect(result.body).to.equal("rejected");
-        expect(requestCount).to.equal(1);
-      });
+  it("Reports a non-2xx status whose body cannot be read", async () => {
+    // the sink starts an error body, then closes the connection before finishing it
+    await withServer((_request, response) => {
+      response.writeHead(503);
+      response.write("partial", () => response.socket?.end());
+    }, async (url) => {
+      const emit = emitterFor(httpTransport(url));
+      const error = await transportErrorFrom(emit(fixture));
+
+      expect(error.kind).to.equal("http-status");
+      expect(error.response?.status).to.equal(503);
+      expect(error.body).to.equal(undefined);
+      expect(error.cause).not.to.equal(undefined);
     });
-  }
+  });
+
+  it("Rejects a per-send response handler that is not a function", async () => {
+    const emit = emitterFor(httpTransport(UNREACHABLE_URL));
+    await rejects(emit(fixture, { responseHandler: "text" }), TypeError);
+  });
 
   it("Rejects a per-send header that is not a valid header", async () => {
     const emit = emitterFor(httpTransport(UNREACHABLE_URL));
@@ -352,9 +496,31 @@ describe("Built-in HTTP transport", () => {
     }, async (url) => {
       const emit = emitterFor(httpTransport(url));
       await emit(fixture, {
-
+        // @ts-expect-error built-in HTTP accepts FetchHeadersInit, not CloudEventHeaders arrays
         headers: legacyHeaders,
       });
+    });
+  });
+
+  it("Reports a network failure with its cause", async () => {
+    const emit = emitterFor(httpTransport(UNREACHABLE_URL));
+    const error = await transportErrorFrom(emit(fixture));
+
+    expect(error.kind).to.equal("network");
+    expect(error.response).to.equal(undefined);
+    expect(error.cause).not.to.equal(undefined);
+  });
+
+  it("Reports a synchronous Fetch failure with its cause", async () => {
+    const cause = new Error("Fetch failed before returning a promise");
+
+    await withFetch(() => { throw cause; }, async () => {
+      const emit = emitterFor(httpTransport("https://events.example.com"));
+      const error = await transportErrorFrom(emit(fixture));
+
+      expect(error.kind).to.equal("network");
+      expect(error.response).to.equal(undefined);
+      expect(error.cause).to.equal(cause);
     });
   });
 
@@ -369,8 +535,22 @@ describe("Built-in HTTP transport", () => {
     expect(() => httpTransport("https://events.example.com", {
       headers: new Headers({ "x-tenant-id": "store-42" }),
     })).not.to.throw();
+    expect(() => httpTransport("https://events.example.com", {
+      responseHandler: "text" as never,
+    })).to.throw(TypeError, "options.responseHandler must be a function");
   });
 });
+
+async function transportErrorFrom(emitted: Promise<unknown>): Promise<HTTPTransportError> {
+  const error = await emitted.then(() => undefined, (reason: unknown) => reason);
+  expect(error).to.be.instanceOf(HTTPTransportError);
+  return error as HTTPTransportError;
+}
+
+// Compile-time assertion.
+function expectType<T>(value: T): void {
+  void value;
+}
 
 // Model a platform object from another realm: same behavior, different instanceof chain.
 function withForeignInterfacePrototype<T extends AbortSignal | Headers>(value: T): T {

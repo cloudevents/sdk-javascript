@@ -112,21 +112,31 @@ Other headers, such as `authorization`, `traceparent` and `baggage`, can be adde
 or overridden. `host` and `content-length` are controlled by Fetch and are
 rejected. Invalid headers reject with a `TypeError` before the request is sent.
 
-There is no timeout option: a deadline is an `AbortSignal` passed with the
-message.
+Wrap an emitter with `withTimeout()` when every send should have the same time
+limit:
 
 ```js
-const emit = emitterFor(httpTransport("https://my.receiver.com/endpoint", {
-  headers: { authorization: `Bearer ${process.env.RECEIVER_TOKEN}` },
-  responseHandler: (response) => response.json(),
-}));
+import { emitterFor, httpTransport, withTimeout } from "cloudevents";
+
+const emit = withTimeout(
+  emitterFor(httpTransport("https://my.receiver.com/endpoint", {
+    headers: { authorization: `Bearer ${process.env.RECEIVER_TOKEN}` },
+    responseHandler: (response) => response.json(),
+  })),
+  10000,
+);
 
 async function main() {
-  await emit(ce, { signal: AbortSignal.timeout(10000) });
+  await emit(ce);
 }
 
 main().catch(console.error);
 ```
+
+For a deadline which varies by event, pass `AbortSignal.timeout()` to that
+`emit()` call instead. If both are present, the caller's signal and the timeout
+can each abort the send. The timeout passed to `withTimeout()` must be a whole
+number from 0 to 2,147,483,647 milliseconds.
 
 A 2xx response means the receiver accepted the event, so a body that cannot be
 read resolves with `{ response, bodyError }` in place of `{ response, body }`.

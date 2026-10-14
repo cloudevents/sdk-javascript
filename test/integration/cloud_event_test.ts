@@ -22,7 +22,7 @@ const fixture = Object.freeze({
   data: `"some data"`
 });
 
-const imageData = new Uint32Array(fs.readFileSync(path.join(process.cwd(), "test", "integration", "ce.png")));
+const imageData = new Uint8Array(fs.readFileSync(path.join(process.cwd(), "test", "integration", "ce.png")));
 const image_base64 = asBase64(imageData);
 
 // Do not replace this with the assignment of a class instance

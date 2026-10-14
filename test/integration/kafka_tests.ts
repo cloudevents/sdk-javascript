@@ -34,12 +34,12 @@ const ext2Name = "extension2";
 const ext2Value = "acme";
 
 // Binary data as base64
-const dataBinary = Uint32Array.from(JSON.stringify(data), (c) => c.codePointAt(0) as number);
+const dataBinary = Uint8Array.from(JSON.stringify(data), (c) => c.codePointAt(0) as number);
 const data_base64 = asBase64(dataBinary);
 
 // Since the above is a special case (string as binary), let's test
 // with a real binary file one is likely to encounter in the wild
-const imageData = new Uint32Array(fs.readFileSync(path.join(process.cwd(), "test", "integration", "ce.png")));
+const imageData = new Uint8Array(fs.readFileSync(path.join(process.cwd(), "test", "integration", "ce.png")));
 const image_base64 = asBase64(imageData);
 
 const fixture = new CloudEvent({
@@ -289,14 +289,14 @@ describe("Kafka transport", () => {
 
   it.skip("Converts base64 encoded data to binary when deserializing structured messages", () => {
     const message = Kafka.structured(fixture.cloneWith({ data: imageData, datacontenttype: "image/png" }));
-    const eventDeserialized = Kafka.toEvent(message) as CloudEvent<Uint32Array>;
+    const eventDeserialized = Kafka.toEvent(message) as CloudEvent<Uint8Array>;
     expect(eventDeserialized.data).to.deep.equal(imageData);
     expect(eventDeserialized.data_base64).to.equal(image_base64);
   });
 
   it("Converts base64 encoded data to binary when deserializing binary messages", () => {
     const message = Kafka.binary(fixture.cloneWith({ data: imageData, datacontenttype: "image/png" }));
-    const eventDeserialized = Kafka.toEvent(message) as CloudEvent<Uint32Array>;
+    const eventDeserialized = Kafka.toEvent(message) as CloudEvent<Uint8Array>;
     expect(eventDeserialized.data).to.deep.equal(imageData);
     expect(eventDeserialized.data_base64).to.equal(image_base64);
   });
@@ -310,7 +310,7 @@ describe("Kafka transport", () => {
 
   it("Does not parse binary data from binary messages with content type application/json", () => {
     const message = Kafka.binary(fixture.cloneWith({ data: dataBinary }));
-    const eventDeserialized = Kafka.toEvent(message) as CloudEvent<Uint32Array>;
+    const eventDeserialized = Kafka.toEvent(message) as CloudEvent<Uint8Array>;
     expect(eventDeserialized.data).to.deep.equal(dataBinary);
     expect(eventDeserialized.data_base64).to.equal(data_base64);
   });

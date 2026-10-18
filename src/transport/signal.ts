@@ -4,9 +4,8 @@
 */
 
 /**
- * Check a signal supplied by a caller, whether it was given to a transport, to a single send,
- * or to an emitter wrapper, by its platform brand rather than the interface prototype of this
- * realm
+ * Check a signal supplied to a message or emitter wrapper by its platform brand rather than
+ * the interface prototype of this realm
  *
  * @param {unknown} value the signal supplied by the caller, if any
  * @returns {AbortSignal|undefined} the signal, or undefined when none was supplied

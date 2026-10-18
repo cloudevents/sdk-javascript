@@ -8,12 +8,10 @@ import { ValidationError } from "./event/validation";
 import { CloudEventV1, CloudEventV1Attributes } from "./event/interfaces";
 
 import {
-  Options, TransportFunction, EmitterFunction, HTTPEmitterFunction, emitterFor, Emitter,
+  Options, TransportFunction, EmitterFunction, emitterFor, Emitter,
 } from "./transport/emitter";
 import {
-  FetchHeadersInit, FetchRequestInit, HTTPResponseHandler, HTTPTransportError,
-  HTTPTransportErrorDetails, HTTPTransportErrorKind,
-  HTTPTransportFunction, HTTPTransportOptions, HTTPTransportResponse, HTTPTransportSendOptions,
+  HTTPResponseHandler, HTTPTransportError, HTTPTransportErrorKind, HTTPTransportOptions, HTTPTransportResponse,
   httpTransport } from "./transport/http";
 import {
   Headers, Mode, Binding, HTTP, Kafka, KafkaEvent, KafkaMessage, Message, MQTT, MQTTMessage, MQTTMessageFactory,
@@ -56,15 +54,9 @@ export type {
   // From transport
   TransportFunction,
   EmitterFunction,
-  HTTPEmitterFunction,
   Options,
-  FetchHeadersInit,
-  FetchRequestInit,
   HTTPResponseHandler,
-  HTTPTransportErrorDetails,
   HTTPTransportErrorKind,
-  HTTPTransportFunction,
   HTTPTransportOptions,
-  HTTPTransportResponse,
-  HTTPTransportSendOptions
+  HTTPTransportResponse
 };

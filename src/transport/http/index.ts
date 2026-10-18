@@ -8,10 +8,10 @@ import { Options, TransportFunction } from "../emitter";
 import { combineSignals, signalFrom } from "../signal";
 
 /** The request options accepted by the Fetch implementation in the current environment */
-export type FetchRequestInit = NonNullable<Parameters<typeof globalThis.fetch>[1]>;
+type FetchRequestInit = NonNullable<Parameters<typeof globalThis.fetch>[1]>;
 
 /** The header forms accepted by the Fetch implementation in the current environment */
-export type FetchHeadersInit = NonNullable<FetchRequestInit["headers"]>;
+type FetchHeadersInit = NonNullable<FetchRequestInit["headers"]>;
 
 /** Turns a Fetch response into the body value handed back by the HTTP transport */
 export type HTTPResponseHandler<TBody> = (response: Response) => Promise<TBody>;
@@ -22,24 +22,21 @@ export type HTTPResponseHandler<TBody> = (response: Response) => Promise<TBody>;
 export interface HTTPTransportOptions<TBody = string> {
   /** HTTP headers applied to every request, per-send headers take precedence */
   headers?: FetchHeadersInit;
-  /**
-   * Aborts every request sent by this transport, combined with the per-send signal. It lasts
-   * as long as the transport does, so set a per-request deadline on the per-send signal
-   */
-  signal?: AbortSignal;
   /** Fetch options applied to every request, apart from the ones this transport controls */
   fetchOptions?: Omit<FetchRequestInit, "method" | "headers" | "body" | "signal">;
   /** Reads every response body; defaults to reading it as text */
   responseHandler?: HTTPResponseHandler<TBody>;
 }
 
-/**
- * Options which replace the response handler for one send
- */
-export interface HTTPTransportSendOptions<TBody> extends Options<FetchHeadersInit> {
-  /** Reads this response body instead of the handler configured for the transport */
-  responseHandler: HTTPResponseHandler<TBody>;
-}
+type HTTPMessageOptions = Pick<Options<FetchHeadersInit>, "headers" | "signal">;
+
+const supportedTransportOptions: Record<keyof HTTPTransportOptions<unknown>, true> = {
+  headers: true, fetchOptions: true, responseHandler: true,
+};
+
+const supportedSendOptions: Record<keyof HTTPMessageOptions, true> = {
+  headers: true, signal: true,
+};
 
 /** What the built-in HTTP transport hands back for a send the sink accepted */
 export type HTTPTransportResponse<TBody = string> =
@@ -58,14 +55,6 @@ export type HTTPTransportResponse<TBody = string> =
     bodyError: unknown;
   };
 
-/**
- * An HTTP transport whose default response body type can be replaced for one send
- */
-export interface HTTPTransportFunction<TDefaultBody = string>
-  extends TransportFunction<HTTPTransportResponse<TDefaultBody>, Options<FetchHeadersInit>> {
-  <TBody>(message: Message, options: HTTPTransportSendOptions<TBody>): Promise<HTTPTransportResponse<TBody>>;
-}
-
 /** The result of attempting to handle a response body */
 type HandledResponse =
   | { handled: true; body: unknown }
@@ -83,7 +72,7 @@ export type HTTPTransportErrorKind = "http-status" | "aborted" | "network";
 /**
  * What an {@linkcode HTTPTransportError} reports alongside its {@linkcode HTTPTransportErrorKind}
  */
-export type HTTPTransportErrorDetails = Pick<HTTPTransportError, "response" | "body" | "cause">;
+type HTTPTransportErrorDetails = Pick<HTTPTransportError, "response" | "body" | "cause">;
 
 /**
  * A request failure reported by the built-in HTTP transport
@@ -125,28 +114,34 @@ export class HTTPTransportError extends Error {
  * reported as errors unless `fetchOptions.redirect` says otherwise, since Fetch keeps the
  * CloudEvent POST only for 307 and 308 - see the README for the details.
  *
- * Every response body is passed to the configured response handler. It is read as text by
- * default; a handler passed with one send takes precedence over the transport's handler.
- * A handler may also return `response.body` to hand the stream to the caller, who then
- * has to cancel it if it is not read to the end, since the abort signals no longer apply
+ * Every response body is passed to the configured response handler, or read as text by
+ * default. A handler may return `response.body` to hand the stream to the caller, who must
+ * cancel it if it is not read to the end. The message's abort signal no longer applies
  * once the handler has resolved.
  *
  * Credentials in _sink_ are sent as an `authorization` header, which the `headers` option
  * and the headers of one send override.
  *
  * @param {string|URL} sink the destination endpoint for the event
- * @param {HTTPTransportOptions} options headers, Fetch options, abort and response behavior
- * @returns {HTTPTransportFunction} a function that sends CloudEvents to _sink_
+ * @param {HTTPTransportOptions} options headers, Fetch options and response behavior
+ * @returns {TransportFunction} a function that sends CloudEvents to _sink_
  */
 export function httpTransport<TBody = string>(
-  sink: string | URL, options: HTTPTransportOptions<TBody> = {},
-): HTTPTransportFunction<TBody> {
+  sink: string | URL, options?: HTTPTransportOptions<TBody>,
+): TransportFunction<HTTPTransportResponse<TBody>, HTTPMessageOptions>;
+export function httpTransport(
+  sink: string | URL, options: HTTPTransportOptions<unknown> = {},
+): TransportFunction<HTTPTransportResponse<unknown>, HTTPMessageOptions> {
+  for (const name of Object.keys(options)) {
+    if (!Object.prototype.hasOwnProperty.call(supportedTransportOptions, name)) {
+      throw new TypeError(`unsupported HTTP transport option: ${name}`);
+    }
+  }
   const url = validateHTTPURL(sink);
   // fetch refuses a URL with credentials
   const sinkHeaders = credentialsFrom(url);
-  const transportSignal = signalFrom(options.signal);
   const transportHeaders = headersFrom(options.headers);
-  const transportResponseHandler = responseHandlerFrom(options.responseHandler, (response) => response.text());
+  const responseHandler = responseHandlerFrom(options.responseHandler);
   const fetchOptions: FetchRequestInit = {
     ...options.fetchOptions,
     // fetch reads an explicitly undefined redirect as absent, so the default comes last
@@ -154,15 +149,19 @@ export function httpTransport<TBody = string>(
     method: "POST",
   };
 
-  const send = async (
-    message: Message, sendOptions?: Options<FetchHeadersInit>,
-  ): Promise<HTTPTransportResponse<unknown>> => {
+  async function send(
+    message: Message, sendOptions?: HTTPMessageOptions,
+  ): Promise<HTTPTransportResponse<unknown>> {
+    for (const name of Object.keys(sendOptions ?? {})) {
+      if (!Object.prototype.hasOwnProperty.call(supportedSendOptions, name)) {
+        throw new TypeError(`unsupported HTTP send option: ${name}`);
+      }
+    }
     const sendSignal = signalFrom(sendOptions?.signal);
     const headers = requestHeaders(
       sinkHeaders, message.headers, transportHeaders, headersFrom(sendOptions?.headers),
     );
-    const responseHandler = responseHandlerFrom(sendOptions?.responseHandler, transportResponseHandler);
-    const combinedSignal = combineSignals(transportSignal, sendSignal);
+    const combinedSignal = combineSignals(sendSignal);
     try {
       let response: Response;
       try {
@@ -191,24 +190,20 @@ export function httpTransport<TBody = string>(
     } finally {
       combinedSignal.dispose();
     }
-  };
+  }
 
-  // the overloads type the per-send handler this implementation cannot
-  return send as HTTPTransportFunction<TBody>;
+  return send;
 }
 
 /**
- * Check a response handler and fall back to the handler from the enclosing transport
+ * Check a response handler and fall back to reading the body as text
  *
- * @param {unknown} value the handler supplied at this layer, if any
- * @param {HTTPResponseHandler} fallback the handler inherited from the transport or default
+ * @param {unknown} value the configured handler, if any
  * @returns {HTTPResponseHandler} the handler to run
  */
-function responseHandlerFrom(
-  value: unknown, fallback: HTTPResponseHandler<unknown>,
-): HTTPResponseHandler<unknown> {
+function responseHandlerFrom(value: unknown): HTTPResponseHandler<unknown> {
   if (value === undefined || value === null) {
-    return fallback;
+    return (response) => response.text();
   }
   if (typeof value !== "function") {
     throw new TypeError("options.responseHandler must be a function");

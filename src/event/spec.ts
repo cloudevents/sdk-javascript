@@ -7,13 +7,13 @@ import { ValidationError } from "./validation";
 
 import { CloudEventV1 } from "./interfaces";
 import { V1 } from "./cloudevent";
-import validate from "../schema/v1";
+import { validate } from "../schema/validator";
 
 
 export function validateCloudEvent<T>(event: CloudEventV1<T>): boolean {
   if (event.specversion === V1) {
     if (!validate(event)) {
-      throw new ValidationError("invalid payload", (validate as any).errors);
+      throw new ValidationError("invalid payload", validate.errors);
     }
   } else {
     return false;

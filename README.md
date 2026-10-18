@@ -100,6 +100,13 @@ under `fetchOptions`. The options passed to `emit()` apply to that Message only:
 `TypeError`. To discard a response body, use
 `responseHandler: async (response) => { await response.body?.cancel(); }`.
 
+Existing `ce-*` and `content-type` headers cannot be changed. New CloudEvents
+headers must be valid and, in structured mode, match the body.
+
+Other headers, such as `authorization`, `traceparent` and `baggage`, can be added
+or overridden. `host` and `content-length` are controlled by Fetch and are
+rejected. Invalid headers reject with a `TypeError` before the request is sent.
+
 There is no timeout option: a deadline is an `AbortSignal` passed with the
 message.
 

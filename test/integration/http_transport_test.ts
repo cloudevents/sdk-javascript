@@ -13,8 +13,8 @@ import { json, text } from "stream/consumers";
 import { runInNewContext } from "vm";
 
 import {
-  CONSTANTS, Headers as CloudEventHeaders, HTTPTransportError, HTTPTransportOptions,
-  Message, Mode, emitterFor, httpTransport,
+  CloudEvent, CONSTANTS, Headers as CloudEventHeaders, HTTPTransportError, HTTPTransportOptions,
+  HTTP, Message, Mode, emitterFor, httpTransport,
 } from "../../src";
 import { assertStructured, fixture } from "./emitter_factory_test";
 
@@ -229,17 +229,27 @@ describe("Built-in HTTP transport", () => {
   it("Applies transport headers and lets per-send headers override them", async () => {
     const { received: receivedHeaders, handler } = headerCollector();
 
+    const tracing = {
+      traceparent: `00-${"a".repeat(32)}-${"b".repeat(16)}-01`,
+      tracestate: "vendor=old", baggage: "tenant=store-42",
+    };
+    const sendTracing = {
+      traceparent: `00-${"c".repeat(32)}-${"d".repeat(16)}-01`,
+      tracestate: "vendor=new", baggage: "tenant=store-99,region=jp",
+    };
+
     await withServer(handler, async (url) => {
       const emit = emitterFor(httpTransport(url, {
         headers: new Headers({
           authorization: "Bearer transport-token",
           "x-tenant-id": "store-42",
+          ...tracing,
         }),
       }));
 
       await emit(fixture);
       await emit(fixture, {
-        headers: { "x-tenant-id": "store-99", "x-request-id": "order-123" },
+        headers: { "x-tenant-id": "store-99", "x-request-id": "order-123", ...sendTracing },
       });
 
       expect(receivedHeaders[0]?.authorization).to.equal("Bearer transport-token");
@@ -247,8 +257,290 @@ describe("Built-in HTTP transport", () => {
       expect(receivedHeaders[1]?.authorization).to.equal("Bearer transport-token");
       expect(receivedHeaders[1]?.["x-tenant-id"]).to.equal("store-99");
       expect(receivedHeaders[1]?.["x-request-id"]).to.equal("order-123");
+      expect(receivedHeaders[0]).to.include(tracing);
+      expect(receivedHeaders[1]).to.include(sendTracing);
       // a header neither layer set keeps the value the binding produced
       expect(receivedHeaders[1]?.["ce-type"]).to.equal(fixture.type);
+    });
+  });
+
+  it("Accepts new binary attributes", async () => {
+    const { received, handler } = headerCollector();
+    await withServer(handler, async (url) => {
+      const emit = emitterFor(httpTransport(url, {
+        headers: { "ce-tenant": "store-42" },
+      }));
+      await emit(fixture, {
+        headers: {
+          "ce-region": "jp", "ce-subject": "order-123",
+        },
+      });
+      expect(received[0]?.["ce-id"]).to.equal(fixture.id);
+      expect(received[0]?.["ce-tenant"]).to.equal("store-42");
+      expect(received[0]?.["ce-region"]).to.equal("jp");
+      expect(received[0]?.["ce-subject"]).to.equal("order-123");
+      expect(received[0]?.["content-type"]).to.equal(CONSTANTS.DEFAULT_CONTENT_TYPE);
+    });
+  });
+
+  it("Rejects duplicate CloudEvents headers even with identical values", async () => {
+    const repeated: Array<[Mode, string, string]> = [
+      [Mode.BINARY, "CE-ID", fixture.id],
+      [Mode.BINARY, "ce-id", ` ${fixture.id} `],
+      [Mode.BINARY, "ce-lunch", String(fixture.lunch)],
+      [Mode.BINARY, "Content-Type", CONSTANTS.DEFAULT_CONTENT_TYPE],
+      [Mode.STRUCTURED, "Content-Type", CONSTANTS.DEFAULT_CE_CONTENT_TYPE],
+    ];
+    await withoutFetch(async () => {
+      for (const [mode, name, value] of repeated) {
+        const headers = { [name]: value };
+        const error = { name: "TypeError", message: `cannot override CloudEvents header: ${name.toLowerCase()}` };
+        await rejects(emitterFor(httpTransport(UNREACHABLE_URL, { headers }), { mode })(fixture), error);
+        await rejects(emitterFor(httpTransport(UNREACHABLE_URL), { mode })(fixture, { headers }), error);
+      }
+    });
+  });
+
+  it("Rejects changes to existing CloudEvents headers at either option level", async () => {
+    const changes = {
+      "CE-ID": "another-id", "ce-source": "/another-source", "ce-type": "another.type",
+      "ce-specversion": "0.3", "ce-lunch": "ramen", "content-type": "text/plain",
+    };
+    await withoutFetch(async () => {
+      for (const [name, value] of Object.entries(changes)) {
+        const error = { name: "TypeError", message: `cannot override CloudEvents header: ${name.toLowerCase()}` };
+        await rejects(emitterFor(httpTransport(UNREACHABLE_URL, { headers: { [name]: value } }))(fixture), error);
+        await rejects(emitterFor(httpTransport(UNREACHABLE_URL))(fixture, { headers: { [name]: value } }), error);
+      }
+      for (const specversion of ["0.3", "11.8"]) {
+        await rejects(emitterFor(httpTransport(UNREACHABLE_URL))(fixture.cloneWith({ specversion }), {
+          headers: { "ce-id": "another-id" },
+        }), TypeError);
+      }
+    });
+  });
+
+  it("Rejects transport overrides even if the per-send headers restore the original value", async () => {
+    await withoutFetch(async () => {
+      const emit = emitterFor(httpTransport(UNREACHABLE_URL, { headers: { "ce-id": "another-id" } }));
+      await rejects(emit(fixture, { headers: { "ce-id": fixture.id } }), {
+        name: "TypeError", message: "cannot override CloudEvents header: ce-id",
+      });
+    });
+  });
+
+  it("Rejects per-send overrides of CloudEvents attributes added by the transport", async () => {
+    await withoutFetch(async () => {
+      const emit = emitterFor(httpTransport(UNREACHABLE_URL, { headers: { "ce-tenant": "store-42" } }));
+      for (const value of ["store-42", "store-99"]) {
+        await rejects(emit(fixture, { headers: { "CE-TENANT": value } }), {
+          name: "TypeError", message: "cannot override CloudEvents header: ce-tenant",
+        });
+      }
+    });
+  });
+
+  it("Rejects host and content-length from Messages and either option level", async () => {
+    await withoutFetch(async () => {
+      for (const [name, value] of [["Host", "other.example.com"], ["Content-Length", "1"]]) {
+        const error = { name: "TypeError", message: `${name.toLowerCase()} is controlled by Fetch` };
+        const message = HTTP.binary(fixture);
+        message.headers[name] = value;
+        await rejects(httpTransport(UNREACHABLE_URL)(message), error);
+        await rejects(emitterFor(httpTransport(UNREACHABLE_URL, { headers: { [name]: value } }))(fixture), error);
+        await rejects(emitterFor(httpTransport(UNREACHABLE_URL))(fixture, { headers: { [name]: value } }), error);
+      }
+    });
+  });
+
+  it("Keeps binding attribute values when validating additional headers", async () => {
+    const { received, handler } = headerCollector();
+    const headers = { "ce-tenant": "shop" };
+    await withServer(handler, async (url) => {
+      for (const source of ["/orders/a%20b", "/orders/%E3%81%82"]) {
+        const event = fixture.cloneWith({ source, tracestate: "vendor=25%" });
+        await emitterFor(httpTransport(url, { headers }))(event);
+        await emitterFor(httpTransport(url))(event, { headers });
+        for (const requestHeaders of received.slice(-2)) {
+          expect(requestHeaders["ce-source"]).to.equal(source);
+          expect(requestHeaders["ce-tracestate"]).to.equal("vendor=25%");
+        }
+      }
+      expect(received).to.have.length(4);
+    });
+  });
+
+  it("Rejects invalid CloudEvents header additions before calling Fetch", async () => {
+    const invalid: FetchHeadersInit[] = [
+      { "ce-subject": "" },
+      { "ce-dataschema": "/relative" },
+      { "ce-bad-extension": "value" },
+      { "ce-data_base64": "ZGF0YQ==" },
+      { "ce-datacontenttype": "text/plain" },
+    ];
+    await withoutFetch(async () => {
+      for (const headers of invalid) {
+        await rejects(emitterFor(httpTransport(UNREACHABLE_URL, { headers }))(fixture), TypeError);
+        await rejects(emitterFor(httpTransport(UNREACHABLE_URL))(fixture, { headers }), TypeError);
+      }
+      const message = HTTP.binary(fixture);
+      delete message.headers["ce-time"];
+      await rejects(httpTransport(UNREACHABLE_URL)(message, { headers: { "ce-time": "not a timestamp" } }), TypeError);
+    });
+  });
+
+  it("Accepts structured metadata headers that match the body", async () => {
+    const { received, handler } = headerCollector();
+    const event = new CloudEvent({
+      id: "event-42", source: "/account/%2F", type: "order.created", tenant: "store-42",
+      time: "2026-10-18T00:00:00Z",
+    });
+    await withServer(handler, async (url) => {
+      const emit = emitterFor(httpTransport(url), { mode: Mode.STRUCTURED });
+      await emit(event, {
+        headers: new Headers({
+          "CE-ID": event.id,
+          "ce-source": "/account/%252F",
+          "ce-type": event.type,
+          "ce-time": "2026-10-18T09:00:00+09:00",
+          "ce-tenant": "store-42",
+        }),
+      });
+      expect(received[0]?.["ce-id"]).to.equal(event.id);
+      expect(received[0]?.["ce-tenant"]).to.equal(event.tenant);
+      expect(received[0]?.["content-type"]).to.equal(CONSTANTS.DEFAULT_CE_CONTENT_TYPE);
+    });
+  });
+
+  it("Rejects content-type changes including casing and media type parameters", async () => {
+    const error = { name: "TypeError", message: "cannot override CloudEvents header: content-type" };
+    await withoutFetch(async () => {
+      for (const mode of [Mode.BINARY, Mode.STRUCTURED]) {
+        const type = mode === Mode.BINARY ? CONSTANTS.DEFAULT_CONTENT_TYPE : CONSTANTS.DEFAULT_CE_CONTENT_TYPE;
+        for (const value of [type.toUpperCase(), `${type}; charset=UTF-8`]) {
+          const headers = { "Content-Type": value };
+          await rejects(emitterFor(httpTransport(UNREACHABLE_URL, { headers }), { mode })(fixture), error);
+          await rejects(emitterFor(httpTransport(UNREACHABLE_URL), { mode })(fixture, { headers }), error);
+        }
+      }
+    });
+  });
+
+  it("Validates added structured metadata without reinterpreting existing headers", async () => {
+    const event = fixture.cloneWith({ source: "/orders/a%20b", tracestate: "vendor=25%", tenant: "shop" });
+    const message = HTTP.structured(event);
+    message.headers["ce-source"] = "/orders/a%2520b";
+    message.headers["ce-tracestate"] = "vendor=25%25";
+    const { received, handler } = headerCollector();
+    await withServer(handler, async (url) => {
+      await httpTransport(url)(message, { headers: { "ce-tenant": "shop" } });
+      expect(received[0]?.["ce-source"]).to.equal("/orders/a%2520b");
+      expect(received[0]?.["ce-tracestate"]).to.equal("vendor=25%25");
+      expect(received[0]?.["ce-tenant"]).to.equal("shop");
+    });
+  });
+
+  it("Checks structured additions against the body without imposing 1.0 rules on other versions", async () => {
+    const { received, handler } = headerCollector();
+    await withServer(handler, async (url) => {
+      const emit = emitterFor(httpTransport(url), { mode: Mode.STRUCTURED });
+      for (const specversion of ["0.3", "11.8"]) {
+        const event = new CloudEvent({
+          ...fixture, specversion, tenant: "store-42", "map-key": "value",
+        }, false);
+        await emit(event, { headers: { "ce-tenant": "store-42", "ce-map-key": "value" } });
+        await rejects(emit(event, { headers: { "ce-tenant": "store-99" } }), {
+          name: "TypeError", message: "ce-tenant does not match the structured CloudEvent body",
+        });
+      }
+      expect(received).to.have.length(2);
+    });
+  });
+
+  it("Rejects headers that conflict with the structured body before calling Fetch", async () => {
+    await withoutFetch(async () => {
+      const invalid: FetchHeadersInit[] = [
+        { "ce-id": "different-event" },
+        { "ce-tenant": "not-in-the-body" },
+        { "ce-datacontenttype": "application/json" },
+      ];
+      const structured = emitterFor(httpTransport(UNREACHABLE_URL), { mode: Mode.STRUCTURED });
+      for (const headers of invalid) {
+        await rejects(structured(fixture, { headers }), TypeError);
+        const configured = emitterFor(httpTransport(UNREACHABLE_URL, { headers }), { mode: Mode.STRUCTURED });
+        await rejects(configured(fixture), TypeError);
+      }
+      const midnight = fixture.cloneWith({ time: "2026-10-18T00:00:00Z" });
+      await rejects(structured(midnight, { headers: { "ce-time": "2026-10-18" } }), TypeError);
+    });
+  });
+
+  it("Forwards opaque structured bodies unread and rejects metadata additions it cannot verify", async () => {
+    let reads = 0;
+    const stream = new ReadableStream({
+      pull: () => { reads++; },
+    }, { highWaterMark: 0 });
+    const messages: Message[] = [
+      { headers: { "content-type": CONSTANTS.DEFAULT_CE_CONTENT_TYPE }, body: stream },
+      { headers: { "content-type": "application/cloudevents+avro" }, body: new Uint8Array([1, 2, 3]) },
+    ];
+    let requests = 0;
+    await withFetch(async (_input, options) => {
+      expect(options?.body).to.equal(messages[requests++].body);
+      return new Response(null, { status: 204 });
+    }, async () => {
+      const send = httpTransport(UNREACHABLE_URL);
+      for (const message of messages) {
+        await rejects(send(message, { headers: { "ce-id": fixture.id } }), {
+          name: "TypeError", message: "cannot verify CloudEvents headers against the structured body",
+        });
+        await send(message, { headers: { baggage: "tenant=store-42" } });
+      }
+    });
+    expect(requests).to.equal(messages.length);
+    expect(reads).to.equal(0);
+    expect(stream.locked).to.equal(false);
+  });
+
+  it("Does not apply 1.0 extension naming or reserved header rules to other versions", async () => {
+    const { received, handler } = headerCollector();
+    await withServer(handler, async (url) => {
+      const emit = emitterFor(httpTransport(url));
+      await emit(fixture.cloneWith({ specversion: "0.3" }), {
+        headers: { "ce-map-key": "value", "ce-datacontenttype": "legacy-value" },
+      });
+      await emit(fixture.cloneWith({ specversion: "11.8" }), {
+        headers: { "ce-datacontenttype": "future-value" },
+      });
+      expect(received[0]?.["ce-map-key"]).to.equal("value");
+      expect(received[1]?.["ce-datacontenttype"]).to.equal("future-value");
+    });
+  });
+
+  it("Accepts encoded and quoted attribute values without rewriting the wire headers", async () => {
+    const { received, handler } = headerCollector();
+    await withServer(handler, async (url) => {
+      const message = HTTP.binary(fixture);
+      delete message.headers["ce-specversion"];
+      for (const version of ["1%2E0", "\"1.0\""]) {
+        await httpTransport(url)(message, {
+          headers: {
+            "ce-subject": "order%20%E2%82%AC", "ce-tenant": "\"quoted\\\"tenant\"", "ce-specversion": version,
+          },
+        });
+      }
+      expect(received[0]?.["ce-subject"]).to.equal("order%20%E2%82%AC");
+      expect(received[0]?.["ce-tenant"]).to.equal("\"quoted\\\"tenant\"");
+      expect(received.map((headers) => headers["ce-specversion"])).to.deep.equal(["1%2E0", "\"1.0\""]);
+    });
+  });
+
+  it("Rejects malformed UTF-8 encodings in added attribute headers", async () => {
+    await withoutFetch(async () => {
+      const emit = emitterFor(httpTransport(UNREACHABLE_URL));
+      await rejects(emit(fixture, { headers: { "ce-tenant": "%FF" } }), {
+        name: "TypeError", message: "CloudEvents header values must use valid UTF-8 percent encoding",
+      });
     });
   });
 

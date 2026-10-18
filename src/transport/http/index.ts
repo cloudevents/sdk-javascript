@@ -4,8 +4,10 @@
 */
 
 import { Headers as CloudEventHeaders, Message } from "../../message";
+import CONSTANTS from "../../constants";
 import { Options, TransportFunction } from "../emitter";
 import { combineSignals, signalFrom } from "../signal";
+import { validateHeaderAdditions } from "./headers";
 
 /** The request options accepted by the Fetch implementation in the current environment */
 type FetchRequestInit = NonNullable<Parameters<typeof globalThis.fetch>[1]>;
@@ -20,7 +22,7 @@ export type HTTPResponseHandler<TBody> = (response: Response) => Promise<TBody>;
  * Options applied to every request sent by an HTTP transport
  */
 export interface HTTPTransportOptions<TBody = string> {
-  /** HTTP headers applied to every request, per-send headers take precedence */
+  /** HTTP headers applied to every request, per-send headers take precedence but neither can change CloudEvents ones */
   headers?: FetchHeadersInit;
   /** Fetch options applied to every request, apart from the ones this transport controls */
   fetchOptions?: Omit<FetchRequestInit, "method" | "headers" | "body" | "signal">;
@@ -159,7 +161,7 @@ export function httpTransport(
     }
     const sendSignal = signalFrom(sendOptions?.signal);
     const headers = requestHeaders(
-      sinkHeaders, message.headers, transportHeaders, headersFrom(sendOptions?.headers),
+      sinkHeaders, message, transportHeaders, headersFrom(sendOptions?.headers),
     );
     const combinedSignal = combineSignals(sendSignal);
     try {
@@ -253,21 +255,26 @@ function validateHTTPURL(sink: string | URL): URL {
  * Merge the headers for a single request
  *
  * @param {Headers} sinkHeaders the headers built from the sink URL, if it carried credentials
- * @param {CloudEventHeaders} messageHeaders the headers of the event Message
+ * @param {Message} message the event Message
  * @param {Headers} transportHeaders the headers configured on this transport, if any
  * @param {Headers} sendHeaders the headers supplied with this send, if any
  * @returns {Headers} the headers to send
  */
 function requestHeaders(
-  sinkHeaders: Headers | undefined, messageHeaders: CloudEventHeaders,
+  sinkHeaders: Headers | undefined, message: Message,
   transportHeaders?: Headers, sendHeaders?: Headers,
 ): Headers {
   const headers = new Headers();
   // lowest precedence first: sink credentials, binding, transport, this send
   setHeaders(headers, sinkHeaders);
-  setHeaders(headers, messageHeaders);
+  setHeaders(headers, message.headers);
+  if (transportHeaders === undefined && sendHeaders === undefined) {
+    return headers;
+  }
+  const original = new Headers(headers);
   setHeaders(headers, transportHeaders);
   setHeaders(headers, sendHeaders);
+  validateHeaderAdditions(message, original, headers);
   return headers;
 }
 
@@ -334,7 +341,7 @@ function headersFrom(source: unknown): Headers | undefined {
 }
 
 /**
- * Copy headers onto a target, replacing any that are already there
+ * Merge headers, rejecting changes to CloudEvents headers and the ones Fetch controls
  *
  * @param {Headers} target the headers being built
  * @param {CloudEventHeaders|Headers} source the headers to copy, undefined ones are ignored
@@ -344,16 +351,34 @@ function setHeaders(target: Headers, source?: CloudEventHeaders | Headers): void
   if (source === undefined) {
     return;
   }
-  if (source instanceof Headers) {
-    source.forEach((value, name) => target.set(name, value));
-    return;
-  }
+  const headers = source instanceof Headers ? source : normalizeHeaders(source);
+  headers.forEach((value, name) => {
+    if (name === "host" || name === "content-length") {
+      throw new TypeError(`${name} is controlled by Fetch`);
+    }
+    if ((name.startsWith(CONSTANTS.EXTENSIONS_PREFIX) || name === CONSTANTS.HEADER_CONTENT_TYPE)
+      && target.has(name)) {
+      throw new TypeError(`cannot override CloudEvents header: ${name}`);
+    }
+    target.set(name, value);
+  });
+}
+
+/**
+ * Collect the headers of a Message, so names are lowercased and a repeated name keeps its last value
+ *
+ * @param {CloudEventHeaders} source the headers of the Message
+ * @returns {Headers} the headers, without the undefined ones
+ */
+function normalizeHeaders(source: CloudEventHeaders): Headers {
+  const headers = new Headers();
   for (const [name, value] of Object.entries(source as Record<string, unknown>)) {
     const headerValue = headerValueFrom(value);
     if (headerValue !== undefined) {
-      target.set(name, headerValue);
+      headers.set(name, headerValue);
     }
   }
+  return headers;
 }
 
 /**

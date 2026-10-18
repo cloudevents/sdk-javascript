@@ -6,9 +6,6 @@
 import { CloudEvent } from "../event/cloudevent";
 import { Headers as CloudEventHeaders, HTTP, Message, Mode } from "../message";
 import { EventEmitter } from "events";
-import type {
-  FetchHeadersInit, HTTPTransportFunction, HTTPTransportResponse, HTTPTransportSendOptions,
-} from "./http";
 
 /**
  * Options is an additional, optional dictionary of options that may
@@ -35,17 +32,6 @@ export interface EmitterFunction<TResult = unknown, TOptions = Options> {
 }
 
 /**
- * An emitter backed by the built-in HTTP transport. A response handler passed with one event
- * determines the body type for that call; otherwise the transport's default body type is used.
- */
-export interface HTTPEmitterFunction<TDefaultBody = string>
-  extends EmitterFunction<HTTPTransportResponse<TDefaultBody>, Options<FetchHeadersInit>> {
-  <TEvent, TBody>(
-    event: CloudEvent<TEvent>, options: HTTPTransportSendOptions<TBody>,
-  ): Promise<HTTPTransportResponse<TBody>>;
-}
-
-/**
  * TransportFunction is an invokable interface provided to the emitterFactory.
  * A TransportFunction's responsiblity is to send a JSON encoded event Message
  * across the wire. TResult is the value it resolves with, e.g. an HTTP client's
@@ -57,20 +43,6 @@ export interface TransportFunction<TResult = unknown, TOptions = Options> {
 }
 
 const emitterDefaults: Options = { binding: HTTP, mode: Mode.BINARY };
-/**
- * Creates and returns an {@linkcode HTTPEmitterFunction} using the built-in HTTP
- * transport returned by `httpTransport()`. The returned function converts a
- * {@linkcode CloudEvent} into a {@linkcode Message} the same way the generic overload
- * below does, and resolves with what the sink sent back, or rejects with an
- * `HTTPTransportError`.
- *
- * @param {HTTPTransportFunction} fn the built-in HTTP transport to send events with
- * @param { {Binding, Mode} } options network binding and message serialization options
- * @returns {HTTPEmitterFunction} an emitter which resolves with the sink's response
- */
-export function emitterFor<TBody>(
-  fn: HTTPTransportFunction<TBody>, options?: Options,
-): HTTPEmitterFunction<TBody>;
 /**
  * Creates and returns an {@linkcode EmitterFunction} using the supplied
  * {@linkcode TransportFunction}. The returned {@linkcode EmitterFunction}
@@ -85,9 +57,6 @@ export function emitterFor<TBody>(
  * @param {Mode} options.mode the encoding mode (Mode.BINARY or Mode.STRUCTURED)
  * @returns {EmitterFunction} an EmitterFunction to send events with
  */
-export function emitterFor<TResult = unknown, TOptions = Options>(
-  fn: TransportFunction<TResult, TOptions>, options?: Options,
-): EmitterFunction<TResult, TOptions>;
 export function emitterFor<TResult = unknown, TOptions = Options>(
   fn: TransportFunction<TResult, TOptions>, options: Options = emitterDefaults,
 ): EmitterFunction<TResult, TOptions> {

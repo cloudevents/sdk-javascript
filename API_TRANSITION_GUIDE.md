@@ -145,13 +145,12 @@ try {
 }
 ```
 
-The transport takes a second argument now, for headers, a signal, how the response body
+The transport takes a second argument now, for headers, how the response body
 is read and, under `fetchOptions`, the other Fetch options. Its headers are Fetch header
 forms, so a `string[]` value becomes a `Headers` you `append()` to. A redirect is a
 failed send unless `fetchOptions: { redirect: "follow" }` says otherwise, and a body
-that cannot be read after a 2xx resolves with `bodyError` in place of `body`. The
-signal given to `httpTransport()` lasts as long as the transport, so a per-request
-deadline belongs on the signal passed with the event.
+that cannot be read after a 2xx resolves with `bodyError` in place of `body`. Pass
+`headers` and `signal` with the event for settings that apply to one message.
 
 ```js
 const headers = new Headers();
@@ -233,7 +232,7 @@ so `dispatcher` is a Node.js-only option.
 `fetchOptions` takes the Fetch options of whichever declarations type `fetch` in your
 project, so TypeScript accepts `dispatcher` only where those are undici's. Against the
 DOM `RequestInit` most projects compile with, pass it as
-`fetchOptions: { dispatcher } as FetchRequestInit` or reach for
+`fetchOptions: { dispatcher } as RequestInit` or reach for
 `setGlobalDispatcher()` instead.
 
 #### Emitter Options
@@ -241,7 +240,7 @@ DOM `RequestInit` most projects compile with, pass it as
 `Options` now declares `headers` and `signal` instead of leaving them to an index
 signature that resolved to `unknown`. Its default header type remains the
 CloudEvent header record used by custom transports. The emitter returned from
-`httpTransport()` specializes it to `FetchHeadersInit`.
+`httpTransport()` accepts Fetch header forms instead.
 
 TypeScript now rejects spreading custom transport options into a client
 configuration that types its own `headers`:
@@ -257,11 +256,10 @@ function sendWithAxios(message: Message, options?: Options) {
 }
 ```
 
-It also rejects the generic types as annotations for the built-in transport, whose
-options are narrower. Use `HTTPTransportFunction` and `HTTPEmitterFunction`, or leave
-the types to inference:
+Leave the built-in transport and emitter types to inference so their message
+options and response body types are preserved:
 
 ```ts
-const transport: HTTPTransportFunction = httpTransport(sink);
-const emit: HTTPEmitterFunction = emitterFor(transport);
+const transport = httpTransport(sink);
+const emit = emitterFor(transport);
 ```

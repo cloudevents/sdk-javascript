@@ -70,6 +70,15 @@ function gotEmitter(message: Message, options?: Options): Promise<unknown> {
 }
 
 describe("emitterFor() defaults", () => {
+  it("Preserves custom transport options and return types", async () => {
+    const transport: TransportFunction<number, { routingKey: string }> = async (_message, options) => {
+      expect(options?.routingKey).to.equal("orders");
+      return 42;
+    };
+    const result: number = await emitterFor(transport)(fixture, { routingKey: "orders" });
+    expect(result).to.equal(42);
+  });
+
   it("Keeps CloudEvent header arrays in custom transport options", async () => {
     const transport: TransportFunction<void> = async (_message, options) => {
       expect(options?.headers?.["x-tenant-id"]).to.deep.equal(["store-42", "store-99"]);

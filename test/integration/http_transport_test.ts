@@ -13,12 +13,14 @@ import { json, text } from "stream/consumers";
 import { runInNewContext } from "vm";
 
 import {
-  CONSTANTS, FetchHeadersInit, FetchRequestInit, Headers as CloudEventHeaders, HTTPTransportError,
+  CONSTANTS, Headers as CloudEventHeaders, HTTPTransportError, HTTPTransportOptions,
   Message, Mode, emitterFor, httpTransport,
 } from "../../src";
 import { assertStructured, fixture } from "./emitter_factory_test";
 
 type Handler = (request: IncomingMessage, response: ServerResponse) => void | Promise<void>;
+type FetchRequestInit = NonNullable<Parameters<typeof globalThis.fetch>[1]>;
+type FetchHeadersInit = NonNullable<HTTPTransportOptions["headers"]>;
 
 // nock cannot intercept fetch, so these tests use a local server
 
@@ -56,6 +58,7 @@ describe("Built-in HTTP transport", () => {
       expect(response.headers.get("x-request-id")).to.equal("receipt-7");
       expect(response.bodyUsed).to.equal(true);
       expect(body).to.equal("accepted");
+      expectType<string | undefined>(body);
       expect(receivedHeaders?.["x-request-id"]).to.equal("order-123");
       expect(receivedHeaders?.["content-type"]).to.equal(CONSTANTS.DEFAULT_CONTENT_TYPE);
       expect(receivedHeaders?.["ce-id"]).to.equal(fixture.id);
@@ -148,7 +151,7 @@ describe("Built-in HTTP transport", () => {
     });
   });
 
-  it("Infers bodies from transport and per-send response handlers", async () => {
+  it("Infers bodies from the transport response handler", async () => {
     await withServer((_request, response) => {
       response.writeHead(202);
       response.end("42");
@@ -159,15 +162,15 @@ describe("Built-in HTTP transport", () => {
 
       const configured = await emit(fixture);
       expectType<{ receipt: number } | undefined>(configured.body);
-      // @ts-expect-error the transport handler determines the default body type
+      // @ts-expect-error the transport handler determines the body type
       expectType<string | undefined>(configured.body);
       expect(configured.body).to.deep.equal({ receipt: 42 });
 
-      const overridden = await emit(fixture, { responseHandler: (response) => response.text() });
-      expectType<string | undefined>(overridden.body);
-      // @ts-expect-error the per-send handler replaces the transport body type for this call
-      expectType<{ receipt: number } | undefined>(overridden.body);
-      expect(overridden.body).to.equal("42");
+      const withOptions = await emit(fixture, {
+        headers: { "x-request-id": "order-123" }, signal: new AbortController().signal,
+      });
+      expectType<{ receipt: number } | undefined>(withOptions.body);
+      expect(withOptions.body).to.deep.equal({ receipt: 42 });
     });
   });
 
@@ -176,10 +179,10 @@ describe("Built-in HTTP transport", () => {
       response.writeHead(202);
       response.end("not needed");
     }, async (url) => {
-      const emit = emitterFor(httpTransport(url));
-      const result = await emit(fixture, {
+      const emit = emitterFor(httpTransport(url, {
         responseHandler: async (response) => { await response.body?.cancel(); },
-      });
+      }));
+      const result = await emit(fixture);
 
       expectType<void | undefined>(result.body);
       expect(result.body).to.equal(undefined);
@@ -191,11 +194,10 @@ describe("Built-in HTTP transport", () => {
   it("Lets a custom response handler hand its stream to the caller", async () => {
     await withServer(streamEvent, async (url) => {
       const controller = new AbortController();
-      const emit = emitterFor(httpTransport(url));
-      const result = await emit(fixture, {
-        signal: controller.signal,
+      const emit = emitterFor(httpTransport(url, {
         responseHandler: async (response) => response.body,
-      });
+      }));
+      const result = await emit(fixture, { signal: controller.signal });
 
       expectType<ReadableStream<Uint8Array> | null | undefined>(result.body);
       expect(result.response.bodyUsed).to.equal(false);
@@ -212,10 +214,10 @@ describe("Built-in HTTP transport", () => {
       response.writeHead(202);
       response.end("not a receipt");
     }, async (url) => {
-      const emit = emitterFor(httpTransport(url));
-      const result = await emit(fixture, {
+      const emit = emitterFor(httpTransport(url, {
         responseHandler: async () => { throw handlerError; },
-      });
+      }));
+      const result = await emit(fixture);
 
       expect(result.response.status).to.equal(202);
       expect(result.response.bodyUsed).to.equal(true);
@@ -344,8 +346,9 @@ describe("Built-in HTTP transport", () => {
     });
   });
 
-  it("Passes standard Fetch options to fetch", async () => {
+  it("Passes standard and platform-specific Fetch options to fetch", async () => {
     let receivedOptions: FetchRequestInit | undefined;
+    const platformOptions = { dispatcher: {} };
 
     await withFetch(async (_input, options) => {
       receivedOptions = options;
@@ -353,6 +356,7 @@ describe("Built-in HTTP transport", () => {
     }, async () => {
       const emit = emitterFor(httpTransport("https://events.example.com/orders", {
         fetchOptions: {
+          ...platformOptions,
           cache: "no-store",
           credentials: "include",
           redirect: "error",
@@ -365,6 +369,7 @@ describe("Built-in HTTP transport", () => {
     expect(receivedOptions?.credentials).to.equal("include");
     expect(receivedOptions?.redirect).to.equal("error");
     expect(receivedOptions?.method).to.equal("POST");
+    expect(receivedOptions).to.include(platformOptions);
   });
 
   it("Keeps the manual redirect when fetchOptions leaves redirect undefined", async () => {
@@ -509,14 +514,13 @@ describe("Built-in HTTP transport", () => {
       response.writeHead(202);
       response.write("partial");
     }, async (url) => {
-      const emit = emitterFor(httpTransport(url));
-      const emitted = emit(fixture, {
-        signal: controller.signal,
+      const emit = emitterFor(httpTransport(url, {
         responseHandler: async (response) => {
           markHandlerStarted();
           return response.text();
         },
-      });
+      }));
+      const emitted = emit(fixture, { signal: controller.signal });
 
       await handlerStarted;
       controller.abort(new DOMException("deadline exceeded", "TimeoutError"));
@@ -544,28 +548,36 @@ describe("Built-in HTTP transport", () => {
     });
   });
 
-  it("Reports an abort from the transport signal", async () => {
-    const controller = new AbortController();
-
-    await withServer(() => controller.abort(new Error("shutting down")), async (url) => {
-      const emit = emitterFor(httpTransport(url, { signal: controller.signal }));
-      const error = await transportErrorFrom(emit(fixture));
-
-      expect(error.kind).to.equal("aborted");
-      expect(error.response).to.equal(undefined);
-      expect((error.cause as Error).message).to.equal("shutting down");
-    });
-  });
-
   it("Reports an abort from a per-send signal", async () => {
     const controller = new AbortController();
 
-    await withServer(() => controller.abort(), async (url) => {
+    await withServer(() => controller.abort(new Error("send stopped")), async (url) => {
       const emit = emitterFor(httpTransport(url));
       const error = await transportErrorFrom(emit(fixture, { signal: controller.signal }));
 
       expect(error.kind).to.equal("aborted");
-      expect(error.cause).not.to.equal(undefined);
+      expect(error.response).to.equal(undefined);
+      expect((error.cause as Error).message).to.equal("send stopped");
+    });
+  });
+
+  it("Keeps the transport available after one concurrent message is aborted", async () => {
+    const controller = new AbortController();
+    await withServer((request, response) => {
+      if (request.headers["ce-id"] === "cancelled") {
+        controller.abort(new Error("cancel one message"));
+      } else {
+        acceptEvent(request, response);
+      }
+    }, async (url) => {
+      const emit = emitterFor(httpTransport(url));
+      const cancelled = transportErrorFrom(emit(fixture.cloneWith({ id: "cancelled" }), {
+        signal: controller.signal,
+      }));
+      const other = emit(fixture.cloneWith({ id: "other" }));
+      expect((await cancelled).kind).to.equal("aborted");
+      expect((await other).response.status).to.equal(204);
+      expect((await emit(fixture)).response.status).to.equal(204);
     });
   });
 
@@ -589,53 +601,12 @@ describe("Built-in HTTP transport", () => {
     controller.abort();
 
     await withServer(() => { requestCount++; }, async (url) => {
-      const emit = emitterFor(httpTransport(url, { signal: controller.signal }));
-      const error = await transportErrorFrom(emit(fixture));
+      const emit = emitterFor(httpTransport(url));
+      const error = await transportErrorFrom(emit(fixture, { signal: controller.signal }));
 
       expect(error.kind).to.equal("aborted");
       expect(requestCount).to.equal(0);
     });
-  });
-
-  it("Uses the first reason when both signals are already aborted", async () => {
-    const transport = new AbortController();
-    const send = new AbortController();
-    transport.abort(new Error("transport stopped first"));
-    send.abort(new Error("send stopped second"));
-
-    const emit = emitterFor(httpTransport(UNREACHABLE_URL, { signal: transport.signal }));
-    const error = await transportErrorFrom(emit(fixture, { signal: send.signal }));
-
-    expect(error.kind).to.equal("aborted");
-    expect((error.cause as Error).message).to.equal("transport stopped first");
-  });
-
-  it("Sends with a transport signal and a per-send signal set at once", async () => {
-    const transport = new AbortController();
-
-    await withServer(acceptEvent, async (url) => {
-      const emit = emitterFor(httpTransport(url, { signal: transport.signal }));
-      const { response } = await emit(fixture, { signal: new AbortController().signal });
-
-      expect(response.status).to.equal(204);
-      expect(transport.signal.aborted).to.equal(false);
-    });
-  });
-
-  it("Reports an abort from either signal when both are set", async () => {
-    for (const abortedSignal of ["transport", "per-send"]) {
-      const transport = new AbortController();
-      const send = new AbortController();
-      const aborting = abortedSignal === "transport" ? transport : send;
-
-      await withServer(() => aborting.abort(new Error(`${abortedSignal} gave up`)), async (url) => {
-        const emit = emitterFor(httpTransport(url, { signal: transport.signal }));
-        const error = await transportErrorFrom(emit(fixture, { signal: send.signal }));
-
-        expect(error.kind).to.equal("aborted");
-        expect((error.cause as Error).message).to.equal(`${abortedSignal} gave up`);
-      });
-    }
   });
 
   it("Shares one source listener between concurrent sends and removes it afterward", async () => {
@@ -649,8 +620,8 @@ describe("Built-in HTTP transport", () => {
       await requestsMayComplete;
       return new Response(null, { status: 204 });
     }, async () => {
-      const emit = emitterFor(httpTransport("https://events.example.com", { signal: controller.signal }));
-      const emitted = Array.from({ length: 20 }, () => emit(fixture));
+      const emit = emitterFor(httpTransport("https://events.example.com"));
+      const emitted = Array.from({ length: 20 }, () => emit(fixture, { signal: controller.signal }));
 
       try {
         expect(getEventListeners(controller.signal, "abort")).to.have.length(1);
@@ -664,9 +635,9 @@ describe("Built-in HTTP transport", () => {
     });
   });
 
-  it("Fans a shared transport abort out to every concurrent send", async () => {
+  it("Fans a shared message signal out to every concurrent send", async () => {
     const controller = new AbortController();
-    const reason = new Error("transport shutting down");
+    const reason = new Error("shutting down");
 
     await withFetch(async (_input, options) => new Promise<Response>((_resolve, reject) => {
       const signal = options?.signal;
@@ -676,8 +647,10 @@ describe("Built-in HTTP transport", () => {
       }
       signal.addEventListener("abort", () => reject(signal.reason), { once: true });
     }), async () => {
-      const emit = emitterFor(httpTransport("https://events.example.com", { signal: controller.signal }));
-      const emitted = Array.from({ length: 20 }, () => transportErrorFrom(emit(fixture)));
+      const emit = emitterFor(httpTransport("https://events.example.com"));
+      const emitted = Array.from({ length: 20 }, () => transportErrorFrom(emit(fixture, {
+        signal: controller.signal,
+      })));
 
       try {
         expect(getEventListeners(controller.signal, "abort")).to.have.length(1);
@@ -695,29 +668,50 @@ describe("Built-in HTTP transport", () => {
     });
   });
 
-  it("Stops applying a transport signal once the send has resolved", async () => {
-    const transport = new AbortController();
-
-    await withServer(streamEvent, async (url) => {
-      const emit = emitterFor(httpTransport(url, { signal: transport.signal }));
-      const result = await emit(fixture, {
-        responseHandler: async (response) => response.body,
-      });
-
-      // the transport signal no longer reaches a body the handler handed to the caller
-      transport.abort();
-      expect(await new Response(result.body).text()).to.equal("streamed");
-    });
-  });
-
   it("Rejects a per-send signal that is not an AbortSignal", async () => {
     const emit = emitterFor(httpTransport(UNREACHABLE_URL));
     await rejects(emit(fixture, { signal: "not a signal" as unknown as AbortSignal }), TypeError);
   });
 
-  it("Rejects a per-send response handler that is not a function", async () => {
-    const emit = emitterFor(httpTransport(UNREACHABLE_URL));
-    await rejects(emit(fixture, { responseHandler: "text" }), TypeError);
+  it("Rejects unsupported transport options when the transport is created", () => {
+    for (const options of [
+      { signal: new AbortController().signal }, { timeout: 1000 }, { timeout: undefined },
+      { method: "GET" }, { url: "https://other.example" }, { mode: Mode.STRUCTURED },
+      { redirect: "follow" }, { responseHanlder: async () => "receipt" },
+    ]) {
+      const [name] = Object.keys(options);
+      expect(() => httpTransport(UNREACHABLE_URL, options as never))
+        .to.throw(TypeError, `unsupported HTTP transport option: ${name}`);
+    }
+    expect(() => httpTransport(UNREACHABLE_URL, {
+      // @ts-expect-error unsupported transport options are rejected statically
+      timeout: 1000,
+    })).to.throw(TypeError, "unsupported HTTP transport option: timeout");
+  });
+
+  it("Rejects unsupported message options in the transport and its emitter", async () => {
+    await withoutFetch(async () => {
+      const send = httpTransport(UNREACHABLE_URL);
+      const emit = emitterFor(send);
+      for (const options of [
+        { fetchOptions: { redirect: "follow" } }, { method: "GET" },
+        { url: "https://other.example" }, { mode: Mode.STRUCTURED },
+        { responseHandler: async () => 42 }, { responseHandler: undefined }, { timeout: 1000 },
+      ]) {
+        await rejects(send({ headers: {}, body: "" }, options as never), TypeError);
+        await rejects(emit(fixture, options as never), TypeError);
+      }
+      // @ts-expect-error Fetch options belong to the transport
+      await rejects(emit(fixture, { fetchOptions: { redirect: "follow" } }), TypeError);
+      // @ts-expect-error the HTTP method is fixed by the transport
+      await rejects(send({ headers: {}, body: "" }, { method: "GET" }), TypeError);
+      // @ts-expect-error the sink is fixed by the transport
+      await rejects(emit(fixture, { url: "https://other.example" }), TypeError);
+      // @ts-expect-error mode is configured when creating the emitter
+      await rejects(emit(fixture, { mode: Mode.STRUCTURED }), TypeError);
+      // @ts-expect-error response handlers are configured when creating the transport
+      await rejects(emit(fixture, { responseHandler: async () => 42 }), TypeError);
+    });
   });
 
   it("Rejects a per-send header that is not a valid header", async () => {
@@ -775,9 +769,6 @@ describe("Built-in HTTP transport", () => {
       headers: new Headers({ "x-tenant-id": "store-42" }),
     })).not.to.throw();
     expect(() => httpTransport("https://events.example.com", {
-      signal: "not a signal" as unknown as AbortSignal,
-    })).to.throw(TypeError, "options.signal must be an AbortSignal");
-    expect(() => httpTransport("https://events.example.com", {
       responseHandler: "text" as never,
     })).to.throw(TypeError, "options.responseHandler must be a function");
   });
@@ -824,6 +815,16 @@ async function withFetch(stub: typeof globalThis.fetch, run: () => Promise<void>
   } finally {
     globalThis.fetch = originalFetch;
   }
+}
+
+// Runs with a Fetch that accepts everything, then checks that nothing reached it
+async function withoutFetch(run: () => Promise<void>): Promise<void> {
+  let requests = 0;
+  await withFetch(async () => {
+    requests++;
+    return new Response(null, { status: 204 });
+  }, run);
+  expect(requests).to.equal(0);
 }
 
 export async function withServer(handler: Handler, run: (url: string) => Promise<void>): Promise<void> {

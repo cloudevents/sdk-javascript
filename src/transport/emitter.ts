@@ -15,7 +15,7 @@ import { EventEmitter } from "events";
 export interface Options<THeaders = CloudEventHeaders> {
   /** Aborts the send, for transports that support cancellation */
   signal?: AbortSignal;
-  /** Headers for this send, taking precedence over the ones the binding produced */
+  /** Headers for this send, taking precedence over the ones the binding produced except CloudEvents ones */
   headers?: THeaders;
   [key: string]: string | Record<string, unknown> | unknown;
 }

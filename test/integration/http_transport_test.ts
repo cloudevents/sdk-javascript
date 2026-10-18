@@ -14,7 +14,7 @@ import { runInNewContext } from "vm";
 
 import {
   CONSTANTS, FetchHeadersInit, FetchRequestInit, Headers as CloudEventHeaders, HTTPTransportError,
-  Message, Mode, emitterFor, httpDiscardResponseHandler, httpTextResponseHandler, httpTransport,
+  Message, Mode, emitterFor, httpTransport,
 } from "../../src";
 import { assertStructured, fixture } from "./emitter_factory_test";
 
@@ -163,7 +163,7 @@ describe("Built-in HTTP transport", () => {
       expectType<string | undefined>(configured.body);
       expect(configured.body).to.deep.equal({ receipt: 42 });
 
-      const overridden = await emit(fixture, { responseHandler: httpTextResponseHandler });
+      const overridden = await emit(fixture, { responseHandler: (response) => response.text() });
       expectType<string | undefined>(overridden.body);
       // @ts-expect-error the per-send handler replaces the transport body type for this call
       expectType<{ receipt: number } | undefined>(overridden.body);
@@ -171,13 +171,15 @@ describe("Built-in HTTP transport", () => {
     });
   });
 
-  it("Discards a body with the exported response handler", async () => {
+  it("Discards a body with a caller's response handler", async () => {
     await withServer((_request, response) => {
       response.writeHead(202);
       response.end("not needed");
     }, async (url) => {
       const emit = emitterFor(httpTransport(url));
-      const result = await emit(fixture, { responseHandler: httpDiscardResponseHandler });
+      const result = await emit(fixture, {
+        responseHandler: async (response) => { await response.body?.cancel(); },
+      });
 
       expectType<void | undefined>(result.body);
       expect(result.body).to.equal(undefined);

@@ -17,26 +17,6 @@ export type FetchHeadersInit = NonNullable<FetchRequestInit["headers"]>;
 export type HTTPResponseHandler<TBody> = (response: Response) => Promise<TBody>;
 
 /**
- * Read a response body as text, the default behavior of the HTTP transport
- *
- * @param {Response} response the response whose body should be read
- * @returns {Promise<string>} the response body as text
- */
-export function httpTextResponseHandler(response: Response): Promise<string> {
-  return response.text();
-}
-
-/**
- * Discard a response body when the caller only needs the response metadata
- *
- * @param {Response} response the response whose body should be discarded
- * @returns {Promise<void>} completion after the body has been cancelled
- */
-export async function httpDiscardResponseHandler(response: Response): Promise<void> {
-  await response.body?.cancel();
-}
-
-/**
  * Options applied to every request sent by an HTTP transport
  */
 export interface HTTPTransportOptions<TBody = string> {
@@ -49,7 +29,7 @@ export interface HTTPTransportOptions<TBody = string> {
   signal?: AbortSignal;
   /** Fetch options applied to every request, apart from the ones this transport controls */
   fetchOptions?: Omit<FetchRequestInit, "method" | "headers" | "body" | "signal">;
-  /** Reads every response body; defaults to {@linkcode httpTextResponseHandler} */
+  /** Reads every response body; defaults to reading it as text */
   responseHandler?: HTTPResponseHandler<TBody>;
 }
 
@@ -166,7 +146,7 @@ export function httpTransport<TBody = string>(
   const sinkHeaders = credentialsFrom(url);
   const transportSignal = signalFrom(options.signal);
   const transportHeaders = headersFrom(options.headers);
-  const transportResponseHandler = responseHandlerFrom(options.responseHandler, httpTextResponseHandler);
+  const transportResponseHandler = responseHandlerFrom(options.responseHandler, (response) => response.text());
   const fetchOptions: FetchRequestInit = {
     ...options.fetchOptions,
     // fetch reads an explicitly undefined redirect as absent, so the default comes last
@@ -252,7 +232,7 @@ async function handleResponse(
     return { handled: true, body: await handler(response) };
   } catch (error) {
     try {
-      await httpDiscardResponseHandler(response);
+      await response.body?.cancel();
     } catch {
       // best effort cleanup
     }

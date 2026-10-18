@@ -14,7 +14,7 @@ import {
   FetchHeadersInit, FetchRequestInit, HTTPResponseHandler, HTTPTransportError,
   HTTPTransportErrorDetails, HTTPTransportErrorKind,
   HTTPTransportFunction, HTTPTransportOptions, HTTPTransportResponse, HTTPTransportSendOptions,
-  httpDiscardResponseHandler, httpTextResponseHandler, httpTransport } from "./transport/http";
+  httpTransport } from "./transport/http";
 import {
   Headers, Mode, Binding, HTTP, Kafka, KafkaEvent, KafkaMessage, Message, MQTT, MQTTMessage, MQTTMessageFactory,
   Serializer, Deserializer } from "./message";
@@ -35,8 +35,6 @@ export {
   // From transport
   emitterFor,
   httpTransport,
-  httpTextResponseHandler,
-  httpDiscardResponseHandler,
   HTTPTransportError,
   Emitter,
   // From Constants

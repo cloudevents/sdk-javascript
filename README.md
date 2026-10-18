@@ -94,10 +94,10 @@ main().catch(console.error);
 ```
 
 `httpTransport()` also takes the headers for every event, an `AbortSignal`, a
-`responseHandler` to read the body another way (or `httpDiscardResponseHandler`
-to skip it), and the remaining Fetch options under `fetchOptions`. Headers
-passed to `emit()` apply to that event only, and there is no timeout option: a
-deadline is an `AbortSignal`.
+`responseHandler` to read the body another way, and the remaining Fetch options
+under `fetchOptions`. Headers passed to `emit()` apply to that event only, and
+there is no timeout option: a deadline is an `AbortSignal`. To discard a response
+body, use `responseHandler: async (response) => { await response.body?.cancel(); }`.
 
 ```js
 const emit = emitterFor(httpTransport("https://my.receiver.com/endpoint", {

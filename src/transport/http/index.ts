@@ -372,7 +372,7 @@ function setHeaders(target: Headers, source?: CloudEventHeaders | Headers): void
  */
 function normalizeHeaders(source: CloudEventHeaders): Headers {
   const headers = new Headers();
-  for (const [name, value] of Object.entries(source as Record<string, unknown>)) {
+  for (const [name, value] of Object.entries(source)) {
     const headerValue = headerValueFrom(value);
     if (headerValue !== undefined) {
       headers.set(name, headerValue);

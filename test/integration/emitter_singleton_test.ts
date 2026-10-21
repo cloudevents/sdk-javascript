@@ -26,7 +26,7 @@ describe("Emitter Singleton", () => {
     if (typeof body === "string") {
       body = JSON.parse(body);
     }
-    assertStructured({ ...(<any>body), ...(msg as Message).headers });
+    assertStructured({ ...(body as any), ...(msg as Message).headers });
   });
 
   it("emit a Node.js 'cloudevent' event as an EventEmitter with ensureDelivery", async () => {
@@ -41,7 +41,7 @@ describe("Emitter Singleton", () => {
     if (typeof body === "string") {
       body = JSON.parse(body);
     }
-    assertStructured({ ...(<any>body), ...(msg as Message).headers });
+    assertStructured({ ...(body as any), ...(msg as Message).headers });
   });
 
   it("emit a Node.js 'cloudevent' event as an EventEmitter with ensureDelivery Error", async () => {

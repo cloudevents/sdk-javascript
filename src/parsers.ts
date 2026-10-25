@@ -21,9 +21,9 @@ export class JSONParser implements Parser {
   /**
    * Parses the payload with an optional decorator
    * @param {object|string} payload the JSON payload
-   * @return {object} the parsed JSON payload.
+   * @return {unknown} the parsed JSON payload.
    */
-  parse(payload: Record<string, unknown> | string): string {
+  parse(payload: Record<string, unknown> | string): unknown {
     if (typeof payload === "string") {
       // This is kind of a hack, but the payload data could be JSON in the form of a single
       // string, such as "some data". But without the quotes in the string, JSON.parse blows
@@ -45,7 +45,7 @@ export class JSONParser implements Parser {
       JSON = __JSON;
     }
 
-    const parseJSON = (v: Record<string, unknown> | string): string => (isString(v) ? JSON.parse(v as string) : v);
+    const parseJSON = (v: Record<string, unknown> | string): unknown => (isString(v) ? JSON.parse(v as string) : v);
     return parseJSON(payload);
   }
 }

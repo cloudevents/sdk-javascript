@@ -94,3 +94,6 @@ package-lock.json
 
 # Jetbrains IDE directories
 .idea
+
+# TypeScript incremental build info
+*.tsbuildinfo

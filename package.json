@@ -102,6 +102,11 @@
     {
       "name": "Matej Vasek",
       "url": "https://github.com/matejvasek"
+    },
+    {
+      "name": "Shiva",
+      "email": "shiv@shiv.me",
+      "url": "https://github.com/shiva"
     }
   ],
   "license": "Apache-2.0",

@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.0.0](https://github.com/cloudevents/sdk-javascript/compare/v10.0.0...v11.0.0) (2026-10-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove Node.js 20 support ([#653](https://github.com/cloudevents/sdk-javascript/issues/653))
+
+### Features
+
+* remove Node.js 20 support ([#653](https://github.com/cloudevents/sdk-javascript/issues/653)) ([5ba5f87](https://github.com/cloudevents/sdk-javascript/commit/5ba5f876284cdb82fff02ebdfdbc7511a6fb3fa1))
+
+
+### Bug Fixes
+
+* decode data_base64 as Uint8Array instead of Uint32Array ([#662](https://github.com/cloudevents/sdk-javascript/issues/662)) ([a358af2](https://github.com/cloudevents/sdk-javascript/commit/a358af23e7dba07388cbc488135ca4bdba979517)), closes [#643](https://github.com/cloudevents/sdk-javascript/issues/643) [#644](https://github.com/cloudevents/sdk-javascript/issues/644)
+
+
+### Documentation
+
+* **examples:** Kafka protocol example ([#625](https://github.com/cloudevents/sdk-javascript/issues/625)) ([bf5d53f](https://github.com/cloudevents/sdk-javascript/commit/bf5d53f2862248d72d9869cf5173f51b32583faf))
+* return the transport promise from the custom emitter examples ([#651](https://github.com/cloudevents/sdk-javascript/issues/651)) ([e96e8f6](https://github.com/cloudevents/sdk-javascript/commit/e96e8f63e4a2664b786bad0c4a87043dbdb5f66d))
+
+
+### Miscellaneous
+
+* **deps:** refresh dev dependencies and clear npm audit findings ([#661](https://github.com/cloudevents/sdk-javascript/issues/661)) ([c80252e](https://github.com/cloudevents/sdk-javascript/commit/c80252e70e5b22eb533d9c2f08b66b73a3d41fe9))
+* drop the [@ts-ignore](https://github.com/ts-ignore) from ValidationError ([#650](https://github.com/cloudevents/sdk-javascript/issues/650)) ([59eba1f](https://github.com/cloudevents/sdk-javascript/commit/59eba1fa579e94aa4966c05ecbf08575d9691023))
+* update TypeScript, TypeDoc and Node.js declarations ([#656](https://github.com/cloudevents/sdk-javascript/issues/656)) ([23aaa91](https://github.com/cloudevents/sdk-javascript/commit/23aaa91b12078aba4cc8681bbb7264b154511b3d))
+
 ## [10.0.0](https://github.com/cloudevents/sdk-javascript/compare/v9.0.0...v10.0.0) (2025-06-05)
 
 

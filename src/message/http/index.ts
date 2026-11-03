@@ -181,8 +181,10 @@ function parseBinary<T>(message: Message, version: string): CloudEvent<T> {
   }
 
   // Every unprocessed header can be an extension
+  // Header names are case-insensitive, so match the prefix and known attributes in any case
   for (const header in headers) {
-    if (header.startsWith(CONSTANTS.EXTENSIONS_PREFIX)) {
+    const lowerCaseHeader = header.toLowerCase();
+    if (lowerCaseHeader.startsWith(CONSTANTS.EXTENSIONS_PREFIX) && !parserMap[lowerCaseHeader]) {
       eventObj[header.substring(CONSTANTS.EXTENSIONS_PREFIX.length)] = headers[header];
     }
   }

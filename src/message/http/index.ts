@@ -16,7 +16,7 @@ import {
   v1binaryParsers,
   v1structuredParsers,
 } from "./headers";
-import { isStringOrObjectOrThrow, ValidationError } from "../../event/validation";
+import { base64AsBinary, isStringOrObjectOrThrow, ValidationError } from "../../event/validation";
 import { JSONParser, MappedParser, Parser, parserByContentType } from "../../parsers";
 
 /**
@@ -248,7 +248,7 @@ function parseStructured<T>(message: Message, version: string): CloudEvent<T> {
   // itself will be encoded as base64
   if (eventObj.data_base64 || eventObj.datacontentencoding === CONSTANTS.ENCODING_BASE64) {
     const data = eventObj.data_base64 || eventObj.data;
-    eventObj.data = new Uint32Array(Buffer.from(data as string, "base64"));
+    eventObj.data = base64AsBinary(data as string);
     delete eventObj.data_base64;
     delete eventObj.datacontentencoding;
   }

@@ -19,7 +19,7 @@ _Note:_ Supports CloudEvent version 1.0
 ## Installation
 
 The CloudEvents SDK requires a current LTS version of Node.js. At the moment
-those are Node.js 16.x, and Node.js 18.x. To install in your Node.js project:
+those are Node.js 22.x, and Node.js 24.x. To install in your Node.js project:
 
 ```console
 npm install cloudevents
@@ -91,8 +91,9 @@ const { emitterFor, Mode, CloudEvent } = require("cloudevents");
 function sendWithAxios(message) {
   // Do what you need with the message headers
   // and body in this function, then send the
-  // event
-  axios({
+  // event. Return the promise so that `await emit(event)`
+  // waits for the send and rejects if it fails.
+  return axios({
     method: "post",
     url: "...",
     data: message.body,

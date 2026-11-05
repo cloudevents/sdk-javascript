@@ -65,6 +65,45 @@ describe("HTTP transport", () => {
     expect(message.headers["ce-extboolean"]).to.equal(false);
   });
 
+  it("Serializes object-valued extensions as JSON in binary mode", () => {
+    const extobject = { some: "object", nested: { answer: 42 } };
+    const evt = new CloudEvent({ source: "test", type: "test", extobject });
+    const message = HTTP.binary(evt);
+    // HTTP headers can only carry strings; a raw object reaches the wire as "[object Object]"
+    expect(message.headers["ce-extobject"]).to.equal(JSON.stringify(extobject));
+  });
+
+  it("Round-trips an object-valued extension through binary mode as a JSON string", () => {
+    const extobject = { some: "object", nested: { answer: 42 } };
+    const evt = new CloudEvent({ source: "test", type: "test", extobject });
+    const received = HTTP.toEvent(HTTP.binary(evt)) as CloudEvent;
+    // the receiver sees the serialized form and is responsible for parsing it
+    expect(received.extobject).to.equal(JSON.stringify(extobject));
+    expect(JSON.parse(received.extobject as string)).to.deep.equal(extobject);
+  });
+
+  it("Serializes Date-valued extensions as RFC 3339 timestamps in binary mode", () => {
+    const extdate = new Date("2018-04-05T03:56:24Z");
+    const message = HTTP.binary(new CloudEvent({ source: "test", type: "test", extdate }));
+    expect(message.headers["ce-extdate"]).to.equal("2018-04-05T03:56:24.000Z");
+  });
+
+  it("Serializes binary extensions as base64 in binary mode", () => {
+    const extbytes = new Uint8Array([104, 105]);
+    const extbuffer = Buffer.from("hi");
+    const message = HTTP.binary(new CloudEvent({ source: "test", type: "test", extbytes, extbuffer }));
+    expect(message.headers["ce-extbytes"]).to.equal("aGk=");
+    expect(message.headers["ce-extbuffer"]).to.equal("aGk=");
+  });
+
+  it("Leaves non-CloudEvents values in binary-mode extensions untouched", () => {
+    const exterror = new Error("useful message");
+    const message = HTTP.binary(new CloudEvent({ source: "test", type: "test", exterror }));
+    // JSON.stringify would turn the Error into "{}"; the HTTP client's String() keeps the message
+    expect(message.headers["ce-exterror"]).to.equal(exterror);
+    expect(String(message.headers["ce-exterror"])).to.equal("Error: useful message");
+  });
+
   it("Includes extensions in structured when type is 'boolean' with a false value", () => {
     const evt = new CloudEvent({ source: "test", type: "test", extboolean: false });
     expect(evt.hasOwnProperty("extboolean")).to.equal(true);

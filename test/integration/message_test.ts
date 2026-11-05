@@ -65,6 +65,23 @@ describe("HTTP transport", () => {
     expect(message.headers["ce-extboolean"]).to.equal(false);
   });
 
+  it("Serializes object-valued extensions as JSON in binary mode", () => {
+    const extobject = { some: "object", nested: { answer: 42 } };
+    const evt = new CloudEvent({ source: "test", type: "test", extobject });
+    const message = HTTP.binary(evt);
+    // HTTP headers can only carry strings; a raw object reaches the wire as "[object Object]"
+    expect(message.headers["ce-extobject"]).to.equal(JSON.stringify(extobject));
+  });
+
+  it("Round-trips an object-valued extension through binary mode as a JSON string", () => {
+    const extobject = { some: "object", nested: { answer: 42 } };
+    const evt = new CloudEvent({ source: "test", type: "test", extobject });
+    const received = HTTP.toEvent(HTTP.binary(evt)) as CloudEvent;
+    // the receiver sees the serialized form and is responsible for parsing it
+    expect(received.extobject).to.equal(JSON.stringify(extobject));
+    expect(JSON.parse(received.extobject as string)).to.deep.equal(extobject);
+  });
+
   it("Includes extensions in structured when type is 'boolean' with a false value", () => {
     const evt = new CloudEvent({ source: "test", type: "test", extboolean: false });
     expect(evt.hasOwnProperty("extboolean")).to.equal(true);

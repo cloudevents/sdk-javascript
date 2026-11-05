@@ -163,6 +163,29 @@ const event3 = new CloudEvent({
 });
 ```
 
+### Extension Attributes
+
+Any property passed to the `CloudEvent` constructor that is not a core attribute becomes an
+[extension attribute](https://github.com/cloudevents/spec/blob/v1.0/spec.md#extension-context-attributes).
+In binary mode each extension is sent as its own header, named after the attribute with the
+transport's prefix: an extension `traceid` becomes the `ce-traceid` HTTP header. Extension names
+must be lowercase letters and digits only.
+
+Extension values should be one of the CloudEvents types: string, boolean, integer, binary, URI or
+timestamp. The spec has no object type, so encode structured data as a string yourself:
+
+```js
+const ce = new CloudEvent({
+  source: "/orders",
+  type: "order.placed",
+  traceinfo: JSON.stringify({ span: "abc", sampled: true }),
+});
+```
+
+As a convenience the SDK also accepts an object as an extension value and serializes it as JSON
+when the event is sent in binary mode. This is not spec-conformant: a receiver gets a plain string
+and has to know to parse it, and other SDKs may reject the event. Prefer the explicit form above.
+
 ### A Note About Big Integers
 
 When parsing JSON data, if a JSON field value is a number, and that number

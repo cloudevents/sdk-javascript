@@ -41,7 +41,12 @@ export function headersFor<T>(event: CloudEventV1<T>): Headers {
       if (map) {
         headers[map.name] = map.parser.parse(value as string) as string;
       } else if (property !== CONSTANTS.DATA_ATTRIBUTE && property !== `${CONSTANTS.DATA_ATTRIBUTE}_base64`) {
-        headers[`${CONSTANTS.EXTENSIONS_PREFIX}${property}`] = value as string;
+        // The CloudEvents type system has no object type: extension values are strings,
+        // booleans, integers, binary, URIs or timestamps. The SDK accepts objects as a
+        // convenience, so serialize them as JSON rather than let the HTTP client coerce
+        // them to "[object Object]". Prefer encoding the value as a string yourself.
+        headers[`${CONSTANTS.EXTENSIONS_PREFIX}${property}`] =
+          typeof value === "object" ? JSON.stringify(value) : (value as string);
       }
     }
   });

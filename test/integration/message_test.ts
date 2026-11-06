@@ -96,6 +96,15 @@ describe("HTTP transport", () => {
     expect(message.headers["ce-extbuffer"]).to.equal("aGk=");
   });
 
+  it("Serializes plain objects without an Object constructor as JSON in binary mode", () => {
+    // a shadowed `constructor` property or a null prototype must not defeat plain-object detection
+    const extshadowed = { constructor: "shadowed", some: "object" };
+    const extnullproto = Object.assign(Object.create(null), { some: "object" });
+    const message = HTTP.binary(new CloudEvent({ source: "test", type: "test", extshadowed, extnullproto }));
+    expect(message.headers["ce-extshadowed"]).to.equal(JSON.stringify(extshadowed));
+    expect(message.headers["ce-extnullproto"]).to.equal(JSON.stringify(extnullproto));
+  });
+
   it("Leaves non-CloudEvents values in binary-mode extensions untouched", () => {
     const exterror = new Error("useful message");
     const message = HTTP.binary(new CloudEvent({ source: "test", type: "test", exterror }));

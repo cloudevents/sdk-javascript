@@ -54,6 +54,20 @@ export function headersFor<T>(event: CloudEventV1<T>): Headers {
 }
 
 /**
+ * True for objects created by a literal, `new Object()` or `Object.create(null)`.
+ * The check looks at the prototype, so it is not fooled by a shadowed `constructor`
+ * property and it does not depend on `Object.prototype.toString`, which a
+ * Symbol.toStringTag can spoof. Class instances (Error, Map, Date, ...) are not plain.
+ * @param {unknown} value the value to test
+ * @returns {boolean} true if the value is a plain object
+ */
+const isPlainObject = (value: unknown): value is Record<string, unknown> =>
+  value !== null &&
+  typeof value === "object" &&
+  (Object.getPrototypeOf(value) === Object.prototype ||
+    (Object.getPrototypeOf(value) === null && Object.prototype.toString.call(value) === "[object Object]"));
+
+/**
  * Converts an extension attribute value to its binary-mode header value.
  *
  * The CloudEvents type system has no object type: extension values are strings,
@@ -73,7 +87,7 @@ function extensionHeaderValue(value: unknown): string {
   if (isBinary(value)) {
     return asBase64(value as TypeArray);
   }
-  if (value?.constructor === Object || Array.isArray(value)) {
+  if (isPlainObject(value) || Array.isArray(value)) {
     return JSON.stringify(value);
   }
   return value as string;

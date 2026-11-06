@@ -7,3 +7,4 @@ Current active maintainers of this SDK:
 - [Lucas Holmquist](https://github.com/lholmquist)
 - [Fabio Jose](https://github.com/fabiojose)
 - [Helio Frota](https://github.com/helio-frota)
+- [Shiva Velmurugan](https://github.com/shiva)

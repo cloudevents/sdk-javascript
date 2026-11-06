@@ -40,6 +40,11 @@
   "author": "cloudevents.io",
   "contributors": [
     {
+      "name": "Shiva Velmurugan",
+      "email": "shivanand.velmurugan@microsoft.com",
+      "url": "https://github.com/shiva"
+    },
+    {
       "name": "Fábio José de Moraes",
       "email": "fabiojose@gmail.com",
       "url": "https://github.com/fabiojose"

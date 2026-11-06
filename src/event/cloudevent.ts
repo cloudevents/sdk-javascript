@@ -119,7 +119,7 @@ be descriptive and terse and SHOULD NOT exceed 20 characters in length.`);
       }
 
       // Value should be spec compliant
-      // https://github.com/cloudevents/spec/blob/master/spec.md#type-system
+      // https://github.com/cloudevents/spec/blob/main/cloudevents/spec.md#type-system
       if (!isValidType(value) && strict) {
         throw new ValidationError(`invalid extension value: ${value}
 Extension values must conform to the CloudEvent type system.

@@ -42,7 +42,7 @@ export function headersFor<T>(event: CloudEventV1<T>): Headers {
       if (map) {
         headers[map.name] = map.parser.parse(value as string) as string;
       } else if (property !== CONSTANTS.DATA_ATTRIBUTE && property !== `${CONSTANTS.DATA_ATTRIBUTE}_base64`) {
-        headers[`${CONSTANTS.EXTENSIONS_PREFIX}${property}`] = extensionHeaderValue(value);
+        headers[`${CONSTANTS.EXTENSIONS_PREFIX}${property}`] = stringifyExtensionValue(value);
       }
     }
   });
@@ -71,16 +71,25 @@ const isPlainObject = (value: unknown): value is Record<string, unknown> =>
  * Converts an extension attribute value to its binary-mode header value.
  *
  * The CloudEvents type system has no object type: extension values are strings,
- * booleans, integers, binary, URIs or timestamps. Timestamps are sent as RFC 3339
- * and binary values as base64, the spec's canonical string forms. As a convenience
- * the SDK also accepts plain objects and arrays and serializes them as JSON rather
- * than letting the HTTP client coerce them to "[object Object]"; prefer encoding
- * such values as strings yourself. Anything else (Error, Map, ...) is not a
- * CloudEvents type and is left for the HTTP client to coerce with String(), as before.
+ * booleans, integers, binary, URIs or timestamps. Values that are not already
+ * strings are converted as follows; the branches are disjoint, so their order
+ * does not matter. The last column is what the HTTP client's String() coercion
+ * used to put on the wire.
+ *
+ * | value                    | header value            | before                          |
+ * |--------------------------|-------------------------|---------------------------------|
+ * | Date                     | RFC 3339 (toISOString)  | local-time string               |
+ * | Buffer, typed array      | base64                  | UTF-8 text, or "104,105"        |
+ * | plain object, array      | JSON (convenience)      | "[object Object]", or "1,2"     |
+ * | anything else            | unchanged               | unchanged                       |
+ *
+ * JSON for plain objects and arrays is an SDK convenience, not spec behavior;
+ * prefer encoding such values as strings yourself. Anything else (Error, Map,
+ * null, ...) is not a CloudEvents type and is left for the HTTP client, as before.
  * @param {unknown} value the extension attribute value
  * @returns {string} the header value
  */
-function extensionHeaderValue(value: unknown): string {
+function stringifyExtensionValue(value: unknown): string {
   if (isDate(value)) {
     return value.toISOString();
   }

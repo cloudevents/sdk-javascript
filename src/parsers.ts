@@ -89,11 +89,13 @@ export interface MappedParser {
 
 export class DateParser extends Parser {
   parse(payload: string): string {
-    let date = new Date(Date.parse(payload));
-    if (date.toString() === "Invalid Date") {
-      date = new Date();
+    const timestamp = Date.parse(payload);
+    if (isNaN(timestamp)) {
+      // Deprecated: substituting the current time for an unparseable time hides an
+      // invalid message. The spec requires RFC 3339, so v11 will throw a ValidationError.
+      return new Date().toISOString();
     }
-    return date.toISOString();
+    return new Date(timestamp).toISOString();
   }
 }
 

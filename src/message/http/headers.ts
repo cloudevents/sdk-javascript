@@ -8,6 +8,7 @@ import { CloudEventV1 } from "../..";
 import { Headers } from "../";
 import { V1 } from "../../event/cloudevent";
 import CONSTANTS from "../../constants";
+import { asBase64, isBinary, isDate, TypeArray } from "../../event/validation";
 
 export const allowedContentTypes = [CONSTANTS.DEFAULT_CONTENT_TYPE, CONSTANTS.MIME_JSON, CONSTANTS.MIME_OCTET_STREAM];
 export const requiredHeaders = [
@@ -41,7 +42,7 @@ export function headersFor<T>(event: CloudEventV1<T>): Headers {
       if (map) {
         headers[map.name] = map.parser.parse(value as string) as string;
       } else if (property !== CONSTANTS.DATA_ATTRIBUTE && property !== `${CONSTANTS.DATA_ATTRIBUTE}_base64`) {
-        headers[`${CONSTANTS.EXTENSIONS_PREFIX}${property}`] = value as string;
+        headers[`${CONSTANTS.EXTENSIONS_PREFIX}${property}`] = stringifyExtensionValue(value);
       }
     }
   });
@@ -50,6 +51,55 @@ export function headersFor<T>(event: CloudEventV1<T>): Headers {
     headers[CONSTANTS.CE_HEADERS.TIME] = new Date(event.time).toISOString();
   }
   return headers;
+}
+
+/**
+ * True for objects created by a literal, `new Object()` or `Object.create(null)`.
+ * The check looks at the prototype, so it is not fooled by a shadowed `constructor`
+ * property and it does not depend on `Object.prototype.toString`, which a
+ * Symbol.toStringTag can spoof. Class instances (Error, Map, Date, ...) are not plain.
+ * @param {unknown} value the value to test
+ * @returns {boolean} true if the value is a plain object
+ */
+const isPlainObject = (value: unknown): value is Record<string, unknown> =>
+  value !== null &&
+  typeof value === "object" &&
+  (Object.getPrototypeOf(value) === Object.prototype ||
+    (Object.getPrototypeOf(value) === null && Object.prototype.toString.call(value) === "[object Object]"));
+
+/**
+ * Converts an extension attribute value to its binary-mode header value.
+ *
+ * The CloudEvents type system has no object type: extension values are strings,
+ * booleans, integers, binary, URIs or timestamps. Values that are not already
+ * strings are converted as follows; the branches are disjoint, so their order
+ * does not matter. The last column is what the HTTP client's String() coercion
+ * used to put on the wire.
+ *
+ * | value                    | header value            | before                          |
+ * |--------------------------|-------------------------|---------------------------------|
+ * | Date                     | RFC 3339 (toISOString)  | local-time string               |
+ * | Buffer, typed array      | base64                  | UTF-8 text, or "104,105"        |
+ * | plain object, array      | JSON (convenience)      | "[object Object]", or "1,2"     |
+ * | anything else            | unchanged               | unchanged                       |
+ *
+ * JSON for plain objects and arrays is an SDK convenience, not spec behavior;
+ * prefer encoding such values as strings yourself. Anything else (Error, Map,
+ * null, ...) is not a CloudEvents type and is left for the HTTP client, as before.
+ * @param {unknown} value the extension attribute value
+ * @returns {string} the header value
+ */
+function stringifyExtensionValue(value: unknown): string {
+  if (isDate(value)) {
+    return value.toISOString();
+  }
+  if (isBinary(value)) {
+    return asBase64(value as TypeArray);
+  }
+  if (isPlainObject(value) || Array.isArray(value)) {
+    return JSON.stringify(value);
+  }
+  return value as string;
 }
 
 /**

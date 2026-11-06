@@ -136,7 +136,19 @@ export interface CloudEventV1OptionalAttributes<T> {
   data_base64?: string;
 
   /**
-   * [OPTIONAL] CloudEvents extension attributes.
+   * [OPTIONAL] CloudEvents extension attributes. Any property that is not a
+   * core attribute is treated as an extension. Values should be one of the
+   * CloudEvents types: string, boolean, integer, binary, URI or timestamp.
+   * In binary mode a Date is sent as RFC 3339 and binary values as base64.
+   * 
+   * Object values are accepted as a convenience and for compatibility reasons. 
+   * They are serialized as JSON in binary mode, but this is not spec-conformant; 
+   * prefer encoding the value as a string yourself. 
+   * 
+   * @deprecated automatic serialization of object values is not spec-conformant 
+   * and may be removed in future versions of the SDK.
+   * 
+   * @see https://github.com/cloudevents/spec/blob/v1.0/spec.md#extension-context-attributes
    */
   [key: string]: unknown;
 }

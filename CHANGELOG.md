@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [11.0.0](https://github.com/cloudevents/sdk-javascript/compare/v10.0.0...v11.0.0) (2026-11-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove Node.js 20 support ([#653](https://github.com/cloudevents/sdk-javascript/issues/653))
+
+### Features
+
+* remove Node.js 20 support ([#653](https://github.com/cloudevents/sdk-javascript/issues/653)) ([5ba5f87](https://github.com/cloudevents/sdk-javascript/commit/5ba5f876284cdb82fff02ebdfdbc7511a6fb3fa1))
+
+
+### Bug Fixes
+
+* decode data_base64 as Uint8Array instead of Uint32Array ([#662](https://github.com/cloudevents/sdk-javascript/issues/662)) ([a358af2](https://github.com/cloudevents/sdk-javascript/commit/a358af23e7dba07388cbc488135ca4bdba979517)), closes [#643](https://github.com/cloudevents/sdk-javascript/issues/643) [#644](https://github.com/cloudevents/sdk-javascript/issues/644)
+* read binary extension headers regardless of prefix case ([#664](https://github.com/cloudevents/sdk-javascript/issues/664)) ([48b1745](https://github.com/cloudevents/sdk-javascript/commit/48b174545e791b9efc122b9beef6e26deb065b97))
+* serialize object-valued extension attributes in binary HTTP headers ([#666](https://github.com/cloudevents/sdk-javascript/issues/666)) ([70ddfb9](https://github.com/cloudevents/sdk-javascript/commit/70ddfb9486738049c7e16ce27f698df447cc55e1))
+
+
+### Documentation
+
+* **examples:** Kafka protocol example ([#625](https://github.com/cloudevents/sdk-javascript/issues/625)) ([bf5d53f](https://github.com/cloudevents/sdk-javascript/commit/bf5d53f2862248d72d9869cf5173f51b32583faf))
+* fix broken CloudEvents community links in README ([#667](https://github.com/cloudevents/sdk-javascript/issues/667)) ([85e68cd](https://github.com/cloudevents/sdk-javascript/commit/85e68cd955349e2efe6e8e2f6bf0edab03acf48b))
+* fix broken CloudEvents spec link in source comment ([#668](https://github.com/cloudevents/sdk-javascript/issues/668)) ([4b17763](https://github.com/cloudevents/sdk-javascript/commit/4b177635a2b45ad95bf0ecd566f459bef195a9ac))
+* return the transport promise from the custom emitter examples ([#651](https://github.com/cloudevents/sdk-javascript/issues/651)) ([e96e8f6](https://github.com/cloudevents/sdk-javascript/commit/e96e8f63e4a2664b786bad0c4a87043dbdb5f66d))
+* use ECMAScript modules in README examples ([#652](https://github.com/cloudevents/sdk-javascript/issues/652)) ([6c62ac8](https://github.com/cloudevents/sdk-javascript/commit/6c62ac8842381859f3c5d93fd82ee19e081bc0e0))
+
+
+### Miscellaneous
+
+* **deps:** refresh dev dependencies and clear npm audit findings ([#661](https://github.com/cloudevents/sdk-javascript/issues/661)) ([c80252e](https://github.com/cloudevents/sdk-javascript/commit/c80252e70e5b22eb533d9c2f08b66b73a3d41fe9))
+* drop the [@ts-ignore](https://github.com/ts-ignore) from ValidationError ([#650](https://github.com/cloudevents/sdk-javascript/issues/650)) ([59eba1f](https://github.com/cloudevents/sdk-javascript/commit/59eba1fa579e94aa4966c05ecbf08575d9691023))
+* update TypeScript, TypeDoc and Node.js declarations ([#656](https://github.com/cloudevents/sdk-javascript/issues/656)) ([23aaa91](https://github.com/cloudevents/sdk-javascript/commit/23aaa91b12078aba4cc8681bbb7264b154511b3d))
+
 ## [10.0.0](https://github.com/cloudevents/sdk-javascript/compare/v9.0.0...v10.0.0) (2025-06-05)
 
 

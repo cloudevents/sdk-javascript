@@ -214,6 +214,27 @@ describe("HTTP transport", () => {
     }).to.throw("invalid attribute name: \"LUNCH\"");
   });
 
+  it("Includes extensions in binary mode when the header prefix is not lower case", () => {
+    const message = {
+      body: `{ "greeting": "hello" }`,
+      headers: {
+        "Ce-Id": "1234",
+        "Ce-Source": "test",
+        "Ce-Type": "test.event",
+        "Ce-Specversion": V1,
+        "Ce-myext": "val",
+        "CE-otherext": "other",
+      },
+    };
+    const event = HTTP.toEvent(message) as CloudEvent;
+    expect(event.myext).to.equal("val");
+    expect(event.otherext).to.equal("other");
+    expect(event.id).to.equal("1234");
+    expect(event).not.to.have.property("Id");
+    expect(event).not.to.have.property("Specversion");
+    expect(() => event.validate()).not.to.throw();
+  });
+
   it("Can detect CloudEvent binary Messages with weird versions", () => {
     // Now create a message that is an event
     const message = {

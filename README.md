@@ -51,7 +51,8 @@ app.post("/", (req, res) => {
 
 #### Emitting Events
 
-The easiest way to send events is to use the built-in HTTP emitter.
+The easiest way to send events is to use the built-in HTTP emitter, which sends
+them with the Fetch API.
 
 ```js
 import { CloudEvent, emitterFor, httpTransport } from "cloudevents";
@@ -62,9 +63,100 @@ const emit = emitterFor(httpTransport("https://my.receiver.com/endpoint"));
 // Create a new CloudEvent
 const ce = new CloudEvent({ type, source, data });
 
-// Send it to the endpoint - encoded as HTTP binary by default
-emit(ce);
+async function main() {
+  // Send it to the endpoint - encoded as HTTP binary by default
+  const { response, body } = await emit(ce);
+  console.log(response.status, body);
+}
+
+main().catch(console.error);
 ```
+
+A 2xx response resolves with the native Fetch `Response` and its body, read as
+text by default. Anything else rejects with an `HTTPTransportError`, whose
+`kind` separates a response that was not 2xx from an abort and from a request
+that never reached a response.
+
+The body of a response that was not 2xx is on the error as `error.body`.
+`error.response` cannot be read a second time. If reading the body failed,
+`error.body` is absent and the error carries a `cause`.
+
+```js
+import { HTTPTransportError } from "cloudevents";
+
+async function main() {
+  try {
+    await emit(ce);
+  } catch (error) {
+    if (error instanceof HTTPTransportError) {
+      console.error(error.kind, error.response?.status, error.body);
+    }
+    throw error;
+  }
+}
+
+main().catch(console.error);
+```
+
+`httpTransport()` also takes the headers for every event, a
+`responseHandler` to read the body another way, and the remaining Fetch options
+under `fetchOptions`. The options passed to `emit()` apply to that Message only:
+`headers` and `signal`. Unsupported transport or message options reject with a
+`TypeError`. To discard a response body, use
+`responseHandler: async (response) => { await response.body?.cancel(); }`.
+
+Existing `ce-*` and `content-type` headers cannot be changed. New CloudEvents
+headers must be valid and, in structured mode, match the body.
+
+Other headers, such as `authorization`, `traceparent` and `baggage`, can be added
+or overridden. `host` and `content-length` are controlled by Fetch and are
+rejected. Invalid headers reject with a `TypeError` before the request is sent.
+
+There is no timeout option: a deadline is an `AbortSignal` passed with the
+message.
+
+```js
+const emit = emitterFor(httpTransport("https://my.receiver.com/endpoint", {
+  headers: { authorization: `Bearer ${process.env.RECEIVER_TOKEN}` },
+  responseHandler: (response) => response.json(),
+}));
+
+async function main() {
+  await emit(ce, { signal: AbortSignal.timeout(10000) });
+}
+
+main().catch(console.error);
+```
+
+A 2xx response means the receiver accepted the event, so a body that cannot be
+read resolves with `{ response, bodyError }` in place of `{ response, body }`.
+Only one of the two is present. Check which property the result has before using
+it:
+
+```js
+async function main() {
+  const result = await emit(ce);
+  if ("body" in result) {
+    console.log(result.body);
+  } else {
+    console.error(result.bodyError);
+  }
+}
+
+main().catch(console.error);
+```
+
+Redirects are not followed by default, so each one is reported as a failed send.
+On Node.js the `HTTPTransportError` carries the 3xx response; a browser returns
+an opaque redirect instead, so `error.response.status` is `0` and the `location`
+header cannot be read. Set `fetchOptions: { redirect: "follow" }` to follow
+them, keeping in mind that Fetch preserves the CloudEvent POST and its body only
+for `307` and `308` - it turns a `301`, `302` or `303` into a bodyless `GET`,
+which drops the event.
+
+The [API transition guide](./API_TRANSITION_GUIDE.md) covers the header forms
+the transport accepts and where a proxy or a custom CA goes now that
+`http.globalAgent` no longer applies.
 
 If you prefer to use another transport mechanism for sending events
 over HTTP, you can use the `HTTP` binding to create a `Message` which
@@ -121,19 +213,30 @@ import {
   Mode,
 } from "cloudevents";
 
-// Create a CloudEvent emitter function to send events to our receiver
-const emit = emitterFor(httpTransport("https://example.com/receiver"));
+async function main() {
+  // Create a CloudEvent emitter function to send events to our receiver
+  const emit = emitterFor(httpTransport("https://example.com/receiver"));
 
-// Use the emit() function to send a CloudEvent to its endpoint when a "cloudevent" event is emitted
-// (see: https://nodejs.org/api/events.html#class-eventemitter)
-Emitter.on("cloudevent", emit);
+  // Use the emit() function to send a CloudEvent to its endpoint when a
+  // "cloudevent" event is emitted
+  // (see: https://nodejs.org/api/events.html#class-eventemitter)
+  Emitter.on("cloudevent", emit);
 
-...
-// In any part of the code, calling `emit()` on a `CloudEvent` instance will send the event
-new CloudEvent({ type, source, data }).emit();
+  // Calling emit() on a CloudEvent instance sends it through every listener
+  await new CloudEvent({
+    type: "com.example.order.created",
+    source: "/stores/store-42",
+    data: { orderId: "order-123" },
+  }).emit();
+}
 
-// You can also have several listeners to send the event to several endpoints
+main().catch(console.error);
 ```
+
+You can also have several listeners to send the event to several endpoints.
+`emit()` waits for all of them, and an endpoint which refuses the event fails
+the whole call. See the [API transition guide](./API_TRANSITION_GUIDE.md) for
+the details.
 
 ## CloudEvent Objects
 
@@ -197,6 +300,77 @@ are the string forms the spec requires.
 As a convenience the SDK also accepts a plain object or array as an extension value and serializes it as JSON
 when the event is sent in binary mode. This is not spec-conformant: a receiver gets a plain string
 and has to know to parse it, and other SDKs may reject the event. Prefer the explicit form above.
+
+### Tracing with OpenTelemetry
+
+`cloudevents/otel` adds spans, metrics and exception logs to event sending and processing.
+Install the peer dependencies and initialize OpenTelemetry in your application before using the helpers:
+
+```console
+npm install @opentelemetry/api @opentelemetry/api-logs @opentelemetry/core
+```
+
+Wrap an emitter with `withTracing()`. Set `system` to the messaging system's name and
+`destination` to a fixed topic or queue name:
+
+```js
+import { CloudEvent, emitterFor, httpTransport } from "cloudevents";
+import { withTracing } from "cloudevents/otel";
+
+const emitter = emitterFor(httpTransport("https://broker.example.com/orders"));
+const emit = withTracing(emitter, {
+  system: "example-broker",
+  destination: "orders",
+});
+
+await emit(new CloudEvent({
+  type: "com.example.order.created",
+  source: "/stores/store-42",
+  data: { orderId: "order-123" },
+}));
+```
+
+For destinations whose names vary by tenant, use a template. Spans record the actual name;
+span names and metrics use the template:
+
+```js
+const emit = withTracing(emitter, {
+  system: "example-broker",
+  destination: { name: "orders.tenant-42", template: "orders.{tenant}" },
+});
+```
+
+The send span's context is propagated through headers and added to the event's
+[Distributed Tracing](https://github.com/cloudevents/spec/blob/main/cloudevents/extensions/distributed-tracing.md)
+extension when no valid one exists. An existing context is preserved, and the send span links to it.
+
+Use `receiverWithTracing()` to decode HTTP messages and trace the handler:
+
+```js
+import express from "express";
+import { receiverWithTracing } from "cloudevents/otel";
+
+const receive = receiverWithTracing(async (events) => {
+  for (const event of Array.isArray(events) ? events : [events]) {
+    await saveOrder(event.data);
+  }
+}, { system: "example-broker", destination: "orders" });
+
+const app = express();
+
+// Pass the raw body to receiverWithTracing().
+app.post("/", express.text({ type: "*/*" }), async (req, res, next) => {
+  try {
+    await receive({ headers: req.headers, body: req.body });
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+});
+```
+
+The handler receives a CloudEvent or an array for a batch. Use `binding: Kafka` for Kafka
+messages, or `handlerWithTracing()` when events are already decoded.
 
 ### A Note About Big Integers
 

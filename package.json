@@ -122,8 +122,30 @@
     "util": "^0.12.4",
     "uuid": "^11.1.1"
   },
+  "peerDependencies": {
+    "@opentelemetry/api": ">=1.7.0 <2",
+    "@opentelemetry/api-logs": ">=0.213.0 <1",
+    "@opentelemetry/core": "^1.0.0 || ^2.0.0 || ^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@opentelemetry/api": {
+      "optional": true
+    },
+    "@opentelemetry/api-logs": {
+      "optional": true
+    },
+    "@opentelemetry/core": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@cucumber/cucumber": "^13.3.0",
+    "@opentelemetry/api": "^1.9.1",
+    "@opentelemetry/api-logs": "^0.223.0",
+    "@opentelemetry/core": "^2.12.0",
+    "@opentelemetry/sdk-logs": "^0.223.0",
+    "@opentelemetry/sdk-metrics": "^2.12.0",
+    "@opentelemetry/sdk-trace-node": "^2.12.0",
     "@types/chai": "^4.2.11",
     "@types/got": "^9.6.11",
     "@types/json-bigint": "^1.0.1",
@@ -165,6 +187,23 @@
     "access": "public"
   },
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./otel": {
+      "types": "./dist/otel/index.d.ts",
+      "default": "./dist/otel/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "otel": [
+        "dist/otel/index.d.ts"
+      ]
+    }
+  },
   "engines": {
     "node": ">=22 <=24"
   }

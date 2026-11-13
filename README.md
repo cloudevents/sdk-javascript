@@ -301,6 +301,77 @@ As a convenience the SDK also accepts a plain object or array as an extension va
 when the event is sent in binary mode. This is not spec-conformant: a receiver gets a plain string
 and has to know to parse it, and other SDKs may reject the event. Prefer the explicit form above.
 
+### Tracing with OpenTelemetry
+
+`cloudevents/otel` adds spans, metrics and exception logs to event sending and processing.
+Install the peer dependencies and initialize OpenTelemetry in your application before using the helpers:
+
+```console
+npm install @opentelemetry/api @opentelemetry/api-logs @opentelemetry/core
+```
+
+Wrap an emitter with `withTracing()`. Set `system` to the messaging system's name and
+`destination` to a fixed topic or queue name:
+
+```js
+import { CloudEvent, emitterFor, httpTransport } from "cloudevents";
+import { withTracing } from "cloudevents/otel";
+
+const emitter = emitterFor(httpTransport("https://broker.example.com/orders"));
+const emit = withTracing(emitter, {
+  system: "example-broker",
+  destination: "orders",
+});
+
+await emit(new CloudEvent({
+  type: "com.example.order.created",
+  source: "/stores/store-42",
+  data: { orderId: "order-123" },
+}));
+```
+
+For destinations whose names vary by tenant, use a template. Spans record the actual name;
+span names and metrics use the template:
+
+```js
+const emit = withTracing(emitter, {
+  system: "example-broker",
+  destination: { name: "orders.tenant-42", template: "orders.{tenant}" },
+});
+```
+
+The send span's context is propagated through headers and added to the event's
+[Distributed Tracing](https://github.com/cloudevents/spec/blob/main/cloudevents/extensions/distributed-tracing.md)
+extension when no valid one exists. An existing context is preserved, and the send span links to it.
+
+Use `receiverWithTracing()` to decode HTTP messages and trace the handler:
+
+```js
+import express from "express";
+import { receiverWithTracing } from "cloudevents/otel";
+
+const receive = receiverWithTracing(async (events) => {
+  for (const event of Array.isArray(events) ? events : [events]) {
+    await saveOrder(event.data);
+  }
+}, { system: "example-broker", destination: "orders" });
+
+const app = express();
+
+// Pass the raw body to receiverWithTracing().
+app.post("/", express.text({ type: "*/*" }), async (req, res, next) => {
+  try {
+    await receive({ headers: req.headers, body: req.body });
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+});
+```
+
+The handler receives a CloudEvent or an array for a batch. Use `binding: Kafka` for Kafka
+messages, or `handlerWithTracing()` when events are already decoded.
+
 ### A Note About Big Integers
 
 When parsing JSON data, if a JSON field value is a number, and that number

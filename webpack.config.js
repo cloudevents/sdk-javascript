@@ -7,9 +7,7 @@ module.exports = {
   },
   resolve: {
     fallback: {
-      util: require.resolve("util/"),
-      http: false,
-      https: false
+      util: require.resolve("util/")
     },
   },
   plugins: [

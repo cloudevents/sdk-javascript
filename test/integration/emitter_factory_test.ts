@@ -39,9 +39,9 @@ export const fixture = new CloudEvent({
 });
 
 function axiosEmitter(message: Message, options?: Options): Promise<unknown> {
-  // axios 1.x coerces every header value to a string. The fixture carries an
-  // object-valued extension, which the binary binding passes through untouched,
-  // so serialize it as JSON here to keep it readable on the receiving side.
+  // axios 1.x coerces every header value to a string. ce- values are already
+  // strings (JSON extensions are percent-encoded). Anything else is JSON-encoded
+  // here so axios does not send "[object Object]".
   const headers: Record<string, string> = {};
   for (const [name, value] of Object.entries(message.headers)) {
     headers[name] = typeof value === "string" ? value : JSON.stringify(value);
@@ -187,10 +187,11 @@ export function assertBinary(response: Record<string, string>): void {
   expect(response["ce-source"]).to.equal(source);
   expect(response[`ce-${ext1Name}`]).to.deep.equal(ext1Value);
   expect(response[`ce-${ext2Name}`]).to.deep.equal(ext2Value);
-  // nock hands object-valued headers back untouched; a client that serializes
-  // headers (axios 1.x) delivers the JSON form instead
+  // ce- headers percent-encode `"` (§3.1.3.2). Decode once, then parse the JSON
+  // extension. A transport that already handed back an object is used as-is.
   const ext3 = response[`ce-${ext3Name}`];
-  expect(typeof ext3 === "string" ? JSON.parse(ext3) : ext3).to.deep.equal(ext3Value);
+  const ext3Text = typeof ext3 === "string" ? decodeURIComponent(ext3) : ext3;
+  expect(typeof ext3Text === "string" ? JSON.parse(ext3Text) : ext3Text).to.deep.equal(ext3Value);
 }
 
 /**

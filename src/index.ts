@@ -7,8 +7,15 @@ import { CloudEvent, V1, V03 } from "./event/cloudevent";
 import { ValidationError } from "./event/validation";
 import { CloudEventV1, CloudEventV1Attributes } from "./event/interfaces";
 
-import { Options, TransportFunction, EmitterFunction, emitterFor, Emitter } from "./transport/emitter";
-import { httpTransport } from "./transport/http";
+import {
+  Options, TransportFunction, EmitterFunction, emitterFor, Emitter,
+} from "./transport/emitter";
+import {
+  HTTPResponseHandler, HTTPTransportError, HTTPTransportErrorKind, HTTPTransportOptions, HTTPTransportResponse,
+  httpTransport } from "./transport/http";
+import {
+  RetryContext, RetryOptions, defaultRetryDelay, isRetryableHTTPError, withRetry,
+} from "./transport/retry";
 import {
   Headers, Mode, Binding, HTTP, Kafka, KafkaEvent, KafkaMessage, Message, MQTT, MQTTMessage, MQTTMessageFactory,
   Serializer, Deserializer } from "./message";
@@ -26,8 +33,13 @@ export {
   Kafka,
   MQTT,
   MQTTMessageFactory,
+  // From transport
   emitterFor,
+  withRetry,
+  defaultRetryDelay,
+  isRetryableHTTPError,
   httpTransport,
+  HTTPTransportError,
   Emitter,
   // From Constants
   CONSTANTS
@@ -48,5 +60,11 @@ export type {
   // From transport
   TransportFunction,
   EmitterFunction,
-  Options
+  RetryContext,
+  RetryOptions,
+  Options,
+  HTTPResponseHandler,
+  HTTPTransportErrorKind,
+  HTTPTransportOptions,
+  HTTPTransportResponse
 };

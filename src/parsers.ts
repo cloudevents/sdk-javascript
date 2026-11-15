@@ -87,11 +87,56 @@ export interface MappedParser {
   parser: Parser;
 }
 
+const DAYS_IN_MONTH = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+// RFC 3339 section 5.6 date-time. T/t and Z/z are accepted; numeric offsets
+// require a colon. Date.parse is not the validator: it accepts date-only values
+// and zone-less local times, and a failed parse must not become "now".
+const RFC3339_DATE_TIME =
+  /^(\d{4})-(\d{2})-(\d{2})[Tt](\d{2}):(\d{2}):(\d{2})(\.\d+)?([Zz]|([+-])(\d{2}):(\d{2}))$/;
+
+const INVALID_TIME = "invalid time, must be RFC 3339";
+
+function isLeapYear(year: number): boolean {
+  return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+}
+
+function isRfc3339DateTime(value: unknown): value is string {
+  if (typeof value !== "string") {
+    return false;
+  }
+  const match = RFC3339_DATE_TIME.exec(value);
+  if (!match) {
+    return false;
+  }
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const hour = Number(match[4]);
+  const minute = Number(match[5]);
+  const second = Number(match[6]);
+  if (month < 1 || month > 12 || hour > 23 || minute > 59 || second > 59) {
+    return false;
+  }
+  if (match[9] !== undefined) {
+    const offsetHour = Number(match[10]);
+    const offsetMinute = Number(match[11]);
+    if (offsetHour > 23 || offsetMinute > 59) {
+      return false;
+    }
+  }
+  const maxDay = month === 2 && isLeapYear(year) ? 29 : DAYS_IN_MONTH[month];
+  return day >= 1 && day <= maxDay;
+}
+
 export class DateParser extends Parser {
   parse(payload: string): string {
-    let date = new Date(Date.parse(payload));
-    if (date.toString() === "Invalid Date") {
-      date = new Date();
+    if (!isRfc3339DateTime(payload)) {
+      throw new ValidationError(INVALID_TIME);
+    }
+    const date = new Date(payload);
+    if (Number.isNaN(date.getTime())) {
+      throw new ValidationError(INVALID_TIME);
     }
     return date.toISOString();
   }

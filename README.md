@@ -198,6 +198,118 @@ As a convenience the SDK also accepts a plain object or array as an extension va
 when the event is sent in binary mode. This is not spec-conformant: a receiver gets a plain string
 and has to know to parse it, and other SDKs may reject the event. Prefer the explicit form above.
 
+### Trace context with OpenTelemetry
+
+Use `cloudevents/otel` to carry an OpenTelemetry trace context in the CloudEvents
+[Distributed Tracing extension](https://github.com/cloudevents/spec/blob/main/cloudevents/extensions/distributed-tracing.md).
+Install the OpenTelemetry dependencies:
+
+```console
+npm install @opentelemetry/api @opentelemetry/core
+```
+
+Within an active OpenTelemetry span, attach its context to an event and send it
+over HTTP:
+
+```js
+import { context } from "@opentelemetry/api";
+import { CloudEvent, emitterFor, httpTransport } from "cloudevents";
+import { injectDistributedTracingExtension } from "cloudevents/otel";
+
+const emit = emitterFor(httpTransport("https://events.example.com/orders"));
+const event = new CloudEvent({
+  type: "com.example.order.created",
+  source: "/stores/store-42",
+  data: { orderId: "order-123" },
+});
+const tracedEvent = injectDistributedTracingExtension(context.active(), event);
+await emit(tracedEvent);
+```
+
+`injectDistributedTracingExtension()` returns an event copy with the supplied
+tracing extension, replacing any existing `traceparent` and `tracestate`. It returns
+the original event when the supplied context lacks a valid span context.
+
+To read an event's creation context directly, call
+`extractDistributedTracingExtension(baseContext, event)`. The returned context
+combines the event's span context with the other values in `baseContext`. A missing
+or invalid extension returns `baseContext`.
+
+#### CloudEvents attributes and links
+
+After decoding an order event, use `getCloudEventSpanOptions()` to supply its
+attributes and creation-context link when creating the processing span. The
+processing span is a child of the active span, such as the HTTP server span:
+
+```js
+import { SpanKind, SpanStatusCode, trace } from "@opentelemetry/api";
+import { getCloudEventSpanOptions } from "cloudevents/otel";
+
+const tracer = trace.getTracer("orders");
+
+await tracer.startActiveSpan(
+  "process order",
+  {
+    kind: SpanKind.CONSUMER,
+    ...getCloudEventSpanOptions(receivedEvent),
+  },
+  async (processingSpan) => {
+    try {
+      await handleOrder(receivedEvent);
+    } catch (error) {
+      processingSpan.setStatus({ code: SpanStatusCode.ERROR });
+      throw error;
+    } finally {
+      processingSpan.end();
+    }
+  },
+);
+```
+
+For a batch, pass an array of events: common attributes go on the span and
+event-specific attributes go on links. Passing the options at span creation makes
+the attributes and links available to head samplers.
+
+#### HTTP auto-instrumentation
+
+`CloudEventPropagator` lets HTTP instrumentation continue a trace from CloudEvents
+binary-mode headers. It reads a valid `traceparent` first, then falls back to
+`ce-traceparent`. The corresponding `tracestate` or `ce-tracestate` accompanies the
+selected context. Outgoing requests use W3C trace headers.
+
+Install the tracing SDK and HTTP instrumentation:
+
+```console
+npm install @opentelemetry/sdk-trace @opentelemetry/context-async-hooks \
+  @opentelemetry/instrumentation @opentelemetry/instrumentation-http
+```
+
+Configure the provider in `telemetry.mjs`:
+
+```js
+import { context, propagation, trace } from "@opentelemetry/api";
+import { AsyncLocalStorageContextManager } from "@opentelemetry/context-async-hooks";
+import { CompositePropagator, W3CBaggagePropagator } from "@opentelemetry/core";
+import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
+import { TracerProvider } from "@opentelemetry/sdk-trace";
+import { CloudEventPropagator } from "cloudevents/otel";
+
+trace.setGlobalTracerProvider(new TracerProvider());
+context.setGlobalContextManager(new AsyncLocalStorageContextManager().enable());
+propagation.setGlobalPropagator(new CompositePropagator({
+  propagators: [new CloudEventPropagator(), new W3CBaggagePropagator()],
+}));
+new HttpInstrumentation().enable();
+```
+
+For ESM, load the OpenTelemetry module hook and telemetry before the application:
+
+```console
+node --experimental-loader=@opentelemetry/instrumentation/hook.mjs --import ./telemetry.mjs app.mjs
+```
+
+For structured and batch messages, use the helpers above after decoding the event body.
+
 ### A Note About Big Integers
 
 When parsing JSON data, if a JSON field value is a number, and that number

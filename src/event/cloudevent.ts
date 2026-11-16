@@ -58,7 +58,8 @@ export class CloudEvent<T = undefined> implements CloudEventV1<T> {
     this.id = (properties.id as string) || uuidv4();
     delete properties.id;
 
-    this.time = properties.time || new Date().toISOString();
+    // Only a missing time is defaulted. An empty string is not a timestamp.
+    this.time = properties.time ?? new Date().toISOString();
     delete properties.time;
 
     this.type = properties.type as string;

@@ -151,6 +151,22 @@ function getVersion(mode: Mode, headers: Headers, body: string | Record<string, 
 }
 
 /**
+ * Whether an incoming attribute should be handed to its parser.
+ * `time` is optional, but a present empty string is not the same as omission:
+ * DateParser must see it and reject it. Other attributes keep the historical
+ * falsy-value skip.
+ * @param {string} name header or attribute name
+ * @param {unknown} value the raw value
+ * @return {boolean} true when the parser should run
+ */
+function shouldParse(name: string, value: unknown): boolean {
+  if (name === CONSTANTS.CE_HEADERS.TIME || name === CONSTANTS.CE_ATTRIBUTES.TIME) {
+    return value !== undefined && value !== null;
+  }
+  return Boolean(value);
+}
+
+/**
  * Parses an incoming HTTP Message, converting it to a {CloudEvent}
  * instance if it conforms to the Cloud Event specification for this receiver.
  *
@@ -172,9 +188,9 @@ function parseBinary<T>(message: Message, version: string): CloudEvent<T> {
   const parserMap: Record<string, MappedParser> = version === V03 ? v03binaryParsers : v1binaryParsers;
 
   for (const header in parserMap) {
-    if (sanitizedHeaders[header]) {
+    if (shouldParse(header, sanitizedHeaders[header])) {
       const mappedParser: MappedParser = parserMap[header];
-      eventObj[mappedParser.name] = mappedParser.parser.parse(sanitizedHeaders[header]);
+      eventObj[mappedParser.name] = mappedParser.parser.parse(sanitizedHeaders[header] as string);
       delete sanitizedHeaders[header];
       delete headers[header];
     }
@@ -233,7 +249,7 @@ function parseStructured<T>(message: Message, version: string): CloudEvent<T> {
 
   for (const key in parserMap) {
     const property = incoming[key];
-    if (property) {
+    if (shouldParse(key, property)) {
       const mappedParser: MappedParser = parserMap[key];
       eventObj[mappedParser.name] = mappedParser.parser.parse(property as string);
     }

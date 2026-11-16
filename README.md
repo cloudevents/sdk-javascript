@@ -305,6 +305,27 @@ node --experimental-loader=@opentelemetry/instrumentation/hook.mjs --import ./te
 
 For structured and batch messages, use the helpers above after decoding the event body.
 
+### CloudEvents attributes and links
+
+`getCloudEventSpanOptions()` returns attributes and links for a decoded CloudEvent
+or an array of events. Use them to enrich an existing span:
+
+```js
+import { getCloudEventSpanOptions } from "cloudevents/otel";
+
+const details = getCloudEventSpanOptions(receivedEvents);
+processingSpan.setAttributes(details.attributes);
+processingSpan.addLinks(details.links);
+```
+
+`Span.addLinks()` requires `@opentelemetry/api` 1.9 or later. When events are available
+before span creation, pass the result as span options so head samplers can use the
+attributes and links.
+
+For a single event, CloudEvents attributes go on the span, with a link to its valid
+creation context. For a batch, common attributes go on the span and event-specific
+attributes go on links.
+
 ### A Note About Big Integers
 
 When parsing JSON data, if a JSON field value is a number, and that number

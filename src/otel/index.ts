@@ -5,3 +5,4 @@
 
 export { injectDistributedTracingExtension, extractDistributedTracingExtension } from "./propagation";
 export { CloudEventPropagator } from "./propagator";
+export { getCloudEventSpanOptions } from "./enrichment";

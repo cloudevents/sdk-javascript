@@ -230,23 +230,28 @@ await emit(tracedEvent);
 tracing extension, replacing any existing `traceparent` and `tracestate`. It returns
 the original event when the supplied context lacks a valid span context.
 
-After decoding an order event, create a span for processing it and link that span
-to the event's creation context. The processing span is a child of the active span,
-such as the HTTP server span:
+To read an event's creation context directly, call
+`extractDistributedTracingExtension(baseContext, event)`. The returned context
+combines the event's span context with the other values in `baseContext`. A missing
+or invalid extension returns `baseContext`.
+
+#### CloudEvents attributes and links
+
+After decoding an order event, use `getCloudEventSpanOptions()` to supply its
+attributes and creation-context link when creating the processing span. The
+processing span is a child of the active span, such as the HTTP server span:
 
 ```js
-import { ROOT_CONTEXT, SpanKind, SpanStatusCode, trace } from "@opentelemetry/api";
-import { extractDistributedTracingExtension } from "cloudevents/otel";
+import { SpanKind, SpanStatusCode, trace } from "@opentelemetry/api";
+import { getCloudEventSpanOptions } from "cloudevents/otel";
 
 const tracer = trace.getTracer("orders");
-const creationContext = extractDistributedTracingExtension(ROOT_CONTEXT, receivedEvent);
-const creationSpanContext = trace.getSpanContext(creationContext);
 
 await tracer.startActiveSpan(
   "process order",
   {
     kind: SpanKind.CONSUMER,
-    links: creationSpanContext ? [{ context: creationSpanContext }] : [],
+    ...getCloudEventSpanOptions(receivedEvent),
   },
   async (processingSpan) => {
     try {
@@ -261,9 +266,9 @@ await tracer.startActiveSpan(
 );
 ```
 
-`extractDistributedTracingExtension()` returns a context combining the event's span
-context with the other values from the supplied base context. If the extension is
-missing or invalid, it returns the base context.
+For a batch, pass an array of events: common attributes go on the span and
+event-specific attributes go on links. Passing the options at span creation makes
+the attributes and links available to head samplers.
 
 #### HTTP auto-instrumentation
 

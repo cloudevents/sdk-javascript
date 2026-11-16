@@ -171,6 +171,6 @@
   },
   "types": "./dist/index.d.ts",
   "engines": {
-    "node": ">=22 <=24"
+    "node": ">=22 <=26"
   }
 }

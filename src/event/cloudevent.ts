@@ -62,10 +62,10 @@ export class CloudEvent<T = undefined> implements CloudEventV1<T> {
     delete properties.time;
 
     this.type = properties.type as string;
-    delete (properties as any).type;
+    delete properties.type;
 
     this.source = properties.source as string;
-    delete (properties as any).source;
+    delete properties.source;
 
     this.specversion = (properties.specversion) || V1;
     delete properties.specversion;

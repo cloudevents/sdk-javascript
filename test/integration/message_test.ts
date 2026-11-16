@@ -70,7 +70,8 @@ describe("HTTP transport", () => {
     const evt = new CloudEvent({ source: "test", type: "test", extobject });
     const message = HTTP.binary(evt);
     // HTTP headers can only carry strings; a raw object reaches the wire as "[object Object]"
-    expect(message.headers["ce-extobject"]).to.equal(JSON.stringify(extobject));
+    // `"` in the JSON text is percent-encoded on ce- headers (§3.1.3.2)
+    expect(message.headers["ce-extobject"]).to.equal(JSON.stringify(extobject).replace(/"/g, "%22"));
   });
 
   it("Round-trips an object-valued extension through binary mode as a JSON string", () => {
@@ -101,8 +102,8 @@ describe("HTTP transport", () => {
     const extshadowed = { constructor: "shadowed", some: "object" };
     const extnullproto = Object.assign(Object.create(null), { some: "object" });
     const message = HTTP.binary(new CloudEvent({ source: "test", type: "test", extshadowed, extnullproto }));
-    expect(message.headers["ce-extshadowed"]).to.equal(JSON.stringify(extshadowed));
-    expect(message.headers["ce-extnullproto"]).to.equal(JSON.stringify(extnullproto));
+    expect(message.headers["ce-extshadowed"]).to.equal(JSON.stringify(extshadowed).replace(/"/g, "%22"));
+    expect(message.headers["ce-extnullproto"]).to.equal(JSON.stringify(extnullproto).replace(/"/g, "%22"));
   });
 
   it("Leaves non-CloudEvents values in binary-mode extensions untouched", () => {

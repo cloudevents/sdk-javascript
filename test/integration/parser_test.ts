@@ -67,6 +67,19 @@ describe("JSON Event Format Parser", () => {
     expect(parser.parse(payload)).to.equal("I am a string!");
   });
 
+  it("Parses JSON primitives instead of quoting them", () => {
+    const parser = new Parser();
+    expect(parser.parse("0")).to.equal(0);
+    expect(parser.parse("false")).to.equal(false);
+    expect(parser.parse("true")).to.equal(true);
+    expect(parser.parse("null")).to.equal(null);
+    expect(parser.parse("-42")).to.equal(-42);
+    expect(parser.parse("3.14")).to.equal(3.14);
+    expect(parser.parse("\"hello\"")).to.equal("hello");
+    expect(parser.parse("[1,2]")).to.deep.equal([1, 2]);
+    expect(parser.parse("{\"a\":1}")).to.deep.equal({ a: 1 });
+  });
+
   it("Must accept when the payload is a string well formed as JSON", () => {
     // setup
     const payload = "{\"much\" : \"wow\"}";

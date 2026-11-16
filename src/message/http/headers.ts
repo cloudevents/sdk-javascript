@@ -8,7 +8,7 @@ import { CloudEventV1 } from "../..";
 import { Headers } from "../";
 import { V1 } from "../../event/cloudevent";
 import CONSTANTS from "../../constants";
-import { asBase64, isBinary, isDate, TypeArray } from "../../event/validation";
+import { asBase64, isBinary, isDate, TypeArray, ValidationError } from "../../event/validation";
 
 export const allowedContentTypes = [CONSTANTS.DEFAULT_CONTENT_TYPE, CONSTANTS.MIME_JSON, CONSTANTS.MIME_OCTET_STREAM];
 export const requiredHeaders = [
@@ -40,17 +40,169 @@ export function headersFor<T>(event: CloudEventV1<T>): Headers {
     if (value !== undefined) {
       const map: MappedParser | undefined = headerMap[property] as MappedParser;
       if (map) {
-        headers[map.name] = map.parser.parse(value as string) as string;
+        headers[map.name] = asCeHeader(map.name, map.parser.parse(value as string));
       } else if (property !== CONSTANTS.DATA_ATTRIBUTE && property !== `${CONSTANTS.DATA_ATTRIBUTE}_base64`) {
-        headers[`${CONSTANTS.EXTENSIONS_PREFIX}${property}`] = stringifyExtensionValue(value);
+        const name = `${CONSTANTS.EXTENSIONS_PREFIX}${property}`;
+        headers[name] = asCeHeader(name, stringifyExtensionValue(value));
       }
     }
   });
   // Treat time specially, since it's handled with getters and setters in CloudEvent
   if (event.time) {
-    headers[CONSTANTS.CE_HEADERS.TIME] = new Date(event.time).toISOString();
+    headers[CONSTANTS.CE_HEADERS.TIME] = asCeHeader(
+      CONSTANTS.CE_HEADERS.TIME,
+      new Date(event.time).toISOString(),
+    );
   }
   return headers;
+}
+
+/**
+ * Percent-encode a `ce-` header value per HTTP Protocol Binding §3.1.3.2.
+ *
+ * `content-type` is not a `ce-` header (`datacontenttype` maps to it) and is
+ * left unchanged, including its spaces. Non-strings stay as they are: boolean
+ * and integer extensions are canonicalized by the HTTP client, matching the
+ * existing Message shape.
+ * @param {string} name the header name
+ * @param {unknown} value the header value
+ * @return {string} the value to put on the Message
+ */
+function asCeHeader(name: string, value: unknown): string {
+  if (typeof value === "string" && name.toLowerCase().startsWith(CONSTANTS.EXTENSIONS_PREFIX)) {
+    return percentEncode(value);
+  }
+  return value as string;
+}
+
+/**
+ * Encode one Unicode code point the way §3.1.3.2 requires.
+ * Space, `"`, `%`, and code points outside U+0021–U+007E are UTF-8 percent-encoded.
+ * Printable ASCII, including `/`, `:`, `+`, `-`, `_`, and `.`, is left as-is.
+ * @param {string} value the attribute's canonical string
+ * @return {string} the header value
+ */
+function percentEncode(value: string): string {
+  let out = "";
+  for (let i = 0; i < value.length;) {
+    const cp = value.codePointAt(i) as number;
+    i += cp > 0xFFFF ? 2 : 1;
+    if (cp === 0x20 || cp === 0x22 || cp === 0x25 || cp < 0x21 || cp > 0x7E) {
+      const bytes: number[] = [];
+      utf8Bytes(cp, bytes);
+      for (let b = 0; b < bytes.length; b++) {
+        const hex = bytes[b].toString(16).toUpperCase();
+        out += `%${hex.length === 1 ? "0" : ""}${hex}`;
+      }
+    } else {
+      out += String.fromCodePoint(cp);
+    }
+  }
+  return out;
+}
+
+function utf8Bytes(codePoint: number, into: number[]): void {
+  if (codePoint <= 0x7F) {
+    into.push(codePoint);
+  } else if (codePoint <= 0x7FF) {
+    into.push(0xC0 | (codePoint >> 6), 0x80 | (codePoint & 0x3F));
+  } else if (codePoint <= 0xFFFF) {
+    into.push(0xE0 | (codePoint >> 12), 0x80 | ((codePoint >> 6) & 0x3F), 0x80 | (codePoint & 0x3F));
+  } else {
+    into.push(
+      0xF0 | (codePoint >> 18),
+      0x80 | ((codePoint >> 12) & 0x3F),
+      0x80 | ((codePoint >> 6) & 0x3F),
+      0x80 | (codePoint & 0x3F),
+    );
+  }
+}
+
+function isHex(ch: string): boolean {
+  return (ch >= "0" && ch <= "9") || (ch >= "A" && ch <= "F") || (ch >= "a" && ch <= "f");
+}
+
+function trimOws(value: string): string {
+  let start = 0;
+  let end = value.length;
+  while (start < end && (value.charAt(start) === " " || value.charAt(start) === "\t")) {
+    start++;
+  }
+  while (end > start && (value.charAt(end - 1) === " " || value.charAt(end - 1) === "\t")) {
+    end--;
+  }
+  return value.slice(start, end);
+}
+
+/**
+ * Unwrap an RFC 7230 quoted-string, including backslash escapes.
+ * A value that is not a single quoted-string is returned unchanged.
+ * @param {string} value a header value with OWS already removed
+ * @return {string} the unescaped value
+ */
+function unquoteHeaderValue(value: string): string {
+  if (value.length < 2 || value.charAt(0) !== "\"" || value.charAt(value.length - 1) !== "\"") {
+    return value;
+  }
+  let out = "";
+  let escaped = false;
+  for (let i = 1; i < value.length - 1; i++) {
+    const ch = value.charAt(i);
+    if (escaped) {
+      out += ch;
+      escaped = false;
+    } else if (ch === "\\") {
+      escaped = true;
+    } else if (ch === "\"") {
+      return value;
+    } else {
+      out += ch;
+    }
+  }
+  return escaped ? value : out;
+}
+
+/**
+ * One round of UTF-8 percent-decoding. A `%` not followed by two hex digits
+ * stays literal. Ill-formed UTF-8, including overlong sequences, is rejected.
+ * @param {string} value the unquoted header value
+ * @return {string} the decoded attribute value
+ */
+function percentDecode(value: string): string {
+  const bytes: number[] = [];
+  for (let i = 0; i < value.length;) {
+    const cp = value.codePointAt(i) as number;
+    if (cp === 0x25 && i + 2 < value.length && isHex(value.charAt(i + 1)) && isHex(value.charAt(i + 2))) {
+      bytes.push(parseInt(value.slice(i + 1, i + 3), 16));
+      i += 3;
+      continue;
+    }
+    utf8Bytes(cp, bytes);
+    i += cp > 0xFFFF ? 2 : 1;
+  }
+  try {
+    return new TextDecoder("utf-8", { fatal: true }).decode(new Uint8Array(bytes));
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
+    throw new ValidationError(`invalid UTF-8 in CloudEvents HTTP header: ${detail}`);
+  }
+}
+
+function decodeOneCeHeader(value: string): string {
+  // §3.1.3.2: trim OWS, unescape a quoted-string, then percent-decode once.
+  return percentDecode(unquoteHeaderValue(trimOws(value)));
+}
+
+/**
+ * Decode a received `ce-` header value per HTTP Protocol Binding §3.1.3.2.
+ * @param {string|string[]} value the header value
+ * @return {string|string[]} the CloudEvents attribute value
+ */
+export function decodeCeHeader(value: string | string[]): string | string[] {
+  if (Array.isArray(value)) {
+    return value.map(decodeOneCeHeader);
+  }
+  return decodeOneCeHeader(value);
 }
 
 /**

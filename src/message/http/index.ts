@@ -9,6 +9,7 @@ import { CloudEvent, CloudEventV1, CONSTANTS, Mode, V1, V03 } from "../..";
 import { Message, Headers, Binding } from "..";
 
 import {
+  decodeCeHeader,
   headersFor,
   sanitize,
   v03binaryParsers,
@@ -17,7 +18,7 @@ import {
   v1structuredParsers,
 } from "./headers";
 import { base64AsBinary, isStringOrObjectOrThrow, ValidationError } from "../../event/validation";
-import { JSONParser, MappedParser, Parser, parserByContentType } from "../../parsers";
+import { contentTypeEssence, JSONParser, MappedParser, Parser, parserForContentType } from "../../parsers";
 
 /**
  * Serialize a CloudEvent for HTTP transport in binary mode
@@ -102,6 +103,13 @@ function deserialize<T>(message: Message): CloudEvent<T> | CloudEvent<T>[] {
   }
 }
 
+function headerAsString(value: string | string[] | undefined): string | undefined {
+  if (Array.isArray(value)) {
+    return value[0];
+  }
+  return value;
+}
+
 /**
  * Determines the HTTP transport mode (binary or structured) based
  * on the incoming HTTP headers.
@@ -109,11 +117,15 @@ function deserialize<T>(message: Message): CloudEvent<T> | CloudEvent<T>[] {
  * @returns {Mode} the transport mode
  */
 function getMode(headers: Headers): Mode {
-  const contentType = headers[CONSTANTS.HEADER_CONTENT_TYPE];
+  const contentType = headerAsString(headers[CONSTANTS.HEADER_CONTENT_TYPE]);
   if (contentType) {
-    if (contentType.startsWith(CONSTANTS.MIME_CE_BATCH)) {
+    // Match the media type, not the raw header: parameters, whitespace, and case
+    // do not change the mode. Batch is a prefix of the structured type (`application/cloudevents`),
+    // so `application/cloudevents-batch` has to be tested first.
+    const essence = contentTypeEssence(contentType);
+    if (essence.startsWith("application/cloudevents-batch")) {
       return Mode.BATCH;
-    } else if (contentType.startsWith(CONSTANTS.MIME_CE)) {
+    } else if (essence.startsWith(CONSTANTS.MIME_CE)) {
       return Mode.STRUCTURED;
     }
   }
@@ -174,7 +186,10 @@ function parseBinary<T>(message: Message, version: string): CloudEvent<T> {
   for (const header in parserMap) {
     if (sanitizedHeaders[header]) {
       const mappedParser: MappedParser = parserMap[header];
-      eventObj[mappedParser.name] = mappedParser.parser.parse(sanitizedHeaders[header]);
+      const raw = sanitizedHeaders[header] as string | string[];
+      // `content-type` carries datacontenttype and must not be percent-decoded.
+      const decoded = header.startsWith(CONSTANTS.EXTENSIONS_PREFIX) ? decodeCeHeader(raw) : raw;
+      eventObj[mappedParser.name] = mappedParser.parser.parse(decoded as string);
       delete sanitizedHeaders[header];
       delete headers[header];
     }
@@ -185,11 +200,13 @@ function parseBinary<T>(message: Message, version: string): CloudEvent<T> {
   for (const header in headers) {
     const lowerCaseHeader = header.toLowerCase();
     if (lowerCaseHeader.startsWith(CONSTANTS.EXTENSIONS_PREFIX) && !parserMap[lowerCaseHeader]) {
-      eventObj[header.substring(CONSTANTS.EXTENSIONS_PREFIX.length)] = headers[header];
+      const raw = headers[header];
+      eventObj[header.substring(CONSTANTS.EXTENSIONS_PREFIX.length)] =
+        typeof raw === "string" || Array.isArray(raw) ? decodeCeHeader(raw) : raw;
     }
   }
 
-  const parser = parserByContentType[eventObj.datacontenttype as string];
+  const parser = parserForContentType(headerAsString(eventObj.datacontenttype as string | string[] | undefined));
   if (parser && body) {
     body = parser.parse(body as string);
   }
@@ -223,8 +240,8 @@ function parseStructured<T>(message: Message, version: string): CloudEvent<T> {
   // Clone and low case all headers names
   const sanitizedHeaders = sanitize(headers);
 
-  const contentType = sanitizedHeaders[CONSTANTS.HEADER_CONTENT_TYPE];
-  const parser: Parser = contentType ? parserByContentType[contentType] : new JSONParser();
+  const contentType = headerAsString(sanitizedHeaders[CONSTANTS.HEADER_CONTENT_TYPE]);
+  const parser: Parser | undefined = contentType ? parserForContentType(contentType) : new JSONParser();
   if (!parser) throw new ValidationError(`invalid content type ${sanitizedHeaders[CONSTANTS.HEADER_CONTENT_TYPE]}`);
   const incoming = { ...(parser.parse(payload as string) as Record<string, unknown>) };
 
@@ -232,10 +249,14 @@ function parseStructured<T>(message: Message, version: string): CloudEvent<T> {
   const parserMap: Record<string, MappedParser> = version === V03 ? v03structuredParsers : v1structuredParsers;
 
   for (const key in parserMap) {
-    const property = incoming[key];
-    if (property) {
-      const mappedParser: MappedParser = parserMap[key];
-      eventObj[mappedParser.name] = mappedParser.parser.parse(property as string);
+    if (Object.prototype.hasOwnProperty.call(incoming, key)) {
+      const property = incoming[key];
+      // Keep falsy JSON values. `data: 0`, `false`, `""`, and `null` are present
+      // and must survive a structured round trip; only a missing attribute is skipped.
+      if (typeof property !== "undefined") {
+        const mappedParser: MappedParser = parserMap[key];
+        eventObj[mappedParser.name] = mappedParser.parser.parse(property as string);
+      }
     }
     delete incoming[key];
   }

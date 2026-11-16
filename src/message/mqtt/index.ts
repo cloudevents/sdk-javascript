@@ -101,7 +101,7 @@ function MQTTMessageFactory<T>(contentType: string, headers: Record<string, unkn
     },
     headers: headers as Headers,
     get "User Properties"() {
-      return this.headers as any;
+      return this.headers;
     }
   };
 }

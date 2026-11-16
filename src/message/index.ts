@@ -3,7 +3,7 @@
  SPDX-License-Identifier: Apache-2.0
 */
 
-import { IncomingHttpHeaders } from "http";
+import type { IncomingHttpHeaders } from "http";
 import { CloudEventV1 } from "..";
 
 // reexport the protocol bindings

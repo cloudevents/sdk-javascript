@@ -5,7 +5,7 @@
 
 import { ErrorObject } from "ajv";
 
-export type TypeArray = Int8Array | Uint8Array | Int16Array | Uint16Array | 
+export type TypeArray = Int8Array | Uint8Array | Int16Array | Uint16Array |
   Int32Array | Uint32Array | Uint8ClampedArray | Float32Array | Float64Array;
 
 const globalThisPolyfill = (function() {
@@ -103,7 +103,7 @@ export const base64AsBinary = (base64String: string): Uint8Array => {
   return Uint8Array.from(toBinaryString(base64String), (c) => c.charCodeAt(0));
 };
 
-export const asBase64 = 
+export const asBase64 =
 (value: string | Buffer | TypeArray): string => asBuffer(value).toString("base64");
 
 export const clone = (o: Record<string, unknown>): Record<string, unknown> => JSON.parse(JSON.stringify(o));

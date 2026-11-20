@@ -49,6 +49,29 @@ app.post("/", (req, res) => {
 });
 ```
 
+`HTTP.toEvent()` converts a message into a `CloudEvent`, but conversion does not
+guarantee that the event passes schema validation. For example, an incoming event
+without a `type` attribute can be converted successfully. Call `validate()` on the
+result before processing it if your application requires valid events. Validation
+throws if the event does not conform to the schema.
+
+```js
+try {
+  const receivedEvent = HTTP.toEvent({ headers: req.headers, body: req.body });
+  const events = Array.isArray(receivedEvent) ? receivedEvent : [receivedEvent];
+  events.forEach((event) => event.validate());
+  // Process the validated events here.
+  res.sendStatus(204);
+} catch (err) {
+  res.status(400).send("Invalid CloudEvent");
+}
+```
+
+`HTTP.toEvent()` returns an array for HTTP batch messages. The example above
+validates every event before processing the batch. Validation checks the resulting
+objects; constructor defaults, such as `specversion: "1.0"`, may already have been
+applied during conversion.
+
 #### Emitting Events
 
 The easiest way to send events is to use the built-in HTTP emitter.

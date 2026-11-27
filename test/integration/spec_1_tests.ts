@@ -237,6 +237,19 @@ describe("CloudEvents Spec v1.0", () => {
         const ce = cloudevent.cloneWith({ datacontenttype: "text/plain", data: test.data });
         expect(ce.data_base64).to.equal(test.expected);
       });
+
+      it(`should encode every byte of a '${test.type.name}' in data_base64`, () => {
+        const ce = cloudevent.cloneWith({ datacontenttype: "application/octet-stream", data: test.data });
+        const bytes = Buffer.from(test.data.buffer, test.data.byteOffset, test.data.byteLength);
+        expect(ce.data_base64).to.equal(bytes.toString("base64"));
+      });
+    });
+
+    it("should encode only the viewed bytes of a typed array over a larger buffer", () => {
+      const backing = new Uint8Array([9, 9, 1, 0, 2, 0, 9, 9]);
+      const view = new Uint16Array(backing.buffer, 2, 2);
+      const ce = cloudevent.cloneWith({ datacontenttype: "application/octet-stream", data: view });
+      expect(ce.data_base64).to.equal(Buffer.from([1, 0, 2, 0]).toString("base64"));
     });
   });
 });

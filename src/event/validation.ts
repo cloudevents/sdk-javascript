@@ -87,10 +87,12 @@ export const isBase64 = (value: unknown): boolean =>
 export const isBuffer = (value: unknown): boolean => value instanceof Buffer;
 
 export const asBuffer = (value: string | Buffer | TypeArray): Buffer =>
-  isBinary(value)
-    ? Buffer.from((value as unknown) as string)
-    : isBuffer(value)
+  isBuffer(value)
     ? (value as Buffer)
+    : isBinary(value)
+    ? // Copy the underlying bytes. Buffer.from(typedArray) would copy the element
+      // values instead, truncating each one to a single byte (e.g. Float32Array).
+      Buffer.from((value as TypeArray).buffer, (value as TypeArray).byteOffset, (value as TypeArray).byteLength)
     : (() => {
         throw new TypeError("is not buffer or a valid binary");
       })();

@@ -220,7 +220,10 @@ function parseStructured<T>(message: KafkaMessage<string>): CloudEvent<T> {
     throw new ValidationError(`Unsupported event encoding ${message.headers[CONSTANTS.HEADER_CONTENT_TYPE]}`);
   }
   const eventObj = JSON.parse(message.value);
-  eventObj.time = new Date(eventObj.time).toISOString();
+  // `time` is optional, so only normalize it when the event has one.
+  if (eventObj.time !== undefined && eventObj.time !== null) {
+    eventObj.time = new Date(eventObj.time).toISOString();
+  }
   return new CloudEvent({
     ...eventObj,
     partitionkey: message.key,

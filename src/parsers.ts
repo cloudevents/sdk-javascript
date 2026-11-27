@@ -28,8 +28,10 @@ export class JSONParser implements Parser {
       // This is kind of a hack, but the payload data could be JSON in the form of a single
       // string, such as "some data". But without the quotes in the string, JSON.parse blows
       // up. We can check for this scenario and add quotes. Not sure if this is ideal.
-      if (!/^[[|{|"]/.test(payload)) {
-        payload = `"${payload}"`;
+      // Leading whitespace is allowed before JSON, so it must not turn an object or an array
+      // into a string. JSON.stringify quotes the string safely when it contains quotes or line breaks.
+      if (!/^[[{"]/.test(payload.trimStart())) {
+        payload = JSON.stringify(payload);
       }
     }
     if (this.decorator) {

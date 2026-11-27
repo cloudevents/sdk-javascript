@@ -266,6 +266,23 @@ describe("MQTT transport", () => {
     expect(event).to.deep.equal(fixture);
   });
 
+  it("Parses JSON data of a binary Message received as a Buffer or a string", () => {
+    const message = MQTT.binary(fixture);
+    for (const payload of [Buffer.from(JSON.stringify(data)), JSON.stringify(data)]) {
+      // An MQTT client receives the payload as bytes, not as the original object
+      const received = { ...message, body: payload, PUBLISH: message.PUBLISH } as unknown as Message<string>;
+      const event = MQTT.toEvent(received) as CloudEvent<Idata>;
+      expect(event.data).to.deep.equal(data);
+    }
+  });
+
+  it("Keeps text data of a binary Message that is not valid JSON", () => {
+    const message = MQTT.binary(fixture);
+    const received = { ...message, body: "not json", PUBLISH: message.PUBLISH } as unknown as Message<string>;
+    const event = MQTT.toEvent(received) as CloudEvent<string>;
+    expect(event.data).to.equal("not json");
+  });
+
   it("A CloudEvent can be converted from a structured Message", () => {
     const message = MQTT.structured(fixture);
     const event = MQTT.toEvent(message);

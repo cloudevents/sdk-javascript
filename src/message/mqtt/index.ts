@@ -125,8 +125,32 @@ function toEvent<T>(message: Message<T>, strict = false): CloudEventV1<T> | Clou
   } else {
     return new CloudEvent<T>({
       ...message.headers,
-      data: message.body as T,
+      data: extractBinaryData(message as MQTTMessage<T>),
     }, false);
+  }
+}
+
+/**
+ * Gets the data of a binary MQTT message. Like the HTTP and Kafka bindings, JSON data
+ * received as text (a string or a Buffer) is parsed.
+ * @param {MQTTMessage<T>} message a binary MQTTMessage
+ * @returns {T} the event data
+ */
+function extractBinaryData<T>(message: MQTTMessage<T>): T {
+  const body = message.body as unknown;
+  const contentType = (message.headers?.datacontenttype ?? message.PUBLISH?.["Content Type"]) as string | undefined;
+  if (!contentType || !contentType.startsWith(CONSTANTS.MIME_JSON)) {
+    return body as T;
+  }
+  const text = typeof body === "string" ? body : Buffer.isBuffer(body) ? body.toString() : undefined;
+  if (text === undefined) {
+    return body as T;
+  }
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    // Not valid JSON despite the content type: keep the payload as it was received.
+    return body as T;
   }
 }
 

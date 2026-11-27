@@ -279,6 +279,21 @@ describe("Kafka transport", () => {
     expect(event).to.deep.equal(fixture);
   });
 
+  it("A CloudEvent without the optional time attribute can be converted from a structured Message", () => {
+    const message: KafkaMessage<string> = {
+      key,
+      value: JSON.stringify({ id, source, type, specversion: V1, data }),
+      headers: { [CONSTANTS.HEADER_CONTENT_TYPE]: CONSTANTS.DEFAULT_CE_CONTENT_TYPE },
+      body: undefined,
+      timestamp: undefined,
+    };
+    const event = Kafka.toEvent(message) as CloudEvent<Idata>;
+    expect(event.id).to.equal(id);
+    // Like the HTTP binding, the CloudEvent constructor fills in the current time.
+    expect(Number.isNaN(Date.parse(event.time as string))).to.equal(false);
+    expect(event.data).to.deep.equal(data);
+  });
+
   it("Converts binary data to base64 when serializing structured messages", () => {
     const event = fixture.cloneWith({ data: imageData, datacontenttype: "image/png" });
     expect(event.data).to.equal(imageData);

@@ -6,6 +6,8 @@
 import "mocha";
 import { expect } from "chai";
 import nock from "nock";
+import http from "http";
+import { AddressInfo } from "net";
 import axios from "axios";
 import request from "superagent";
 import got from "got";
@@ -134,6 +136,28 @@ describe("HTTP Transport Binding for emitterFactory", () => {
     testEmitterBinary(httpTransport("http://cloudevents.io"), "body");
     setupMock("http://cloudevents.io");
     testEmitterStructured(httpTransport("http://cloudevents.io"), "body");
+  });
+
+  describe("HTTP builtin with an event without data", () => {
+    it("Sends a binary event that has no data", async () => {
+      // A real server: the nock interceptor accepts writes that Node's http client rejects.
+      nock.enableNetConnect("127.0.0.1");
+      const server = http.createServer((req, res) => {
+        req.resume();
+        req.on("end", () => res.end(JSON.stringify({ id: req.headers["ce-id"] })));
+      });
+      await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
+      try {
+        const { port } = server.address() as AddressInfo;
+        const emitter = emitterFor(httpTransport(`http://127.0.0.1:${port}/`));
+        const response = (await emitter(
+          new CloudEvent({ id: "1234", source: "/emitter/test", type: "emitter.test" }),
+        )) as Record<string, string>;
+        expect(JSON.parse(response.body).id).to.equal("1234");
+      } finally {
+        server.close();
+      }
+    });
   });
 
   describe("Axios", () => {

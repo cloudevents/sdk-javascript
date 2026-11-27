@@ -53,7 +53,10 @@ export function httpTransport(sink: string | URL): TransportFunction {
           res.on("end", () => { resolve(response); });
         });
         req.on("error", reject);
-        req.write(message.body);
+        // A binary-mode event without data has no body; writing undefined would throw.
+        if (message.body !== undefined && message.body !== null) {
+          req.write(message.body);
+        }
         req.end();
       } catch (err) {
         reject(err);

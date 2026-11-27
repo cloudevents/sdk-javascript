@@ -67,6 +67,30 @@ describe("JSON Event Format Parser", () => {
     expect(parser.parse(payload)).to.equal("I am a string!");
   });
 
+  it("Accepts a string containing double quotes", () => {
+    const parser = new Parser();
+
+    expect(parser.parse("She said \"hi\"")).to.equal("She said \"hi\"");
+  });
+
+  it("Accepts a string containing line breaks", () => {
+    const parser = new Parser();
+
+    expect(parser.parse("line 1\nline 2\r\n")).to.equal("line 1\nline 2\r\n");
+  });
+
+  it("Must parse a JSON object with leading whitespace", () => {
+    const parser = new Parser();
+
+    expect(parser.parse("\n  {\"much\" : \"wow\"}")).to.deep.equal({ much: "wow" });
+  });
+
+  it("Must parse a JSON array with leading whitespace", () => {
+    const parser = new Parser();
+
+    expect(parser.parse(" [1, 2]")).to.deep.equal([1, 2]);
+  });
+
   it("Must accept when the payload is a string well formed as JSON", () => {
     // setup
     const payload = "{\"much\" : \"wow\"}";
